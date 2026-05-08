@@ -3,3 +3,4 @@ node_modules/
 package-lock.json
 vendor/api-specs/
 src/assets/fonts/
+src/_data/marketingCopy.json

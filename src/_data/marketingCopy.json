@@ -1,0 +1,3405 @@
+{
+  "version": "2",
+  "updated": "2026-05-08T23:05:00-04:00",
+  "sourceExport": "https://voicetel.github.io/data/site-export.json",
+  "status": "marketing-copy-ready",
+  "scope": {
+    "confirmedProducts": [
+      "Voice",
+      "Messaging",
+      "Numbers",
+      "SIP Trunking",
+      "VoiceML",
+      "Hosted PBX",
+      "Caller Lookup",
+      "Carrier Lookup",
+      "Phone Applications",
+      "SDN Appliance"
+    ],
+    "copyIntent": "Buyer-focused marketing copy for a public VoiceTel site, optimized for migration confidence, line-item economics, and technical credibility.",
+    "nonHallucinationPolicy": "All product names are confirmed by the owner. Exact rates, legal terms, endpoint hostnames, live status data, and service-specific SLAs remain data-driven or review-gated unless separately approved.",
+    "trademarkPolicy": "Use VoiceML, voice markup, XML-based voice markup, or compatible with Twilio's voice markup. Do not use competitor trademarks as VoiceTel product names."
+  },
+  "site": {
+    "brand": "VoiceTel",
+    "legalName": "VoiceTel Communications",
+    "tagline": "Licensed Wholesale Telecommunication Services",
+    "description": "VoiceTel provides programmable voice, messaging, numbers, SIP trunking, VoiceML-compatible call control, hosted PBX, phone applications, SDN appliance connectivity, and lookup services at wholesale-oriented economics.",
+    "url": "https://voicetel.com",
+    "portalUrl": "https://www.voicetel.com",
+    "apiBaseUrl": "https://api.voicetel.com",
+    "pops": [
+      "NYC",
+      "CLT",
+      "ORD",
+      "DEN",
+      "DFW",
+      "SJC"
+    ],
+    "supportEmail": "support@voicetel.com"
+  },
+  "nav": [
+    {
+      "label": "Products",
+      "id": "nav-products",
+      "type": "mega",
+      "layout": "two-column",
+      "items": [
+        {
+          "label": "Voice",
+          "icon": "telephone",
+          "href": "/voice/",
+          "description": "Programmable voice, origination, and termination at wholesale economics."
+        },
+        {
+          "label": "Messaging",
+          "icon": "chat-text",
+          "href": "/messaging/",
+          "description": "SMS and MMS with A2P 10DLC support, delivery webhooks, and high-volume paths."
+        },
+        {
+          "label": "Numbers",
+          "icon": "hash",
+          "href": "/numbers/",
+          "description": "Local, toll-free, ported, and emergency-service-enabled numbers where available."
+        },
+        {
+          "label": "SIP Trunking",
+          "icon": "hdd-stack",
+          "href": "/sip-trunking/",
+          "description": "Carrier-grade SIP trunks for PBX, UC, contact-center, and SBC deployments."
+        },
+        {
+          "label": "VoiceML",
+          "icon": "code-slash",
+          "href": "/voiceml/",
+          "description": "XML-based programmable voice markup compatible with Twilio voice applications."
+        },
+        {
+          "label": "Hosted PBX",
+          "icon": "diagram-3",
+          "href": "/pbx/",
+          "description": "Managed business voice built on the same VoiceML runtime."
+        },
+        {
+          "label": "Caller Lookup",
+          "icon": "person-vcard",
+          "href": "/caller-lookup/",
+          "description": "CNAM and caller-ID lookups for screening, routing, and display."
+        },
+        {
+          "label": "Carrier Lookup",
+          "icon": "broadcast-pin",
+          "href": "/carrier-lookup/",
+          "description": "LRN, MNP, and carrier-of-record lookups for routing and fraud controls."
+        },
+        {
+          "label": "Phone Applications",
+          "icon": "phone-vibrate",
+          "href": "/phone/",
+          "description": "VoiceTel Phone for web, desktop, and mobile calling."
+        },
+        {
+          "label": "SDN Appliance",
+          "icon": "plug",
+          "href": "/sdn/",
+          "description": "A small on-prem appliance for secure SIP traversal through difficult networks."
+        }
+      ]
+    },
+    {
+      "label": "Resources",
+      "id": "nav-resources",
+      "type": "mega",
+      "items": [
+        {
+          "label": "Documentation",
+          "icon": "book",
+          "href": "/docs/",
+          "description": "VoiceML reference, REST API guides, SDK notes, and integration playbooks."
+        },
+        {
+          "label": "FAQ",
+          "icon": "question-circle",
+          "href": "/faq/",
+          "description": "Practical answers on accounts, pricing, numbers, messaging, E911, and support."
+        },
+        {
+          "label": "Infrastructure & uptime",
+          "icon": "geo-alt",
+          "href": "/infrastructure/",
+          "description": "POP locations, network design, redundancy model, and availability target."
+        },
+        {
+          "label": "Network status",
+          "icon": "activity",
+          "href": "/status/",
+          "description": "Current health of voice, messaging, API, portal, and support systems."
+        }
+      ]
+    },
+    {
+      "label": "Company",
+      "id": "nav-company",
+      "type": "mega",
+      "items": [
+        {
+          "label": "About",
+          "icon": "info-circle",
+          "href": "/about/",
+          "description": "VoiceTel's carrier, CPaaS, and wholesale communications focus."
+        },
+        {
+          "label": "Contact",
+          "icon": "envelope",
+          "href": "/contact/",
+          "description": "Sales, support, partnerships, billing, porting, and press routing."
+        },
+        {
+          "label": "Open Source",
+          "icon": "github",
+          "href": "/open-source/",
+          "description": "Reference tools, samples, and integration assets from VoiceTel."
+        },
+        {
+          "label": "Legal",
+          "icon": "shield-check",
+          "href": "/legal/",
+          "description": "Terms, privacy, acceptable use, emergency-service limitations, and policies."
+        }
+      ]
+    },
+    {
+      "label": "Sign in",
+      "id": "nav-signin",
+      "type": "dropdown",
+      "alignment": "right",
+      "items": [
+        {
+          "label": "Sign in",
+          "icon": "box-arrow-in-right",
+          "href": "https://www.voicetel.com",
+          "description": "Open the VoiceTel account portal."
+        },
+        {
+          "label": "Sign up",
+          "icon": "person-plus",
+          "href": "https://www.voicetel.com/signup",
+          "description": "Create a VoiceTel account."
+        }
+      ]
+    }
+  ],
+  "footerNav": [
+    {
+      "label": "Products",
+      "columns": 2,
+      "items": [
+        {
+          "label": "Voice",
+          "href": "/voice/"
+        },
+        {
+          "label": "Messaging",
+          "href": "/messaging/"
+        },
+        {
+          "label": "Numbers",
+          "href": "/numbers/"
+        },
+        {
+          "label": "SIP Trunking",
+          "href": "/sip-trunking/"
+        },
+        {
+          "label": "VoiceML",
+          "href": "/voiceml/"
+        },
+        {
+          "label": "Hosted PBX",
+          "href": "/pbx/"
+        },
+        {
+          "label": "Caller Lookup",
+          "href": "/caller-lookup/"
+        },
+        {
+          "label": "Carrier Lookup",
+          "href": "/carrier-lookup/"
+        },
+        {
+          "label": "Phone Applications",
+          "href": "/phone/"
+        },
+        {
+          "label": "SDN Appliance",
+          "href": "/sdn/"
+        }
+      ]
+    },
+    {
+      "label": "Resources",
+      "items": [
+        {
+          "label": "Documentation",
+          "href": "/docs/"
+        },
+        {
+          "label": "FAQ",
+          "href": "/faq/"
+        },
+        {
+          "label": "Infrastructure & uptime",
+          "href": "/infrastructure/"
+        },
+        {
+          "label": "Network status",
+          "href": "/status/"
+        },
+        {
+          "label": "Pricing",
+          "href": "/pricing/"
+        }
+      ]
+    },
+    {
+      "label": "Company",
+      "items": [
+        {
+          "label": "About",
+          "href": "/about/"
+        },
+        {
+          "label": "Contact",
+          "href": "/contact/"
+        },
+        {
+          "label": "Open Source",
+          "href": "/open-source/"
+        },
+        {
+          "label": "Legal",
+          "href": "/legal/"
+        }
+      ]
+    }
+  ],
+  "menuCarousel": [
+    {
+      "key": "intro",
+      "isHero": true,
+      "tagline": "Programmable voice at carrier economics",
+      "title": "Move compatible voice apps to VoiceTel.",
+      "description": "Keep the voice markup and webhook model your team already knows, then run it on VoiceTel's wholesale voice platform with source-dated pricing comparisons and operator support.",
+      "href": "/voiceml/migrate/",
+      "cta": "Plan a migration",
+      "secondaryHref": "/voiceml/compatibility/",
+      "secondaryCta": "Check compatibility"
+    },
+    {
+      "key": "voiceml",
+      "title": "VoiceML",
+      "tagline": "XML-based programmable voice",
+      "description": "A VoiceML-compatible runtime for calls, recordings, conferences, queues, streams, transcriptions, and saved voice applications.",
+      "href": "/voiceml/",
+      "cta": "Explore VoiceML"
+    },
+    {
+      "key": "voice",
+      "title": "Voice",
+      "tagline": "Wholesale origination and termination",
+      "description": "Voice APIs, SIP access, STIR/SHAKEN, recording options, callbacks, and bring-your-own speech services without retail markup on media vendors.",
+      "href": "/voice/",
+      "cta": "See voice"
+    },
+    {
+      "key": "messaging",
+      "title": "Messaging",
+      "tagline": "SMS and MMS for application traffic",
+      "description": "A2P 10DLC support, delivery webhooks, inbound handling, and routing review for production messaging workloads.",
+      "href": "/messaging/",
+      "cta": "See messaging"
+    },
+    {
+      "key": "numbers",
+      "title": "Numbers",
+      "tagline": "DIDs, toll-free, mobile, E911, and porting",
+      "description": "Provision, port, and manage numbers for voice, SIP trunking, hosted PBX, and messaging use cases.",
+      "href": "/numbers/",
+      "cta": "Manage numbers"
+    },
+    {
+      "key": "sip",
+      "title": "SIP Trunking",
+      "tagline": "PSTN access for PBX and UC",
+      "description": "Connect Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, contact centers, and UC systems to VoiceTel.",
+      "href": "/sip-trunking/",
+      "cta": "See SIP trunking"
+    },
+    {
+      "key": "sdn",
+      "title": "SDN appliance",
+      "tagline": "SIP traversal without firewall drama",
+      "description": "A small LAN appliance creates a secure tunnel to VoiceTel so PBX registrations and media paths survive NAT, ALG, and UDP timer issues.",
+      "href": "/sdn/",
+      "cta": "Learn about SDN"
+    },
+    {
+      "key": "phone",
+      "title": "Phone applications",
+      "tagline": "Web, desktop, and mobile calling",
+      "description": "VoiceTel Phone gives users a simple calling surface backed by SIP credentials, WebRTC, SIP-over-TLS, and diagnostic logging.",
+      "href": "/phone/",
+      "cta": "Open phone apps"
+    },
+    {
+      "key": "pricing",
+      "title": "Pricing",
+      "tagline": "Line-item pricing, not slogans",
+      "description": "Keep VoiceTel rates and competitor list prices source-dated, and show the math by service category.",
+      "href": "/pricing/",
+      "cta": "See pricing"
+    }
+  ],
+  "reusableCopy": {
+    "trustStrip": [
+      {
+        "label": "STIR/SHAKEN",
+        "title": "Verified calling",
+        "copy": "Attestation and caller-ID hygiene are built into the voice platform instead of bolted on after launch."
+      },
+      {
+        "label": "6 POPs",
+        "title": "US network reach",
+        "copy": "Voice and SIP infrastructure across NYC, CLT, ORD, DEN, DFW, and SJC."
+      },
+      {
+        "label": "24/7 support",
+        "title": "Operator support",
+        "copy": "Support routes to people who understand SIP traces, carrier routing, porting, messaging, and emergency-service edge cases."
+      },
+      {
+        "label": "Availability target",
+        "title": "Availability target",
+        "copy": "A voice availability target for the platform; service-specific SLAs belong in the signed service agreement."
+      }
+    ],
+    "comparisonCta": {
+      "title": "Compare the exact workload you run today.",
+      "copy": "Every pricing block shows the unit, source date, VoiceTel rate, competitor list price, assumptions, and calculated difference. Broad savings claims are replaced with line-item math.",
+      "primaryCta": {
+        "label": "Open calculator",
+        "href": "/voiceml/calculator/"
+      },
+      "secondaryCta": {
+        "label": "Pricing policy",
+        "href": "/pricing/"
+      }
+    },
+    "voiceMarkupSample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n\t<Say>Welcome. Please hold while we connect your call.</Say>\n\t<Dial timeout=\"20\" callerId=\"+12124016220\">\n\t\t<Number>+15555551234</Number>\n\t</Dial>\n</Response>",
+    "curlTestCallSample": "curl -u \"$VOICETEL_ACCOUNT_SID:$VOICETEL_API_KEY\" \\\n\t-d \"To=+18005551234\" \\\n\t-d \"From=+18005550000\" \\\n\t-d \"Url=https://example.com/voice.xml\" \\\n\t\"https://api.voicetel.com/2010-04-01/Accounts/$VOICETEL_ACCOUNT_SID/Calls.json\"",
+    "pricingFootnote": "Competitor list prices captured 2026-05-08 from publicly available pricing pages. Taxes, regulatory fees, surcharges, carrier pass-through fees, volume discounts, and contract pricing may vary."
+  },
+  "pricingComparisonSources": {
+    "capturedAt": "2026-05-08",
+    "policy": "Use source-dated public list prices only. Render savings only when the matching VoiceTel public rate is approved in pricing data.",
+    "footnote": "Competitor list prices captured 2026-05-08 from publicly available pricing pages. Taxes, regulatory fees, surcharges, carrier pass-through fees, volume discounts, and contract pricing may vary.",
+    "competitors": {
+      "twilio": {
+        "displayName": "Twilio",
+        "sources": [
+          "https://www.twilio.com/en-us/voice/pricing/us",
+          "https://www.twilio.com/en-us/sms/pricing/us",
+          "https://www.twilio.com/en-us/pricing"
+        ],
+        "rates": [
+          {
+            "category": "Outbound local voice",
+            "unit": "minute",
+            "rateUsd": 0.014,
+            "basis": "United States & Canada local outbound"
+          },
+          {
+            "category": "Inbound local voice",
+            "unit": "minute",
+            "rateUsd": 0.0085,
+            "basis": "US local number receive calls"
+          },
+          {
+            "category": "Inbound toll-free voice",
+            "unit": "minute",
+            "rateUsd": 0.022,
+            "basis": "US toll-free receive calls"
+          },
+          {
+            "category": "Answering machine detection",
+            "unit": "call",
+            "rateUsd": 0.0075,
+            "basis": "Pay-as-you-go AMD"
+          },
+          {
+            "category": "Local phone number",
+            "unit": "month",
+            "rateUsd": 1.15,
+            "basis": "US local prefix"
+          },
+          {
+            "category": "Toll-free phone number",
+            "unit": "month",
+            "rateUsd": 2.15,
+            "basis": "US toll-free prefix"
+          },
+          {
+            "category": "Long-code SMS outbound",
+            "unit": "message segment",
+            "rateUsd": 0.0083,
+            "basis": "US long code"
+          },
+          {
+            "category": "Long-code SMS inbound",
+            "unit": "message segment",
+            "rateUsd": 0.0083,
+            "basis": "US long code"
+          },
+          {
+            "category": "Long-code MMS outbound",
+            "unit": "message",
+            "rateUsd": 0.022,
+            "basis": "US long code"
+          },
+          {
+            "category": "Long-code MMS inbound",
+            "unit": "message",
+            "rateUsd": 0.0165,
+            "basis": "US long code"
+          }
+        ]
+      },
+      "telnyx": {
+        "displayName": "Telnyx",
+        "sources": [
+          "https://telnyx.com/pricing/voice-api",
+          "https://telnyx.com/pricing/messaging",
+          "https://telnyx.com/pricing/numbers"
+        ],
+        "rates": [
+          {
+            "category": "Voice API outbound base",
+            "unit": "minute",
+            "rateUsd": 0.002,
+            "basis": "Plus SIP Trunking fee"
+          },
+          {
+            "category": "Voice API inbound local base",
+            "unit": "minute",
+            "rateUsd": 0.002,
+            "basis": "Plus SIP Trunking fee"
+          },
+          {
+            "category": "Standard answering machine detection",
+            "unit": "call",
+            "rateUsd": 0.002,
+            "basis": "Voice API optional feature"
+          },
+          {
+            "category": "Premium answering machine detection",
+            "unit": "call",
+            "rateUsd": 0.0065,
+            "basis": "Voice API optional feature"
+          },
+          {
+            "category": "Local SMS outbound",
+            "unit": "message part",
+            "rateUsd": 0.004,
+            "basis": "Plus carrier fee"
+          },
+          {
+            "category": "Local SMS inbound",
+            "unit": "message part",
+            "rateUsd": 0.004,
+            "basis": "Plus carrier fee"
+          },
+          {
+            "category": "Local MMS outbound",
+            "unit": "message part",
+            "rateUsd": 0.015,
+            "basis": "Plus carrier fee"
+          },
+          {
+            "category": "Local MMS inbound",
+            "unit": "message part",
+            "rateUsd": 0.005,
+            "basis": "Plus carrier fee"
+          },
+          {
+            "category": "Local number",
+            "unit": "month",
+            "rateUsd": 1.0,
+            "basis": "From price"
+          },
+          {
+            "category": "Toll-free number",
+            "unit": "month",
+            "rateUsd": 1.0,
+            "basis": "From price"
+          }
+        ]
+      },
+      "plivo": {
+        "displayName": "Plivo",
+        "sources": [
+          "https://www.plivo.com/pricing/"
+        ],
+        "rates": [
+          {
+            "category": "Outbound local voice",
+            "unit": "minute",
+            "rateUsd": 0.0115,
+            "basis": "US local calls"
+          },
+          {
+            "category": "Inbound local voice",
+            "unit": "minute",
+            "rateUsd": 0.0055,
+            "basis": "US local calls"
+          },
+          {
+            "category": "Browser SDK and SIP calls",
+            "unit": "minute",
+            "rateUsd": 0.0033,
+            "basis": "Outbound or inbound"
+          },
+          {
+            "category": "CNAM lookup",
+            "unit": "lookup",
+            "rateUsd": 0.005,
+            "basis": "Add-on service"
+          },
+          {
+            "category": "Long-code SMS outbound",
+            "unit": "SMS",
+            "rateUsd": 0.0077,
+            "basis": "US long codes"
+          },
+          {
+            "category": "Long-code SMS inbound",
+            "unit": "SMS",
+            "rateUsd": 0.0077,
+            "basis": "US long codes"
+          }
+        ]
+      },
+      "bandwidth": {
+        "displayName": "Bandwidth",
+        "sources": [
+          "https://www.bandwidth.com/pricing/"
+        ],
+        "rates": [
+          {
+            "category": "U.S. local outbound voice",
+            "unit": "minute",
+            "rateUsd": 0.01,
+            "basis": "API platform US pricing"
+          },
+          {
+            "category": "U.S. local inbound voice",
+            "unit": "minute",
+            "rateUsd": 0.0055,
+            "basis": "API platform US pricing"
+          },
+          {
+            "category": "Answering machine detection",
+            "unit": "call",
+            "rateUsd": 0.006,
+            "basis": "API platform US pricing"
+          },
+          {
+            "category": "U.S. 10DLC SMS outbound",
+            "unit": "message",
+            "rateUsd": 0.004,
+            "basis": "API platform US pricing"
+          },
+          {
+            "category": "U.S. 10DLC MMS outbound",
+            "unit": "message",
+            "rateUsd": 0.015,
+            "basis": "API platform US pricing"
+          }
+        ]
+      },
+      "signalwire": {
+        "displayName": "SignalWire",
+        "sources": [
+          "https://signalwire.com/pricing/voice",
+          "https://signalwire.com/pricing/messaging"
+        ],
+        "rates": [
+          {
+            "category": "Local voice inbound",
+            "unit": "minute",
+            "rateUsd": 0.0066,
+            "basis": "Programmable Voice US local"
+          },
+          {
+            "category": "Local voice outbound",
+            "unit": "minute",
+            "rateUsd": 0.008,
+            "basis": "Programmable Voice US local"
+          },
+          {
+            "category": "SIP voice",
+            "unit": "minute",
+            "rateUsd": 0.003,
+            "basis": "SIP inbound or outbound"
+          },
+          {
+            "category": "Answering machine detection",
+            "unit": "call",
+            "rateUsd": 0.006,
+            "basis": "Voice feature"
+          }
+        ]
+      },
+      "flowroute": {
+        "displayName": "Flowroute",
+        "sources": [
+          "https://flowroute.com/pricing-details/"
+        ],
+        "rates": [
+          {
+            "category": "Outbound US lower 48 and Canada",
+            "unit": "minute",
+            "rateUsd": 0.00833,
+            "basis": "Starting rate"
+          }
+        ]
+      },
+      "vonage": {
+        "displayName": "Vonage",
+        "sources": [
+          "https://www.vonage.com/communications-apis/sms/pricing/",
+          "https://www.vonage.com/communications-apis/pricing/"
+        ],
+        "rates": [],
+        "note": "Official page is dynamic and says pricing is updated periodically; use dashboard or downloadable rate source before rendering numeric comparisons."
+      },
+      "bird": {
+        "displayName": "Bird",
+        "sources": [
+          "https://bird.com/en/pricing",
+          "https://bird.com/en/pricing/sms",
+          "https://bird.com/en/pricing/sms/fees"
+        ],
+        "rates": [],
+        "note": "Official pages is used for SMS and carrier-fee comparisons when their country and currency selectors are resolved by the build workflow."
+      }
+    }
+  },
+  "implementationNotes": [
+    "Public copy is ready for owner review.",
+    "Numeric VoiceTel savings claims remain gated until approved public VoiceTel rates are available in pricing data.",
+    "Competitor rates are stored as source-dated list prices and refresh before publication.",
+    "Compatibility rows stay aligned with engineering tests.",
+    "Legal, E911, A2P 10DLC, and service-specific SLA language require final counsel/operator review."
+  ],
+  "count": 27,
+  "pages": [
+    {
+      "url": "/404.html",
+      "source": "copy/404.html",
+      "title": "Page not found — VoiceTel",
+      "description": "The requested VoiceTel page could not be found.",
+      "canonical": "https://voicetel.com/404.html",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Page not found."
+        ],
+        "h2": [
+          "Useful links"
+        ],
+        "h3": [
+          "Home",
+          "Documentation",
+          "Contact"
+        ]
+      },
+      "wordCount": 61,
+      "body": "Page not found — VoiceTel The requested VoiceTel page could not be found. 404 Page not found. The page may have moved, the URL may be mistyped, or the content may still be in migration. Useful links Home Return to the VoiceTel homepage. Documentation Find API references, VoiceML guides, and integration docs. Contact Ask support or sales for the page you expected.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "404",
+          "headline": "Page not found.",
+          "lede": "The page may have moved, the URL may be mistyped, or the content may still be in migration."
+        },
+        {
+          "type": "navigation",
+          "heading": "Useful links",
+          "items": [
+            {
+              "title": "Home",
+              "copy": "Return to the VoiceTel homepage.",
+              "href": "/"
+            },
+            {
+              "title": "Documentation",
+              "copy": "Find API references, VoiceML guides, and integration docs.",
+              "href": "/docs/"
+            },
+            {
+              "title": "Contact",
+              "copy": "Ask support or sales for the page you expected.",
+              "href": "/contact/"
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/",
+        "/docs/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/about/",
+      "source": "copy/about/",
+      "title": "About — VoiceTel",
+      "description": "VoiceTel is a wholesale telecommunications and CPaaS provider focused on programmable voice, messaging, SIP trunking, numbers, and operator support.",
+      "canonical": "https://voicetel.com/about/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Wholesale communications for teams that need engineering depth."
+        ],
+        "h2": [
+          "What VoiceTel does",
+          "How VoiceTel wins trust"
+        ],
+        "h3": [
+          "Programmable voice",
+          "Wholesale network services",
+          "Application messaging",
+          "Business calling"
+        ]
+      },
+      "wordCount": 181,
+      "body": "About — VoiceTel VoiceTel is a wholesale telecommunications and CPaaS provider focused on programmable voice, messaging, SIP trunking, numbers, and operator support. Company Wholesale communications for teams that need engineering depth. VoiceTel builds and operates communications services for developers, telecom engineers, service providers, and businesses that need transparent pricing, practical migration paths, and support from people who understand the network. What VoiceTel does Programmable voice VoiceML-compatible call control, signed webhooks, recordings, conferences, queues, streams, and migration guidance. Wholesale network services Voice origination and termination, SIP trunking, numbers, porting, emergency-service configuration, and caller identity services. Application messaging SMS and MMS transport with A2P 10DLC support, delivery visibility, and high-volume planning. Business calling Hosted PBX, VoiceTel Phone, and SDN appliance options for organizations that want VoiceTel to operate more of the stack. How VoiceTel wins trust Confident, technical, and factual. Avoid generic SaaS language. Show migration steps, operational facts, pricing math, compatibility notes, and real caveats. Talk to a telecom operator, not a qualification script. Use the contact paths to route sales, support, billing, partnerships, porting, and press to the right team. Contact VoiceTel",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Company",
+          "headline": "Wholesale communications for teams that need engineering depth.",
+          "lede": "VoiceTel builds and operates communications services for developers, telecom engineers, service providers, and businesses that need transparent pricing, practical migration paths, and support from people who understand the network."
+        },
+        {
+          "type": "positioning",
+          "heading": "What VoiceTel does",
+          "items": [
+            {
+              "title": "Programmable voice",
+              "copy": "VoiceML-compatible call control, signed webhooks, recordings, conferences, queues, streams, and migration guidance."
+            },
+            {
+              "title": "Wholesale network services",
+              "copy": "Voice origination and termination, SIP trunking, numbers, porting, emergency-service configuration, and caller identity services."
+            },
+            {
+              "title": "Application messaging",
+              "copy": "SMS and MMS transport with A2P 10DLC support, delivery visibility, and high-volume planning."
+            },
+            {
+              "title": "Business calling",
+              "copy": "Hosted PBX, VoiceTel Phone, and SDN appliance options for organizations that want VoiceTel to operate more of the stack."
+            }
+          ]
+        },
+        {
+          "type": "tone",
+          "heading": "How VoiceTel wins trust",
+          "copy": "Confident, technical, and factual. Avoid generic SaaS language. Show migration steps, operational facts, pricing math, compatibility notes, and real caveats."
+        },
+        {
+          "type": "cta",
+          "title": "Talk to a telecom operator, not a qualification script.",
+          "copy": "Use the contact paths to route sales, support, billing, partnerships, porting, and press to the right team.",
+          "primaryCta": {
+            "label": "Contact VoiceTel",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/voice/",
+        "/messaging/",
+        "/sip-trunking/"
+      ]
+    },
+    {
+      "url": "/caller-lookup/",
+      "source": "copy/caller-lookup/",
+      "title": "Caller Lookup — VoiceTel",
+      "description": "CNAM and caller-ID lookup services for inbound screening, customer-service display, routing, and fraud controls.",
+      "canonical": "https://voicetel.com/caller-lookup/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Caller-name data for routing, display, and screening."
+        ],
+        "h2": [
+          "Use cases",
+          "Data caveat",
+          "Lookup pricing comparison"
+        ],
+        "h3": [
+          "Agent screen pop",
+          "Inbound screening",
+          "Routing context",
+          "Batch hygiene"
+        ]
+      },
+      "wordCount": 172,
+      "body": "Caller Lookup — VoiceTel CNAM and caller-ID lookup services for inbound screening, customer-service display, routing, and fraud controls. Caller identity Caller-name data for routing, display, and screening. Caller Lookup gives applications and operators a way to enrich phone numbers with CNAM and caller-ID information before a call is answered, routed, or presented to an agent. See pricing Read API docs Use cases Agent screen pop Display a caller name in CRM or helpdesk workflows before the conversation starts. Inbound screening Use caller identity as one signal in spam, fraud, and escalation decisions. Routing context Route known business callers, customers, or anonymous callers into different queues or workflows. Batch hygiene Run lists through batch lookup before a campaign, migration, or data-cleanup project. Data caveat CNAM and caller-ID coverage depends on source data, carriers, refresh timing, and number type. Coverage depends on source data, carriers, refresh timing, and number type; no lookup provider can promise perfect coverage. Lookup pricing comparison Compare CNAM or caller-ID lookup fees by query, cache behavior, batch options, and data-source limitations.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Caller identity",
+          "headline": "Caller-name data for routing, display, and screening.",
+          "lede": "Caller Lookup gives applications and operators a way to enrich phone numbers with CNAM and caller-ID information before a call is answered, routed, or presented to an agent.",
+          "primaryCta": {
+            "label": "See pricing",
+            "href": "/pricing/"
+          },
+          "secondaryCta": {
+            "label": "Read API docs",
+            "href": "/docs/api/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Use cases",
+          "items": [
+            {
+              "title": "Agent screen pop",
+              "copy": "Display a caller name in CRM or helpdesk workflows before the conversation starts."
+            },
+            {
+              "title": "Inbound screening",
+              "copy": "Use caller identity as one signal in spam, fraud, and escalation decisions."
+            },
+            {
+              "title": "Routing context",
+              "copy": "Route known business callers, customers, or anonymous callers into different queues or workflows."
+            },
+            {
+              "title": "Batch hygiene",
+              "copy": "Run lists through batch lookup before a campaign, migration, or data-cleanup project."
+            }
+          ]
+        },
+        {
+          "type": "caveat",
+          "heading": "Data caveat",
+          "copy": "CNAM and caller-ID coverage depends on source data, carriers, refresh timing, and number type. Coverage depends on source data, carriers, refresh timing, and number type; no lookup provider can promise perfect coverage."
+        },
+        {
+          "type": "comparison",
+          "heading": "Lookup pricing comparison",
+          "copy": "Compare CNAM or caller-ID lookup fees by query, cache behavior, batch options, and data-source limitations.",
+          "status": "source-gated-pricing"
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/pricing/",
+        "/docs/api/",
+        "/carrier-lookup/"
+      ]
+    },
+    {
+      "url": "/carrier-lookup/",
+      "source": "copy/carrier-lookup/",
+      "title": "Carrier Lookup — VoiceTel",
+      "description": "LRN, MNP, and carrier-of-record lookup services for routing decisions, fraud controls, and rate-deck classification.",
+      "canonical": "https://voicetel.com/carrier-lookup/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Know where a number routes before you rate, route, or risk-score it."
+        ],
+        "h2": [
+          "Lookup modes",
+          "Accuracy copy"
+        ],
+        "h3": [
+          "Real-time API",
+          "Batch CSV",
+          "Portal queries",
+          "Routing context"
+        ]
+      },
+      "wordCount": 136,
+      "body": "Carrier Lookup — VoiceTel LRN, MNP, and carrier-of-record lookup services for routing decisions, fraud controls, and rate-deck classification. Carrier intelligence Know where a number routes before you rate, route, or risk-score it. Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions. See pricing Read API docs Lookup modes Real-time API Query numbers during call setup, signup, fraud checks, or support workflows. Batch CSV Process large inventories for routing audits, migration planning, or rate-deck cleanup. Portal queries Give operations teams a simple manual lookup path for support and troubleshooting. Routing context Use carrier-of-record and portability signals as inputs, not as the only routing control. Accuracy copy Number portability and carrier data can change; freshness, cache, and data-source behavior are documented with the product.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Carrier intelligence",
+          "headline": "Know where a number routes before you rate, route, or risk-score it.",
+          "lede": "Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions.",
+          "primaryCta": {
+            "label": "See pricing",
+            "href": "/pricing/"
+          },
+          "secondaryCta": {
+            "label": "Read API docs",
+            "href": "/docs/api/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Lookup modes",
+          "items": [
+            {
+              "title": "Real-time API",
+              "copy": "Query numbers during call setup, signup, fraud checks, or support workflows."
+            },
+            {
+              "title": "Batch CSV",
+              "copy": "Process large inventories for routing audits, migration planning, or rate-deck cleanup."
+            },
+            {
+              "title": "Portal queries",
+              "copy": "Give operations teams a simple manual lookup path for support and troubleshooting."
+            },
+            {
+              "title": "Routing context",
+              "copy": "Use carrier-of-record and portability signals as inputs, not as the only routing control."
+            }
+          ]
+        },
+        {
+          "type": "caveat",
+          "heading": "Accuracy copy",
+          "copy": "Number portability and carrier data can change; freshness, cache, and data-source behavior are documented with the product."
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/pricing/",
+        "/docs/api/",
+        "/caller-lookup/"
+      ]
+    },
+    {
+      "url": "/contact/",
+      "source": "copy/contact/",
+      "title": "Contact — VoiceTel",
+      "description": "Contact VoiceTel for sales, support, billing, porting, partnerships, legal, press, and technical integration questions.",
+      "canonical": "https://voicetel.com/contact/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Route the request to the team that can actually solve it."
+        ],
+        "h2": [
+          "Contact paths",
+          "Form copy"
+        ],
+        "h3": [
+          "Sales",
+          "Support",
+          "Billing",
+          "Porting",
+          "Partnerships",
+          "Press and legal"
+        ]
+      },
+      "wordCount": 158,
+      "body": "Contact — VoiceTel Contact VoiceTel for sales, support, billing, porting, partnerships, legal, press, and technical integration questions. Contact Route the request to the team that can actually solve it. Use separate contact paths for sales, technical support, billing, porting, partnerships, legal, and press so the first response starts with context instead of triage. Email support Sign in Contact paths Sales Pricing reviews, migrations, volume modeling, SIP trunking, hosted PBX, messaging, and procurement questions. Support Call failures, SIP traces, webhook errors, number routing, messaging delivery, app access, and SDN connectivity. Billing Invoices, rate questions, credits, payment method issues, and account-level billing changes. Porting Number inventory, LOA, losing-carrier data, rejection resolution, scheduling, and cutover coordination. Partnerships Carrier, reseller, platform, integration, and channel opportunities. Press and legal Media requests, legal notices, policy questions, and compliance routing. Form copy For account-specific issues, ask customers to sign in so VoiceTel can attach account, service, and ticket context automatically. For non-account requests, route by topic.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Contact",
+          "headline": "Route the request to the team that can actually solve it.",
+          "lede": "Use separate contact paths for sales, technical support, billing, porting, partnerships, legal, and press so the first response starts with context instead of triage.",
+          "primaryCta": {
+            "label": "Email support",
+            "href": "mailto:support@voicetel.com"
+          },
+          "secondaryCta": {
+            "label": "Sign in",
+            "href": "https://www.voicetel.com"
+          }
+        },
+        {
+          "type": "contact-grid",
+          "heading": "Contact paths",
+          "items": [
+            {
+              "title": "Sales",
+              "copy": "Pricing reviews, migrations, volume modeling, SIP trunking, hosted PBX, messaging, and procurement questions."
+            },
+            {
+              "title": "Support",
+              "copy": "Call failures, SIP traces, webhook errors, number routing, messaging delivery, app access, and SDN connectivity."
+            },
+            {
+              "title": "Billing",
+              "copy": "Invoices, rate questions, credits, payment method issues, and account-level billing changes."
+            },
+            {
+              "title": "Porting",
+              "copy": "Number inventory, LOA, losing-carrier data, rejection resolution, scheduling, and cutover coordination."
+            },
+            {
+              "title": "Partnerships",
+              "copy": "Carrier, reseller, platform, integration, and channel opportunities."
+            },
+            {
+              "title": "Press and legal",
+              "copy": "Media requests, legal notices, policy questions, and compliance routing."
+            }
+          ]
+        },
+        {
+          "type": "form-copy",
+          "heading": "Form copy",
+          "copy": "For account-specific issues, ask customers to sign in so VoiceTel can attach account, service, and ticket context automatically. For non-account requests, route by topic."
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 1,
+        "mailto": 1,
+        "tel": 0
+      },
+      "linkTargets": [
+        "mailto:support@voicetel.com",
+        "https://www.voicetel.com",
+        "/login/",
+        "/signup/"
+      ]
+    },
+    {
+      "url": "/docs/",
+      "source": "copy/docs/",
+      "title": "Documentation — VoiceTel",
+      "description": "VoiceTel documentation for VoiceML, REST APIs, SDK migration, webhooks, SIP trunking, PBX integrations, SDN appliance, messaging, and number workflows.",
+      "canonical": "https://voicetel.com/docs/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Reference material for teams that build and operate communications systems."
+        ],
+        "h2": [
+          "Documentation sections",
+          "Search copy"
+        ],
+        "h3": [
+          "VoiceML",
+          "REST API",
+          "SDK migration",
+          "SIP integrations",
+          "Messaging",
+          "Numbers"
+        ]
+      },
+      "wordCount": 181,
+      "body": "Documentation — VoiceTel VoiceTel documentation for VoiceML, REST APIs, SDK migration, webhooks, SIP trunking, PBX integrations, SDN appliance, messaging, and number workflows. Documentation Reference material for teams that build and operate communications systems. The docs landing page helps developers find API references, migration paths, compatibility notes, SIP guides, webhook verification, and operational runbooks without reading marketing copy first. VoiceML guide API reference Documentation sections VoiceML Overview, verbs, attributes, callbacks, compatibility notes, XML examples, and migration guide. REST API Accounts, calls, recordings, conferences, queues, applications, numbers, messaging, lookups, porting, and gateways where supported. SDK migration Host-override examples and webhook validation patterns for official Twilio helper libraries where compatible. SIP integrations Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBC, firewall, and SDN appliance guides. Messaging Send, receive, delivery receipts, A2P 10DLC, carrier-fee handling, and high-volume onboarding. Numbers Provisioning, porting, emergency service, CNAM, caller ID, and number-routing workflows. Search copy Client-side documentation search indexes headings, descriptions, API paths, and product names while core docs remain usable without JavaScript. Need an integration guide? Ask for the exact PBX, SBC, firewall, SDK, or carrier workflow you need documented. Request docs",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Documentation",
+          "headline": "Reference material for teams that build and operate communications systems.",
+          "lede": "The docs landing page helps developers find API references, migration paths, compatibility notes, SIP guides, webhook verification, and operational runbooks without reading marketing copy first.",
+          "primaryCta": {
+            "label": "VoiceML guide",
+            "href": "/voiceml/"
+          },
+          "secondaryCta": {
+            "label": "API reference",
+            "href": "/docs/api/"
+          }
+        },
+        {
+          "type": "docs-grid",
+          "heading": "Documentation sections",
+          "items": [
+            {
+              "title": "VoiceML",
+              "copy": "Overview, verbs, attributes, callbacks, compatibility notes, XML examples, and migration guide.",
+              "href": "/voiceml/"
+            },
+            {
+              "title": "REST API",
+              "copy": "Accounts, calls, recordings, conferences, queues, applications, numbers, messaging, lookups, porting, and gateways where supported.",
+              "href": "/docs/api/"
+            },
+            {
+              "title": "SDK migration",
+              "copy": "Host-override examples and webhook validation patterns for official Twilio helper libraries where compatible.",
+              "href": "/voiceml/migrate/"
+            },
+            {
+              "title": "SIP integrations",
+              "copy": "Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBC, firewall, and SDN appliance guides.",
+              "href": "/sip-trunking/"
+            },
+            {
+              "title": "Messaging",
+              "copy": "Send, receive, delivery receipts, A2P 10DLC, carrier-fee handling, and high-volume onboarding."
+            },
+            {
+              "title": "Numbers",
+              "copy": "Provisioning, porting, emergency service, CNAM, caller ID, and number-routing workflows.",
+              "href": "/numbers/"
+            }
+          ]
+        },
+        {
+          "type": "search-copy",
+          "heading": "Search copy",
+          "copy": "Client-side documentation search indexes headings, descriptions, API paths, and product names while core docs remain usable without JavaScript."
+        },
+        {
+          "type": "cta",
+          "title": "Need an integration guide?",
+          "copy": "Ask for the exact PBX, SBC, firewall, SDK, or carrier workflow you need documented.",
+          "primaryCta": {
+            "label": "Request docs",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 6,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/voiceml/",
+        "/docs/api/",
+        "/voiceml/migrate/",
+        "/sip-trunking/",
+        "/numbers/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/docs/api/",
+      "source": "copy/docs/api/",
+      "title": "API reference — VoiceTel",
+      "description": "VoiceTel REST API reference for voice, messaging, numbers, lookups, porting, gateways, and account workflows.",
+      "canonical": "https://voicetel.com/docs/api/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "API documentation that maps product behavior to exact endpoints."
+        ],
+        "h2": [
+          "Reference sections"
+        ],
+        "h3": [
+          "Voice API",
+          "Messaging API",
+          "Numbers API",
+          "Lookup API"
+        ]
+      },
+      "wordCount": 105,
+      "body": "API reference — VoiceTel VoiceTel REST API reference for voice, messaging, numbers, lookups, porting, gateways, and account workflows. API reference API documentation that maps product behavior to exact endpoints. The API reference publishes paths, authentication, request fields, response schemas, pagination, error codes, webhook signatures, and examples for every public VoiceTel API surface. Reference sections Voice API Calls, recordings, conferences, queues, applications, streams, transcriptions, callbacks, and webhook signatures. Messaging API Outbound messages, inbound webhooks, delivery receipts, campaign identifiers, and carrier-fee notes. Numbers API Inventory, porting, emergency-service records, CNAM, caller ID, and product attachment. Lookup API CNAM, caller-ID, LRN, MNP, and carrier-of-record endpoints with batch and real-time examples.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "API reference",
+          "headline": "API documentation that maps product behavior to exact endpoints.",
+          "lede": "The API reference publishes paths, authentication, request fields, response schemas, pagination, error codes, webhook signatures, and examples for every public VoiceTel API surface."
+        },
+        {
+          "type": "sections",
+          "heading": "Reference sections",
+          "items": [
+            {
+              "title": "Voice API",
+              "copy": "Calls, recordings, conferences, queues, applications, streams, transcriptions, callbacks, and webhook signatures."
+            },
+            {
+              "title": "Messaging API",
+              "copy": "Outbound messages, inbound webhooks, delivery receipts, campaign identifiers, and carrier-fee notes."
+            },
+            {
+              "title": "Numbers API",
+              "copy": "Inventory, porting, emergency-service records, CNAM, caller ID, and product attachment."
+            },
+            {
+              "title": "Lookup API",
+              "copy": "CNAM, caller-ID, LRN, MNP, and carrier-of-record endpoints with batch and real-time examples."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/docs/",
+        "/voiceml/",
+        "/messaging/",
+        "/numbers/"
+      ]
+    },
+    {
+      "url": "/faq/",
+      "source": "copy/faq/",
+      "title": "Frequently asked questions — VoiceTel",
+      "description": "Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, numbers, SIP trunking, emergency service, compatibility, and support.",
+      "canonical": "https://voicetel.com/faq/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Answers for buyers, developers, and telecom operators."
+        ],
+        "h2": [
+          "FAQ categories",
+          "Starter FAQ copy"
+        ],
+        "h3": [
+          "Accounts and billing",
+          "Voice and VoiceML",
+          "Messaging",
+          "Numbers and E911",
+          "SIP and PBX"
+        ]
+      },
+      "wordCount": 244,
+      "body": "Frequently asked questions — VoiceTel Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, numbers, SIP trunking, emergency service, compatibility, and support. Help Answers for buyers, developers, and telecom operators. The FAQ answers operational questions directly and routes readers to pricing, docs, or support when a detail depends on account configuration. Contact support Read docs FAQ categories Accounts and billing Signup, portal access, invoices, public rates, volume reviews, and support channels. Voice and VoiceML Call control, compatibility, webhooks, recordings, conferences, queues, and migration. Messaging SMS, MMS, A2P 10DLC, inbound messages, delivery receipts, carrier fees, and throughput planning. Numbers and E911 DIDs, toll-free, mobile-capable numbers where available, porting, emergency-service records, and CNAM. SIP and PBX Trunking, PBX integrations, SDN appliance, phone apps, registration, and NAT behavior. Starter FAQ copy Is VoiceTel only for developers? No. VoiceTel serves developers, telecom engineers, operators, and business buyers across programmable voice, messaging, SIP trunking, numbers, hosted PBX, and phone applications. Can I migrate a compatible Twilio voice app? Yes, if the app stays inside the supported VoiceML-compatible voice surface. Check compatibility and run test calls before cutover. Are VoiceTel rates public? VoiceTel publishes approved public rates when available. Account-specific rates are labeled custom or handled through sales. Do calculator inputs leave the browser? No. The calculator states that usage inputs remain client-side. Does VoiceTel support emergency calling? Emergency-service availability and limitations depend on number type, service address, product configuration, and signed terms. The legal page and service terms explain those limitations.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Help",
+          "headline": "Answers for buyers, developers, and telecom operators.",
+          "lede": "The FAQ answers operational questions directly and routes readers to pricing, docs, or support when a detail depends on account configuration.",
+          "primaryCta": {
+            "label": "Contact support",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Read docs",
+            "href": "/docs/"
+          }
+        },
+        {
+          "type": "faq-categories",
+          "heading": "FAQ categories",
+          "items": [
+            {
+              "title": "Accounts and billing",
+              "copy": "Signup, portal access, invoices, public rates, volume reviews, and support channels."
+            },
+            {
+              "title": "Voice and VoiceML",
+              "copy": "Call control, compatibility, webhooks, recordings, conferences, queues, and migration."
+            },
+            {
+              "title": "Messaging",
+              "copy": "SMS, MMS, A2P 10DLC, inbound messages, delivery receipts, carrier fees, and throughput planning."
+            },
+            {
+              "title": "Numbers and E911",
+              "copy": "DIDs, toll-free, mobile-capable numbers where available, porting, emergency-service records, and CNAM."
+            },
+            {
+              "title": "SIP and PBX",
+              "copy": "Trunking, PBX integrations, SDN appliance, phone apps, registration, and NAT behavior."
+            }
+          ]
+        },
+        {
+          "type": "faq",
+          "heading": "Starter FAQ copy",
+          "faqs": [
+            {
+              "question": "Is VoiceTel only for developers?",
+              "answer": "No. VoiceTel serves developers, telecom engineers, operators, and business buyers across programmable voice, messaging, SIP trunking, numbers, hosted PBX, and phone applications."
+            },
+            {
+              "question": "Can I migrate a compatible Twilio voice app?",
+              "answer": "Yes, if the app stays inside the supported VoiceML-compatible voice surface. Check compatibility and run test calls before cutover."
+            },
+            {
+              "question": "Are VoiceTel rates public?",
+              "answer": "VoiceTel publishes approved public rates when available. Account-specific rates are labeled custom or handled through sales."
+            },
+            {
+              "question": "Do calculator inputs leave the browser?",
+              "answer": "No. The calculator states that usage inputs remain client-side."
+            },
+            {
+              "question": "Does VoiceTel support emergency calling?",
+              "answer": "Emergency-service availability and limitations depend on number type, service address, product configuration, and signed terms. The legal page and service terms explain those limitations."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/docs/",
+        "/pricing/",
+        "/voiceml/compatibility/"
+      ]
+    },
+    {
+      "url": "/",
+      "source": "copy/index/",
+      "title": "VoiceTel — Programmable voice, messaging, and SIP at wholesale economics",
+      "description": "VoiceTel helps teams move compatible voice applications, SIP trunks, messaging workloads, and business phone systems onto a carrier-grade wholesale communications platform.",
+      "canonical": "https://voicetel.com/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Carrier-grade communications without retail CPaaS margins."
+        ],
+        "h2": [
+          "Why VoiceTel",
+          "Products",
+          "A cleaner migration path",
+          "Line-item economics",
+          "What you can build"
+        ],
+        "h3": [
+          "Verified calling",
+          "US network reach",
+          "Operator support",
+          "Availability target",
+          "IVR and call routing",
+          "Contact-center voice",
+          "Voice notifications",
+          "Business SIP",
+          "Application messaging",
+          "Hosted PBX"
+        ]
+      },
+      "wordCount": 485,
+      "body": "VoiceTel — Programmable voice, messaging, and SIP at wholesale economics VoiceTel helps teams move compatible voice applications, SIP trunks, messaging workloads, and business phone systems onto a carrier-grade wholesale communications platform. Programmable communications Carrier-grade communications without retail CPaaS margins. VoiceTel gives developers, telecom engineers, and business buyers a practical path from retail CPaaS pricing to wholesale voice, messaging, SIP trunking, numbers, and VoiceML-compatible call control. Plan a migration Compare pricing Why VoiceTel STIR/SHAKEN Verified calling Attestation and caller-ID hygiene are built into the voice platform instead of bolted on after launch. 6 POPs US network reach Voice and SIP infrastructure across NYC, CLT, ORD, DEN, DFW, and SJC. 24/7 support Operator support Support routes to people who understand SIP traces, carrier routing, porting, messaging, and emergency-service edge cases. Availability target A resilient voice platform built around geographic diversity; service-specific SLAs belong in the signed service agreement. Products Start with the product you need today, then expand without rebuilding your communications stack. Voice Programmable voice, origination, and termination at wholesale economics. Messaging SMS and MMS with A2P 10DLC support, delivery webhooks, and high-volume paths. Numbers Local, toll-free, ported, and emergency-service-enabled numbers where available. SIP Trunking Carrier-grade SIP trunks for PBX, UC, contact-center, and SBC deployments. VoiceML XML-based programmable voice markup compatible with Twilio voice applications. Hosted PBX Managed business voice built on the same VoiceML runtime. Caller Lookup CNAM and caller-ID lookups for screening, routing, and display. Carrier Lookup LRN, MNP, and carrier-of-record lookups for routing and fraud controls. Phone Applications VoiceTel Phone for web, desktop, and mobile calling. SDN Appliance A small on-prem appliance for secure SIP traversal through difficult networks. A cleaner migration path For compatible voice applications, move the API destination to VoiceTel, keep XML-based voice markup, preserve signed webhook validation, and test call behavior before cutover. VoiceML example <?xml version=\"1.0\" encoding=\"UTF-8\"?> <Response> <Say>Welcome. Please hold while we connect your call.</Say> <Dial timeout=\"20\" callerId=\"+12124016220\"> <Number>+15555551234</Number> </Dial> </Response> Migrate from Twilio Compatibility matrix Line-item economics Pricing comparisons is boring, auditable, and specific: inbound minutes, outbound minutes, SMS, MMS, numbers, emergency service, lookups, and optional call-control features. VoiceTel rates and competitor list prices are shown with unit, assumptions, capture date, and source. Open pricing What you can build IVR and call routing Menu trees, time-of-day routing, recorded prompts, and webhook-driven call control. Contact-center voice Queues, conferences, recordings, callbacks, and per-call events for agent workflows. Voice notifications Outbound alerts with answer detection, status callbacks, and auditable delivery events. Business SIP PBX and UC trunks with VoiceTel numbers, routing, E911, and support paths. Application messaging A2P 10DLC messaging with inbound handling, delivery webhooks, and route review. Hosted PBX Business calling built on the same VoiceML and SIP foundations. Bring a current bill or workload model. VoiceTel can map minutes, messages, numbers, lookups, and add-ons into a transparent line-item comparison before you migrate. Talk to VoiceTel Create account",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Programmable communications",
+          "headline": "Carrier-grade communications without retail CPaaS margins.",
+          "lede": "VoiceTel gives developers, telecom engineers, and business buyers a practical path from retail CPaaS pricing to wholesale voice, messaging, SIP trunking, numbers, and VoiceML-compatible call control.",
+          "primaryCta": {
+            "label": "Plan a migration",
+            "href": "/voiceml/migrate/"
+          },
+          "secondaryCta": {
+            "label": "Compare pricing",
+            "href": "/pricing/"
+          }
+        },
+        {
+          "type": "proof-strip",
+          "heading": "Why VoiceTel",
+          "items": [
+            {
+              "label": "STIR/SHAKEN",
+              "title": "Verified calling",
+              "copy": "Attestation and caller-ID hygiene are built into the voice platform instead of bolted on after launch."
+            },
+            {
+              "label": "6 POPs",
+              "title": "US network reach",
+              "copy": "Voice and SIP infrastructure across NYC, CLT, ORD, DEN, DFW, and SJC."
+            },
+            {
+              "label": "24/7 support",
+              "title": "Operator support",
+              "copy": "Support routes to people who understand SIP traces, carrier routing, porting, messaging, and emergency-service edge cases."
+            },
+            {
+              "label": "Availability target",
+              "title": "Availability target",
+              "copy": "A resilient voice platform built around geographic diversity; service-specific SLAs belong in the signed service agreement."
+            }
+          ]
+        },
+        {
+          "type": "product-grid",
+          "heading": "Products",
+          "copy": "Start with the product you need today, then expand without rebuilding your communications stack.",
+          "items": [
+            {
+              "label": "Voice",
+              "icon": "telephone",
+              "href": "/voice/",
+              "description": "Programmable voice, origination, and termination at wholesale economics."
+            },
+            {
+              "label": "Messaging",
+              "icon": "chat-text",
+              "href": "/messaging/",
+              "description": "SMS and MMS with A2P 10DLC support, delivery webhooks, and high-volume paths."
+            },
+            {
+              "label": "Numbers",
+              "icon": "hash",
+              "href": "/numbers/",
+              "description": "Local, toll-free, ported, and emergency-service-enabled numbers where available."
+            },
+            {
+              "label": "SIP Trunking",
+              "icon": "hdd-stack",
+              "href": "/sip-trunking/",
+              "description": "Carrier-grade SIP trunks for PBX, UC, contact-center, and SBC deployments."
+            },
+            {
+              "label": "VoiceML",
+              "icon": "code-slash",
+              "href": "/voiceml/",
+              "description": "XML-based programmable voice markup compatible with Twilio voice applications."
+            },
+            {
+              "label": "Hosted PBX",
+              "icon": "diagram-3",
+              "href": "/pbx/",
+              "description": "Managed business voice built on the same VoiceML runtime."
+            },
+            {
+              "label": "Caller Lookup",
+              "icon": "person-vcard",
+              "href": "/caller-lookup/",
+              "description": "CNAM and caller-ID lookups for screening, routing, and display."
+            },
+            {
+              "label": "Carrier Lookup",
+              "icon": "broadcast-pin",
+              "href": "/carrier-lookup/",
+              "description": "LRN, MNP, and carrier-of-record lookups for routing and fraud controls."
+            },
+            {
+              "label": "Phone Applications",
+              "icon": "phone-vibrate",
+              "href": "/phone/",
+              "description": "VoiceTel Phone for web, desktop, and mobile calling."
+            },
+            {
+              "label": "SDN Appliance",
+              "icon": "plug",
+              "href": "/sdn/",
+              "description": "A small on-prem appliance for secure SIP traversal through difficult networks."
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "heading": "A cleaner migration path",
+          "copy": "For compatible voice applications, move the API destination to VoiceTel, keep XML-based voice markup, preserve signed webhook validation, and test call behavior before cutover.",
+          "code": {
+            "language": "xml",
+            "label": "VoiceML example",
+            "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n\t<Say>Welcome. Please hold while we connect your call.</Say>\n\t<Dial timeout=\"20\" callerId=\"+12124016220\">\n\t\t<Number>+15555551234</Number>\n\t</Dial>\n</Response>"
+          },
+          "primaryCta": {
+            "label": "Migrate from Twilio",
+            "href": "/voiceml/migrate/"
+          },
+          "secondaryCta": {
+            "label": "Compatibility matrix",
+            "href": "/voiceml/compatibility/"
+          }
+        },
+        {
+          "type": "pricing-preview",
+          "heading": "Line-item economics",
+          "copy": "Pricing comparisons is boring, auditable, and specific: inbound minutes, outbound minutes, SMS, MMS, numbers, emergency service, lookups, and optional call-control features. VoiceTel rates and competitor list prices are shown with unit, assumptions, capture date, and source.",
+          "status": "source-gated-pricing",
+          "cta": {
+            "label": "Open pricing",
+            "href": "/pricing/"
+          }
+        },
+        {
+          "type": "use-cases",
+          "heading": "What you can build",
+          "cards": [
+            {
+              "title": "IVR and call routing",
+              "copy": "Menu trees, time-of-day routing, recorded prompts, and webhook-driven call control.",
+              "href": "/voiceml/"
+            },
+            {
+              "title": "Contact-center voice",
+              "copy": "Queues, conferences, recordings, callbacks, and per-call events for agent workflows.",
+              "href": "/voice/"
+            },
+            {
+              "title": "Voice notifications",
+              "copy": "Outbound alerts with answer detection, status callbacks, and auditable delivery events.",
+              "href": "/voice/"
+            },
+            {
+              "title": "Business SIP",
+              "copy": "PBX and UC trunks with VoiceTel numbers, routing, E911, and support paths.",
+              "href": "/sip-trunking/"
+            },
+            {
+              "title": "Application messaging",
+              "copy": "A2P 10DLC messaging with inbound handling, delivery webhooks, and route review.",
+              "href": "/messaging/"
+            },
+            {
+              "title": "Hosted PBX",
+              "copy": "Business calling built on the same VoiceML and SIP foundations.",
+              "href": "/pbx/"
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Bring a current bill or workload model.",
+          "copy": "VoiceTel can map minutes, messages, numbers, lookups, and add-ons into a transparent line-item comparison before you migrate.",
+          "primaryCta": {
+            "label": "Talk to VoiceTel",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Create account",
+            "href": "/signup/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 10,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/voiceml/migrate/",
+        "/pricing/",
+        "/voiceml/compatibility/",
+        "/voice/",
+        "/messaging/",
+        "/numbers/",
+        "/sip-trunking/",
+        "/pbx/",
+        "/contact/",
+        "/signup/"
+      ]
+    },
+    {
+      "url": "/infrastructure/",
+      "source": "copy/infrastructure/",
+      "title": "Infrastructure & uptime — VoiceTel",
+      "description": "VoiceTel infrastructure copy covering six US POPs, carrier handoffs, redundancy, status visibility, and the voice availability target.",
+      "canonical": "https://voicetel.com/infrastructure/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Network facts without inflated claims."
+        ],
+        "h2": [
+          "POP locations",
+          "Network model"
+        ],
+        "h3": [
+          "NYC",
+          "CLT",
+          "ORD",
+          "DEN",
+          "DFW",
+          "SJC",
+          "Carrier handoffs",
+          "Failover",
+          "Availability target",
+          "Status history"
+        ]
+      },
+      "wordCount": 163,
+      "body": "Infrastructure & uptime — VoiceTel VoiceTel infrastructure copy covering six US POPs, carrier handoffs, redundancy, status visibility, and the voice availability target. Infrastructure Network facts without inflated claims. VoiceTel infrastructure copy is specific enough for telecom buyers and restrained enough to avoid unsupported promises. Publish POP locations, redundancy model, availability target, and status links clearly. View status Request SLA terms POP locations NYC New York metro CLT Charlotte ORD Chicago DEN Denver DFW Dallas SJC San Jose Network model Carrier handoffs Describe redundant carrier handoffs per POP only where current network inventory confirms them. Failover Explain routing failover at a platform level and keep service-specific guarantees in agreements. Availability target Use 99.99% as a voice availability target, not a universal SLA, unless signed terms say otherwise. Status history Publish incident summaries and monthly uptime only when the status feed is connected. Need procurement-ready details? Route security, redundancy, SLA, and network-design questions through the contact path so support can provide account-appropriate documentation. Request documentation",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Infrastructure",
+          "headline": "Network facts without inflated claims.",
+          "lede": "VoiceTel infrastructure copy is specific enough for telecom buyers and restrained enough to avoid unsupported promises. Publish POP locations, redundancy model, availability target, and status links clearly.",
+          "primaryCta": {
+            "label": "View status",
+            "href": "/status/"
+          },
+          "secondaryCta": {
+            "label": "Request SLA terms",
+            "href": "/contact/"
+          }
+        },
+        {
+          "type": "pops",
+          "heading": "POP locations",
+          "items": [
+            {
+              "title": "NYC",
+              "copy": "New York metro"
+            },
+            {
+              "title": "CLT",
+              "copy": "Charlotte"
+            },
+            {
+              "title": "ORD",
+              "copy": "Chicago"
+            },
+            {
+              "title": "DEN",
+              "copy": "Denver"
+            },
+            {
+              "title": "DFW",
+              "copy": "Dallas"
+            },
+            {
+              "title": "SJC",
+              "copy": "San Jose"
+            }
+          ]
+        },
+        {
+          "type": "network",
+          "heading": "Network model",
+          "items": [
+            {
+              "title": "Carrier handoffs",
+              "copy": "Describe redundant carrier handoffs per POP only where current network inventory confirms them."
+            },
+            {
+              "title": "Failover",
+              "copy": "Explain routing failover at a platform level and keep service-specific guarantees in agreements."
+            },
+            {
+              "title": "Availability target",
+              "copy": "Use 99.99% as a voice availability target, not a universal SLA, unless signed terms say otherwise."
+            },
+            {
+              "title": "Status history",
+              "copy": "Publish incident summaries and monthly uptime only when the status feed is connected."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Need procurement-ready details?",
+          "copy": "Route security, redundancy, SLA, and network-design questions through the contact path so support can provide account-appropriate documentation.",
+          "primaryCta": {
+            "label": "Request documentation",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/status/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/legal/",
+      "source": "copy/legal/",
+      "title": "Legal — VoiceTel",
+      "description": "VoiceTel legal center for terms, privacy, acceptable use, emergency-service limitations, messaging compliance, and service-specific policies.",
+      "canonical": "https://voicetel.com/legal/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Policies that explain the service boundaries clearly."
+        ],
+        "h2": [
+          "Policy sections",
+          "Copy status"
+        ],
+        "h3": [
+          "Terms of service",
+          "Privacy policy",
+          "Acceptable use",
+          "Emergency-service limitations",
+          "Messaging compliance"
+        ]
+      },
+      "wordCount": 142,
+      "body": "Legal — VoiceTel VoiceTel legal center for terms, privacy, acceptable use, emergency-service limitations, messaging compliance, and service-specific policies. Legal Policies that explain the service boundaries clearly. The legal page is not improvised marketing copy. It uses approved legal text for terms, privacy, acceptable use, emergency-service limitations, messaging compliance, and service-specific policies. Contact legal Policy sections Terms of service Contract, acceptable use, billing, suspension, support, service changes, and customer responsibilities. Privacy policy Personal data, account data, call and message metadata, retention, processors, and rights requests. Acceptable use Fraud, abuse, spam, robocalling, consent, prohibited traffic, messaging compliance, and enforcement. Emergency-service limitations E911 registration, address accuracy, device mobility, power/internet outages, app limitations, and customer responsibilities. Messaging compliance A2P 10DLC registration, consent, opt-out, prohibited content, carrier fees, and campaign ownership. Legal text requires counsel and operator approval before publication.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Legal",
+          "headline": "Policies that explain the service boundaries clearly.",
+          "lede": "The legal page is not improvised marketing copy. It uses approved legal text for terms, privacy, acceptable use, emergency-service limitations, messaging compliance, and service-specific policies.",
+          "primaryCta": {
+            "label": "Contact legal",
+            "href": "/contact/"
+          }
+        },
+        {
+          "type": "policy-list",
+          "heading": "Policy sections",
+          "items": [
+            {
+              "title": "Terms of service",
+              "copy": "Contract, acceptable use, billing, suspension, support, service changes, and customer responsibilities."
+            },
+            {
+              "title": "Privacy policy",
+              "copy": "Personal data, account data, call and message metadata, retention, processors, and rights requests."
+            },
+            {
+              "title": "Acceptable use",
+              "copy": "Fraud, abuse, spam, robocalling, consent, prohibited traffic, messaging compliance, and enforcement."
+            },
+            {
+              "title": "Emergency-service limitations",
+              "copy": "E911 registration, address accuracy, device mobility, power/internet outages, app limitations, and customer responsibilities."
+            },
+            {
+              "title": "Messaging compliance",
+              "copy": "A2P 10DLC registration, consent, opt-out, prohibited content, carrier fees, and campaign ownership."
+            }
+          ]
+        },
+        {
+          "type": "status",
+          "heading": "Copy status",
+          "copy": "Requires approved legal text before publication. This JSON provides structure and plain-language summaries only.",
+          "status": "requires-legal-review"
+        }
+      ],
+      "links": {
+        "internal": 1,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/login/",
+      "source": "copy/login/",
+      "title": "Log in — VoiceTel",
+      "description": "Log in to the VoiceTel portal to manage services, numbers, billing, support tickets, and account settings.",
+      "canonical": "https://voicetel.com/login/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Log in to VoiceTel."
+        ],
+        "h2": [
+          "Need help signing in?"
+        ],
+        "h3": []
+      },
+      "wordCount": 68,
+      "body": "Log in — VoiceTel Log in to the VoiceTel portal to manage services, numbers, billing, support tickets, and account settings. Account Log in to VoiceTel. Open the VoiceTel portal to manage services, numbers, billing, support requests, users, and account settings. Continue to portal Create account Need help signing in? Use the portal recovery flow where available, or contact support if account access blocks an active service issue. Contact support",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Account",
+          "headline": "Log in to VoiceTel.",
+          "lede": "Open the VoiceTel portal to manage services, numbers, billing, support requests, users, and account settings.",
+          "primaryCta": {
+            "label": "Continue to portal",
+            "href": "https://www.voicetel.com"
+          },
+          "secondaryCta": {
+            "label": "Create account",
+            "href": "/signup/"
+          }
+        },
+        {
+          "type": "support",
+          "heading": "Need help signing in?",
+          "copy": "Use the portal recovery flow where available, or contact support if account access blocks an active service issue.",
+          "cta": {
+            "label": "Contact support",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 1,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "https://www.voicetel.com",
+        "/signup/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/messaging/",
+      "source": "copy/messaging/",
+      "title": "Messaging — VoiceTel",
+      "description": "SMS and MMS for application messaging, A2P 10DLC, inbound webhooks, delivery events, and high-volume production workloads.",
+      "canonical": "https://voicetel.com/messaging/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Messaging for production application traffic."
+        ],
+        "h2": [
+          "What messaging customers get",
+          "Keep voice compatibility and messaging separate",
+          "Messaging comparison block",
+          "Messaging FAQ"
+        ],
+        "h3": [
+          "A2P 10DLC support",
+          "Inbound and outbound SMS/MMS",
+          "Delivery visibility",
+          "High-volume review"
+        ]
+      },
+      "wordCount": 295,
+      "body": "Messaging — VoiceTel SMS and MMS for application messaging, A2P 10DLC, inbound webhooks, delivery events, and high-volume production workloads. SMS & MMS Messaging for production application traffic. VoiceTel Messaging gives teams a practical path for SMS and MMS workloads that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and support from people who understand carrier behavior. Compare messaging rates Talk to messaging support What messaging customers get A2P 10DLC support VoiceTel is the messaging transport and enablement partner; customer campaign registration responsibilities are stated clearly where applicable. Inbound and outbound SMS/MMS Support application messaging flows with inbound message handling, outbound sends, and webhook delivery to customer systems. Delivery visibility Expose delivery receipts and message status events so teams can reconcile application state with carrier outcomes. High-volume review For large workloads, route planning, throughput, carrier fees, and campaign constraints are reviewed before cutover. Keep voice compatibility and messaging separate VoiceML-compatible API copy stays voice-focused. Messaging is a VoiceTel product, but it is not described as part of the compatible voice API surface unless engineering confirms the exact API shape. Messaging comparison block Compare long-code SMS outbound, long-code SMS inbound, MMS outbound, MMS inbound, toll-free messaging where offered, A2P 10DLC fees, and carrier pass-through charges. Keep carrier fees separate from base message prices. Messaging FAQ Does VoiceTel handle A2P 10DLC? Yes. VoiceTel supports A2P 10DLC workflows. Registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms. Are carrier fees included? Carrier pass-through fees are listed separately from base message prices unless pricing data explicitly includes them. Can high-volume senders get dedicated planning? Yes, position high-volume route and throughput review as an onboarding step rather than a guaranteed universal throughput promise.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "SMS & MMS",
+          "headline": "Messaging for production application traffic.",
+          "lede": "VoiceTel Messaging gives teams a practical path for SMS and MMS workloads that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and support from people who understand carrier behavior.",
+          "primaryCta": {
+            "label": "Compare messaging rates",
+            "href": "/pricing/"
+          },
+          "secondaryCta": {
+            "label": "Talk to messaging support",
+            "href": "/contact/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "What messaging customers get",
+          "items": [
+            {
+              "title": "A2P 10DLC support",
+              "copy": "VoiceTel is the messaging transport and enablement partner; customer campaign registration responsibilities are stated clearly where applicable."
+            },
+            {
+              "title": "Inbound and outbound SMS/MMS",
+              "copy": "Support application messaging flows with inbound message handling, outbound sends, and webhook delivery to customer systems."
+            },
+            {
+              "title": "Delivery visibility",
+              "copy": "Expose delivery receipts and message status events so teams can reconcile application state with carrier outcomes."
+            },
+            {
+              "title": "High-volume review",
+              "copy": "For large workloads, route planning, throughput, carrier fees, and campaign constraints are reviewed before cutover."
+            }
+          ]
+        },
+        {
+          "type": "caveat",
+          "heading": "Keep voice compatibility and messaging separate",
+          "copy": "VoiceML-compatible API copy stays voice-focused. Messaging is a VoiceTel product, but it is not described as part of the compatible voice API surface unless engineering confirms the exact API shape."
+        },
+        {
+          "type": "comparison",
+          "heading": "Messaging comparison block",
+          "copy": "Compare long-code SMS outbound, long-code SMS inbound, MMS outbound, MMS inbound, toll-free messaging where offered, A2P 10DLC fees, and carrier pass-through charges. Keep carrier fees separate from base message prices.",
+          "status": "source-gated-pricing"
+        },
+        {
+          "type": "faq",
+          "heading": "Messaging FAQ",
+          "faqs": [
+            {
+              "question": "Does VoiceTel handle A2P 10DLC?",
+              "answer": "Yes. VoiceTel supports A2P 10DLC workflows. Registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms."
+            },
+            {
+              "question": "Are carrier fees included?",
+              "answer": "Carrier pass-through fees are listed separately from base message prices unless pricing data explicitly includes them."
+            },
+            {
+              "question": "Can high-volume senders get dedicated planning?",
+              "answer": "Yes, position high-volume route and throughput review as an onboarding step rather than a guaranteed universal throughput promise."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/pricing/",
+        "/contact/",
+        "/docs/api/"
+      ]
+    },
+    {
+      "url": "/numbers/",
+      "source": "copy/numbers/",
+      "title": "Numbers — VoiceTel",
+      "description": "Local, toll-free, mobile, and ported numbers with E911 provisioning, CNAM, caller-ID services, and VoiceTel product integration.",
+      "canonical": "https://voicetel.com/numbers/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Numbers that connect the platform to the network."
+        ],
+        "h2": [
+          "Number services",
+          "Porting flow",
+          "Numbers comparison block"
+        ],
+        "h3": [
+          "Local DIDs",
+          "Toll-free and mobile-capable numbers where available",
+          "Porting",
+          "Emergency service",
+          "CNAM and caller ID"
+        ]
+      },
+      "wordCount": 207,
+      "body": "Numbers — VoiceTel Local, toll-free, mobile, and ported numbers with E911 provisioning, CNAM, caller-ID services, and VoiceTel product integration. Numbers & porting Numbers that connect the platform to the network. Provision new numbers, port existing inventory, configure emergency-service records, and attach numbers to voice, SIP trunking, hosted PBX, messaging, and lookup workflows. Start a port See number pricing Number services Local DIDs Use local numbers for inbound voice, outbound caller ID, PBX users, and application workflows. Toll-free and mobile-capable numbers where available Support number types based on availability, compliance, and product eligibility. Porting Move existing numbers with coordinated paperwork, validation, test windows, and cutover communication. Emergency service Assign service addresses where emergency calling is enabled and surface the limitations clearly in legal and onboarding copy. CNAM and caller ID Add display-name services and caller identity hygiene where available. Porting flow Collect inventory List numbers, current carrier, account data, BTN, LOA, and any service dependencies. Validate eligibility Confirm number type, portability, emergency-service requirements, and messaging campaign impact. Schedule cutover Run parallel testing where possible and coordinate a cutover window with support available. Numbers comparison block Compare local number monthly, toll-free number monthly, port-in fees, emergency-service monthly fees, CNAM, and caller-ID services. Use source-dated competitor data and VoiceTel rate keys only.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Numbers & porting",
+          "headline": "Numbers that connect the platform to the network.",
+          "lede": "Provision new numbers, port existing inventory, configure emergency-service records, and attach numbers to voice, SIP trunking, hosted PBX, messaging, and lookup workflows.",
+          "primaryCta": {
+            "label": "Start a port",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "See number pricing",
+            "href": "/pricing/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Number services",
+          "items": [
+            {
+              "title": "Local DIDs",
+              "copy": "Use local numbers for inbound voice, outbound caller ID, PBX users, and application workflows."
+            },
+            {
+              "title": "Toll-free and mobile-capable numbers where available",
+              "copy": "Support number types based on availability, compliance, and product eligibility."
+            },
+            {
+              "title": "Porting",
+              "copy": "Move existing numbers with coordinated paperwork, validation, test windows, and cutover communication."
+            },
+            {
+              "title": "Emergency service",
+              "copy": "Assign service addresses where emergency calling is enabled and surface the limitations clearly in legal and onboarding copy."
+            },
+            {
+              "title": "CNAM and caller ID",
+              "copy": "Add display-name services and caller identity hygiene where available."
+            }
+          ]
+        },
+        {
+          "type": "process",
+          "heading": "Porting flow",
+          "steps": [
+            {
+              "title": "Collect inventory",
+              "copy": "List numbers, current carrier, account data, BTN, LOA, and any service dependencies."
+            },
+            {
+              "title": "Validate eligibility",
+              "copy": "Confirm number type, portability, emergency-service requirements, and messaging campaign impact."
+            },
+            {
+              "title": "Schedule cutover",
+              "copy": "Run parallel testing where possible and coordinate a cutover window with support available."
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "heading": "Numbers comparison block",
+          "copy": "Compare local number monthly, toll-free number monthly, port-in fees, emergency-service monthly fees, CNAM, and caller-ID services. Use source-dated competitor data and VoiceTel rate keys only.",
+          "status": "source-gated-pricing"
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/pricing/",
+        "/caller-lookup/"
+      ]
+    },
+    {
+      "url": "/open-source/",
+      "source": "copy/open-source/",
+      "title": "Open Source — VoiceTel",
+      "description": "VoiceTel open-source projects, samples, SDK helpers, reference integrations, VoiceML examples, SDN appliance assets, and telecom tooling.",
+      "canonical": "https://voicetel.com/open-source/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Reference tools for the communications problems we solve in production."
+        ],
+        "h2": [
+          "What to publish",
+          "Licensing"
+        ],
+        "h3": [
+          "VoiceML examples",
+          "SDK migration helpers",
+          "SIP integration guides",
+          "SDN appliance assets",
+          "Operational tools"
+        ]
+      },
+      "wordCount": 156,
+      "body": "Open Source — VoiceTel VoiceTel open-source projects, samples, SDK helpers, reference integrations, VoiceML examples, SDN appliance assets, and telecom tooling. Open Source Reference tools for the communications problems we solve in production. VoiceTel open-source work helps customers inspect, test, and integrate the same patterns the platform supports: voice markup examples, SDK host overrides, SIP integrations, SDN appliance assets, and operational tooling. Browse GitHub Suggest a project What to publish VoiceML examples Small, readable call flows for IVR, click-to-call, recordings, conferences, queues, and webhook validation. SDK migration helpers Minimal host-override examples and tests for supported helper-library patterns. SIP integration guides Example configuration for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and firewalls. SDN appliance assets Image references, deployment notes, and troubleshooting workflows where publicly releasable. Operational tools Trace analyzers, webhook validators, rate-modeling helpers, and support utilities. Licensing State the license per repository. Do not claim MIT, Apache-2.0, or CC BY coverage unless the individual repository uses that license.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Open Source",
+          "headline": "Reference tools for the communications problems we solve in production.",
+          "lede": "VoiceTel open-source work helps customers inspect, test, and integrate the same patterns the platform supports: voice markup examples, SDK host overrides, SIP integrations, SDN appliance assets, and operational tooling.",
+          "primaryCta": {
+            "label": "Browse GitHub",
+            "href": "https://github.com/voicetel"
+          },
+          "secondaryCta": {
+            "label": "Suggest a project",
+            "href": "/contact/"
+          }
+        },
+        {
+          "type": "project-types",
+          "heading": "What to publish",
+          "items": [
+            {
+              "title": "VoiceML examples",
+              "copy": "Small, readable call flows for IVR, click-to-call, recordings, conferences, queues, and webhook validation."
+            },
+            {
+              "title": "SDK migration helpers",
+              "copy": "Minimal host-override examples and tests for supported helper-library patterns."
+            },
+            {
+              "title": "SIP integration guides",
+              "copy": "Example configuration for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and firewalls."
+            },
+            {
+              "title": "SDN appliance assets",
+              "copy": "Image references, deployment notes, and troubleshooting workflows where publicly releasable."
+            },
+            {
+              "title": "Operational tools",
+              "copy": "Trace analyzers, webhook validators, rate-modeling helpers, and support utilities."
+            }
+          ]
+        },
+        {
+          "type": "license-copy",
+          "heading": "Licensing",
+          "copy": "State the license per repository. Do not claim MIT, Apache-2.0, or CC BY coverage unless the individual repository uses that license."
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 1,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "https://github.com/voicetel",
+        "/contact/",
+        "/docs/"
+      ]
+    },
+    {
+      "url": "/pbx/",
+      "source": "copy/pbx/",
+      "title": "Hosted PBX — VoiceTel",
+      "description": "Hosted PBX on VoiceTel for extensions, voicemail, ring groups, business hours, attendant menus, SIP devices, and VoiceTel Phone users.",
+      "canonical": "https://voicetel.com/pbx/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "A business phone system on VoiceTel infrastructure."
+        ],
+        "h2": [
+          "PBX features",
+          "Positioning",
+          "PBX FAQ"
+        ],
+        "h3": [
+          "Extensions and users",
+          "Voicemail",
+          "Ring groups",
+          "Business hours",
+          "Attendant menus",
+          "VoiceTel Phone"
+        ]
+      },
+      "wordCount": 215,
+      "body": "Hosted PBX — VoiceTel Hosted PBX on VoiceTel for extensions, voicemail, ring groups, business hours, attendant menus, SIP devices, and VoiceTel Phone users. Hosted voice A business phone system on VoiceTel infrastructure. VoiceTel Hosted PBX gives organizations a managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and support. Talk to sales Get phone apps PBX features Extensions and users Manage users, extensions, caller ID, and device credentials from the VoiceTel account workflow. Voicemail Provide business voicemail workflows with routing and notification behavior defined during onboarding. Ring groups Route calls to teams, departments, or on-call groups without custom application code. Business hours Use schedules to route calls differently during open, closed, holiday, and emergency modes. Attendant menus Build simple IVR front doors for sales, support, billing, and after-hours routing. VoiceTel Phone Pair hosted users with web, desktop, and mobile calling where enabled. Positioning Hosted PBX is secondary to VoiceML for developer acquisition, but it clearly serves business customers who want VoiceTel to operate the phone system. PBX FAQ Can we keep existing desk phones? Position this as an onboarding question. Device compatibility depends on SIP support, firmware, provisioning, and security policy. Can hosted PBX use VoiceTel numbers? Yes, numbers and emergency-service records is managed through the VoiceTel number workflow.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Hosted voice",
+          "headline": "A business phone system on VoiceTel infrastructure.",
+          "lede": "VoiceTel Hosted PBX gives organizations a managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and support.",
+          "primaryCta": {
+            "label": "Talk to sales",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Get phone apps",
+            "href": "/phone/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "PBX features",
+          "items": [
+            {
+              "title": "Extensions and users",
+              "copy": "Manage users, extensions, caller ID, and device credentials from the VoiceTel account workflow."
+            },
+            {
+              "title": "Voicemail",
+              "copy": "Provide business voicemail workflows with routing and notification behavior defined during onboarding."
+            },
+            {
+              "title": "Ring groups",
+              "copy": "Route calls to teams, departments, or on-call groups without custom application code."
+            },
+            {
+              "title": "Business hours",
+              "copy": "Use schedules to route calls differently during open, closed, holiday, and emergency modes."
+            },
+            {
+              "title": "Attendant menus",
+              "copy": "Build simple IVR front doors for sales, support, billing, and after-hours routing."
+            },
+            {
+              "title": "VoiceTel Phone",
+              "copy": "Pair hosted users with web, desktop, and mobile calling where enabled."
+            }
+          ]
+        },
+        {
+          "type": "positioning",
+          "heading": "Positioning",
+          "copy": "Hosted PBX is secondary to VoiceML for developer acquisition, but it clearly serves business customers who want VoiceTel to operate the phone system."
+        },
+        {
+          "type": "faq",
+          "heading": "PBX FAQ",
+          "faqs": [
+            {
+              "question": "Can we keep existing desk phones?",
+              "answer": "Position this as an onboarding question. Device compatibility depends on SIP support, firmware, provisioning, and security policy."
+            },
+            {
+              "question": "Can hosted PBX use VoiceTel numbers?",
+              "answer": "Yes, numbers and emergency-service records is managed through the VoiceTel number workflow."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/phone/",
+        "/numbers/",
+        "/sip-trunking/"
+      ]
+    },
+    {
+      "url": "/phone/",
+      "source": "copy/phone/",
+      "title": "VoiceTel Phone — VoiceTel",
+      "description": "VoiceTel Phone provides web, desktop, and mobile VoIP calling backed by VoiceTel SIP credentials, WebRTC, SIP-over-TLS, call history, DTMF, and diagnostics.",
+      "canonical": "https://voicetel.com/phone/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "One calling experience across web, desktop, and mobile."
+        ],
+        "h2": [
+          "App features",
+          "Setup copy"
+        ],
+        "h3": [
+          "Web calling",
+          "Desktop apps",
+          "Mobile apps",
+          "SIP-over-TLS and WebRTC",
+          "Diagnostics"
+        ]
+      },
+      "wordCount": 159,
+      "body": "VoiceTel Phone — VoiceTel VoiceTel Phone provides web, desktop, and mobile VoIP calling backed by VoiceTel SIP credentials, WebRTC, SIP-over-TLS, call history, DTMF, and diagnostics. Phone applications One calling experience across web, desktop, and mobile. VoiceTel Phone gives users a clean calling surface for web, Windows, macOS, Linux, iOS, and Android while keeping provisioning tied to VoiceTel SIP credentials and account controls. Open web phone Create account App features Web calling Start calls from the browser without a desktop install where WebRTC is supported. Desktop apps Support Windows, macOS, and Linux users with the same VoiceTel identity. Mobile apps Keep users reachable on iOS and Android where mobile deployment is enabled. SIP-over-TLS and WebRTC Use secure signaling paths and modern browser media when configured. Diagnostics Expose call history, DTMF behavior, and SIP message logging for troubleshooting. Setup copy Users sign in with VoiceTel credentials or SIP credentials provisioned in the portal. Exact authentication wording matches the final account system.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Phone applications",
+          "headline": "One calling experience across web, desktop, and mobile.",
+          "lede": "VoiceTel Phone gives users a clean calling surface for web, Windows, macOS, Linux, iOS, and Android while keeping provisioning tied to VoiceTel SIP credentials and account controls.",
+          "primaryCta": {
+            "label": "Open web phone",
+            "href": "https://phone.voicetel.com"
+          },
+          "secondaryCta": {
+            "label": "Create account",
+            "href": "/signup/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "App features",
+          "items": [
+            {
+              "title": "Web calling",
+              "copy": "Start calls from the browser without a desktop install where WebRTC is supported."
+            },
+            {
+              "title": "Desktop apps",
+              "copy": "Support Windows, macOS, and Linux users with the same VoiceTel identity."
+            },
+            {
+              "title": "Mobile apps",
+              "copy": "Keep users reachable on iOS and Android where mobile deployment is enabled."
+            },
+            {
+              "title": "SIP-over-TLS and WebRTC",
+              "copy": "Use secure signaling paths and modern browser media when configured."
+            },
+            {
+              "title": "Diagnostics",
+              "copy": "Expose call history, DTMF behavior, and SIP message logging for troubleshooting."
+            }
+          ]
+        },
+        {
+          "type": "setup",
+          "heading": "Setup copy",
+          "copy": "Users sign in with VoiceTel credentials or SIP credentials provisioned in the portal. Exact authentication wording matches the final account system."
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 1,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "https://phone.voicetel.com",
+        "/signup/",
+        "/pbx/"
+      ]
+    },
+    {
+      "url": "/pricing/",
+      "source": "copy/pricing/",
+      "title": "Pricing — VoiceTel",
+      "description": "VoiceTel pricing copy for voice, messaging, numbers, SIP trunking, lookups, emergency service, and competitor comparisons using source-dated data.",
+      "canonical": "https://voicetel.com/pricing/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Know what every minute, message, number, and lookup costs."
+        ],
+        "h2": [
+          "Rate table sections",
+          "Competitor comparison rules",
+          "What may be outside the rate sheet",
+          "Source note"
+        ],
+        "h3": [
+          "Voice",
+          "Messaging",
+          "Numbers",
+          "Lookups",
+          "SIP and PBX",
+          "Taxes and regulatory charges",
+          "Carrier pass-through fees",
+          "Speech and storage vendors",
+          "Custom capacity"
+        ]
+      },
+      "wordCount": 284,
+      "body": "Pricing — VoiceTel VoiceTel pricing copy for voice, messaging, numbers, SIP trunking, lookups, emergency service, and competitor comparisons using source-dated data. Pricing Know what every minute, message, number, and lookup costs. VoiceTel pricing is built for buyers who want line-item math instead of bundled mystery. Compare minutes, messages, DIDs, emergency service, lookups, and optional voice features using source-dated public list prices. Request pricing review Open calculator Rate table sections Voice Inbound local minutes, outbound US-48 minutes, toll-free inbound, AMD, recording, conferences, streams, transcription, and optional media features. Messaging SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through fees, A2P 10DLC, toll-free messaging, and campaign fees where applicable. Numbers Local number monthly, toll-free number monthly, emergency-service monthly, porting, CNAM, caller-ID, and number-type notes. Lookups CNAM, caller ID, LRN, MNP, carrier-of-record, batch pricing, and cache behavior. SIP and PBX Trunking, hosted PBX, SDN appliance, phone applications, and any monthly service fees is clearly separated from usage. Competitor comparison rules Use published list prices only, captured on the date the table is built. Do not mix list, negotiated, promotional, and contract pricing. Do not claim broad savings unless the exact workload proves it. What may be outside the rate sheet Taxes and regulatory charges Show them as excluded unless the rate file explicitly includes them. Carrier pass-through fees List separately and explain that carriers can change them. Speech and storage vendors If customers bring their own STT, TTS, or storage providers, state that those vendors bill separately. Custom capacity Large messaging or SIP workloads may require capacity review before final pricing. Source note Competitor list prices captured 2026-05-08 from publicly available pricing pages. Taxes, regulatory fees, surcharges, carrier pass-through fees, volume discounts, and contract pricing may vary.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Pricing",
+          "headline": "Know what every minute, message, number, and lookup costs.",
+          "lede": "VoiceTel pricing is built for buyers who want line-item math instead of bundled mystery. Compare minutes, messages, DIDs, emergency service, lookups, and optional voice features using source-dated public list prices.",
+          "primaryCta": {
+            "label": "Request pricing review",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Open calculator",
+            "href": "/voiceml/calculator/"
+          }
+        },
+        {
+          "type": "rate-table-copy",
+          "heading": "Rate table sections",
+          "items": [
+            {
+              "title": "Voice",
+              "copy": "Inbound local minutes, outbound US-48 minutes, toll-free inbound, AMD, recording, conferences, streams, transcription, and optional media features."
+            },
+            {
+              "title": "Messaging",
+              "copy": "SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through fees, A2P 10DLC, toll-free messaging, and campaign fees where applicable."
+            },
+            {
+              "title": "Numbers",
+              "copy": "Local number monthly, toll-free number monthly, emergency-service monthly, porting, CNAM, caller-ID, and number-type notes."
+            },
+            {
+              "title": "Lookups",
+              "copy": "CNAM, caller ID, LRN, MNP, carrier-of-record, batch pricing, and cache behavior."
+            },
+            {
+              "title": "SIP and PBX",
+              "copy": "Trunking, hosted PBX, SDN appliance, phone applications, and any monthly service fees is clearly separated from usage."
+            }
+          ]
+        },
+        {
+          "type": "comparison-policy",
+          "heading": "Competitor comparison rules",
+          "copy": "Use published list prices only, captured on the date the table is built. Do not mix list, negotiated, promotional, and contract pricing. Do not claim broad savings unless the exact workload proves it."
+        },
+        {
+          "type": "not-on-rate-sheet",
+          "heading": "What may be outside the rate sheet",
+          "items": [
+            {
+              "title": "Taxes and regulatory charges",
+              "copy": "Show them as excluded unless the rate file explicitly includes them."
+            },
+            {
+              "title": "Carrier pass-through fees",
+              "copy": "List separately and explain that carriers can change them."
+            },
+            {
+              "title": "Speech and storage vendors",
+              "copy": "If customers bring their own STT, TTS, or storage providers, state that those vendors bill separately."
+            },
+            {
+              "title": "Custom capacity",
+              "copy": "Large messaging or SIP workloads may require capacity review before final pricing."
+            }
+          ]
+        },
+        {
+          "type": "source-note",
+          "heading": "Source note",
+          "copy": "Competitor list prices captured 2026-05-08 from publicly available pricing pages. Taxes, regulatory fees, surcharges, carrier pass-through fees, volume discounts, and contract pricing may vary."
+        }
+      ],
+      "links": {
+        "internal": 5,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/voiceml/calculator/",
+        "/voice/",
+        "/messaging/",
+        "/numbers/"
+      ]
+    },
+    {
+      "url": "/sdn/",
+      "source": "copy/sdn/",
+      "title": "VoiceTel SDN appliance — VoiceTel",
+      "description": "A small on-prem VoiceTel SDN appliance creates a secure tunnel for SIP traversal through NAT, ALG, UDP timer, and firewall constraints.",
+      "canonical": "https://voicetel.com/sdn/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "A small appliance for difficult SIP networks."
+        ],
+        "h2": [
+          "What it solves",
+          "Integrations",
+          "Deployment caveat"
+        ],
+        "h3": [
+          "No audio or one-way audio",
+          "Registration instability",
+          "Firewall policy friction",
+          "Support visibility"
+        ]
+      },
+      "wordCount": 186,
+      "body": "VoiceTel SDN appliance — VoiceTel A small on-prem VoiceTel SDN appliance creates a secure tunnel for SIP traversal through NAT, ALG, UDP timer, and firewall constraints. Software-defined networking A small appliance for difficult SIP networks. The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems. Request access Technical specification What it solves No audio or one-way audio Media-path issues often come from NAT, firewall, or RTP pinhole behavior. The appliance gives VoiceTel a controlled path. Registration instability Keep local PBX registration behavior stable while the appliance handles the upstream secure path. Firewall policy friction Reduce the need to open broad inbound SIP and RTP exposure at the customer edge. Support visibility Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior. Integrations Position native integrations with Asterisk, FreePBX, FreeSWITCH, and FusionPBX only after installation guides are present in docs. Deployment caveat Do not claim the appliance fixes every network issue. Some LAN, QoS, ISP, or device problems still require normal network engineering.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Software-defined networking",
+          "headline": "A small appliance for difficult SIP networks.",
+          "lede": "The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems.",
+          "primaryCta": {
+            "label": "Request access",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Technical specification",
+            "href": "http://sdn.voicetel.com"
+          }
+        },
+        {
+          "type": "problem-solution",
+          "heading": "What it solves",
+          "items": [
+            {
+              "title": "No audio or one-way audio",
+              "copy": "Media-path issues often come from NAT, firewall, or RTP pinhole behavior. The appliance gives VoiceTel a controlled path."
+            },
+            {
+              "title": "Registration instability",
+              "copy": "Keep local PBX registration behavior stable while the appliance handles the upstream secure path."
+            },
+            {
+              "title": "Firewall policy friction",
+              "copy": "Reduce the need to open broad inbound SIP and RTP exposure at the customer edge."
+            },
+            {
+              "title": "Support visibility",
+              "copy": "Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior."
+            }
+          ]
+        },
+        {
+          "type": "compatibility",
+          "heading": "Integrations",
+          "copy": "Position native integrations with Asterisk, FreePBX, FreeSWITCH, and FusionPBX only after installation guides are present in docs."
+        },
+        {
+          "type": "caveat",
+          "heading": "Deployment caveat",
+          "copy": "Do not claim the appliance fixes every network issue. Some LAN, QoS, ISP, or device problems still require normal network engineering."
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 1,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "http://sdn.voicetel.com",
+        "/sip-trunking/",
+        "/docs/"
+      ]
+    },
+    {
+      "url": "/signup/",
+      "source": "copy/signup/",
+      "title": "Sign up — VoiceTel",
+      "description": "Create a VoiceTel account to start voice, messaging, numbers, SIP trunking, VoiceML, hosted PBX, phone apps, and lookup workflows.",
+      "canonical": "https://voicetel.com/signup/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Create a VoiceTel account."
+        ],
+        "h2": [
+          "Signup form copy",
+          "After signup"
+        ],
+        "h3": []
+      },
+      "wordCount": 133,
+      "body": "Sign up — VoiceTel Create a VoiceTel account to start voice, messaging, numbers, SIP trunking, VoiceML, hosted PBX, phone apps, and lookup workflows. Account Create a VoiceTel account. Start with the product you need now: VoiceML migration, programmable voice, messaging, SIP trunking, numbers, hosted PBX, phone apps, SDN appliance, or lookup services. Continue to signup Talk to sales Signup form copy Keep the public form short. Capture email and product interest, then complete identity, compliance, billing, and service configuration in the portal. After signup Confirm account Verify email and account ownership. Choose products Select voice, messaging, numbers, SIP, VoiceML, hosted PBX, phone apps, SDN, or lookup services. Complete compliance Provide business, messaging, emergency-service, or porting data where required. Test before cutover Run test calls, messages, webhooks, SIP registrations, and number routing before live migration.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Account",
+          "headline": "Create a VoiceTel account.",
+          "lede": "Start with the product you need now: VoiceML migration, programmable voice, messaging, SIP trunking, numbers, hosted PBX, phone apps, SDN appliance, or lookup services.",
+          "primaryCta": {
+            "label": "Continue to signup",
+            "href": "https://www.voicetel.com/signup"
+          },
+          "secondaryCta": {
+            "label": "Talk to sales",
+            "href": "/contact/"
+          }
+        },
+        {
+          "type": "signup-copy",
+          "heading": "Signup form copy",
+          "copy": "Keep the public form short. Capture email and product interest, then complete identity, compliance, billing, and service configuration in the portal."
+        },
+        {
+          "type": "next-steps",
+          "heading": "After signup",
+          "steps": [
+            {
+              "title": "Confirm account",
+              "copy": "Verify email and account ownership."
+            },
+            {
+              "title": "Choose products",
+              "copy": "Select voice, messaging, numbers, SIP, VoiceML, hosted PBX, phone apps, SDN, or lookup services."
+            },
+            {
+              "title": "Complete compliance",
+              "copy": "Provide business, messaging, emergency-service, or porting data where required."
+            },
+            {
+              "title": "Test before cutover",
+              "copy": "Run test calls, messages, webhooks, SIP registrations, and number routing before live migration."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 1,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "https://www.voicetel.com/signup",
+        "/contact/",
+        "/pricing/"
+      ]
+    },
+    {
+      "url": "/sip-trunking/",
+      "source": "copy/sip-trunking/",
+      "title": "SIP Trunking — VoiceTel",
+      "description": "Carrier-grade SIP trunks for PBX, UC, contact center, SBC, Asterisk, FreePBX, FreeSWITCH, and FusionPBX deployments.",
+      "canonical": "https://voicetel.com/sip-trunking/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Carrier SIP trunks for systems you already run."
+        ],
+        "h2": [
+          "Built for practical SIP deployments",
+          "Integration copy"
+        ],
+        "h3": [
+          "PBX and UC interop",
+          "Registration or IP-auth paths",
+          "Redundancy planning",
+          "Emergency calling",
+          "BYO SBC"
+        ]
+      },
+      "wordCount": 208,
+      "body": "SIP Trunking — VoiceTel Carrier-grade SIP trunks for PBX, UC, contact center, SBC, Asterisk, FreePBX, FreeSWITCH, and FusionPBX deployments. SIP Trunking Carrier SIP trunks for systems you already run. Connect PBX, UC, contact-center, and SBC environments to VoiceTel for PSTN origination, termination, numbers, emergency-service support, and route controls without replacing your call platform. Talk to SIP engineering See pricing Built for practical SIP deployments PBX and UC interop Use VoiceTel with Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, hosted PBX platforms, and contact centers. Registration or IP-auth paths Describe supported authentication modes in implementation after engineering confirms the exact options per account. Redundancy planning Route design covers primary and failover trunks, POP preference, number routing, and cutover rollback. Emergency calling Emergency-service configuration is tied to numbers, service addresses, and clear limitations disclosures. BYO SBC VoiceTel can sit behind customer-owned SBCs where architecture and security requirements call for it. Integration copy Publish guides for common platforms and keep fields concrete: SIP domain, proxy, transport, authentication mode, media path, codec policy, DTMF mode, outbound caller ID, E911, and test call procedure. Send us a SIP trace, not a slogan. VoiceTel support is positioned around real diagnostics: OPTIONS, REGISTER, INVITE, RTP, NAT, ALG, codec negotiation, carrier response codes, and number routing. Contact engineering",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "SIP Trunking",
+          "headline": "Carrier SIP trunks for systems you already run.",
+          "lede": "Connect PBX, UC, contact-center, and SBC environments to VoiceTel for PSTN origination, termination, numbers, emergency-service support, and route controls without replacing your call platform.",
+          "primaryCta": {
+            "label": "Talk to SIP engineering",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "See pricing",
+            "href": "/pricing/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Built for practical SIP deployments",
+          "items": [
+            {
+              "title": "PBX and UC interop",
+              "copy": "Use VoiceTel with Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, hosted PBX platforms, and contact centers."
+            },
+            {
+              "title": "Registration or IP-auth paths",
+              "copy": "Describe supported authentication modes in implementation after engineering confirms the exact options per account."
+            },
+            {
+              "title": "Redundancy planning",
+              "copy": "Route design covers primary and failover trunks, POP preference, number routing, and cutover rollback."
+            },
+            {
+              "title": "Emergency calling",
+              "copy": "Emergency-service configuration is tied to numbers, service addresses, and clear limitations disclosures."
+            },
+            {
+              "title": "BYO SBC",
+              "copy": "VoiceTel can sit behind customer-owned SBCs where architecture and security requirements call for it."
+            }
+          ]
+        },
+        {
+          "type": "integration-copy",
+          "heading": "Integration copy",
+          "copy": "Publish guides for common platforms and keep fields concrete: SIP domain, proxy, transport, authentication mode, media path, codec policy, DTMF mode, outbound caller ID, E911, and test call procedure."
+        },
+        {
+          "type": "cta",
+          "title": "Send us a SIP trace, not a slogan.",
+          "copy": "VoiceTel support is positioned around real diagnostics: OPTIONS, REGISTER, INVITE, RTP, NAT, ALG, codec negotiation, carrier response codes, and number routing.",
+          "primaryCta": {
+            "label": "Contact engineering",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/pricing/",
+        "/sdn/",
+        "/docs/"
+      ]
+    },
+    {
+      "url": "/status/",
+      "source": "copy/status/",
+      "title": "Network status — VoiceTel",
+      "description": "Current VoiceTel service status for voice, messaging, API, portal, phone apps, SDN appliance connectivity, and support systems.",
+      "canonical": "https://voicetel.com/status/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Current service health and incident history."
+        ],
+        "h2": [
+          "Components",
+          "Incident copy rules"
+        ],
+        "h3": [
+          "Voice",
+          "Messaging",
+          "Numbers",
+          "API",
+          "Portal",
+          "Phone apps and SDN"
+        ]
+      },
+      "wordCount": 133,
+      "body": "Network status — VoiceTel Current VoiceTel service status for voice, messaging, API, portal, phone apps, SDN appliance connectivity, and support systems. Status Current service health and incident history. The status page is factual, timestamped, and free of marketing language. Show active incidents, affected components, update times, and resolved incident summaries. Contact support Infrastructure overview Components Voice Origination, termination, VoiceML call control, and callbacks. Messaging SMS, MMS, delivery receipts, and inbound webhooks. Numbers Provisioning, porting, emergency-service records, and lookup workflows. API REST API availability and webhook delivery. Portal Account login, signup, billing, provisioning, and support forms. Phone apps and SDN Web phone, desktop/mobile app connectivity, and SDN tunnel status. Incident copy rules Incident updates include timestamp, impact, affected regions or products, mitigation status, next update expectation, and final root-cause summary when resolved.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Status",
+          "headline": "Current service health and incident history.",
+          "lede": "The status page is factual, timestamped, and free of marketing language. Show active incidents, affected components, update times, and resolved incident summaries.",
+          "primaryCta": {
+            "label": "Contact support",
+            "href": "/contact/"
+          },
+          "secondaryCta": {
+            "label": "Infrastructure overview",
+            "href": "/infrastructure/"
+          }
+        },
+        {
+          "type": "components",
+          "heading": "Components",
+          "items": [
+            {
+              "title": "Voice",
+              "copy": "Origination, termination, VoiceML call control, and callbacks."
+            },
+            {
+              "title": "Messaging",
+              "copy": "SMS, MMS, delivery receipts, and inbound webhooks."
+            },
+            {
+              "title": "Numbers",
+              "copy": "Provisioning, porting, emergency-service records, and lookup workflows."
+            },
+            {
+              "title": "API",
+              "copy": "REST API availability and webhook delivery."
+            },
+            {
+              "title": "Portal",
+              "copy": "Account login, signup, billing, provisioning, and support forms."
+            },
+            {
+              "title": "Phone apps and SDN",
+              "copy": "Web phone, desktop/mobile app connectivity, and SDN tunnel status."
+            }
+          ]
+        },
+        {
+          "type": "status-copy",
+          "heading": "Incident copy rules",
+          "copy": "Incident updates include timestamp, impact, affected regions or products, mitigation status, next update expectation, and final root-cause summary when resolved."
+        }
+      ],
+      "links": {
+        "internal": 2,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/contact/",
+        "/infrastructure/"
+      ]
+    },
+    {
+      "url": "/voice/",
+      "source": "copy/voice/",
+      "title": "Voice — VoiceTel",
+      "description": "Wholesale programmable voice with origination, termination, VoiceML call control, STIR/SHAKEN, recordings, conferences, queues, and signed webhooks.",
+      "canonical": "https://voicetel.com/voice/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Wholesale voice for applications, carriers, and operators."
+        ],
+        "h2": [
+          "Voice capabilities",
+          "Operational proof points",
+          "Pricing comparison block",
+          "Voice FAQ"
+        ],
+        "h3": [
+          "Origination and termination",
+          "VoiceML call control",
+          "Signed webhooks",
+          "Bring your own media vendors",
+          "STIR/SHAKEN aware",
+          "Six US POPs",
+          "Operator support"
+        ]
+      },
+      "wordCount": 308,
+      "body": "Voice — VoiceTel Wholesale programmable voice with origination, termination, VoiceML call control, STIR/SHAKEN, recordings, conferences, queues, and signed webhooks. Programmable voice Wholesale voice for applications, carriers, and operators. Build voice workflows on VoiceTel without paying retail markup on every layer of the call. Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams. See pricing Explore VoiceML Voice capabilities Origination and termination Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths. VoiceML call control Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls using XML-based voice markup. Signed webhooks Status, recording, gather, dial, conference, AMD, and action callbacks use signed webhook delivery for request verification. Bring your own media vendors Use your preferred speech-to-text, text-to-speech, and recording storage providers where supported; VoiceTel does not hide third-party provider costs inside vague platform claims. Operational proof points STIR/SHAKEN aware Caller identity and attestation are part of the voice story, not an afterthought. Six US POPs NYC, CLT, ORD, DEN, DFW, and SJC are used throughout the site as the published network locations. Operator support Escalations reach people who can read SIP traces, carrier responses, and webhook logs. Pricing comparison block Compare inbound voice minute, outbound US-48 voice minute, AMD, recording, media streaming, and phone-number monthly charges against source-dated competitor list prices. Percent-savings claims appear only when approved VoiceTel public rates support the line-item math. Voice FAQ Can existing Twilio voice applications migrate? Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover. Does VoiceTel provide speech services directly? Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. How are rates displayed? Rates are source-dated and shown with unit, source, and assumptions.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Programmable voice",
+          "headline": "Wholesale voice for applications, carriers, and operators.",
+          "lede": "Build voice workflows on VoiceTel without paying retail markup on every layer of the call. Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams.",
+          "primaryCta": {
+            "label": "See pricing",
+            "href": "/pricing/"
+          },
+          "secondaryCta": {
+            "label": "Explore VoiceML",
+            "href": "/voiceml/"
+          }
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Voice capabilities",
+          "items": [
+            {
+              "title": "Origination and termination",
+              "copy": "Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths."
+            },
+            {
+              "title": "VoiceML call control",
+              "copy": "Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls using XML-based voice markup."
+            },
+            {
+              "title": "Signed webhooks",
+              "copy": "Status, recording, gather, dial, conference, AMD, and action callbacks use signed webhook delivery for request verification."
+            },
+            {
+              "title": "Bring your own media vendors",
+              "copy": "Use your preferred speech-to-text, text-to-speech, and recording storage providers where supported; VoiceTel does not hide third-party provider costs inside vague platform claims."
+            }
+          ]
+        },
+        {
+          "type": "proof",
+          "heading": "Operational proof points",
+          "items": [
+            {
+              "title": "STIR/SHAKEN aware",
+              "copy": "Caller identity and attestation are part of the voice story, not an afterthought."
+            },
+            {
+              "title": "Six US POPs",
+              "copy": "NYC, CLT, ORD, DEN, DFW, and SJC are used throughout the site as the published network locations."
+            },
+            {
+              "title": "Operator support",
+              "copy": "Escalations reach people who can read SIP traces, carrier responses, and webhook logs."
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "heading": "Pricing comparison block",
+          "copy": "Compare inbound voice minute, outbound US-48 voice minute, AMD, recording, media streaming, and phone-number monthly charges against source-dated competitor list prices. Percent-savings claims appear only when approved VoiceTel public rates support the line-item math.",
+          "status": "source-gated-pricing"
+        },
+        {
+          "type": "faq",
+          "heading": "Voice FAQ",
+          "faqs": [
+            {
+              "question": "Can existing Twilio voice applications migrate?",
+              "answer": "Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover."
+            },
+            {
+              "question": "Does VoiceTel provide speech services directly?",
+              "answer": "Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed."
+            },
+            {
+              "question": "How are rates displayed?",
+              "answer": "Rates are source-dated and shown with unit, source, and assumptions."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/pricing/",
+        "/voiceml/",
+        "/voiceml/compatibility/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/voiceml/calculator/",
+      "source": "copy/voiceml/calculator/",
+      "title": "VoiceML cost calculator — VoiceTel",
+      "description": "A privacy-preserving calculator for comparing VoiceTel workload costs against source-dated competitor list pricing with line-item assumptions.",
+      "canonical": "https://voicetel.com/voiceml/calculator/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Calculate the workload, not the slogan."
+        ],
+        "h2": [
+          "Default inputs",
+          "Privacy copy",
+          "Assumptions copy"
+        ],
+        "h3": [
+          "Voice",
+          "Messaging",
+          "Numbers",
+          "Competitor"
+        ]
+      },
+      "wordCount": 201,
+      "body": "VoiceML cost calculator — VoiceTel A privacy-preserving calculator for comparing VoiceTel workload costs against source-dated competitor list pricing with line-item assumptions. Calculator Calculate the workload, not the slogan. The calculator lets buyers model monthly usage and see every line item: minutes, messages, numbers, emergency service, lookups, AMD, recordings, and optional media features. Usage inputs stay in the browser. Open pricing Migration guide Default inputs Voice Inbound local minutes, outbound US-48 minutes, toll-free inbound minutes, AMD calls, recordings, conferences, streams, and transcriptions. Messaging SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through notes, and A2P 10DLC fees where applicable. Numbers Local numbers, toll-free numbers, emergency-service records, CNAM, and porting assumptions. Competitor Default to Twilio. Add other competitors only where reliable, source-dated data exists for the exact same unit. Privacy copy Usage inputs stay in the browser. The calculator does not collect, transmit, or store customer workload data. Assumptions copy Every result shows the unit, VoiceTel rate, competitor source date, carrier-fee handling, and whether taxes, regulatory charges, discounts, or contract pricing are excluded. Need a modeled invoice? For high-volume workloads, route planning and carrier fees matter. Bring an invoice and VoiceTel can build a detailed model from real usage. Request a pricing review",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Calculator",
+          "headline": "Calculate the workload, not the slogan.",
+          "lede": "The calculator lets buyers model monthly usage and see every line item: minutes, messages, numbers, emergency service, lookups, AMD, recordings, and optional media features. Usage inputs stay in the browser.",
+          "primaryCta": {
+            "label": "Open pricing",
+            "href": "/pricing/"
+          },
+          "secondaryCta": {
+            "label": "Migration guide",
+            "href": "/voiceml/migrate/"
+          }
+        },
+        {
+          "type": "calculator-fields",
+          "heading": "Default inputs",
+          "items": [
+            {
+              "title": "Voice",
+              "copy": "Inbound local minutes, outbound US-48 minutes, toll-free inbound minutes, AMD calls, recordings, conferences, streams, and transcriptions."
+            },
+            {
+              "title": "Messaging",
+              "copy": "SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through notes, and A2P 10DLC fees where applicable."
+            },
+            {
+              "title": "Numbers",
+              "copy": "Local numbers, toll-free numbers, emergency-service records, CNAM, and porting assumptions."
+            },
+            {
+              "title": "Competitor",
+              "copy": "Default to Twilio. Add other competitors only where reliable, source-dated data exists for the exact same unit."
+            }
+          ]
+        },
+        {
+          "type": "privacy",
+          "heading": "Privacy copy",
+          "copy": "Usage inputs stay in the browser. The calculator does not collect, transmit, or store customer workload data."
+        },
+        {
+          "type": "assumptions",
+          "heading": "Assumptions copy",
+          "copy": "Every result shows the unit, VoiceTel rate, competitor source date, carrier-fee handling, and whether taxes, regulatory charges, discounts, or contract pricing are excluded."
+        },
+        {
+          "type": "cta",
+          "title": "Need a modeled invoice?",
+          "copy": "For high-volume workloads, route planning and carrier fees matter. Bring an invoice and VoiceTel can build a detailed model from real usage.",
+          "primaryCta": {
+            "label": "Request a pricing review",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/pricing/",
+        "/voiceml/migrate/",
+        "/contact/"
+      ]
+    },
+    {
+      "url": "/voiceml/compatibility/",
+      "source": "copy/voiceml/compatibility/",
+      "title": "VoiceML compatibility matrix — VoiceTel",
+      "description": "A compatibility matrix for VoiceML, covering supported, partial, unsupported, and roadmap voice markup features with an XML checker.",
+      "canonical": "https://voicetel.com/voiceml/compatibility/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Know exactly which call features are supported before migration."
+        ],
+        "h2": [
+          "Matrix summary",
+          "Client-side XML checker",
+          "Compatibility copy rules"
+        ],
+        "h3": [
+          "Supported",
+          "Partial",
+          "Unsupported",
+          "Native VoiceTel path",
+          "No overpromising",
+          "Caveats visible by default",
+          "Data-driven content"
+        ]
+      },
+      "wordCount": 208,
+      "body": "VoiceML compatibility matrix — VoiceTel A compatibility matrix for VoiceML, covering supported, partial, unsupported, and roadmap voice markup features with an XML checker. Compatibility Know exactly which call features are supported before migration. The VoiceML compatibility page is explicit, searchable, and honest. Every verb, attribute, REST resource, and caveat is published as a clear support status rather than a broad promise. Paste XML Migration guide Matrix summary Supported Core call-control verbs and voice resources that engineering has verified. Partial Features that work with documented caveats, such as platform or media-module limitations. Unsupported Features intentionally outside scope, including payment handling and unrelated hosted products. Native VoiceTel path Products such as numbers and messaging link to VoiceTel-native product pages when they are not part of the compatible voice API surface. Client-side XML checker The checker parses XML in the browser, matches verbs and attributes against the compatibility matrix, and returns compatible, compatible with caveats, or not supported. Pasted XML is not sent to a server. Compatibility copy rules No overpromising Rows are marked supported only when engineering has verified the exact behavior. Caveats visible by default Partial rows show the limitation in the table instead of hiding it behind a tooltip. Data-driven content Compatibility data keeps support, docs, and marketing aligned.",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Compatibility",
+          "headline": "Know exactly which call features are supported before migration.",
+          "lede": "The VoiceML compatibility page is explicit, searchable, and honest. Every verb, attribute, REST resource, and caveat is published as a clear support status rather than a broad promise.",
+          "primaryCta": {
+            "label": "Paste XML",
+            "href": "#checker"
+          },
+          "secondaryCta": {
+            "label": "Migration guide",
+            "href": "/voiceml/migrate/"
+          }
+        },
+        {
+          "type": "matrix-summary",
+          "heading": "Matrix summary",
+          "items": [
+            {
+              "title": "Supported",
+              "copy": "Core call-control verbs and voice resources that engineering has verified."
+            },
+            {
+              "title": "Partial",
+              "copy": "Features that work with documented caveats, such as platform or media-module limitations."
+            },
+            {
+              "title": "Unsupported",
+              "copy": "Features intentionally outside scope, including payment handling and unrelated hosted products."
+            },
+            {
+              "title": "Native VoiceTel path",
+              "copy": "Products such as numbers and messaging link to VoiceTel-native product pages when they are not part of the compatible voice API surface."
+            }
+          ]
+        },
+        {
+          "type": "checker-copy",
+          "heading": "Client-side XML checker",
+          "copy": "The checker parses XML in the browser, matches verbs and attributes against the compatibility matrix, and returns compatible, compatible with caveats, or not supported. Pasted XML is not sent to a server."
+        },
+        {
+          "type": "copy-rules",
+          "heading": "Compatibility copy rules",
+          "items": [
+            {
+              "title": "No overpromising",
+              "copy": "Rows are marked supported only when engineering has verified the exact behavior."
+            },
+            {
+              "title": "Caveats visible by default",
+              "copy": "Partial rows show the limitation in the table instead of hiding it behind a tooltip."
+            },
+            {
+              "title": "Data-driven content",
+              "copy": "Compatibility data keeps support, docs, and marketing aligned."
+            }
+          ]
+        }
+      ],
+      "links": {
+        "internal": 3,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/voiceml/migrate/",
+        "/docs/",
+        "/voice/"
+      ]
+    },
+    {
+      "url": "/voiceml/",
+      "source": "copy/voiceml/",
+      "title": "VoiceML — VoiceTel",
+      "description": "VoiceML is VoiceTel's XML-based programmable voice runtime for compatible call control, signed webhooks, recordings, conferences, queues, and SDK migration paths.",
+      "canonical": "https://voicetel.com/voiceml/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Move compatible programmable voice workloads without rewriting call logic."
+        ],
+        "h2": [
+          "VoiceML example",
+          "Compatible voice surface",
+          "What's different"
+        ],
+        "h3": [
+          "Calls",
+          "Recordings",
+          "Conferences and queues",
+          "Streams, transcriptions, and SIP recording",
+          "Applications",
+          "Webhook verification",
+          "Voice-focused compatibility",
+          "Unsupported payment verb",
+          "Number provisioning path"
+        ]
+      },
+      "wordCount": 299,
+      "body": "VoiceML — VoiceTel VoiceML is VoiceTel's XML-based programmable voice runtime for compatible call control, signed webhooks, recordings, conferences, queues, and SDK migration paths. Voice markup runtime Move compatible programmable voice workloads without rewriting call logic. VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel. Start migration Compatibility matrix VoiceML example The markup stays readable, inspectable, and easy to test before cutover. <?xml version=\"1.0\" encoding=\"UTF-8\"?> <Response> <Say>Welcome. Please hold while we connect your call.</Say> <Dial timeout=\"20\" callerId=\"+12124016220\"> <Number>+15555551234</Number> </Dial> </Response> Compatible voice surface Calls Create, fetch, update, list, and end calls using the supported voice-call lifecycle surface. Recordings Start, pause, resume, stop, list, retrieve, and delete supported recordings. Conferences and queues Use conference resources, participants, recordings, queue CRUD, and queue members where supported. Streams, transcriptions, and SIP recording Start and inspect supported live media, transcription, and SIP recording resources with documented caveats. Applications Save voice-only application defaults and resolve them from call creation where supported. Webhook verification Use signed form-encoded callbacks so existing webhook validation patterns remain familiar. What's different Voice-focused compatibility The compatible SDK surface is voice-focused. Messaging, number provisioning, pricing APIs, and other unrelated CPaaS products use native VoiceTel product APIs or portal workflows. Unsupported payment verb The payment verb is intentionally not implemented because PCI scope belongs in a fully certified payment flow. Number provisioning path DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface. Start with one production call flow. Pick a known call path, paste the markup into the compatibility checker, run a test call, then compare the bill line by line. Migrate from Twilio Open calculator",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Voice markup runtime",
+          "headline": "Move compatible programmable voice workloads without rewriting call logic.",
+          "lede": "VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel.",
+          "primaryCta": {
+            "label": "Start migration",
+            "href": "/voiceml/migrate/"
+          },
+          "secondaryCta": {
+            "label": "Compatibility matrix",
+            "href": "/voiceml/compatibility/"
+          }
+        },
+        {
+          "type": "code",
+          "heading": "VoiceML example",
+          "copy": "The markup stays readable, inspectable, and easy to test before cutover.",
+          "language": "xml",
+          "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n\t<Say>Welcome. Please hold while we connect your call.</Say>\n\t<Dial timeout=\"20\" callerId=\"+12124016220\">\n\t\t<Number>+15555551234</Number>\n\t</Dial>\n</Response>"
+        },
+        {
+          "type": "feature-grid",
+          "heading": "Compatible voice surface",
+          "items": [
+            {
+              "title": "Calls",
+              "copy": "Create, fetch, update, list, and end calls using the supported voice-call lifecycle surface."
+            },
+            {
+              "title": "Recordings",
+              "copy": "Start, pause, resume, stop, list, retrieve, and delete supported recordings."
+            },
+            {
+              "title": "Conferences and queues",
+              "copy": "Use conference resources, participants, recordings, queue CRUD, and queue members where supported."
+            },
+            {
+              "title": "Streams, transcriptions, and SIP recording",
+              "copy": "Start and inspect supported live media, transcription, and SIP recording resources with documented caveats."
+            },
+            {
+              "title": "Applications",
+              "copy": "Save voice-only application defaults and resolve them from call creation where supported."
+            },
+            {
+              "title": "Webhook verification",
+              "copy": "Use signed form-encoded callbacks so existing webhook validation patterns remain familiar."
+            }
+          ]
+        },
+        {
+          "type": "honest-differences",
+          "heading": "What's different",
+          "items": [
+            {
+              "title": "Voice-focused compatibility",
+              "copy": "The compatible SDK surface is voice-focused. Messaging, number provisioning, pricing APIs, and other unrelated CPaaS products use native VoiceTel product APIs or portal workflows."
+            },
+            {
+              "title": "Unsupported payment verb",
+              "copy": "The payment verb is intentionally not implemented because PCI scope belongs in a fully certified payment flow."
+            },
+            {
+              "title": "Number provisioning path",
+              "copy": "DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "title": "Start with one production call flow.",
+          "copy": "Pick a known call path, paste the markup into the compatibility checker, run a test call, then compare the bill line by line.",
+          "primaryCta": {
+            "label": "Migrate from Twilio",
+            "href": "/voiceml/migrate/"
+          },
+          "secondaryCta": {
+            "label": "Open calculator",
+            "href": "/voiceml/calculator/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/voiceml/migrate/",
+        "/voiceml/compatibility/",
+        "/voiceml/calculator/",
+        "/voice/"
+      ]
+    },
+    {
+      "url": "/voiceml/migrate/",
+      "source": "copy/voiceml/migrate/",
+      "title": "Migrate from Twilio — VoiceTel",
+      "description": "A practical migration page for compatible Twilio voice applications moving to VoiceTel VoiceML with signed webhooks, SDK host overrides, and line-item pricing math.",
+      "canonical": "https://voicetel.com/voiceml/migrate/",
+      "lang": "en",
+      "copyStatus": "ready",
+      "headings": {
+        "h1": [
+          "Move compatible voice workflows in measured steps."
+        ],
+        "h2": [
+          "Four-step migration",
+          "Direct HTTP test call",
+          "What stays the same; what is checked",
+          "Migration pricing comparison"
+        ],
+        "h3": [
+          "Same model",
+          "Checked before launch",
+          "Measured economics"
+        ]
+      },
+      "wordCount": 323,
+      "body": "Migrate from Twilio — VoiceTel A practical migration page for compatible Twilio voice applications moving to VoiceTel VoiceML with signed webhooks, SDK host overrides, and line-item pricing math. Migration Move compatible voice workflows in measured steps. Keep the call-control model your application already uses, point supported voice requests at VoiceTel, verify signed webhooks, and cut over only after behavior and cost are proven. Check compatibility Run calculator Four-step migration 1. Inventory your call flows List inbound URLs, outbound call creation paths, recordings, conferences, queues, streams, transcriptions, AMD, and callback URLs. 2. Check markup compatibility Paste representative XML into the compatibility checker and review supported, partial, and unsupported verbs before live traffic. 3. Change the API destination Use an SDK HTTP-client override or a direct HTTP call to send compatible voice API requests to VoiceTel. 4. Verify callbacks and cut over Confirm signatures, status events, recording callbacks, retry behavior, and billing assumptions before moving production numbers. Direct HTTP test call A one-call test proves credentials, routing, webhook reachability, and basic call control before deeper migration work. curl -u \"$VOICETEL_ACCOUNT_SID:$VOICETEL_API_KEY\" \\ -d \"To=+18005551234\" \\ -d \"From=+18005550000\" \\ -d \"Url=https://example.com/voice.xml\" \\ \"https://api.voicetel.com/2010-04-01/Accounts/$VOICETEL_ACCOUNT_SID/Calls.json\" What stays the same; what is checked Same model XML voice markup, form-encoded webhooks, request signatures, account-style credentials, and voice-call lifecycle resources stay familiar. Checked before launch Any payment, non-voice, phone-number provisioning, or messaging API calls is identified and routed to native VoiceTel products or removed from the compatible voice path. Measured economics Compare a real monthly workload, not a broad slogan. Migration pricing comparison Show a source-dated comparison for the exact workload: inbound minutes, outbound minutes, AMD calls, recordings, media features, numbers, and messages if the migration includes messaging. Percentage claims appear only when backed by a line-item table. Bring one call flow and one bill. VoiceTel can validate compatibility and model the current workload before you move production traffic. Contact VoiceTel",
+      "sections": [
+        {
+          "type": "hero",
+          "eyebrow": "Migration",
+          "headline": "Move compatible voice workflows in measured steps.",
+          "lede": "Keep the call-control model your application already uses, point supported voice requests at VoiceTel, verify signed webhooks, and cut over only after behavior and cost are proven.",
+          "primaryCta": {
+            "label": "Check compatibility",
+            "href": "/voiceml/compatibility/"
+          },
+          "secondaryCta": {
+            "label": "Run calculator",
+            "href": "/voiceml/calculator/"
+          }
+        },
+        {
+          "type": "steps",
+          "heading": "Four-step migration",
+          "steps": [
+            {
+              "title": "1. Inventory your call flows",
+              "copy": "List inbound URLs, outbound call creation paths, recordings, conferences, queues, streams, transcriptions, AMD, and callback URLs."
+            },
+            {
+              "title": "2. Check markup compatibility",
+              "copy": "Paste representative XML into the compatibility checker and review supported, partial, and unsupported verbs before live traffic."
+            },
+            {
+              "title": "3. Change the API destination",
+              "copy": "Use an SDK HTTP-client override or a direct HTTP call to send compatible voice API requests to VoiceTel."
+            },
+            {
+              "title": "4. Verify callbacks and cut over",
+              "copy": "Confirm signatures, status events, recording callbacks, retry behavior, and billing assumptions before moving production numbers."
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "heading": "Direct HTTP test call",
+          "copy": "A one-call test proves credentials, routing, webhook reachability, and basic call control before deeper migration work.",
+          "language": "bash",
+          "value": "curl -u \"$VOICETEL_ACCOUNT_SID:$VOICETEL_API_KEY\" \\\n\t-d \"To=+18005551234\" \\\n\t-d \"From=+18005550000\" \\\n\t-d \"Url=https://example.com/voice.xml\" \\\n\t\"https://api.voicetel.com/2010-04-01/Accounts/$VOICETEL_ACCOUNT_SID/Calls.json\""
+        },
+        {
+          "type": "same-different",
+          "heading": "What stays the same; what is checked",
+          "items": [
+            {
+              "title": "Same model",
+              "copy": "XML voice markup, form-encoded webhooks, request signatures, account-style credentials, and voice-call lifecycle resources stay familiar."
+            },
+            {
+              "title": "Checked before launch",
+              "copy": "Any payment, non-voice, phone-number provisioning, or messaging API calls is identified and routed to native VoiceTel products or removed from the compatible voice path."
+            },
+            {
+              "title": "Measured economics",
+              "copy": "Compare a real monthly workload, not a broad slogan."
+            }
+          ]
+        },
+        {
+          "type": "comparison",
+          "heading": "Migration pricing comparison",
+          "copy": "Show a source-dated comparison for the exact workload: inbound minutes, outbound minutes, AMD calls, recordings, media features, numbers, and messages if the migration includes messaging. Percentage claims appear only when backed by a line-item table.",
+          "status": "source-gated-pricing"
+        },
+        {
+          "type": "cta",
+          "title": "Bring one call flow and one bill.",
+          "copy": "VoiceTel can validate compatibility and model the current workload before you move production traffic.",
+          "primaryCta": {
+            "label": "Contact VoiceTel",
+            "href": "/contact/"
+          }
+        }
+      ],
+      "links": {
+        "internal": 4,
+        "external": 0,
+        "mailto": 0,
+        "tel": 0
+      },
+      "linkTargets": [
+        "/voiceml/compatibility/",
+        "/voiceml/calculator/",
+        "/contact/",
+        "/pricing/"
+      ]
+    }
+  ]
+}

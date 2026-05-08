@@ -8,5 +8,5 @@
 			"args": ["--no-sandbox"]
 		}
 	},
-	"urls": ["http://localhost:8080/"]
+	"urls": ["http://localhost:8000/"]
 }

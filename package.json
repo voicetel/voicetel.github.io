@@ -9,13 +9,13 @@
 	},
 	"scripts": {
 		"build": "eleventy",
-		"serve": "eleventy --serve",
+		"serve": "eleventy --serve --port=8000",
 		"clean": "rm -rf _site",
 		"docs:api": "node tools/build-api-docs.mjs",
 		"lint:js": "eslint 'src/assets/js/**/*.js'",
 		"lint:css": "stylelint 'src/assets/css/**/*.css'",
 		"lint:html": "node tools/lint-html.mjs",
-		"a11y": "start-server-and-test 'http-server _site -p 8080 -s' http://localhost:8080 'pa11y-ci --config .pa11yci.json'",
+		"a11y": "start-server-and-test 'http-server _site -p 8000 -s' http://localhost:8000 'pa11y-ci --config .pa11yci.json'",
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
 	},

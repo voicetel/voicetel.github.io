@@ -1,0 +1,386 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "e911 API",
+    "description": "e911",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "paths": {
+    "/v2.1/e911/queryRecord/": {
+      "post": {
+        "summary": "Query Record",
+        "description": "Query e911 details",
+        "operationId": "queryRecord",
+        "requestBody": {
+          "description": "/v2.1/e911/queryRecord/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/record"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/queryAll/": {
+      "post": {
+        "summary": "Query All Records",
+        "description": "List all e911 records",
+        "operationId": "queryAll",
+        "requestBody": {
+          "description": "/v2.1/e911/queryAll/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikey"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/validateAddress/": {
+      "post": {
+        "summary": "Validate address",
+        "description": "Validate e911 address prior to e911 provisionAddress API",
+        "operationId": "validateAddress",
+        "requestBody": {
+          "description": "/v2.1/e911/validateAddress/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/validateAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/provisionAddress/": {
+      "post": {
+        "summary": "Provision address",
+        "description": "Provision e911 address",
+        "operationId": "provisionAddress",
+        "requestBody": {
+          "description": "/v2.1/e911/provisionAddress/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/provisionAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/validateAndProvision/": {
+      "post": {
+        "summary": "Validate and Provision",
+        "description": "Validate add Provision e911 address",
+        "operationId": "validateAndProvisionAddress",
+        "requestBody": {
+          "description": "/v2.1/e911/validateAndProvision/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/validateAndProvision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/removeRecord/": {
+      "post": {
+        "summary": "Remove Record",
+        "description": "Remove e911 record",
+        "operationId": "removeRecord",
+        "requestBody": {
+          "description": "/v2.1/e911/removeRecord/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/record"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "record": {
+        "required": [
+          "apikey",
+          "dn"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "dn": {
+            "type": "string",
+            "example": "2015551234"
+          }
+        }
+      },
+      "apikey": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      },
+      "validateAddress": {
+        "required": [
+          "address1",
+          "apikey",
+          "city",
+          "state",
+          "zip"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "address1": {
+            "type": "string",
+            "example": "411 HACKENSACK AVENUE"
+          },
+          "address2": {
+            "type": "string",
+            "example": "STE 200"
+          },
+          "city": {
+            "type": "string",
+            "example": "HACKENSACK"
+          },
+          "state": {
+            "type": "string",
+            "example": "NJ"
+          },
+          "zip": {
+            "type": "string",
+            "example": "07601"
+          }
+        }
+      },
+      "provisionAddress": {
+        "required": [
+          "addressid",
+          "apikey",
+          "callername",
+          "dn"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "dn": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "callername": {
+            "type": "string",
+            "example": "Caller Name"
+          },
+          "addressid": {
+            "type": "string",
+            "example": "addressid from validateAddress"
+          }
+        }
+      },
+      "validateAndProvision": {
+        "required": [
+          "address1",
+          "apikey",
+          "callername",
+          "city",
+          "dn",
+          "state",
+          "zip"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "dn": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "callername": {
+            "type": "string",
+            "example": "Caller Name"
+          },
+          "address1": {
+            "type": "string",
+            "example": "411 HACKENSACK AVENUE"
+          },
+          "address2": {
+            "type": "string",
+            "example": "STE 200"
+          },
+          "city": {
+            "type": "string",
+            "example": "HACKENSACK"
+          },
+          "state": {
+            "type": "string",
+            "example": "NJ"
+          },
+          "zip": {
+            "type": "string",
+            "example": "07601"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

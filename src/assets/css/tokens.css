@@ -1,0 +1,108 @@
+/*
+ * VoiceTel Design Tokens — Standard v1
+ * Spec: directives/design-system.md (private)
+ *
+ * This file is the public output. Other VoiceTel surfaces (callBroadcast,
+ * smppGateway, phone.voicetel.com) copy or sync this file when they migrate
+ * to the unified standard.
+ */
+
+:root {
+	/* ─── Color: brand and action ─── */
+	--primary-color: #2c3e50;
+	--primary-light: #1d6fa5;
+	--primary-dark: #154f78;
+
+	/* ─── Color: semantic status ─── */
+	--success-color: #28a745;
+	--error-color: #dc3545;
+	--warning-color: #ffc107;
+	--info-color: #17a2b8;
+
+	/* ─── Color: surface ─── */
+	--paper: #fff;
+	--light-bg: #f8f9fa;
+	--page-bg: #f5f5f5;
+	--border-color: #dee2e6;
+
+	/* ─── Color: text ─── */
+	--text-strong: #13171d;
+	--text-default: #333;
+	--text-muted: #6c757d;
+
+	/* ─── Color: alert tints (Bootstrap-derived) ─── */
+	--alert-success-bg: #d4edda;
+	--alert-success-fg: #155724;
+	--alert-success-rule: #c3e6cb;
+	--alert-error-bg: #f8d7da;
+	--alert-error-fg: #721c24;
+	--alert-error-rule: #f5c6cb;
+	--alert-warning-bg: #fff3cd;
+	--alert-warning-fg: #856404;
+	--alert-warning-rule: #ffeaa7;
+	--alert-info-bg: #d1ecf1;
+	--alert-info-fg: #0c5460;
+	--alert-info-rule: #bee5eb;
+
+	/* ─── Spacing scale (8px baseline) ─── */
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-5: 24px;
+	--space-6: 32px;
+	--space-7: 48px;
+	--space-8: 64px;
+
+	/* ─── Radius ─── */
+	--radius-sm: 4px;
+	--radius: 8px;
+	--border-radius: 8px;
+	--radius-lg: 12px;
+	--radius-pill: 999px;
+
+	/* ─── Elevation ─── */
+	--shadow: 0 2px 4px rgb(0 0 0 / 10%);
+	--shadow-lg: 0 4px 12px rgb(0 0 0 / 15%);
+
+	/* ─── Motion ─── */
+	--transition: all 0.3s ease;
+	--transition-fast: all 0.15s ease;
+
+	/* ─── Type ─── */
+	--font-sans: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", menlo, monospace;
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-md: 1.0625rem;
+	--text-lg: 1.25rem;
+	--text-xl: 1.5rem;
+	--text-2xl: 1.875rem;
+	--text-3xl: 2.25rem;
+	--text-4xl: 3rem;
+	--leading-tight: 1.2;
+	--leading-snug: 1.4;
+	--leading-normal: 1.6;
+	--leading-relaxed: 1.75;
+	--weight-regular: 400;
+	--weight-medium: 500;
+	--weight-semibold: 600;
+	--weight-bold: 700;
+}
+
+@font-face {
+	font-family: "IBM Plex Mono";
+	src: url("/assets/fonts/plex-mono/IBMPlexMono-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "IBM Plex Mono";
+	src: url("/assets/fonts/plex-mono/IBMPlexMono-SemiBold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}

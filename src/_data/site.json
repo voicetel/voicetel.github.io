@@ -1,0 +1,67 @@
+{
+	"version": "0.1.0",
+	"updated": "2026-05-08",
+	"brand": "VoiceTel",
+	"tagline": "Twilio-compatible programmable voice at wholesale prices.",
+	"description": "Run your Twilio app on VoiceTel. Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage.",
+	"lang": "en",
+	"url": "https://voicetel.com",
+	"portalUrl": "https://www.voicetel.com",
+	"apiBaseUrl": "https://api.voicetel.com",
+	"sdnUrl": "http://sdn.voicetel.com",
+	"phoneUrl": "https://phone.voicetel.com",
+	"supportEmail": "support@voicetel.com",
+	"pops": ["NYC", "CLT", "ORD", "DEN", "DFW", "SJC"],
+	"nav": [
+		{ "label": "VoiceML", "href": "/voiceml/" },
+		{ "label": "Voice", "href": "/voice/" },
+		{ "label": "Messaging", "href": "/messaging/" },
+		{ "label": "Numbers", "href": "/numbers/" },
+		{ "label": "SDN", "href": "/sdn/" },
+		{ "label": "Phone", "href": "/phone/" },
+		{ "label": "Pricing", "href": "/pricing/" },
+		{ "label": "Docs", "href": "/docs/" }
+	],
+	"footerNav": [
+		{
+			"label": "Product",
+			"items": [
+				{ "label": "VoiceML", "href": "/voiceml/" },
+				{ "label": "Voice", "href": "/voice/" },
+				{ "label": "Messaging", "href": "/messaging/" },
+				{ "label": "Numbers", "href": "/numbers/" },
+				{ "label": "SDN appliance", "href": "/sdn/" },
+				{ "label": "Phone apps", "href": "/phone/" },
+				{ "label": "Hosted PBX", "href": "/pbx/" }
+			]
+		},
+		{
+			"label": "Resources",
+			"items": [
+				{ "label": "Documentation", "href": "/docs/" },
+				{ "label": "Migrate from Twilio", "href": "/voiceml/migrate/" },
+				{ "label": "Compatibility matrix", "href": "/voiceml/compatibility/" },
+				{ "label": "Cost calculator", "href": "/voiceml/calculator/" },
+				{ "label": "FAQ", "href": "/faq/" }
+			]
+		},
+		{
+			"label": "Company",
+			"items": [
+				{ "label": "Pricing", "href": "/pricing/" },
+				{ "label": "About", "href": "/about/" },
+				{ "label": "Legal", "href": "/legal/" },
+				{ "label": "Sign up", "href": "https://www.voicetel.com/signup" },
+				{ "label": "Log in", "href": "https://www.voicetel.com/login" }
+			]
+		}
+	],
+	"formEndpoints": {
+		"signup": "/signup",
+		"login": "/login",
+		"passwordRecovery": "/password-recovery.html",
+		"porting": "/porting",
+		"resellerInquiry": "/reseller-inquiry",
+		"contact": "/contact"
+	}
+}

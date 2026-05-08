@@ -1,0 +1,187 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Info Services",
+    "description": "Info Services",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "paths": {
+    "/v2.1/info/lrn/": {
+      "post": {
+        "summary": "Location Routing Number",
+        "description": "Get location routing number",
+        "operationId": "lrn",
+        "requestBody": {
+          "description": "/v2.1/info/lrn/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/lrn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/info/cnam/": {
+      "post": {
+        "summary": "Caller ID Name",
+        "description": "Get caller ID name",
+        "operationId": "cnam",
+        "requestBody": {
+          "description": "/v2.1/info/cnam/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cnam"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/info/resporg/": {
+      "post": {
+        "summary": "TollFree RespOrg",
+        "description": "Get RespOrg for given TollFree number.",
+        "operationId": "tfresporg",
+        "requestBody": {
+          "description": "/v2.1/info/cnam/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resporg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "lrn": {
+        "required": [
+          "apikey",
+          "cid",
+          "dst"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "cid": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "dst": {
+            "type": "integer",
+            "example": 2125551234
+          }
+        }
+      },
+      "cnam": {
+        "required": [
+          "apikey",
+          "cid"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "cid": {
+            "type": "integer",
+            "example": 2015551234
+          }
+        }
+      },
+      "resporg": {
+        "required": [
+          "apikey",
+          "tn"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "tn": {
+            "type": "integer",
+            "example": 8005551234
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

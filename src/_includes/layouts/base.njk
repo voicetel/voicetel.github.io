@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang or 'en' }}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% if title %}{{ title }} — {{ site.brand }}{% else %}{{ site.brand }} — {{ site.tagline }}{% endif %}</title>
+		<meta name="description" content="{{ description or site.description }}">
+		<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+		<meta property="og:title" content="{% if title %}{{ title }} — {{ site.brand }}{% else %}{{ site.brand }} — {{ site.tagline }}{% endif %}">
+		<meta property="og:description" content="{{ description or site.description }}">
+		<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+		<meta property="og:image" content="{{ site.url }}/assets/img/og-default.png">
+		<meta property="og:type" content="website">
+		<meta name="twitter:card" content="summary_large_image">
+		<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+		<link rel="preload" href="/assets/fonts/plex-mono/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+		<link rel="stylesheet" href="/assets/css/tokens.css">
+		<link rel="stylesheet" href="/assets/css/base.css">
+		<link rel="stylesheet" href="/assets/css/components.css">
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		{% include "partials/nav.njk" %}
+		<main id="main">
+			{{ content | safe }}
+		</main>
+		{% include "partials/footer.njk" %}
+		<script type="module" src="/assets/js/nav.js"></script>
+	</body>
+</html>

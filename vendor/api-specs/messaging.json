@@ -1,0 +1,716 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Messaging API",
+    "description": "Messaging",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1.4"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "paths": {
+    "/v2.1/messaging/campaigns/": {
+      "post": {
+        "summary": "Campaigns",
+        "description": "Query 10DLC CampaignID(s) assigned by The Campaign Registry.",
+        "operationId": "campaigns",
+        "requestBody": {
+          "description": "/v2.1/messaging/status/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/campaignIDs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/disable/": {
+      "post": {
+        "summary": "Number Disable",
+        "description": "Disable SMS and MMS for numbers",
+        "operationId": "disable",
+        "requestBody": {
+          "description": "/v2.1/messaging/disable/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/disable"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/dlr/": {
+      "post": {
+        "summary": "DLR",
+        "description": "Get delivery reports",
+        "operationId": "dlr",
+        "requestBody": {
+          "description": "/v2.1/messaging/dlr/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/dlr"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/enable/": {
+      "post": {
+        "summary": "Number Enable",
+        "description": "Enable SMS and MMS for numbers. An approved 10DLC campaignID will soon be required for enablement.",
+        "operationId": "enable",
+        "requestBody": {
+          "description": "/v2.1/messaging/status/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/enable"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/mdr-mms/": {
+      "post": {
+        "summary": "MMS MDR",
+        "description": "Get MMS Message Detail Report",
+        "operationId": "mdr-mms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mdr-mms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mdr-mms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/mdr-sms/": {
+      "post": {
+        "summary": "SMS MDR",
+        "description": "Get SMS Message Detail Report",
+        "operationId": "mdr-sms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mdr-sms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mdr-sms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/mms/": {
+      "post": {
+        "summary": "MMS",
+        "description": "Send MMS (Multimedia Messaging Service)",
+        "operationId": "mms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "402": {
+            "description": "Insufficient Funds"
+          },
+          "405": {
+            "description": "Not Enabled"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/routein/": {
+      "post": {
+        "summary": "Route In",
+        "description": "Set routing for incoming messages",
+        "operationId": "routein",
+        "requestBody": {
+          "description": "Route incoming messages",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/routes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/routeout/": {
+      "post": {
+        "summary": "Route Out",
+        "description": "Set routing for outgoing messages",
+        "operationId": "routeout",
+        "requestBody": {
+          "description": "Route outgoing messages",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/routes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/sms/": {
+      "post": {
+        "summary": "SMS",
+        "description": "Send SMS (Short Message Service)",
+        "operationId": "sms",
+        "requestBody": {
+          "description": "/v2.1/messaging/sms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "402": {
+            "description": "Insufficient Funds"
+          },
+          "405": {
+            "description": "Not Enabled"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/messaging/status/": {
+      "post": {
+        "summary": "Number Status",
+        "description": "Get SMS and MMS status for numbers",
+        "operationId": "status",
+        "requestBody": {
+          "description": "/v2.1/messaging/enable/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/status"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "sms": {
+        "required": [
+          "apikey",
+          "destination",
+          "messageText",
+          "source"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "source": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "destination": {
+            "type": "integer",
+            "example": 2125551234
+          },
+          "messageText": {
+            "type": "string"
+          }
+        }
+      },
+      "mms": {
+        "required": [
+          "apikey",
+          "destination",
+          "messageText",
+          "source"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "source": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "destination": {
+            "type": "integer",
+            "example": 2125551234
+          },
+          "messageText": {
+            "type": "string"
+          },
+          "mmsURL": {
+            "type": "string"
+          },
+          "mmsSubject": {
+            "type": "string"
+          }
+        }
+      },
+      "campaignIDs": {
+        "required": [
+          "apikey",
+          "campaigns"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "campaignIDs": {
+            "required": [
+              "campaignID"
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/campaignID"
+            }
+          }
+        }
+      },
+      "enable": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "numbers": {
+            "required": [
+              "number"
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/enablement"
+            }
+          }
+        }
+      },
+      "status": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "numbers": {
+            "required": [
+              "number"
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/number"
+            }
+          }
+        }
+      },
+      "routes": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "numbers": {
+            "required": [
+              "number"
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/route"
+            }
+          }
+        }
+      },
+      "disable": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "numbers": {
+            "required": [
+              "number"
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/number"
+            }
+          }
+        }
+      },
+      "mdr-sms": {
+        "required": [
+          "apikey",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          }
+        }
+      },
+      "mdr-mms": {
+        "required": [
+          "apikey",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          }
+        }
+      },
+      "number": {
+        "required": [
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          }
+        }
+      },
+      "route": {
+        "required": [
+          "number",
+          "route"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "route": {
+            "type": "string",
+            "example": "1"
+          }
+        }
+      },
+      "campaignID": {
+        "required": [
+          "campaignID"
+        ],
+        "type": "object",
+        "properties": {
+          "campaignID": {
+            "type": "string",
+            "example": "A 10DLC campaignID to be associated with a registered ten-digit number. eg: CONVOLUTED"
+          }
+        }
+      },
+      "enablement": {
+        "required": [
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "campaignID": {
+            "type": "string",
+            "example": "An approved 10DLC campaignID assigned by The Campaign Registry. eg: CORROSIVE"
+          }
+        }
+      },
+      "dlr": {
+        "required": [
+          "apikey",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

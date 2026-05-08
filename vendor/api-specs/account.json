@@ -1,0 +1,370 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Account API",
+    "description": "Account",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "paths": {
+    "/v2.1/account/info/": {
+      "post": {
+        "summary": "Account Info",
+        "description": "Get account information",
+        "operationId": "info",
+        "requestBody": {
+          "description": "/v2.1/account/info/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/add/": {
+      "post": {
+        "summary": "Account Add",
+        "description": "Add user account (adminstrators only)",
+        "operationId": "add",
+        "requestBody": {
+          "description": "/v2.1/account/add/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/add"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/signup/": {
+      "post": {
+        "summary": "Account Signup",
+        "description": "Subscribe to service",
+        "operationId": "signup",
+        "requestBody": {
+          "description": "/v2.1/account/signup/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/signup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/recover/": {
+      "post": {
+        "summary": "Account Recover",
+        "description": "Recover lost account information",
+        "operationId": "recover",
+        "requestBody": {
+          "description": "/v2.1/account/recover/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recover"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/cdr/": {
+      "post": {
+        "summary": "Call Detail Records",
+        "description": "Get account call detail records",
+        "operationId": "accountCDR",
+        "requestBody": {
+          "description": "/v2.1/account/cdr/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cdr"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/mrc/": {
+      "post": {
+        "summary": "Monthly Recurring Charges",
+        "description": "Get current monthly recurring charges",
+        "operationId": "accountMRC",
+        "requestBody": {
+          "description": "/v2.1/account/mrc/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/mrc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/account/registration/": {
+      "post": {
+        "summary": "Registration",
+        "description": "Get account registration information",
+        "operationId": "reg",
+        "requestBody": {
+          "description": "/v2.1/account/registration/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/reg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "info": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      },
+      "add": {
+        "required": [
+          "apikey",
+          "email",
+          "name",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "name": {
+            "type": "string",
+            "example": "Account Nanme"
+          },
+          "username": {
+            "type": "string",
+            "example": "10 Digit Username"
+          },
+          "email": {
+            "type": "string",
+            "example": "Account Email"
+          },
+          "masterAccount": {
+            "type": "string",
+            "example": "Billing Account"
+          }
+        }
+      },
+      "signup": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Account Nanme"
+          },
+          "email": {
+            "type": "string",
+            "example": "Valid Email Address"
+          }
+        }
+      },
+      "recover": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "Valid Email Address"
+          }
+        }
+      },
+      "cdr": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "start": {
+            "type": "string",
+            "example": "Unix timestamp"
+          },
+          "end": {
+            "type": "string",
+            "example": "Unix timestamp"
+          }
+        }
+      },
+      "mrc": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      },
+      "reg": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

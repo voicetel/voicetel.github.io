@@ -12,6 +12,7 @@
 		"serve": "eleventy --serve --port=8000",
 		"clean": "rm -rf _site",
 		"docs:api": "node tools/build-api-docs.mjs",
+		"export": "node tools/build-site-export.mjs",
 		"lint:js": "eslint 'src/assets/js/**/*.js'",
 		"lint:css": "stylelint 'src/assets/css/**/*.css'",
 		"lint:html": "node tools/lint-html.mjs",

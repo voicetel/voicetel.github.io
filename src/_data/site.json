@@ -56,6 +56,72 @@
 			]
 		}
 	],
+	"menuCarousel": [
+		{
+			"key": "voiceml",
+			"title": "VoiceML",
+			"tagline": "Drop-in compatible voice markup runtime",
+			"description": "Run your Twilio app on VoiceTel without rewriting code. Same <Say>, <Gather>, <Dial>, and <Record>. Same webhook signatures. Up to 30% less on list rates.",
+			"href": "/voiceml/",
+			"cta": "Explore VoiceML"
+		},
+		{
+			"key": "voice",
+			"title": "Voice",
+			"tagline": "Wholesale origination and termination",
+			"description": "STIR/SHAKEN A-attestation. Six US POPs. US-based 24/7 NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
+			"href": "/voice/",
+			"cta": "See voice features"
+		},
+		{
+			"key": "messaging",
+			"title": "Messaging",
+			"tagline": "SMS and MMS at wholesale rates",
+			"description": "A2P 10DLC for high-volume application messaging. Inbound included. Webhook delivery to your endpoint. No per-message platform tax.",
+			"href": "/messaging/",
+			"cta": "See messaging"
+		},
+		{
+			"key": "numbers",
+			"title": "Numbers",
+			"tagline": "Local DIDs, toll-free, and porting",
+			"description": "Wholesale rates on every number type. Per-number e911 provisioning. CNAM and caller-ID services available. Port-in supported.",
+			"href": "/numbers/",
+			"cta": "Get numbers"
+		},
+		{
+			"key": "sdn",
+			"title": "SDN appliance",
+			"tagline": "Plug-and-play SIP traversal",
+			"description": "Place a Raspberry Pi in your LAN; it tunnels to VoiceTel core. Solves NAT, ALG, UDP timer, and firewall misconfiguration without changing your routing policies.",
+			"href": "/sdn/",
+			"cta": "Learn about SDN"
+		},
+		{
+			"key": "phone",
+			"title": "Phone apps",
+			"tagline": "Web, desktop, and mobile",
+			"description": "VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. SIP-over-TLS and WebRTC. Encrypted by default. One app, three form factors.",
+			"href": "/phone/",
+			"cta": "Get the app"
+		},
+		{
+			"key": "pricing",
+			"title": "Pricing",
+			"tagline": "Wholesale rates, in plain numbers",
+			"description": "Every line item published. No 'contact sales' gates. STT, TTS, and recording storage paid directly to your chosen provider with zero VoiceTel markup.",
+			"href": "/pricing/",
+			"cta": "See pricing"
+		},
+		{
+			"key": "docs",
+			"title": "Documentation",
+			"tagline": "Reference, guides, and migration playbooks",
+			"description": "VoiceML reference, REST API, integration guides for major PBX platforms and firewall vendors, and a five-minute migrate-from-Twilio playbook.",
+			"href": "/docs/",
+			"cta": "Read the docs"
+		}
+	],
 	"formEndpoints": {
 		"signup": "/signup",
 		"login": "/login",

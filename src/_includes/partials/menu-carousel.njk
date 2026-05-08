@@ -1,0 +1,62 @@
+<section
+	class="menu-carousel"
+	aria-roledescription="carousel"
+	aria-label="Product overview"
+	data-menu-carousel
+>
+	<div class="menu-carousel-track" data-carousel-track aria-live="polite">
+		{%- for item in site.menuCarousel %}
+		<article
+			class="menu-carousel-slide"
+			data-slide-index="{{ loop.index0 }}"
+			role="group"
+			aria-roledescription="slide"
+			aria-label="{{ loop.index }} of {{ site.menuCarousel | length }}: {{ item.title }}"
+			{%- if loop.index0 !== 0 %} inert{% endif %}
+		>
+			<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
+			<h2 class="menu-carousel-title">{{ item.title }}</h2>
+			<p class="menu-carousel-description">{{ item.description }}</p>
+			<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }} &rarr;</a>
+		</article>
+		{%- endfor %}
+	</div>
+	<div class="menu-carousel-controls">
+		<button
+			type="button"
+			class="menu-carousel-arrow"
+			data-carousel-prev
+			aria-label="Previous slide"
+		>&larr;</button>
+		<ol class="menu-carousel-dots" data-carousel-dots>
+			{%- for item in site.menuCarousel %}
+			<li>
+				<button
+					type="button"
+					class="menu-carousel-dot"
+					data-carousel-dot="{{ loop.index0 }}"
+					aria-label="Go to slide {{ loop.index }}: {{ item.title }}"
+					{%- if loop.index0 === 0 %} aria-current="true"{% endif %}
+				></button>
+			</li>
+			{%- endfor %}
+		</ol>
+		<button
+			type="button"
+			class="menu-carousel-arrow"
+			data-carousel-next
+			aria-label="Next slide"
+		>&rarr;</button>
+		<button
+			type="button"
+			class="menu-carousel-pause"
+			data-carousel-pause
+			aria-label="Pause auto-advance"
+			aria-pressed="false"
+		>
+			<span data-pause-icon>&#9208;</span>
+			<span data-play-icon hidden>&#9654;</span>
+			<span class="visually-hidden" data-pause-label>Pause auto-advance</span>
+		</button>
+	</div>
+</section>

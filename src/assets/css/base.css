@@ -137,6 +137,14 @@ img {
 	width: 100%;
 }
 
+/* Sub-pages: page.njk wraps content in <div class="container"> directly under
+ * <main>. Give that wrapper the same top breathing room the homepage carousel
+ * provides. Doesn't apply to homepage (first child is the carousel section). */
+main > .container:first-child {
+	padding-top: var(--space-7);
+	padding-bottom: var(--space-7);
+}
+
 .container--wide {
 	max-width: 1500px;
 }

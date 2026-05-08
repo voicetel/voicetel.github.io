@@ -1,0 +1,133 @@
+{#
+	Renders a structured `sections` array from marketingCopy.json.
+	Falls back to a generic heading + copy + items render for unknown types.
+#}
+{%- for section in sections %}
+	{%- if section.type === "hero" %}
+		<section class="hero">
+			{%- if section.eyebrow %}<p class="eyebrow">{{ section.eyebrow }}</p>{% endif %}
+			{%- if section.headline %}<h1>{{ section.headline }}</h1>{% endif %}
+			{%- if section.lede %}<p class="lede">{{ section.lede }}</p>{% endif %}
+			{%- if section.primaryCta or section.secondaryCta %}
+			<p class="hero-actions">
+				{%- if section.primaryCta %}<a class="btn btn-primary" href="{{ section.primaryCta.href }}">{{ section.primaryCta.label }}</a>{% endif %}
+				{%- if section.secondaryCta %}<a class="btn btn-secondary" href="{{ section.secondaryCta.href }}">{{ section.secondaryCta.label }}</a>{% endif %}
+			</p>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "feature-grid" or section.type === "product-grid" or section.type === "docs-grid" or section.type === "use-cases" %}
+		<section class="section-block">
+			{%- if section.heading %}<h2>{{ section.heading }}</h2>{% endif %}
+			{%- if section.lede %}<p class="lede">{{ section.lede }}</p>{% endif %}
+			{%- if section.items %}
+			<ul class="features-grid">
+				{%- for item in section.items %}
+				<li class="feature">
+					<h3>{{ item.title }}</h3>
+					<p>{{ item.copy }}</p>
+				</li>
+				{%- endfor %}
+			</ul>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "proof" or section.type === "proof-strip" %}
+		<section class="section-block proof-block">
+			{%- if section.heading %}<h2>{{ section.heading }}</h2>{% endif %}
+			{%- if section.items %}
+			<ul class="proof-list">
+				{%- for item in section.items %}
+				<li>
+					{%- if item.label %}<span class="proof-label">{{ item.label }}</span>{% endif %}
+					{%- if item.title %}<strong>{{ item.title }}</strong>{% endif %}
+					{%- if item.copy %}<p>{{ item.copy }}</p>{% endif %}
+				</li>
+				{%- endfor %}
+			</ul>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "cta" %}
+		<section class="section-block cta-block">
+			{%- if section.heading or section.title %}<h2>{{ section.heading or section.title }}</h2>{% endif %}
+			{%- if section.copy %}<p>{{ section.copy }}</p>{% endif %}
+			{%- if section.primaryCta or section.secondaryCta %}
+			<p class="hero-actions">
+				{%- if section.primaryCta %}<a class="btn btn-primary" href="{{ section.primaryCta.href }}">{{ section.primaryCta.label }}</a>{% endif %}
+				{%- if section.secondaryCta %}<a class="btn btn-secondary" href="{{ section.secondaryCta.href }}">{{ section.secondaryCta.label }}</a>{% endif %}
+			</p>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "comparison" or section.type === "comparison-policy" or section.type === "pricing-preview" or section.type === "rate-table-copy" %}
+		<section class="section-block">
+			{%- if section.heading %}<h2>{{ section.heading }}</h2>{% endif %}
+			{%- if section.copy %}<p>{{ section.copy }}</p>{% endif %}
+			{%- if section.status %}<p class="muted"><em>Status: {{ section.status }}</em></p>{% endif %}
+			{%- if section.items %}
+			<ul>
+				{%- for item in section.items %}
+				<li>{% if item.title %}<strong>{{ item.title }}</strong> — {% endif %}{{ item.copy }}</li>
+				{%- endfor %}
+			</ul>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "faq" or section.type === "faq-categories" %}
+		<section class="section-block faq-block">
+			{%- if section.heading %}<h2>{{ section.heading }}</h2>{% endif %}
+			{%- if section.faqs %}
+				{%- for faq in section.faqs %}
+				<details class="faq-item">
+					<summary>{{ faq.question }}</summary>
+					<p>{{ faq.answer }}</p>
+				</details>
+				{%- endfor %}
+			{%- endif %}
+			{%- if section.categories %}
+			<ul>
+				{%- for cat in section.categories %}
+				<li><strong>{{ cat.label or cat.title }}</strong>{% if cat.copy %} — {{ cat.copy }}{% endif %}</li>
+				{%- endfor %}
+			</ul>
+			{%- endif %}
+		</section>
+
+	{%- elif section.type === "caveat" %}
+		<aside class="section-block caveat-block">
+			{%- if section.heading %}<h3>{{ section.heading }}</h3>{% endif %}
+			{%- if section.copy %}<p>{{ section.copy }}</p>{% endif %}
+		</aside>
+
+	{%- elif section.type === "code" %}
+		<section class="section-block code-block-section">
+			{%- if section.heading %}<h2>{{ section.heading }}</h2>{% endif %}
+			{%- if section.copy %}<p>{{ section.copy }}</p>{% endif %}
+			{%- if section.sample %}<pre class="code-block"><code>{{ section.sample }}</code></pre>{% endif %}
+		</section>
+
+	{%- else %}
+		{# Generic fallback: render whatever the section has — heading, copy, items, faqs, etc. #}
+		<section class="section-block section-block--generic" data-section-type="{{ section.type }}">
+			{%- if section.heading or section.title %}<h2>{{ section.heading or section.title }}</h2>{% endif %}
+			{%- if section.copy %}<p>{{ section.copy }}</p>{% endif %}
+			{%- if section.lede %}<p class="lede">{{ section.lede }}</p>{% endif %}
+			{%- if section.items %}
+			<ul>
+				{%- for item in section.items %}
+				<li>{% if item.title %}<strong>{{ item.title }}</strong>{% if item.copy %} — {% endif %}{% endif %}{{ item.copy or "" }}</li>
+				{%- endfor %}
+			</ul>
+			{%- endif %}
+			{%- if section.faqs %}
+				{%- for faq in section.faqs %}
+				<details class="faq-item">
+					<summary>{{ faq.question }}</summary>
+					<p>{{ faq.answer }}</p>
+				</details>
+				{%- endfor %}
+			{%- endif %}
+		</section>
+	{%- endif %}
+{%- endfor %}

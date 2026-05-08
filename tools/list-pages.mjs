@@ -64,4 +64,6 @@ for (const file of files) {
 }
 
 console.log();
-console.log("Plus 11 Redoc-rendered API doc pages under `/docs/api/{spec}/` from `vendor/api-specs/{spec}.json`.");
+console.log(
+	"Plus 11 Redoc-rendered API doc pages under `/docs/api/{spec}/` from `vendor/api-specs/{spec}.json`."
+);

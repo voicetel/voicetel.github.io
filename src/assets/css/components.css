@@ -928,6 +928,102 @@ textarea {
 	}
 }
 
+/* ─── Section blocks (rendered from marketingCopy) ─── */
+
+.section-block {
+	margin: var(--space-7) 0;
+}
+
+.section-block h2 {
+	font-size: var(--text-2xl);
+	margin: 0 0 var(--space-4) 0;
+}
+
+.section-block h3 {
+	margin: 0 0 var(--space-2) 0;
+}
+
+.section-block .lede {
+	max-width: 72ch;
+	margin-bottom: var(--space-4);
+}
+
+.section-block ul {
+	margin: 0 0 var(--space-4) 0;
+	padding-left: var(--space-5);
+}
+
+.section-block ul li {
+	margin-bottom: var(--space-2);
+}
+
+.proof-block .proof-list {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--space-4);
+}
+
+.proof-block .proof-list li {
+	background: var(--light-bg);
+	border-radius: var(--radius);
+	padding: var(--space-4);
+}
+
+.proof-label {
+	display: inline-block;
+	font-family: var(--font-mono);
+	font-size: var(--text-xs);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	margin-bottom: var(--space-1);
+}
+
+.cta-block {
+	background: var(--light-bg);
+	padding: var(--space-6);
+	border-radius: var(--radius);
+}
+
+.caveat-block {
+	border-left: 3px solid var(--warning-color);
+	background: var(--alert-warning-bg);
+	color: var(--alert-warning-fg);
+	padding: var(--space-4);
+	border-radius: 0 var(--radius) var(--radius) 0;
+	margin: var(--space-5) 0;
+}
+
+.faq-block .faq-item {
+	border-bottom: 1px solid var(--border-color);
+	padding: var(--space-3) 0;
+}
+
+.faq-block .faq-item summary {
+	cursor: pointer;
+	font-weight: var(--weight-semibold);
+	color: var(--primary-color);
+	font-size: var(--text-md);
+}
+
+.faq-block .faq-item p {
+	margin-top: var(--space-2);
+}
+
+.code-block-section .code-block {
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	line-height: 1.65;
+	background: var(--light-bg);
+	color: var(--text-default);
+	padding: var(--space-4);
+	border-radius: var(--radius);
+	border: 1px solid var(--border-color);
+	overflow-x: auto;
+}
+
 /* ─── Footer ─── */
 
 .footer {

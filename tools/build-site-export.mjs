@@ -132,9 +132,7 @@ function parseHtml(html, originHost) {
 }
 
 async function main() {
-	const siteData = JSON.parse(
-		await readFile(resolve(ROOT, "src/_data/site.json"), "utf8")
-	);
+	const siteData = JSON.parse(await readFile(resolve(ROOT, "src/_data/site.json"), "utf8"));
 	const originHost = new URL(siteData.url).host;
 
 	const files = (await walkHtml(SITE)).sort();

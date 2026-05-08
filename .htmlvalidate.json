@@ -1,6 +1,7 @@
 {
 	"extends": ["html-validate:recommended"],
 	"rules": {
-		"void-style": ["error", { "style": "omit" }]
+		"void-style": ["error", { "style": "omit" }],
+		"no-trailing-whitespace": "off"
 	}
 }

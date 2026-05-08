@@ -30,14 +30,7 @@ for (const spec of specs) {
 	process.stdout.write(`  ${name} `);
 	const start = Date.now();
 	try {
-		await exec("npx", [
-			"--no-install",
-			"redocly",
-			"build-docs",
-			specPath,
-			"--output",
-			outFile,
-		]);
+		await exec("npx", ["--no-install", "redocly", "build-docs", specPath, "--output", outFile]);
 		console.log(`(${Date.now() - start}ms)`);
 	} catch (err) {
 		console.log("FAILED");

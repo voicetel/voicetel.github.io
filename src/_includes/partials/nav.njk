@@ -1,6 +1,9 @@
 <nav class="navbar" aria-label="Primary">
 	<div class="nav-container">
-		<a class="nav-brand" href="/">{{ site.brand }}</a>
+		<a class="nav-brand" href="/">
+			<span class="nav-brand-icon" aria-hidden="true">{% icon "phone-square" %}</span>
+			<span class="nav-brand-text">{{ site.brand }}</span>
+		</a>
 		<button
 			class="nav-toggle"
 			type="button"
@@ -13,11 +16,51 @@
 		</button>
 		<ul id="primary-nav" class="nav-menu" data-nav-menu>
 			{%- for item in site.nav %}
-			<li>
-				<a href="{{ item.href }}"{% if page.url.startsWith(item.href) and item.href !== '/' %} class="active" aria-current="page"{% elif page.url === item.href %} class="active" aria-current="page"{% endif %}>{{ item.label }}</a>
-			</li>
+				{%- if item.items %}
+				{%- set isMega = item.type == "mega" %}
+				{%- set isRight = item.alignment == "right" %}
+				<li class="nav-item nav-item--has-menu{% if isRight %} nav-item--right{% endif %}" data-nav-dropdown>
+					<button
+						type="button"
+						class="nav-link nav-link--button"
+						aria-haspopup="true"
+						aria-expanded="false"
+						aria-controls="{{ item.id }}"
+						data-nav-trigger
+					>
+						{{ item.label }}
+						<svg class="nav-chevron" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M2 4 L6 8 L10 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
+					<div
+						id="{{ item.id }}"
+						class="nav-dropdown{% if isMega %} nav-dropdown--mega{% endif %}{% if item.layout == 'two-column' %} nav-dropdown--two-col{% endif %}{% if isRight %} nav-dropdown--right{% endif %}"
+						hidden
+					>
+						<ul class="nav-dropdown-grid">
+							{%- for sub in item.items %}
+							<li>
+								<a class="nav-dropdown-link" href="{{ sub.href }}">
+									{%- if sub.icon %}
+									<span class="nav-dropdown-icon" aria-hidden="true">{% icon sub.icon %}</span>
+									{%- endif %}
+									<span class="nav-dropdown-text">
+										<span class="nav-dropdown-label">{{ sub.label }}</span>
+										{%- if sub.description %}
+										<span class="nav-dropdown-description">{{ sub.description }}</span>
+										{%- endif %}
+									</span>
+								</a>
+							</li>
+							{%- endfor %}
+						</ul>
+					</div>
+				</li>
+				{%- else %}
+				<li class="nav-item">
+					<a class="nav-link{% if page.url === item.href %} active{% endif %}" href="{{ item.href }}"{% if page.url === item.href %} aria-current="page"{% endif %}>{{ item.label }}</a>
+				</li>
+				{%- endif %}
 			{%- endfor %}
-			<li><a class="btn btn-primary btn-sm" href="{{ site.portalUrl }}/signup">Sign up</a></li>
 		</ul>
 	</div>
 </nav>

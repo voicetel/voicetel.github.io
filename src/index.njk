@@ -5,6 +5,29 @@ description: "Run your Twilio app on VoiceTel. Same voice markup. Same webhook s
 ---
 {% include "partials/menu-carousel.njk" %}
 
-<section class="container">
-	<p>This is the Phase 1 scaffold landing page. The carousel above replaces the standalone hero. Comparison block, pricing snippet, use-case grid, trust strip, and signup CTA land in subsequent edits per the brief's <code>§7</code> homepage spec.</p>
+<section id="features" class="features-section">
+	<div class="container">
+		<ul class="features-grid">
+			<li class="feature">
+				<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+				<h3>Verified Calling</h3>
+				<p>STIR/SHAKEN attestation on every call, backed by real-time threat detection and fraud mitigation.</p>
+			</li>
+			<li class="feature">
+				<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
+				<h3>Wholesale Economics</h3>
+				<p>Published rates, scalable volume discounts, and direct access without contact-sales gates or hidden markups.</p>
+			</li>
+			<li class="feature">
+				<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
+				<h3>Resilient Network</h3>
+				<p>Geographically diverse POPs with redundant Tier-1 carrier interconnects for dependable performance.</p>
+			</li>
+			<li class="feature">
+				<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
+				<h3>Operator Support</h3>
+				<p>US-based NOC support from engineers who understand carrier-grade voice, messaging, and IP services.</p>
+			</li>
+		</ul>
+	</div>
 </section>

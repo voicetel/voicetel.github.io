@@ -2,13 +2,42 @@
 	<div class="container">
 		<div class="footer-grid">
 			<div class="footer-col">
-				<div class="footer-brand">{{ site.brand }}</div>
+				<div class="footer-brand">
+					<span class="footer-brand-icon" aria-hidden="true">{% icon "phone-square" %}</span>
+					<span class="footer-brand-text">{{ site.brand }}</span>
+				</div>
 				<p class="footer-tagline">{{ site.tagline }}</p>
+				<ul class="footer-quick-links">
+					<li>
+						<a href="/pricing/">
+							<span class="footer-quick-icon" aria-hidden="true">{% icon "tag" %}</span>
+							Pricing
+						</a>
+					</li>
+					<li>
+						<a href="{{ site.portalUrl }}{{ site.formEndpoints.login }}">
+							<span class="footer-quick-icon" aria-hidden="true">{% icon "box-arrow-in-right" %}</span>
+							Sign in
+						</a>
+					</li>
+					<li>
+						<a href="https://github.com/voicetel/" rel="external">
+							<span class="footer-quick-icon" aria-hidden="true">{% icon "github" %}</span>
+							GitHub
+						</a>
+					</li>
+					<li>
+						<a href="{{ site.portalUrl }}{{ site.formEndpoints.signup }}">
+							<span class="footer-quick-icon" aria-hidden="true">{% icon "person-plus" %}</span>
+							Sign up
+						</a>
+					</li>
+				</ul>
 			</div>
 			{%- for group in site.footerNav %}
-				<div class="footer-col">
+				<div class="footer-col{% if group.columns == 2 %} footer-col--wide{% endif %}">
 					<h2 class="footer-heading">{{ group.label }}</h2>
-					<ul class="footer-links">
+					<ul class="footer-links{% if group.columns == 2 %} footer-links--two-col{% endif %}">
 						{%- for item in group.items %}
 						<li><a href="{{ item.href }}">{{ item.label }}</a></li>
 						{%- endfor %}
@@ -17,8 +46,8 @@
 			{%- endfor %}
 		</div>
 		<div class="footer-meta">
-			<small>&copy; {% year %} {{ site.brand }}. All rights reserved.</small>
-			<small>POPs: {{ site.pops | join(" · ") }}</small>
+			<small>&copy; 1999&ndash;{% year %} <a class="footer-legal-link" href="/about/">{{ site.legalName }}</a>. All rights reserved.</small>
+			<small><a class="footer-pops-link" href="/status/">POPs: {{ site.pops | join(" · ") }}</a></small>
 		</div>
 	</div>
 </footer>

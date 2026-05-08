@@ -10,8 +10,14 @@
 :root {
 	/* ─── Color: brand and action ─── */
 	--primary-color: #2c3e50;
-	--primary-light: #1d6fa5;
-	--primary-dark: #154f78;
+	--primary-light: #3498db;
+	--primary-dark: #2980b9;
+
+	/* AA-darkened action color for white-text-on-blue contexts (buttons,
+	 * primary CTAs). Keeps the portal's bright #3498db for accents, hovers,
+	 * top borders, focus rings, link color, etc. */
+	--btn-primary-bg: #1d6fa5;
+	--btn-primary-bg-hover: #154f78;
 
 	/* ─── Color: semantic status ─── */
 	--success-color: #28a745;
@@ -28,7 +34,7 @@
 	/* ─── Color: text ─── */
 	--text-strong: #13171d;
 	--text-default: #333;
-	--text-muted: #495057;
+	--text-muted: #6c757d;
 
 	/* ─── Color: alert tints (Bootstrap-derived) ─── */
 	--alert-success-bg: #d4edda;

@@ -2,6 +2,7 @@
 	"version": "0.1.0",
 	"updated": "2026-05-08",
 	"brand": "VoiceTel",
+	"legalName": "VoiceTel Communications",
 	"tagline": "Twilio-compatible programmable voice at wholesale prices.",
 	"description": "Run your Twilio app on VoiceTel. Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage.",
 	"lang": "en",
@@ -13,46 +14,190 @@
 	"supportEmail": "support@voicetel.com",
 	"pops": ["NYC", "CLT", "ORD", "DEN", "DFW", "SJC"],
 	"nav": [
-		{ "label": "VoiceML", "href": "/voiceml/" },
-		{ "label": "Voice", "href": "/voice/" },
-		{ "label": "Messaging", "href": "/messaging/" },
-		{ "label": "Numbers", "href": "/numbers/" },
-		{ "label": "SDN", "href": "/sdn/" },
-		{ "label": "Phone", "href": "/phone/" },
-		{ "label": "Pricing", "href": "/pricing/" },
-		{ "label": "Docs", "href": "/docs/" }
+		{
+			"label": "Products",
+			"id": "nav-products",
+			"type": "mega",
+			"layout": "two-column",
+			"items": [
+				{
+					"label": "Voice",
+					"icon": "telephone",
+					"href": "/voice/",
+					"description": "Wholesale origination + termination."
+				},
+				{
+					"label": "Messaging",
+					"icon": "chat-text",
+					"href": "/messaging/",
+					"description": "SMS and MMS at wholesale rates."
+				},
+				{
+					"label": "Numbers",
+					"icon": "hash",
+					"href": "/numbers/",
+					"description": "Local, toll-free, and mobile numbers."
+				},
+				{
+					"label": "SIP Trunking",
+					"icon": "hdd-stack",
+					"href": "/sip-trunking/",
+					"description": "Carrier-grade SIP trunks for your PBX or UC platform."
+				},
+				{
+					"label": "VoiceML",
+					"icon": "code-slash",
+					"href": "/voiceml/",
+					"description": "Drop-in compatible voice markup runtime."
+				},
+				{
+					"label": "Hosted PBX",
+					"icon": "diagram-3",
+					"href": "/pbx/",
+					"description": "Multi-tenant PBX on VoiceML."
+				},
+				{
+					"label": "Caller Lookup",
+					"icon": "person-vcard",
+					"href": "/caller-lookup/",
+					"description": "CNAM and caller-ID lookups by number."
+				},
+				{
+					"label": "Carrier Lookup",
+					"icon": "broadcast-pin",
+					"href": "/carrier-lookup/",
+					"description": "LRN, MNP, and carrier of record lookups."
+				},
+				{
+					"label": "Phone Applications",
+					"icon": "phone-vibrate",
+					"href": "/phone/",
+					"description": "VoIP calling on web, desktop, mobile."
+				},
+				{
+					"label": "SDN Appliance",
+					"icon": "plug",
+					"href": "/sdn/",
+					"description": "Plug-and-play SIP traversal."
+				}
+			]
+		},
+		{
+			"label": "Resources",
+			"id": "nav-resources",
+			"type": "mega",
+			"items": [
+				{
+					"label": "Documentation",
+					"icon": "book",
+					"href": "/docs/",
+					"description": "VoiceML reference, REST API, integration guides."
+				},
+				{
+					"label": "FAQ",
+					"icon": "question-circle",
+					"href": "/faq/",
+					"description": "Account, billing, voice, messaging, e911."
+				},
+				{
+					"label": "Infrastructure & uptime",
+					"icon": "geo-alt",
+					"href": "/infrastructure/",
+					"description": "POP locations, carrier hand-offs, uptime history."
+				},
+				{
+					"label": "Network status",
+					"icon": "activity",
+					"href": "/status/",
+					"description": "Real-time status of voice, messaging, API, portal."
+				}
+			]
+		},
+		{
+			"label": "Company",
+			"id": "nav-company",
+			"type": "mega",
+			"items": [
+				{
+					"label": "About",
+					"icon": "info-circle",
+					"href": "/about/",
+					"description": "Who we are and how we got here."
+				},
+				{
+					"label": "Contact",
+					"icon": "envelope",
+					"href": "/contact/",
+					"description": "Sales, support, partnerships, billing, press."
+				},
+				{
+					"label": "Open Source",
+					"icon": "github",
+					"href": "/open-source/",
+					"description": "Tools and libraries we publish under open licenses."
+				},
+				{
+					"label": "Legal",
+					"icon": "shield-check",
+					"href": "/legal/",
+					"description": "Terms, privacy, AUP, e911 limitations."
+				}
+			]
+		},
+		{
+			"label": "Sign in",
+			"id": "nav-signin",
+			"type": "dropdown",
+			"alignment": "right",
+			"items": [
+				{
+					"label": "Sign in",
+					"icon": "box-arrow-in-right",
+					"href": "https://www.voicetel.com/login",
+					"description": "Already have an account."
+				},
+				{
+					"label": "Sign up",
+					"icon": "person-plus",
+					"href": "https://www.voicetel.com/signup",
+					"description": "Create a VoiceTel account."
+				}
+			]
+		}
 	],
 	"footerNav": [
 		{
-			"label": "Product",
+			"label": "Products",
+			"columns": 2,
 			"items": [
-				{ "label": "VoiceML", "href": "/voiceml/" },
 				{ "label": "Voice", "href": "/voice/" },
 				{ "label": "Messaging", "href": "/messaging/" },
 				{ "label": "Numbers", "href": "/numbers/" },
-				{ "label": "SDN appliance", "href": "/sdn/" },
-				{ "label": "Phone apps", "href": "/phone/" },
-				{ "label": "Hosted PBX", "href": "/pbx/" }
+				{ "label": "SIP Trunking", "href": "/sip-trunking/" },
+				{ "label": "VoiceML", "href": "/voiceml/" },
+				{ "label": "Hosted PBX", "href": "/pbx/" },
+				{ "label": "Caller Lookup", "href": "/caller-lookup/" },
+				{ "label": "Carrier Lookup", "href": "/carrier-lookup/" },
+				{ "label": "Phone Applications", "href": "/phone/" },
+				{ "label": "SDN Appliance", "href": "/sdn/" }
 			]
 		},
 		{
 			"label": "Resources",
 			"items": [
 				{ "label": "Documentation", "href": "/docs/" },
-				{ "label": "Migrate from Twilio", "href": "/voiceml/migrate/" },
-				{ "label": "Compatibility matrix", "href": "/voiceml/compatibility/" },
-				{ "label": "Cost calculator", "href": "/voiceml/calculator/" },
-				{ "label": "FAQ", "href": "/faq/" }
+				{ "label": "FAQ", "href": "/faq/" },
+				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },
+				{ "label": "Network status", "href": "/status/" }
 			]
 		},
 		{
 			"label": "Company",
 			"items": [
-				{ "label": "Pricing", "href": "/pricing/" },
 				{ "label": "About", "href": "/about/" },
-				{ "label": "Legal", "href": "/legal/" },
-				{ "label": "Sign up", "href": "https://www.voicetel.com/signup" },
-				{ "label": "Log in", "href": "https://www.voicetel.com/login" }
+				{ "label": "Contact", "href": "/contact/" },
+				{ "label": "Open Source", "href": "/open-source/" },
+				{ "label": "Legal", "href": "/legal/" }
 			]
 		}
 	],
@@ -80,7 +225,7 @@
 			"key": "voice",
 			"title": "Voice",
 			"tagline": "Wholesale origination and termination",
-			"description": "STIR/SHAKEN A-attestation. Six US POPs. US-based 24/7 NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
+			"description": "STIR/SHAKEN attestation. Six US POPs. US-based 24/7 NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
 			"href": "/voice/",
 			"cta": "See voice features"
 		},
@@ -140,5 +285,6 @@
 		"porting": "/porting",
 		"resellerInquiry": "/reseller-inquiry",
 		"contact": "/contact"
-	}
+	},
+	"_note": "site.formEndpoints.signup is the path on portalUrl; the marketing site renders the button label as 'Signup'."
 }

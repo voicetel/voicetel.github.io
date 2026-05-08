@@ -28,7 +28,7 @@
 	/* ─── Color: text ─── */
 	--text-strong: #13171d;
 	--text-default: #333;
-	--text-muted: #6c757d;
+	--text-muted: #495057;
 
 	/* ─── Color: alert tints (Bootstrap-derived) ─── */
 	--alert-success-bg: #d4edda;

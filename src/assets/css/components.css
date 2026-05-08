@@ -521,11 +521,6 @@ textarea {
 }
 
 .menu-carousel-arrow,
-.menu-carousel-dots {
-	display: none;
-}
-
-.menu-carousel-arrow,
 .menu-carousel-pause {
 	width: 36px;
 	height: 36px;
@@ -596,6 +591,12 @@ textarea {
 .menu-carousel-dot:focus-visible {
 	outline: 2px solid var(--primary-light);
 	outline-offset: 2px;
+}
+
+/* Hide manual nav (arrows + dots); pause toggle stays visible for WCAG 2.2.2. */
+.menu-carousel-arrow,
+.menu-carousel-dots {
+	display: none;
 }
 
 @media (width <= 720px) {

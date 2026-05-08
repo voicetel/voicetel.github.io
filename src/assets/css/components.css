@@ -461,10 +461,11 @@ textarea {
 	box-sizing: border-box;
 	padding: 0 var(--space-5);
 	min-height: 220px;
+	text-align: center;
 }
 
 .menu-carousel-slide > * {
-	max-width: 1200px;
+	max-width: 64ch;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -493,7 +494,8 @@ textarea {
 	display: flex;
 	gap: var(--space-3);
 	flex-wrap: wrap;
-	margin: 0;
+	justify-content: center;
+	margin: 0 auto;
 }
 
 .menu-carousel-slide--hero {

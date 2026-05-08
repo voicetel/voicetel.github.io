@@ -521,6 +521,11 @@ textarea {
 }
 
 .menu-carousel-arrow,
+.menu-carousel-dots {
+	display: none;
+}
+
+.menu-carousel-arrow,
 .menu-carousel-pause {
 	width: 36px;
 	height: 36px;

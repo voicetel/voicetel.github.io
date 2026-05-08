@@ -1,12 +1,29 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 permalink: /voiceml/compatibility/
 title: "VoiceML compatibility matrix"
-description: "Verb-by-verb compatibility between VoiceML and Twilio's voice markup, with an interactive paste-XML checker."
+description: "A compatibility matrix for VoiceML, covering supported, partial, unsupported, and roadmap voice markup features with an XML checker."
 ---
 
 <p class="eyebrow">Compatibility</p>
-<h1>VoiceML compatibility matrix</h1>
-<p class="lede">Drop-in compatibility, verified verb by verb. Paste your voice markup XML below to see which features are supported, partial, on the roadmap, or unsupported.</p>
+<h1>Know exactly which call features are supported before migration.</h1>
+<p class="lede">The VoiceML compatibility page is explicit, searchable, and honest. Every verb, attribute, REST resource, and caveat is published as a clear support status rather than a broad promise.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="#checker">Paste XML</a>
+	<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
+</p>
 
-<p>Phase 1 placeholder. The interactive paste-XML checker and the full reference matrix land per the brief's <code>§7 /voiceml/compatibility/</code> spec, sourced from <code>compat.json</code>.</p>
+<section class="section-block" data-section-type="matrix-summary">
+	<h2>Matrix summary</h2>
+	<ul>
+		<li><strong>Supported</strong> — Core call-control verbs and voice resources that engineering has verified.</li>
+		<li><strong>Partial</strong> — Features that work with documented caveats, such as platform or media-module limitations.</li>
+		<li><strong>Unsupported</strong> — Features intentionally outside scope, including payment handling and unrelated hosted products.</li>
+		<li><strong>Native VoiceTel path</strong> — Products such as numbers and messaging link to VoiceTel-native product pages when they are not part of the compatible voice API surface.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="checker-copy">
+	<h2>Client-side XML checker</h2>
+	<p>The checker parses XML in the browser, matches verbs and attributes against the compatibility matrix, and returns compatible, compatible with caveats, or not supported. Pasted XML is not sent to a server.</p>
+</section>

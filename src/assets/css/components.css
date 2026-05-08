@@ -982,9 +982,19 @@ textarea {
 }
 
 .cta-block {
-	background: var(--light-bg);
+	background: var(--alert-info-bg);
+	border: 1px solid var(--alert-info-rule);
+	border-left: 4px solid var(--primary-color);
 	padding: var(--space-6);
 	border-radius: var(--radius);
+}
+
+.cta-block h2 {
+	color: var(--alert-info-fg);
+}
+
+.cta-block p {
+	color: var(--alert-info-fg);
 }
 
 .caveat-block {

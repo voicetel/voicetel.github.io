@@ -1,16 +1,74 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Voice"
-description: "Wholesale programmable voice — origination, termination, STIR/SHAKEN attestation, US-based 24/7 NOC. Bring your own STT, TTS, and recording storage."
+description: "Wholesale programmable voice with origination, termination, VoiceML call control, STIR/SHAKEN, recordings, conferences, queues, and signed webhooks."
 ---
 
 <p class="eyebrow">Programmable voice</p>
-<h1>Voice</h1>
-<p class="lede">Wholesale origination and termination, STIR/SHAKEN attestation, six US POPs, US-based 24/7 NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no markup.</p>
-
-<p>Phase 1 placeholder. Full feature list, BYO services section, code samples, and pricing snippet land per the brief's <code>§7 /voice/</code> spec.</p>
-
+<h1>Wholesale voice for applications, carriers, and operators.</h1>
+<p class="lede">Build voice workflows on VoiceTel without paying retail markup on every layer of the call. Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/pricing/">See pricing</a>
-	<a class="btn btn-secondary" href="/voiceml/">VoiceML runtime</a>
+	<a class="btn btn-secondary" href="/voiceml/">Explore VoiceML</a>
 </p>
+
+<section class="section-block">
+	<h2>Voice capabilities</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3>Origination and termination</h3>
+			<p>Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths.</p>
+		</li>
+		<li class="feature">
+			<h3>VoiceML call control</h3>
+			<p>Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls using XML-based voice markup.</p>
+		</li>
+		<li class="feature">
+			<h3>Signed webhooks</h3>
+			<p>Status, recording, gather, dial, conference, AMD, and action callbacks use signed webhook delivery for request verification.</p>
+		</li>
+		<li class="feature">
+			<h3>Bring your own media vendors</h3>
+			<p>Use your preferred speech-to-text, text-to-speech, and recording storage providers where supported; VoiceTel does not hide third-party provider costs inside vague platform claims.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Operational proof points</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3>STIR/SHAKEN aware</h3>
+			<p>Caller identity and attestation are part of the voice story, not an afterthought.</p>
+		</li>
+		<li class="feature">
+			<h3>Six US POPs</h3>
+			<p>NYC, CLT, ORD, DEN, DFW, and SJC are used throughout the site as the published network locations.</p>
+		</li>
+		<li class="feature">
+			<h3>Operator support</h3>
+			<p>Escalations reach people who can read SIP traces, carrier responses, and webhook logs.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="comparison">
+	<h2>Pricing comparison block</h2>
+	<p>Compare inbound voice minute, outbound US-50 and Canada voice minute, AMD, recording, media streaming, and phone-number monthly charges against source-dated competitor list prices. Percent-savings claims appear only when approved VoiceTel public rates support the line-item math.</p>
+</section>
+
+<section class="section-block faq-block">
+	<h2>Voice FAQ</h2>
+	<details class="faq-item">
+		<summary>Can existing Twilio voice applications migrate?</summary>
+		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Does VoiceTel provide speech services directly?</summary>
+		<p>Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed.</p>
+	</details>
+	<details class="faq-item">
+		<summary>How are rates displayed?</summary>
+		<p>Rates are source-dated and shown with unit, source, and assumptions.</p>
+	</details>
+</section>

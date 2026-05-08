@@ -1,26 +1,29 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Open Source"
-description: "VoiceTel-published open source projects, libraries, and references for telecom and SIP-based voice services."
+description: "VoiceTel open-source projects, samples, SDK helpers, reference integrations, VoiceML examples, SDN appliance assets, and telecom tooling."
 ---
 
 <p class="eyebrow">Open Source</p>
-<h1>Open Source</h1>
-<p class="lede">Tools, libraries, and reference implementations VoiceTel publishes under open licenses. We use these in production and ship them so customers and the broader telecom community can build on the same foundations we do.</p>
-
-<h2>What we publish</h2>
-<p>Phase 1 placeholder. The full list of repositories, license summaries, and contribution guidelines lands per the brief's <code>§7</code> spec for company pages. Expected sections:</p>
-<ul>
-	<li><strong>Voice markup reference</strong> — sample VoiceML applications and migration tooling.</li>
-	<li><strong>SDN appliance image</strong> — reference build for the VoiceTel SDN Pi image.</li>
-	<li><strong>SDK clients</strong> — REST API clients and SIP/voice helper libraries.</li>
-	<li><strong>Integration guides</strong> — example configs for Asterisk, FreePBX, FreeSWITCH, FusionPBX, Kamailio, OpenSIPS.</li>
-</ul>
-
-<h2>Licensing</h2>
-<p>All VoiceTel-published open source code ships under permissive licenses (MIT or Apache-2.0 unless otherwise noted at the repository level). Documentation and reference content are typically CC BY 4.0.</p>
-
+<h1>Reference tools for the communications problems we solve in production.</h1>
+<p class="lede">VoiceTel open-source work helps customers inspect, test, and integrate the same patterns the platform supports: voice markup examples, SDK host overrides, SIP integrations, SDN appliance assets, and operational tooling.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="https://github.com/voicetel">Browse on GitHub</a>
+	<a class="btn btn-primary" href="https://github.com/voicetel">Browse GitHub</a>
 	<a class="btn btn-secondary" href="/contact/">Suggest a project</a>
 </p>
+
+<section class="section-block" data-section-type="project-types">
+	<h2>What to publish</h2>
+	<ul>
+		<li><strong>VoiceML examples</strong> — Small, readable call flows for IVR, click-to-call, recordings, conferences, queues, and webhook validation.</li>
+		<li><strong>SDK migration helpers</strong> — Minimal host-override examples and tests for supported helper-library patterns.</li>
+		<li><strong>SIP integration guides</strong> — Example configuration for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and firewalls.</li>
+		<li><strong>SDN appliance assets</strong> — Image references, deployment notes, and troubleshooting workflows where publicly releasable.</li>
+		<li><strong>Operational tools</strong> — Trace analyzers, webhook validators, rate-modeling helpers, and support utilities.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="license-copy">
+	<h2>Licensing</h2>
+	<p>State the license per repository. Do not claim MIT, Apache-2.0, or CC BY coverage unless the individual repository uses that license.</p>
+</section>

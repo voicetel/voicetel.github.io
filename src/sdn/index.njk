@@ -1,20 +1,33 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "VoiceTel SDN appliance"
-description: "Plug-and-play SIP traversal. The SDN appliance sits in your LAN and tunnels to VoiceTel — no firewall configuration required."
+description: "A small on-prem VoiceTel SDN appliance creates a secure tunnel for SIP traversal through NAT, ALG, UDP timer, and firewall constraints."
 ---
 
 <p class="eyebrow">Software-defined networking</p>
-<h1>VoiceTel SDN appliance</h1>
-<p class="lede">Plug-and-play SIP traversal. Place a Raspberry Pi running our image in your LAN; it establishes an encrypted tunnel to VoiceTel. Your PBX registers locally and just works — no NAT headaches, no ALG fights, no firewall configuration.</p>
-
-<p>Solves dropped calls, no audio, one-way audio, rejected calls — the symptoms of NAT, ALG, UDP timer, and general firewall misconfiguration. Optional in-call HA over redundant connectivity for business continuity.</p>
-
-<p>Native integrations with Asterisk, FreePBX, FreeSWITCH, and FusionPBX.</p>
-
-<p>Phase 1 placeholder. Full marketing page lands per the brief's <code>§7 /sdn/</code> spec; technical specification at <a href="http://sdn.voicetel.com">sdn.voicetel.com</a>.</p>
-
+<h1>A small appliance for difficult SIP networks.</h1>
+<p class="lede">The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="mailto:{{ site.supportEmail }}">Request access</a>
+	<a class="btn btn-primary" href="/contact/">Request access</a>
 	<a class="btn btn-secondary" href="http://sdn.voicetel.com">Technical specification</a>
 </p>
+
+<section class="section-block" data-section-type="problem-solution">
+	<h2>What it solves</h2>
+	<ul>
+		<li><strong>No audio or one-way audio</strong> — Media-path issues often come from NAT, firewall, or RTP pinhole behavior. The appliance gives VoiceTel a controlled path.</li>
+		<li><strong>Registration instability</strong> — Keep local PBX registration behavior stable while the appliance handles the upstream secure path.</li>
+		<li><strong>Firewall policy friction</strong> — Reduce the need to open broad inbound SIP and RTP exposure at the customer edge.</li>
+		<li><strong>Support visibility</strong> — Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="compatibility">
+	<h2>Integrations</h2>
+	<p>Position native integrations with Asterisk, FreePBX, FreeSWITCH, and FusionPBX only after installation guides are present in docs.</p>
+</section>
+
+<aside class="caveat-block">
+	<h3>Deployment caveat</h3>
+	<p>Do not claim the appliance fixes every network issue. Some LAN, QoS, ISP, or device problems still require normal network engineering.</p>
+</aside>

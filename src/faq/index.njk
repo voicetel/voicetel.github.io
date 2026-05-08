@@ -1,11 +1,41 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Frequently asked questions"
-description: "Answers to common questions about VoiceTel — accounts, voice, messaging, numbers, compliance, and support."
+description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, numbers, SIP trunking, emergency service, compatibility, and support."
 ---
 
 <p class="eyebrow">Help</p>
-<h1>Frequently asked questions</h1>
-<p class="lede">Answers across accounts, voice, messaging, numbers, e911, and support.</p>
+<h1>Answers for buyers, developers, and telecom operators.</h1>
+<p class="lede">The FAQ answers operational questions directly and routes readers to pricing, docs, or support when a detail depends on account configuration.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Contact support</a>
+	<a class="btn btn-secondary" href="/docs/">Read docs</a>
+</p>
 
-<p>Phase 1 placeholder. The full FAQ system, sourced from <code>faq.json</code> with category filtering and JSON-LD schema, lands per the brief's <code>§4.4</code>.</p>
+<section class="section-block faq-block">
+	<h2>FAQ categories</h2>
+</section>
+
+<section class="section-block faq-block">
+	<h2>Starter FAQ copy</h2>
+	<details class="faq-item">
+		<summary>Is VoiceTel only for developers?</summary>
+		<p>No. VoiceTel serves developers, telecom engineers, operators, and business buyers across programmable voice, messaging, SIP trunking, numbers, hosted PBX, and phone applications.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can I migrate a compatible Twilio voice app?</summary>
+		<p>Yes, if the app stays inside the supported VoiceML-compatible voice surface. Check compatibility and run test calls before cutover.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Are VoiceTel rates public?</summary>
+		<p>VoiceTel publishes approved public rates when available. Account-specific rates are labeled custom or handled through sales.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Do calculator inputs leave the browser?</summary>
+		<p>No. The calculator states that usage inputs remain client-side.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Does VoiceTel support emergency calling?</summary>
+		<p>Emergency-service availability and limitations depend on number type, service address, product configuration, and signed terms. The legal page and service terms explain those limitations.</p>
+	</details>
+</section>

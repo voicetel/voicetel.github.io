@@ -225,7 +225,7 @@
 			"key": "voice",
 			"title": "Voice",
 			"tagline": "Wholesale origination and termination",
-			"description": "STIR/SHAKEN attestation. Six US POPs. US-based 24/7 NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
+			"description": "STIR/SHAKEN attestation. Six US POPs. US-based NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
 			"href": "/voice/",
 			"cta": "See voice features"
 		},

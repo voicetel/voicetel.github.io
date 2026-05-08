@@ -58,6 +58,17 @@
 	],
 	"menuCarousel": [
 		{
+			"key": "intro",
+			"isHero": true,
+			"tagline": "Programmable voice platform",
+			"title": "Run your Twilio app on VoiceTel.",
+			"description": "Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage. Point your existing voice URL at our endpoint and your <Say>, <Gather>, <Dial>, and <Record> work unchanged.",
+			"href": "/voiceml/migrate/",
+			"cta": "Migrate in 5 minutes",
+			"secondaryHref": "/voiceml/compatibility/",
+			"secondaryCta": "Compatibility matrix"
+		},
+		{
 			"key": "voiceml",
 			"title": "VoiceML",
 			"tagline": "Drop-in compatible voice markup runtime",

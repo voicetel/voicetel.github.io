@@ -7,7 +7,7 @@
 	<div class="menu-carousel-track" data-carousel-track aria-live="polite">
 		{%- for item in site.menuCarousel %}
 		<article
-			class="menu-carousel-slide"
+			class="menu-carousel-slide{% if item.isHero %} menu-carousel-slide--hero{% endif %}"
 			data-slide-index="{{ loop.index0 }}"
 			role="group"
 			aria-roledescription="slide"
@@ -15,9 +15,18 @@
 			{%- if loop.index0 !== 0 %} inert{% endif %}
 		>
 			<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
+			{%- if item.isHero %}
+			<h1 class="menu-carousel-title menu-carousel-title--hero">{{ item.title }}</h1>
+			{%- else %}
 			<h2 class="menu-carousel-title">{{ item.title }}</h2>
+			{%- endif %}
 			<p class="menu-carousel-description">{{ item.description }}</p>
-			<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }} &rarr;</a>
+			<p class="menu-carousel-actions">
+				<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}{% if not item.isHero %} &rarr;{% endif %}</a>
+				{%- if item.secondaryHref %}
+				<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
+				{%- endif %}
+			</p>
 		</article>
 		{%- endfor %}
 	</div>

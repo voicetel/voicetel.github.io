@@ -1,0 +1,26 @@
+# Private local workspace (planning, memory, status)
+/memory/
+/directives/
+/status/
+
+# Local Claude Code session data
+/.claude/
+/CLAUDE.md
+
+# Build output
+/_site/
+/_tmp/
+
+# Node
+/node_modules/
+npm-debug.log*
+.npm/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Editor swap and backup files
+*.swp
+*.swo
+*~

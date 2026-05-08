@@ -1,0 +1,23 @@
+<nav class="navbar" aria-label="Primary">
+	<div class="nav-container">
+		<a class="nav-brand" href="/">{{ site.brand }}</a>
+		<button
+			class="nav-toggle"
+			type="button"
+			aria-controls="primary-nav"
+			aria-expanded="false"
+			data-nav-toggle
+		>
+			<span class="visually-hidden">Toggle navigation</span>
+			<span class="nav-toggle-bar" aria-hidden="true"></span>
+		</button>
+		<ul id="primary-nav" class="nav-menu" data-nav-menu>
+			{%- for item in site.nav %}
+			<li>
+				<a href="{{ item.href }}"{% if page.url.startsWith(item.href) and item.href !== '/' %} class="active" aria-current="page"{% elif page.url === item.href %} class="active" aria-current="page"{% endif %}>{{ item.label }}</a>
+			</li>
+			{%- endfor %}
+			<li><a class="btn btn-primary btn-sm" href="{{ site.portalUrl }}/signup">Sign up</a></li>
+		</ul>
+	</div>
+</nav>

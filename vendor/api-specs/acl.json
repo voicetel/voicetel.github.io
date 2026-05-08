@@ -1,0 +1,186 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Access Control List",
+    "version" : "v2.1",
+    "title" : "ACL",
+    "contact" : {
+      "email" : "support@voicetel.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths" : {
+    "/v2.1/acl/list/" : {
+      "post" : {
+        "summary" : "List",
+        "operationId" : "list",
+        "description" : "List ACL",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/list"
+              }
+            }
+          },
+          "description" : "/v2.1/acl/list/"
+        }
+      }
+    },
+    "/v2.1/acl/add/" : {
+      "post" : {
+        "summary" : "Add",
+        "operationId" : "add",
+        "description" : "Add ACL",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "409" : {
+            "description" : "Conflict"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/add"
+              }
+            }
+          },
+          "description" : "/v2.1/acl/add/"
+        }
+      }
+    },
+    "/v2.1/acl/remove/" : {
+      "post" : {
+        "summary" : "Remove",
+        "operationId" : "remove",
+        "description" : "Remove ACL",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "409" : {
+            "description" : "Conflict"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/remove"
+              }
+            }
+          },
+          "description" : "/v2.1/acl/remove/"
+        }
+      }
+    }
+  },
+  "servers" : [ {
+    "url" : "https://api.voicetel.com"
+  } ],
+  "components" : {
+    "securitySchemes" : {
+      "apikey" : {
+        "type" : "http",
+        "scheme" : "bearer"
+      }
+    },
+    "schemas" : {
+      "list" : {
+        "type" : "object",
+        "required" : [ "apikey" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          }
+        }
+      },
+      "add" : {
+        "type" : "object",
+        "required" : [ "apikey", "acl" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          },
+          "acl" : {
+            "type" : "array",
+            "required" : [ "cidr" ],
+            "items" : {
+              "$ref" : "#/components/schemas/cidr"
+            }
+          }
+        }
+      },
+      "remove" : {
+        "type" : "object",
+        "required" : [ "apikey", "acl" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          },
+          "acl" : {
+            "type" : "array",
+            "required" : [ "cidr" ],
+            "items" : {
+              "$ref" : "#/components/schemas/cidr"
+            }
+          }
+        }
+      },
+      "cidr" : {
+        "type" : "object",
+        "required" : [ "cidr" ],
+        "properties" : {
+          "cidr" : {
+            "type" : "string",
+            "example" : "127.0.0.1/8"
+          }
+        }
+      }
+    }
+  }
+}

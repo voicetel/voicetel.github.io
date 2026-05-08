@@ -1,0 +1,258 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Gateways",
+    "version" : "v2.1",
+    "title" : "Gateways API",
+    "contact" : {
+      "email" : "support@voicetel.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "paths" : {
+    "/v2.1/gateways/list/" : {
+      "post" : {
+        "summary" : "Gateways List",
+        "operationId" : "list",
+        "description" : "Get list of gateways",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/list"
+              }
+            }
+          },
+          "description" : "/v2.1/gateways/list/"
+        }
+      }
+    },
+    "/v2.1/gateways/add/" : {
+      "post" : {
+        "summary" : "Gateways Add",
+        "operationId" : "add",
+        "description" : "Add gateways",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "409" : {
+            "description" : "Conflict"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/add"
+              }
+            }
+          },
+          "description" : "/v2.1/gateways/add/"
+        }
+      }
+    },
+    "/v2.1/gateways/update/" : {
+      "post" : {
+        "summary" : "Gateways Update",
+        "operationId" : "update",
+        "description" : "Update gateways",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "409" : {
+            "description" : "Conflict"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/update"
+              }
+            }
+          },
+          "description" : "/v2.1/gateways/update/"
+        }
+      }
+    },
+    "/v2.1/gateways/remove/" : {
+      "post" : {
+        "summary" : "Gateways Remove",
+        "operationId" : "remove",
+        "description" : "Remove gateways",
+        "security" : [ {
+          "apikey" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "409" : {
+            "description" : "Conflict"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/remove"
+              }
+            }
+          },
+          "description" : "/v2.1/gateways/remove/"
+        }
+      }
+    }
+  },
+  "servers" : [ {
+    "url" : "https://api.voicetel.com"
+  } ],
+  "components" : {
+    "securitySchemes" : {
+      "apikey" : {
+        "type" : "http",
+        "scheme" : "bearer"
+      }
+    },
+    "schemas" : {
+      "list" : {
+        "type" : "object",
+        "required" : [ "apikey" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          }
+        }
+      },
+      "add" : {
+        "type" : "object",
+        "required" : [ "apikey", "gateways" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          },
+          "gateways" : {
+            "type" : "array",
+            "required" : [ "gateway" ],
+            "items" : {
+              "$ref" : "#/components/schemas/gatewaysAdd"
+            }
+          }
+        }
+      },
+      "update" : {
+        "type" : "object",
+        "required" : [ "apikey", "gateways" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          },
+          "gateways" : {
+            "type" : "array",
+            "required" : [ "gateway", "route" ],
+            "items" : {
+              "$ref" : "#/components/schemas/gatewaysUpdate"
+            }
+          }
+        }
+      },
+      "remove" : {
+        "type" : "object",
+        "required" : [ "apikey", "gateways" ],
+        "properties" : {
+          "apikey" : {
+            "type" : "string",
+            "example" : "Your API Key"
+          },
+          "routes" : {
+            "type" : "array",
+            "required" : [ "route" ],
+            "items" : {
+              "$ref" : "#/components/schemas/gatewaysRemove"
+            }
+          }
+        }
+      },
+      "gatewaysAdd" : {
+        "type" : "object",
+        "required" : [ "gateway" ],
+        "properties" : {
+          "gateway" : {
+            "type" : "string",
+            "example" : "127.0.0.1:5060"
+          }
+        }
+      },
+      "gatewaysUpdate" : {
+        "type" : "object",
+        "required" : [ "gateway", "route" ],
+        "properties" : {
+          "gateway" : {
+            "type" : "string",
+            "example" : "127.0.0.1:5060"
+          },
+          "route" : {
+            "type" : "integer",
+            "example" : 1000
+          }
+        }
+      },
+      "gatewaysRemove" : {
+        "type" : "object",
+        "required" : [ "route" ],
+        "properties" : {
+          "route" : {
+            "type" : "integer",
+            "example" : 1000
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+	"name": "voicetel-site",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Static marketing site for VoiceTel — built with Eleventy v3 + Nunjucks + vanilla CSS/JS.",
+	"type": "module",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "eleventy",
+		"serve": "eleventy --serve",
+		"clean": "rm -rf _site",
+		"docs:api": "node tools/build-api-docs.mjs",
+		"lint:js": "eslint 'src/assets/js/**/*.js'",
+		"lint:css": "stylelint 'src/assets/css/**/*.css'",
+		"lint:html": "html-validate '_site/**/*.html'",
+		"a11y": "start-server-and-test 'http-server _site -p 8080 -s' http://localhost:8080 'pa11y-ci --config .pa11yci.json'",
+		"format": "prettier --write .",
+		"format:check": "prettier --check ."
+	},
+	"devDependencies": {
+		"@11ty/eleventy": "^3.0.0",
+		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+		"@redocly/cli": "^1.27.0",
+		"eslint": "^9.0.0",
+		"globals": "^15.0.0",
+		"html-validate": "^9.0.0",
+		"http-server": "^14.1.0",
+		"markdown-it": "^14.0.0",
+		"markdown-it-anchor": "^9.0.0",
+		"markdown-it-attrs": "^4.2.0",
+		"pa11y-ci": "^3.1.0",
+		"prettier": "^3.3.0",
+		"start-server-and-test": "^2.0.0",
+		"stylelint": "^16.0.0",
+		"stylelint-config-standard": "^36.0.0"
+	}
+}

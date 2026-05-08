@@ -8,23 +8,5 @@
 			"args": ["--no-sandbox"]
 		}
 	},
-	"urls": [
-		"http://localhost:8080/",
-		"http://localhost:8080/voiceml/",
-		"http://localhost:8080/voiceml/migrate/",
-		"http://localhost:8080/voiceml/compatibility/",
-		"http://localhost:8080/voiceml/calculator/",
-		"http://localhost:8080/voice/",
-		"http://localhost:8080/messaging/",
-		"http://localhost:8080/numbers/",
-		"http://localhost:8080/pricing/",
-		"http://localhost:8080/sdn/",
-		"http://localhost:8080/phone/",
-		"http://localhost:8080/faq/",
-		"http://localhost:8080/signup/",
-		"http://localhost:8080/login/",
-		"http://localhost:8080/about/",
-		"http://localhost:8080/legal/",
-		"http://localhost:8080/404.html"
-	]
+	"urls": ["http://localhost:8080/"]
 }

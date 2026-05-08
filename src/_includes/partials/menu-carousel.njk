@@ -1,5 +1,6 @@
 <section
 	class="menu-carousel"
+	role="region"
 	aria-roledescription="carousel"
 	aria-label="Product overview"
 	data-menu-carousel
@@ -14,19 +15,21 @@
 			aria-label="{{ loop.index }} of {{ site.menuCarousel | length }}: {{ item.title }}"
 			{%- if loop.index0 !== 0 %} inert{% endif %}
 		>
-			<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
-			{%- if item.isHero %}
-			<h1 class="menu-carousel-title menu-carousel-title--hero">{{ item.title }}</h1>
-			{%- else %}
-			<h2 class="menu-carousel-title">{{ item.title }}</h2>
-			{%- endif %}
-			<p class="menu-carousel-description">{{ item.description }}</p>
-			<p class="menu-carousel-actions">
-				<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}{% if not item.isHero %} &rarr;{% endif %}</a>
-				{%- if item.secondaryHref %}
-				<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
+			<div class="container">
+				<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
+				{%- if item.isHero %}
+				<h1 class="menu-carousel-title menu-carousel-title--hero">{{ item.title }}</h1>
+				{%- else %}
+				<h2 class="menu-carousel-title">{{ item.title }}</h2>
 				{%- endif %}
-			</p>
+				<p class="menu-carousel-description">{{ item.description }}</p>
+				<p class="menu-carousel-actions">
+					<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}{% if not item.isHero %} &rarr;{% endif %}</a>
+					{%- if item.secondaryHref %}
+					<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
+					{%- endif %}
+				</p>
+			</div>
 		</article>
 		{%- endfor %}
 	</div>
@@ -63,8 +66,8 @@
 			aria-label="Pause auto-advance"
 			aria-pressed="false"
 		>
-			<span data-pause-icon>&#9208;</span>
-			<span data-play-icon hidden>&#9654;</span>
+			<svg data-pause-icon viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><rect x="4" y="3" width="3" height="10" fill="currentColor"/><rect x="9" y="3" width="3" height="10" fill="currentColor"/></svg>
+			<svg data-play-icon viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false" hidden><path d="M4 3 L13 8 L4 13 Z" fill="currentColor"/></svg>
 			<span class="visually-hidden" data-pause-label>Pause auto-advance</span>
 		</button>
 	</div>

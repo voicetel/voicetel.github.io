@@ -1,17 +1,45 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 permalink: /voiceml/migrate/
-title: "Migrate from Twilio in 5 minutes"
-description: "Point your existing voice URL at VoiceTel and your voice markup works unchanged. Wholesale rates, same webhook signatures."
+title: "Migrate from Twilio"
+description: "A practical migration page for compatible Twilio voice applications moving to VoiceTel VoiceML with signed webhooks, SDK host overrides, and line-item pricing math."
 ---
 
 <p class="eyebrow">Migration</p>
-<h1>Migrate from Twilio in 5 minutes</h1>
-<p class="lede">Same voice markup. Same webhook signatures. Up to 30% less on list rates. Point your existing voice URL at our endpoint and your application works unchanged.</p>
-
-<p>Phase 1 placeholder. Full migration steps, voice markup preview tool, and cost calculator land per the brief's <code>§7 /voiceml/migrate/</code> spec.</p>
-
+<h1>Move compatible voice workflows in measured steps.</h1>
+<p class="lede">Keep the call-control model your application already uses, point supported voice requests at VoiceTel, verify signed webhooks, and cut over only after behavior and cost are proven.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="{{ site.portalUrl }}/signup">Sign up</a>
-	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
+	<a class="btn btn-primary" href="/voiceml/compatibility/">Check compatibility</a>
+	<a class="btn btn-secondary" href="/voiceml/calculator/">Run calculator</a>
 </p>
+
+<section class="section-block" data-section-type="steps">
+	<h2>Four-step migration</h2>
+</section>
+
+<section class="section-block code-block-section">
+	<h2>Direct HTTP test call</h2>
+	<p>A one-call test proves credentials, routing, webhook reachability, and basic call control before deeper migration work.</p>
+</section>
+
+<section class="section-block" data-section-type="same-different">
+	<h2>What stays the same; what is checked</h2>
+	<ul>
+		<li><strong>Same model</strong> — XML voice markup, form-encoded webhooks, request signatures, account-style credentials, and voice-call lifecycle resources stay familiar.</li>
+		<li><strong>Checked before launch</strong> — Any payment, non-voice, phone-number provisioning, or messaging API calls is identified and routed to native VoiceTel products or removed from the compatible voice path.</li>
+		<li><strong>Measured economics</strong> — Compare a real monthly workload, not a broad slogan.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="comparison">
+	<h2>Migration pricing comparison</h2>
+	<p>Show a source-dated comparison for the exact workload: inbound minutes, outbound minutes, AMD calls, recordings, media features, numbers, and messages if the migration includes messaging. Percentage claims appear only when backed by a line-item table.</p>
+</section>
+
+<aside class="cta-block">
+	<h2>Bring one call flow and one bill.</h2>
+	<p>VoiceTel can validate compatibility and model the current workload before you move production traffic.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact VoiceTel</a>
+	</p>
+</aside>

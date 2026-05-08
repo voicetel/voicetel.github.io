@@ -1,19 +1,39 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Pricing"
-description: "Wholesale rates for voice, messaging, numbers, and e911. No 'contact sales'. STT, TTS, and recording storage are paid directly to your chosen provider with no VoiceTel markup."
+description: "VoiceTel pricing copy for voice, messaging, numbers, SIP trunking, lookups, emergency service, and competitor comparisons using source-dated data."
 ---
 
-<p class="eyebrow">Wholesale rates</p>
-<h1>Pricing</h1>
-<p class="lede">Wholesale rates published in plain numbers. Origination, termination, messaging, DIDs, e911, port-in, and toll-free — all from <code>pricing.json</code>, no "contact sales" gates.</p>
+<p class="eyebrow">Pricing</p>
+<h1>Know what every minute, message, number, and lookup costs.</h1>
+<p class="lede">VoiceTel pricing is built for buyers who want line-item math instead of bundled mystery. Compare minutes, messages, DIDs, emergency service, lookups, and optional voice features using source-dated public list prices.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Request pricing review</a>
+	<a class="btn btn-secondary" href="/voiceml/calculator/">Open calculator</a>
+</p>
 
-<h2>What's not on this rate sheet</h2>
-<p>STT, TTS, and recording storage are paid <strong>directly to your chosen provider</strong>. VoiceTel charges only its own line items — no per-character markup on Polly-style voices, no per-MB markup on S3 storage, no per-minute markup on transcription.</p>
-<ul>
-	<li><strong>Speech-to-text:</strong> Deepgram, Google, AWS, Azure, or any HTTP recogniser endpoint. Pay your provider's published rates.</li>
-	<li><strong>Text-to-speech:</strong> any HTTP TTS endpoint (Piper, Coqui, OpenAI, ElevenLabs). Pay your provider directly.</li>
-	<li><strong>Recording storage:</strong> bring your own S3 bucket. Pay AWS for storage you control. KMS encryption optional.</li>
-</ul>
+<section class="section-block" data-section-type="rate-table-copy">
+	<h2>Rate table sections</h2>
+	<ul>
+		<li><strong>Voice</strong> — Inbound local minutes, outbound US-50 and Canada minutes, toll-free inbound, AMD, recording, conferences, streams, transcription, and optional media features.</li>
+		<li><strong>Messaging</strong> — SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through fees, A2P 10DLC, toll-free messaging, and campaign fees where applicable.</li>
+		<li><strong>Numbers</strong> — Local number monthly, toll-free number monthly, emergency-service monthly, porting, CNAM, caller-ID, and number-type notes.</li>
+		<li><strong>Lookups</strong> — CNAM, caller ID, LRN, MNP, carrier-of-record, batch pricing, and cache behavior.</li>
+		<li><strong>SIP and PBX</strong> — Trunking, hosted PBX, SDN appliance, phone applications, and any monthly service fees is clearly separated from usage.</li>
+	</ul>
+</section>
 
-<p>Phase 1 placeholder. Full rate tables and competitor comparison land per the brief's <code>§7 /pricing/</code> spec.</p>
+<section class="section-block" data-section-type="not-on-rate-sheet">
+	<h2>What may be outside the rate sheet</h2>
+	<ul>
+		<li><strong>Taxes and regulatory charges</strong> — Show them as excluded unless the rate file explicitly includes them.</li>
+		<li><strong>Carrier pass-through fees</strong> — List separately and explain that carriers can change them.</li>
+		<li><strong>Speech and storage vendors</strong> — If customers bring their own STT, TTS, or storage providers, state that those vendors bill separately.</li>
+		<li><strong>Custom capacity</strong> — Large messaging or SIP workloads may require capacity review before final pricing.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="source-note">
+	<h2>Source note</h2>
+	<p>Competitor list prices captured 2026-05-08 from publicly available pricing pages. Taxes, regulatory fees, surcharges, carrier pass-through fees, volume discounts, and contract pricing may vary.</p>
+</section>

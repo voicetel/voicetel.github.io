@@ -1,12 +1,42 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 permalink: /voiceml/calculator/
-title: "Cost calculator"
-description: "Estimate your monthly VoiceTel spend and compare against Twilio list pricing. Pure client-side, no data leaves your browser."
+title: "VoiceML cost calculator"
+description: "A privacy-preserving calculator for comparing VoiceTel workload costs against source-dated competitor list pricing with line-item assumptions."
 ---
 
 <p class="eyebrow">Calculator</p>
-<h1>Cost calculator</h1>
-<p class="lede">Plug in your usage. See the math line by line. No data leaves your browser.</p>
+<h1>Calculate the workload, not the slogan.</h1>
+<p class="lede">The calculator lets buyers model monthly usage and see every line item: minutes, messages, numbers, emergency service, lookups, AMD, recordings, and optional media features. Usage inputs stay in the browser.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/pricing/">Open pricing</a>
+	<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
+</p>
 
-<p>Phase 1 placeholder. The interactive calculator lands per the brief's <code>§7 /voiceml/calculator/</code> spec, reading from <code>pricing.json</code>.</p>
+<section class="section-block" data-section-type="calculator-fields">
+	<h2>Default inputs</h2>
+	<ul>
+		<li><strong>Voice</strong> — Inbound local minutes, outbound US-50 and Canada minutes, toll-free inbound minutes, AMD calls, recordings, conferences, streams, and transcriptions.</li>
+		<li><strong>Messaging</strong> — SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through notes, and A2P 10DLC fees where applicable.</li>
+		<li><strong>Numbers</strong> — Local numbers, toll-free numbers, emergency-service records, CNAM, and porting assumptions.</li>
+		<li><strong>Competitor</strong> — Default to Twilio. Add other competitors only where reliable, source-dated data exists for the exact same unit.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="privacy">
+	<h2>Privacy copy</h2>
+	<p>Usage inputs stay in the browser. The calculator does not collect, transmit, or store customer workload data.</p>
+</section>
+
+<section class="section-block" data-section-type="assumptions">
+	<h2>Assumptions copy</h2>
+	<p>Every result shows the unit, VoiceTel rate, competitor source date, carrier-fee handling, and whether taxes, regulatory charges, discounts, or contract pricing are excluded.</p>
+</section>
+
+<aside class="cta-block">
+	<h2>Need a modeled invoice?</h2>
+	<p>For high-volume workloads, route planning and carrier fees matter. Bring an invoice and VoiceTel can build a detailed model from real usage.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request a pricing review</a>
+	</p>
+</aside>

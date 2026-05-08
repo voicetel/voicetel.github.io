@@ -1,24 +1,56 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Documentation"
-description: "VoiceML reference, REST API, integration guides, and migration playbooks."
+description: "VoiceTel documentation for VoiceML, REST APIs, SDK migration, webhooks, SIP trunking, PBX integrations, SDN appliance, messaging, and number workflows."
 ---
 
 <p class="eyebrow">Documentation</p>
-<h1>Documentation</h1>
-<p class="lede">Reference and guides for building on VoiceTel.</p>
+<h1>Reference material for teams that build and operate communications systems.</h1>
+<p class="lede">The docs landing page helps developers find API references, migration paths, compatibility notes, SIP guides, webhook verification, and operational runbooks without reading marketing copy first.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/voiceml/">VoiceML guide</a>
+	<a class="btn btn-secondary" href="/docs/api/">API reference</a>
+</p>
 
-<ul>
-	<li><a href="/voiceml/">VoiceML overview</a> — programmable voice markup runtime.</li>
-	<li><a href="/docs/api/">REST API</a> — account, numbers, messaging, e911, porting, gateways.</li>
-	<li><a href="/voiceml/migrate/">Migrate from Twilio</a> — five-minute drop-in replacement.</li>
-	<li><a href="/voiceml/compatibility/">Compatibility matrix</a> — verb-by-verb voice markup parity.</li>
-</ul>
-
-<section class="feature feature--inline">
-	<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
-	<h2>RESTful API</h2>
-	<p>Programmatic access to accounts, numbers, messaging, e911, porting, and gateway provisioning. Every endpoint ships with a published OpenAPI specification under <a href="/docs/api/">/docs/api/</a>, ready to feed into Postman, Bruno, or your code generator of choice. Webhook delivery uses HMAC signatures so request authenticity matches what other major platforms emit.</p>
+<section class="section-block">
+	<h2>Documentation sections</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3>VoiceML</h3>
+			<p>Overview, verbs, attributes, callbacks, compatibility notes, XML examples, and migration guide.</p>
+		</li>
+		<li class="feature">
+			<h3>REST API</h3>
+			<p>Accounts, calls, recordings, conferences, queues, applications, numbers, messaging, lookups, porting, and gateways where supported.</p>
+		</li>
+		<li class="feature">
+			<h3>SDK migration</h3>
+			<p>Host-override examples and webhook validation patterns for official Twilio helper libraries where compatible.</p>
+		</li>
+		<li class="feature">
+			<h3>SIP integrations</h3>
+			<p>Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBC, firewall, and SDN appliance guides.</p>
+		</li>
+		<li class="feature">
+			<h3>Messaging</h3>
+			<p>Send, receive, delivery receipts, A2P 10DLC, carrier-fee handling, and high-volume onboarding.</p>
+		</li>
+		<li class="feature">
+			<h3>Numbers</h3>
+			<p>Provisioning, porting, emergency service, CNAM, caller ID, and number-routing workflows.</p>
+		</li>
+	</ul>
 </section>
 
-<p>Phase 1 placeholder. The unified docs landing with client-side search and the integrations sub-tree (open-source platforms, firewalls, hardware phones, softphones, SBCs) land in subsequent phases per the brief's <code>§4 / §15</code>.</p>
+<section class="section-block" data-section-type="search-copy">
+	<h2>Search copy</h2>
+	<p>Client-side documentation search indexes headings, descriptions, API paths, and product names while core docs remain usable without JavaScript.</p>
+</section>
+
+<aside class="cta-block">
+	<h2>Need an integration guide?</h2>
+	<p>Ask for the exact PBX, SBC, firewall, SDK, or carrier workflow you need documented.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request docs</a>
+	</p>
+</aside>

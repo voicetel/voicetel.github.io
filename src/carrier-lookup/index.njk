@@ -1,16 +1,40 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Carrier Lookup"
-description: "LRN, MNP, and carrier-of-record lookups by phone number. REST API, batch CSV, and portal queries."
+description: "LRN, MNP, and carrier-of-record lookup services for routing decisions, fraud controls, and rate-deck classification."
 ---
 
-<p class="eyebrow">Carrier Lookup</p>
-<h1>Carrier Lookup</h1>
-<p class="lede">LRN (location routing number), MNP (mobile number portability), and carrier-of-record lookups by phone number. Useful for routing decisions, fraud checks, and rate-deck classification.</p>
-
-<p>Phase 1 placeholder. Full reference — query types, REST API endpoint, batch CSV upload, response schema, pricing per lookup — lands per the brief's <code>§7</code> spec.</p>
-
+<p class="eyebrow">Carrier intelligence</p>
+<h1>Know where a number routes before you rate, route, or risk-score it.</h1>
+<p class="lede">Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/pricing/">See pricing</a>
-	<a class="btn btn-secondary" href="/docs/api/">API reference</a>
+	<a class="btn btn-secondary" href="/docs/api/">Read API docs</a>
 </p>
+
+<section class="section-block">
+	<h2>Lookup modes</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3>Real-time API</h3>
+			<p>Query numbers during call setup, signup, fraud checks, or support workflows.</p>
+		</li>
+		<li class="feature">
+			<h3>Batch CSV</h3>
+			<p>Process large inventories for routing audits, migration planning, or rate-deck cleanup.</p>
+		</li>
+		<li class="feature">
+			<h3>Portal queries</h3>
+			<p>Give operations teams a simple manual lookup path for support and troubleshooting.</p>
+		</li>
+		<li class="feature">
+			<h3>Routing context</h3>
+			<p>Use carrier-of-record and portability signals as inputs, not as the only routing control.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="caveat-block">
+	<h3>Accuracy copy</h3>
+	<p>Number portability and carrier data can change; freshness, cache, and data-source behavior are documented with the product.</p>
+</aside>

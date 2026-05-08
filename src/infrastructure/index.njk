@@ -1,34 +1,43 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Infrastructure & uptime"
-description: "VoiceTel POP locations, carrier interconnections, redundancy, and historical uptime."
+description: "VoiceTel infrastructure copy covering six US POPs, carrier handoffs, redundancy, status visibility, and the voice availability target."
 ---
 
 <p class="eyebrow">Infrastructure</p>
-<h1>Infrastructure &amp; uptime</h1>
-<p class="lede">Six US POPs, redundant carrier interconnections, STIR/SHAKEN attestation, and a 99.99% voice availability target. This page details where VoiceTel runs and how it has performed.</p>
-
-<h2>POP locations</h2>
-<p>VoiceTel operates voice and SIP infrastructure in six US data centers. Each POP terminates redundant carrier interconnections and runs the VoiceML runtime locally, with cross-POP failover for in-call redundancy when configured.</p>
-<ul>
-	<li><strong>NYC</strong> — New York metro</li>
-	<li><strong>CLT</strong> — Charlotte</li>
-	<li><strong>ORD</strong> — Chicago</li>
-	<li><strong>DEN</strong> — Denver</li>
-	<li><strong>DFW</strong> — Dallas</li>
-	<li><strong>SJC</strong> — San Jose</li>
-</ul>
-
-<h2>Carrier interconnections</h2>
-<p>Multiple Tier-1 carrier hand-offs per POP for origination and termination. Routing decisions are made per-call based on least-cost and quality metrics, with automatic failover when a carrier degrades.</p>
-
-<h2>Uptime target</h2>
-<p>99.99% voice availability target measured per calendar month. This is the platform target; specific service tiers (e.g. dedicated SIP trunks, hosted PBX) may have separate SLAs documented in their service agreements.</p>
-
-<h2>Historical uptime</h2>
-<p>Phase 1 placeholder. Per-month uptime history for the previous 12 months and incident root-cause summaries land here once the data feed is wired up.</p>
-
+<h1>Network facts without inflated claims.</h1>
+<p class="lede">VoiceTel infrastructure copy is specific enough for telecom buyers and restrained enough to avoid unsupported promises. Publish POP locations, redundancy model, availability target, and status links clearly.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="/status/">Live status</a>
-	<a class="btn btn-secondary" href="/contact/">Request SLA documentation</a>
+	<a class="btn btn-primary" href="/status/">View status</a>
+	<a class="btn btn-secondary" href="/contact/">Request SLA terms</a>
 </p>
+
+<section class="section-block" data-section-type="pops">
+	<h2>POP locations</h2>
+	<ul>
+		<li><strong>NYC</strong> — New York metro</li>
+		<li><strong>CLT</strong> — Charlotte</li>
+		<li><strong>ORD</strong> — Chicago</li>
+		<li><strong>DEN</strong> — Denver</li>
+		<li><strong>DFW</strong> — Dallas</li>
+		<li><strong>SJC</strong> — San Jose</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="network">
+	<h2>Network model</h2>
+	<ul>
+		<li><strong>Carrier handoffs</strong> — Describe redundant carrier handoffs per POP only where current network inventory confirms them.</li>
+		<li><strong>Failover</strong> — Explain routing failover at a platform level and keep service-specific guarantees in agreements.</li>
+		<li><strong>Availability target</strong> — Use 99.99% as a voice availability target, not a universal SLA, unless signed terms say otherwise.</li>
+		<li><strong>Status history</strong> — Publish incident summaries and monthly uptime only when the status feed is connected.</li>
+	</ul>
+</section>
+
+<aside class="cta-block">
+	<h2>Need procurement-ready details?</h2>
+	<p>Route security, redundancy, SLA, and network-design questions through the contact path so support can provide account-appropriate documentation.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request documentation</a>
+	</p>
+</aside>

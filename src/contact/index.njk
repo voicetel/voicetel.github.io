@@ -1,15 +1,30 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "Contact"
-description: "Get in touch with VoiceTel — sales, support, partnerships, billing, and press."
+description: "Contact VoiceTel for sales, support, billing, porting, partnerships, legal, press, and technical integration questions."
 ---
 
 <p class="eyebrow">Contact</p>
-<h1>Contact VoiceTel</h1>
-<p class="lede">Sales, support, partnerships, billing, and press inquiries. Pick the right channel and we'll route you to the right person.</p>
+<h1>Route the request to the team that can actually solve it.</h1>
+<p class="lede">Use separate contact paths for sales, technical support, billing, porting, partnerships, legal, and press so the first response starts with context instead of triage.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="mailto:support@voicetel.com">Email support</a>
+	<a class="btn btn-secondary" href="https://www.voicetel.com">Sign in</a>
+</p>
 
-<p>For account-specific issues, sign in to the <a href="{{ site.portalUrl }}">portal</a> and use the in-app support form so we can attach your account context automatically.</p>
+<section class="section-block" data-section-type="contact-grid">
+	<h2>Contact paths</h2>
+	<ul>
+		<li><strong>Sales</strong> — Pricing reviews, migrations, volume modeling, SIP trunking, hosted PBX, messaging, and procurement questions.</li>
+		<li><strong>Support</strong> — Call failures, SIP traces, webhook errors, number routing, messaging delivery, app access, and SDN connectivity.</li>
+		<li><strong>Billing</strong> — Invoices, rate questions, credits, payment method issues, and account-level billing changes.</li>
+		<li><strong>Porting</strong> — Number inventory, LOA, losing-carrier data, rejection resolution, scheduling, and cutover coordination.</li>
+		<li><strong>Partnerships</strong> — Carrier, reseller, platform, integration, and channel opportunities.</li>
+		<li><strong>Press and legal</strong> — Media requests, legal notices, policy questions, and compliance routing.</li>
+	</ul>
+</section>
 
-<p>For everything else, email <a href="mailto:{{ site.supportEmail }}">{{ site.supportEmail }}</a>.</p>
-
-<p>Phase 1 placeholder. The full contact page lands per the brief's <code>§7</code> spec — separate forms for sales, support, partnerships, billing, and press, each posting to <code>{{ site.portalUrl }}/contact</code> with the right routing tag.</p>
+<section class="section-block" data-section-type="form-copy">
+	<h2>Form copy</h2>
+	<p>For account-specific issues, ask customers to sign in so VoiceTel can attach account, service, and ticket context automatically. For non-account requests, route by topic.</p>
+</section>

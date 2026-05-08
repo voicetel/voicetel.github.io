@@ -1,16 +1,66 @@
 ---
-layout: layouts/marketing-page.njk
+layout: layouts/page.njk
 title: "VoiceML"
-description: "VoiceML — VoiceTel's drop-in compatible voice markup runtime. Move your Twilio voice apps to VoiceTel without rewriting code."
+description: "VoiceML is VoiceTel's XML-based programmable voice runtime for compatible call control, signed webhooks, recordings, conferences, queues, and SDK migration paths."
 ---
 
 <p class="eyebrow">Voice markup runtime</p>
-<h1>VoiceML</h1>
-<p class="lede">VoiceTel's voice markup runtime. Compatible with Twilio's voice markup so existing apps move over without rewriting code. <code>&lt;Say&gt;</code>, <code>&lt;Gather&gt;</code>, <code>&lt;Dial&gt;</code>, <code>&lt;Record&gt;</code>, and the rest work unchanged.</p>
-
-<p>Phase 1 placeholder. Full content lands per the brief's <code>§7 /voiceml/</code> spec.</p>
-
+<h1>Move compatible programmable voice workloads without rewriting call logic.</h1>
+<p class="lede">VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="/voiceml/migrate/">Migrate from Twilio</a>
+	<a class="btn btn-primary" href="/voiceml/migrate/">Start migration</a>
 	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
 </p>
+
+<section class="section-block code-block-section">
+	<h2>VoiceML example</h2>
+	<p>The markup stays readable, inspectable, and easy to test before cutover.</p>
+</section>
+
+<section class="section-block">
+	<h2>Compatible voice surface</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3>Calls</h3>
+			<p>Create, fetch, update, list, and end calls using the supported voice-call lifecycle surface.</p>
+		</li>
+		<li class="feature">
+			<h3>Recordings</h3>
+			<p>Start, pause, resume, stop, list, retrieve, and delete supported recordings.</p>
+		</li>
+		<li class="feature">
+			<h3>Conferences and queues</h3>
+			<p>Use conference resources, participants, recordings, queue CRUD, and queue members where supported.</p>
+		</li>
+		<li class="feature">
+			<h3>Streams, transcriptions, and SIP recording</h3>
+			<p>Start and inspect supported live media, transcription, and SIP recording resources with documented caveats.</p>
+		</li>
+		<li class="feature">
+			<h3>Applications</h3>
+			<p>Save voice-only application defaults and resolve them from call creation where supported.</p>
+		</li>
+		<li class="feature">
+			<h3>Webhook verification</h3>
+			<p>Use signed form-encoded callbacks so existing webhook validation patterns remain familiar.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="honest-differences">
+	<h2>What's different</h2>
+	<ul>
+		<li><strong>Voice-focused compatibility</strong> — The compatible SDK surface is voice-focused. Messaging, number provisioning, pricing APIs, and other unrelated CPaaS products use native VoiceTel product APIs or portal workflows.</li>
+		<li><strong>Unsupported payment verb</strong> — The payment verb is intentionally not implemented because PCI scope belongs in a fully certified payment flow.</li>
+		<li><strong>Number provisioning path</strong> — DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
+	</ul>
+</section>
+
+<aside class="cta-block">
+	<h2>Start with one production call flow.</h2>
+	<p>Pick a known call path, paste the markup into the compatibility checker, run a test call, then compare the bill line by line.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/voiceml/migrate/">Migrate from Twilio</a>
+		<a class="btn btn-secondary" href="/voiceml/calculator/">Open calculator</a>
+	</p>
+</aside>

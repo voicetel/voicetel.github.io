@@ -13,7 +13,7 @@ npm install
 npm run serve
 ```
 
-Eleventy serves the built site at <http://localhost:8080> with live reload.
+Eleventy serves the built site at <http://localhost:8000> with live reload.
 
 ## Build
 
@@ -40,7 +40,7 @@ The accessibility check uses pa11y-ci against a locally-served build:
 
 ```sh
 npm run build
-npx http-server _site -p 8080 -s &
+npx http-server _site -p 8000 -s &
 npm run a11y
 ```
 

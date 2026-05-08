@@ -484,6 +484,22 @@ textarea {
 	color: var(--primary-color);
 }
 
+.menu-carousel-title--hero {
+	font-size: var(--text-4xl);
+	max-width: 18ch;
+}
+
+.menu-carousel-actions {
+	display: flex;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+	margin: 0;
+}
+
+.menu-carousel-slide--hero {
+	min-height: 280px;
+}
+
 .menu-carousel-description {
 	font-size: var(--text-md);
 	line-height: var(--leading-relaxed);

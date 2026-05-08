@@ -3,7 +3,7 @@
 	"updated": "2026-05-08",
 	"brand": "VoiceTel",
 	"legalName": "VoiceTel Communications",
-	"tagline": "Twilio-compatible programmable voice at wholesale prices.",
+	"tagline": "Licensed Wholesale Telecommunication Services",
 	"description": "Run your Twilio app on VoiceTel. Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage.",
 	"lang": "en",
 	"url": "https://voicetel.com",
@@ -153,7 +153,7 @@
 				{
 					"label": "Sign in",
 					"icon": "box-arrow-in-right",
-					"href": "https://www.voicetel.com/login",
+					"href": "https://www.voicetel.com",
 					"description": "Already have an account."
 				},
 				{

@@ -1,0 +1,27 @@
+---
+permalink: /data/pages.json
+eleventyExcludeFromCollections: true
+---
+{
+	"version": "1",
+	"updated": "{{ page.date | isoDate }}",
+	"site": {
+		"brand": "{{ site.brand }}",
+		"legalName": "{{ site.legalName }}",
+		"tagline": "{{ site.tagline }}",
+		"url": "{{ site.url }}"
+	},
+	"count": {{ collections.all | length }},
+	"pages": [
+		{%- set sep = "" -%}
+		{%- for item in collections.all %}
+		{{ sep }}{
+			"url": {{ item.url | dump | safe }},
+			"title": {{ (item.data.title or "") | dump | safe }},
+			"description": {{ (item.data.description or "") | dump | safe }},
+			"source": {{ item.inputPath | dump | safe }}
+		}
+		{%- set sep = "," -%}
+		{%- endfor %}
+	]
+}

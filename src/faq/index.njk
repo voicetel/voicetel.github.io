@@ -12,17 +12,42 @@ description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messagin
 	<a class="btn btn-secondary" href="/docs/">Read docs</a>
 </p>
 
-{%- for cat in faqs.categories %}
-<section id="{{ cat.id }}" class="section-block faq-block">
-	<h2>{{ cat.label }}</h2>
-	{%- for item in cat.items %}
-	<details class="faq-item">
-		<summary>{{ item.q }}</summary>
-		{{ item.a | safe }}
-	</details>
-	{%- endfor %}
-</section>
-{%- endfor %}
+<div class="faq-search">
+	<label class="visually-hidden" for="faq-search-input">Search the FAQ</label>
+	<input type="search" id="faq-search-input" data-faq-search placeholder="Search the FAQ — try 'KYC', '10DLC', 'CNAM'…" autocomplete="off">
+	<p class="faq-search__status" data-faq-status aria-live="polite"></p>
+</div>
+
+<div class="faq-layout">
+	<nav class="faq-nav" aria-label="FAQ categories">
+		<p class="faq-nav__heading">Categories</p>
+		<ul>
+			{%- for cat in faqs.categories %}
+			<li><a href="#{{ cat.id }}" data-faq-nav>{{ cat.label }}</a></li>
+			{%- endfor %}
+		</ul>
+	</nav>
+
+	<div class="faq-content">
+		{%- for cat in faqs.categories %}
+		<section id="{{ cat.id }}" class="section-block faq-block">
+			<h2>{{ cat.label }}</h2>
+			{%- for item in cat.items %}
+			{%- set qid = "q-" ~ (item.q | slugify) %}
+			<details class="faq-item" id="{{ qid }}">
+				<summary>
+					<span class="faq-item__question">{{ item.q }}</span>
+					<a class="faq-item__anchor" href="#{{ qid }}" aria-label="Permalink to this question">#</a>
+				</summary>
+				<div class="faq-item__answer">{{ item.a | safe }}</div>
+			</details>
+			{%- endfor %}
+		</section>
+		{%- endfor %}
+
+		<p class="faq-empty" data-faq-empty hidden>No questions match that search. <a href="/contact/">Ask support directly</a> or <button type="button" data-faq-clear class="faq-empty__clear">clear the search</button>.</p>
+	</div>
+</div>
 
 <script type="application/ld+json">
 {

@@ -1,0 +1,4080 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VoiceML — Twilio-compatible REST API",
+    "version": "0.4.0",
+    "summary": "Outbound voice + AMD service with Twilio-shaped REST surface",
+    "description": "VoiceML exposes the Twilio Programmable Voice Calls REST API surface\nso existing Twilio SDKs (`twilio-node`, `twilio-python`, `twilio-go`, ...)\nwork against it as a drop-in replacement. The wire shape, authentication\nmodel, error codes, and pagination envelope all match Twilio's\ndocumented behaviour.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — drop-in compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
+    "contact": {
+      "name": "VoiceTel",
+      "url": "https://voiceml.voicetel.com"
+    },
+    "license": {
+      "name": "MIT with Commons Clause",
+      "url": "https://voicetel.com/legal/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://voiceml.voicetel.com",
+      "description": "VoiceTel VoiceML compatibility surface"
+    }
+  ],
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Username MUST equal the URL `:AccountSid` path parameter.\nPassword is the per-tenant API key set via the admin API.\n"
+      }
+    },
+    "parameters": {
+      "AccountSid": {
+        "name": "AccountSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-format AccountSid: literal \"AC\" + 32 hex chars (34\ntotal). Server-generated at account creation; the same value\nthe customer's Twilio SDK validates in its constructor.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^AC[0-9a-f]{32}$"
+        }
+      },
+      "CallSid": {
+        "name": "CallSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-format Call SID (`CA` + 32 hex characters).",
+        "schema": {
+          "type": "string",
+          "pattern": "^CA[a-f0-9]{32}$"
+        }
+      },
+      "RecordingSid": {
+        "name": "RecordingSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-format Recording SID (`RE` + 32 hex characters).",
+        "schema": {
+          "type": "string",
+          "pattern": "^RE[a-f0-9]{32}$"
+        }
+      },
+      "ConferenceSid": {
+        "name": "ConferenceSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-shape Conference SID — literal `CF` + 32 hex chars\n(34 total). Server-generated lazily on first\n`<Dial><Conference>` dispatch (or on first appearance in\na `GET /Conferences` list); cleared when the conference\nends. The v0.19.x namespaced form\n(`<AccountSid>__<friendly>`) is still accepted on input\nfor migration safety, but the response always emits the\nCF shape.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^CF[a-f0-9]{32}$|^[A-Z]{2}[0-9a-f]+__.+$"
+        }
+      },
+      "QueueSid": {
+        "name": "QueueSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-shape Queue SID — literal \"QU\" + 32 hex chars (34\ntotal). Server-generated on `POST /Queues`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^QU[0-9a-f]{32}$"
+        }
+      },
+      "ApplicationSid": {
+        "name": "ApplicationSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-shape Application SID — literal \"AP\" + 32 hex chars\n(34 total). Server-generated on `POST /Applications`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^AP[0-9a-f]{32}$"
+        }
+      }
+    },
+    "schemas": {
+      "Call": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "status",
+          "direction",
+          "api_version",
+          "uri",
+          "date_created",
+          "date_updated"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string",
+            "example": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "api_version": {
+            "type": "string",
+            "example": "2010-04-01"
+          },
+          "to": {
+            "type": "string",
+            "example": "+18005551234"
+          },
+          "to_formatted": {
+            "type": "string",
+            "description": "Human-readable national formatting of `to`, e.g. `(800) 555-1234` for US/CA numbers. Generated via libphonenumber; falls back to the E.164 form if parsing fails."
+          },
+          "from": {
+            "type": "string",
+            "example": "+18005550000"
+          },
+          "from_formatted": {
+            "type": "string",
+            "description": "Human-readable national formatting of `from`. Same generation rules as `to_formatted`."
+          },
+          "parent_call_sid": {
+            "type": "string",
+            "description": "Set on B-leg child calls (e.g. legs created by `<Dial>`). Empty on the originating A-leg or when no `<Dial>`-style bridge has occurred."
+          },
+          "caller_name": {
+            "type": "string",
+            "description": "SIP From: display-name captured on inbound calls (CNAM-style identification). Empty for outbound originates and for inbound calls without a display name."
+          },
+          "forwarded_from": {
+            "type": "string",
+            "description": "Originator of a forwarded inbound call, captured from the SIP `Diversion` (RFC 5806) or `History-Info` (RFC 7044) header. Empty for non-forwarded calls."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "ringing",
+              "in-progress",
+              "completed",
+              "busy",
+              "no-answer",
+              "canceled",
+              "failed"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "inbound",
+              "outbound-api",
+              "outbound-dial"
+            ]
+          },
+          "answered_by": {
+            "type": "string",
+            "description": "AMD verdict. Wire-strict Twilio enum — VoiceML's\ninternal extended verdicts (`screened`, `screened_ivr`,\n`disconnected`) are remapped at the response boundary\nso strict-mode SDK deserialisers (twilio-csharp\nStringEnumConverter, twilio-java Jackson EnumDeserializer)\ndon't throw. The original verdict survives in metric\nlabels — see docs/detectors.md.\n",
+            "enum": [
+              "human",
+              "machine_start",
+              "machine_end_beep",
+              "machine_end_silence",
+              "machine_end_other",
+              "fax",
+              "unknown",
+              ""
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration": {
+            "type": "string",
+            "description": "Seconds, as decimal string."
+          },
+          "price": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty (VoiceML does not bill per-call)."
+          },
+          "price_unit": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty."
+          },
+          "phone_number_sid": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty."
+          },
+          "annotation": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty."
+          },
+          "group_sid": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty."
+          },
+          "queue_time": {
+            "type": "string",
+            "description": "Seconds spent in `<Enqueue>` queue, as decimal string. Empty for non-queued calls."
+          },
+          "trunk_sid": {
+            "type": "string",
+            "description": "Twilio compatibility — always empty."
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "subresource_uris": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CallList": {
+        "type": "object",
+        "required": [
+          "calls",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Call"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Conference": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "friendly_name",
+          "status",
+          "api_version",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^CF[a-f0-9]{32}$",
+            "example": "CFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "friendly_name": {
+            "type": "string",
+            "example": "incident-42"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in-progress",
+              "completed"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "description": "Twilio edge region label. Defaults to `us1`; reserved\nfor operator-overridable region taxonomy in a future\nrelease. Informational — VoiceML does not route\nby region today.\n"
+          },
+          "api_version": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string",
+            "description": "Emitted via omitempty when not tracked (VoiceML queries mod_conference live and does not persist room creation timestamps)."
+          },
+          "date_updated": {
+            "type": "string",
+            "description": "Same caveat as `date_created`."
+          },
+          "reason_conference_ended": {
+            "type": "string",
+            "description": "Populated only on the synthesised post-end response —\ne.g. `conference-ended-via-rest-api` after a\n`Status=completed` POST. Empty while in-progress.\n"
+          },
+          "call_sid_ending_conference": {
+            "type": "string",
+            "description": "Populated only when a participant left with `endConferenceOnExit=true`; empty otherwise."
+          },
+          "subresource_uris": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Map of `participants` and `recordings` URIs — Twilio-canonical."
+          },
+          "member_count": {
+            "type": "integer",
+            "description": "VoiceML extension — count of current participants."
+          }
+        }
+      },
+      "ConferenceList": {
+        "type": "object",
+        "required": [
+          "conferences",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "conferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Conference"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Participant": {
+        "type": "object",
+        "required": [
+          "call_sid",
+          "conference_sid",
+          "account_sid",
+          "muted",
+          "hold",
+          "status",
+          "start_conference_on_enter",
+          "end_conference_on_exit",
+          "api_version",
+          "uri"
+        ],
+        "properties": {
+          "call_sid": {
+            "type": "string",
+            "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "conference_sid": {
+            "type": "string"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "hold": {
+            "type": "boolean"
+          },
+          "start_conference_on_enter": {
+            "type": "boolean",
+            "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`true`) for every participant — per-participant attribute persistence is on the roadmap."
+          },
+          "end_conference_on_exit": {
+            "type": "boolean",
+            "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`false`) for every participant."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "connecting",
+              "ringing",
+              "connected",
+              "on-hold",
+              "completed"
+            ],
+            "description": "Derived from live mod_conference state: `connected`\nwhile the participant is in the room, `on-hold` while\nthe `hold` flag is set, `completed` after they've\nleft (visible only briefly via the synthesised\nresponse when a mute/hold update races a leave).\n"
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional tag set via `<Conference participantLabel=…>`. Empty when not set."
+          },
+          "api_version": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string",
+            "description": "Emitted via omitempty when not tracked."
+          },
+          "date_updated": {
+            "type": "string",
+            "description": "Emitted via omitempty when not tracked."
+          }
+        }
+      },
+      "ParticipantList": {
+        "type": "object",
+        "required": [
+          "participants",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Participant"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Queue": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "friendly_name",
+          "current_size",
+          "max_size",
+          "average_wait_time",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^QU[0-9a-f]{32}$",
+            "example": "QU0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "friendly_name": {
+            "type": "string",
+            "example": "support"
+          },
+          "current_size": {
+            "type": "integer",
+            "description": "Live count of waiting members."
+          },
+          "max_size": {
+            "type": "integer",
+            "default": 100,
+            "description": "Capacity ceiling; further enqueues fail with 503."
+          },
+          "average_wait_time": {
+            "type": "integer",
+            "description": "Seconds",
+            "trailing 5-minute window. 0 when no recent exits.": null
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "QueueList": {
+        "type": "object",
+        "required": [
+          "queues",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Queue"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "QueueMember": {
+        "type": "object",
+        "required": [
+          "call_sid",
+          "queue_sid",
+          "account_sid",
+          "date_enqueued",
+          "wait_time",
+          "position",
+          "uri"
+        ],
+        "properties": {
+          "call_sid": {
+            "type": "string",
+            "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "queue_sid": {
+            "type": "string"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "date_enqueued": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "wait_time": {
+            "type": "integer",
+            "description": "Seconds since enqueue."
+          },
+          "position": {
+            "type": "integer",
+            "description": "1-based; 1 = front of queue (longest waiting)."
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "QueueMemberList": {
+        "type": "object",
+        "required": [
+          "queue_members",
+          "page",
+          "page_size",
+          "total",
+          "uri"
+        ],
+        "properties": {
+          "queue_members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueueMember"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "friendly_name",
+          "api_version",
+          "voice_url",
+          "voice_caller_id_lookup",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^AP[0-9a-f]{32}$",
+            "example": "AP0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "friendly_name": {
+            "type": "string",
+            "example": "ivr-main"
+          },
+          "api_version": {
+            "type": "string"
+          },
+          "voice_url": {
+            "type": "string",
+            "description": "TwiML URL fetched when <Dial><Application>SID</Application></Dial> dispatches."
+          },
+          "voice_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_fallback_url": {
+            "type": "string",
+            "description": "Fetched when voice_url returns non-2xx or fails."
+          },
+          "voice_fallback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_caller_id_lookup": {
+            "type": "boolean"
+          },
+          "status_callback": {
+            "type": "string"
+          },
+          "status_callback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "status_callback_event": {
+            "type": "string",
+            "description": "Comma-separated."
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "ApplicationList": {
+        "type": "object",
+        "required": [
+          "applications",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Application"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Recording": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "status"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "example": "RExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "conference_sid": {
+            "type": "string",
+            "description": "Set only on conference-room captures (`<Dial><Conference record=\"record-from-start\">`); empty on per-leg recordings."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in-progress",
+              "completed",
+              "failed",
+              "absent",
+              "paused",
+              "stopped",
+              "processing"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "OutboundAPI",
+              "RecordVerb",
+              "DialVerb",
+              "Conference",
+              "Trunking",
+              "StartCallRecordingAPI"
+            ]
+          },
+          "channels": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "duration": {
+            "type": "string"
+          },
+          "api_version": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "description": "Reserved; VoiceML emits empty."
+          },
+          "price_unit": {
+            "type": "string",
+            "description": "Reserved; VoiceML emits empty."
+          },
+          "encryption_details": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Reserved for SSE-KMS metadata when encryption details are exposed; currently empty."
+          },
+          "subresource_uris": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Twilio-compat subresource map (currently empty)."
+          }
+        }
+      },
+      "Stream": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "status",
+          "api_version",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^MZ[a-f0-9]{32}$",
+            "example": "MZxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Operator-supplied label for the stream; round-trips on the resource."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in-progress",
+              "stopped"
+            ]
+          },
+          "date_created": {
+            "type": "string",
+            "description": "Set on start; preserved across update."
+          },
+          "date_updated": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SiprecSession": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "status",
+          "api_version",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^SR[a-f0-9]{32}$",
+            "example": "SRxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "connector_name": {
+            "type": "string",
+            "description": "mod_siprec profile (`SIPREC_DEFAULT_PROFILE` env when empty)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in-progress",
+              "stopped"
+            ]
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "CallTranscription": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "status",
+          "api_version",
+          "uri"
+        ],
+        "description": "Live per-call transcription resource (REST equivalent of\n`<Start><Transcription>`). Distinct from any post-recording\ntranscription resource — events are streamed via the\nStatusCallback URL while the call is live.\n",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^RT[a-f0-9]{32}$",
+            "example": "RTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "language_code": {
+            "type": "string",
+            "default": "en-US"
+          },
+          "transcription_engine": {
+            "type": "string",
+            "enum": [
+              "deepgram",
+              "google",
+              "aws",
+              "azure"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in-progress",
+              "stopped"
+            ]
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "status"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Twilio numeric error code (e.g. 21211)."
+          },
+          "message": {
+            "type": "string"
+          },
+          "more_info": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code."
+          }
+        }
+      },
+      "HealthFailure": {
+        "type": "object",
+        "required": [
+          "check",
+          "detail"
+        ],
+        "properties": {
+          "check": {
+            "type": "string",
+            "example": "memdb",
+            "description": "Identifier of the tripped check (memdb / cluster / disk / cpu_load / memory / freeswitch / freeswitch_workload)."
+          },
+          "detail": {
+            "type": "string",
+            "example": "memdb ping: connection refused",
+            "description": "Human-readable error from the underlying check, including the value-vs-threshold context where relevant."
+          }
+        }
+      },
+      "CreateCallRequest": {
+        "type": "object",
+        "required": [
+          "To",
+          "From"
+        ],
+        "properties": {
+          "To": {
+            "type": "string"
+          },
+          "From": {
+            "type": "string"
+          },
+          "Url": {
+            "type": "string",
+            "description": "HTTP(S) endpoint that returns TwiML when the call answers.\nMutually exclusive with `Twiml` (inline body wins if both set).\n"
+          },
+          "Method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "default": "POST",
+            "description": "HTTP method used to fetch `Url` (Twilio default = POST)."
+          },
+          "Twiml": {
+            "type": "string",
+            "description": "Inline TwiML body — alternative to `Url`. If both are set,\n`Twiml` wins (matches Twilio's documented precedence).\n"
+          },
+          "ApplicationSid": {
+            "type": "string",
+            "description": "References a stored Application resource. Its `VoiceUrl` /\n`VoiceMethod` / `VoiceFallbackUrl` / `VoiceFallbackMethod` /\n`StatusCallback{,Method,Event}` fields fill any per-call\nrequest field that's empty. Per-call values always win —\nthe Application provides defaults, not overrides.\nCross-tenant Application lookups return 404 with the same\nshape as a nonexistent sid.\n"
+          },
+          "FallbackUrl": {
+            "type": "string",
+            "description": "URL to fetch TwiML from if the primary `Url` / `Twiml`\nsource fails to fetch or parse. Tried only on primary\nfailure.\n"
+          },
+          "FallbackMethod": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "default": "POST"
+          },
+          "StatusCallback": {
+            "type": "string"
+          },
+          "StatusCallbackMethod": {
+            "type": "string",
+            "default": "POST"
+          },
+          "StatusCallbackEvent": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "initiated",
+                "ringing",
+                "answered",
+                "completed"
+              ]
+            }
+          },
+          "MachineDetection": {
+            "type": "string",
+            "enum": [
+              "Enable",
+              "DetectMessageEnd"
+            ]
+          },
+          "MachineDetectionTimeout": {
+            "type": "integer"
+          },
+          "MachineDetectionSpeechThreshold": {
+            "type": "integer"
+          },
+          "MachineDetectionSpeechEndThreshold": {
+            "type": "integer"
+          },
+          "MachineDetectionSilenceTimeout": {
+            "type": "integer"
+          },
+          "AsyncAmdStatusCallback": {
+            "type": "string"
+          },
+          "AsyncAmdStatusCallbackMethod": {
+            "type": "string",
+            "default": "POST"
+          },
+          "Record": {
+            "type": "boolean",
+            "default": false
+          },
+          "RecordingStatusCallback": {
+            "type": "string"
+          },
+          "RecordingStatusCallbackMethod": {
+            "type": "string",
+            "default": "POST"
+          },
+          "RecordingStatusCallbackEvent": {
+            "type": "string",
+            "description": "Comma-separated subset of `in-progress`, `completed`, `absent`."
+          },
+          "RecordingChannels": {
+            "type": "string",
+            "enum": [
+              "mono",
+              "dual"
+            ],
+            "description": "Recording channel layout. Accepted-and-mono-only in v0.19.x — `dual` is parsed but the writer emits a single mixed channel."
+          },
+          "RecordingTrack": {
+            "type": "string",
+            "enum": [
+              "inbound",
+              "outbound",
+              "both"
+            ],
+            "description": "Accepted-and-ignored in v0.19.x — recording captures the bridged audio regardless."
+          },
+          "Trim": {
+            "type": "string",
+            "enum": [
+              "trim-silence",
+              "do-not-trim"
+            ],
+            "description": "Accepted-and-ignored in v0.19.x — recording is fixed at `trim-silence`."
+          },
+          "Timeout": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 60,
+            "description": "Originate timeout (seconds). Drives the FreeSWITCH `originate_timeout` channel variable."
+          },
+          "SendDigits": {
+            "type": "string",
+            "description": "DTMF burst played after answer — charset `0-9*#wW` (`w`=500ms, `W`=1s pause). Wired into the originate."
+          },
+          "CallerId": {
+            "type": "string",
+            "description": "Alternate to `From` for SIP From: rewriting. When set, drives the channel `effective_caller_id_number`."
+          },
+          "CallReason": {
+            "type": "string",
+            "description": "Stored as the `cb_call_reason` channel variable for customer dialplans + reporting (Twilio's analogue is the same name)."
+          },
+          "SipAuthUsername": {
+            "type": "string",
+            "description": "SIP digest auth username for BYOC trunks; channel var `sip_auth_username`."
+          },
+          "SipAuthPassword": {
+            "type": "string",
+            "description": "SIP digest auth password (paired with SipAuthUsername)."
+          },
+          "Byoc": {
+            "type": "string",
+            "description": "Twilio BYOC Trunk SID. Accepted-and-ignored — VoiceML routes via FreeSWITCH gateways configured at deploy time."
+          },
+          "AsyncAmd": {
+            "type": "boolean",
+            "description": "Twilio compatibility — AMD on VoiceML is always async; this flag is accepted but redundant."
+          },
+          "CallToken": {
+            "type": "string",
+            "description": "Twilio CallToken for verified-caller-id flows. Accepted-and-ignored."
+          }
+        }
+      },
+      "UpdateCallRequest": {
+        "type": "object",
+        "description": "POST /Calls/{Sid} body. The endpoint serves four intents:\n\n* `Status=completed|canceled` — terminate the live call.\n* `Twiml=<inline>` — execute inline TwiML on the live call;\n  wins over `Url` when both are present (matches Twilio).\n* `Url=…` (`Method`/`FallbackUrl`/`FallbackMethod`) — fetch\n  TwiML and execute on the live call. Falls through to\n  `FallbackUrl` on primary fetch/parse failure.\n* `StatusCallback*` — swap the live call's lifecycle-\n  callback wiring (URL / method / event-mask). Twilio\n  \"only-set fields\" precedence: empty fields preserve the\n  previous value; absent `StatusCallbackEvent` leaves the\n  existing event mask, present (one or more) replaces.\n\nPrecedence: Status wins over any TwiML source. The\nStatusCallback* update is independent and applies on every\nrequest that carries it (including the terminate path).\n",
+        "properties": {
+          "Status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "canceled"
+            ]
+          },
+          "Twiml": {
+            "type": "string",
+            "description": "Inline TwiML body. Wins over `Url`."
+          },
+          "Url": {
+            "type": "string"
+          },
+          "Method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "default": "POST"
+          },
+          "FallbackUrl": {
+            "type": "string"
+          },
+          "FallbackMethod": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "default": "POST"
+          },
+          "StatusCallback": {
+            "type": "string",
+            "description": "Swaps the live call's StatusCallback URL."
+          },
+          "StatusCallbackMethod": {
+            "type": "string",
+            "description": "Swaps the live call's StatusCallback HTTP method."
+          },
+          "StatusCallbackEvent": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "initiated",
+                "ringing",
+                "answered",
+                "completed"
+              ]
+            },
+            "description": "Replaces the event-mask. Repeatable form param; empty list defaults to `[completed]` (Twilio default)."
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Authentication failed. All of the following return the same 401\nwith the same body, intentionally indistinguishable from outside:\n  * Unknown :AccountSid\n  * Disabled account\n  * Wrong api_key\n  * Source IP not in the account's allow_cidr (per-tenant allowlist)\n",
+        "headers": {
+          "WWW-Authenticate": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The requested resource does not exist.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Request validation failed (invalid phone number, malformed body, ...).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Per-account rate limit exceeded.",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "X-RateLimit-Limit": {
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "X-RateLimit-Remaining": {
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "X-RateLimit-Reset": {
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "summary": "List calls",
+        "description": "Paginated list of call records for the given account. Filters\nmatch Twilio: `To`, `From`, `Status`, `ParentCallSid`, `StartTime>=`,\n`StartTime<=`. Pagination via `Page` and `PageSize` (max 1000).\n",
+        "parameters": [
+          {
+            "name": "To",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "From",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ParentCallSid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartTime>=",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartTime<=",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of calls.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "tags": [
+          "Calls"
+        ]
+      },
+      "post": {
+        "summary": "Create (originate) a call",
+        "description": "Originates an outbound call via FreeSWITCH. The `To` and `From`\nnumbers are validated and normalised to E.164 against the\nauthenticated tenant's `phone_regions` list — set per-account in\nthe admin API. Empty list disables validation; multi-region\ntenants accept numbers valid in any listed region.\n`MachineDetection` is optional; omitting it skips AMD entirely.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCallRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Call created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Call"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "Originate failed (carrier unreachable, FreeSWITCH error, ...).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Calls"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a call",
+        "responses": {
+          "200": {
+            "description": "Call resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Call"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls"
+        ]
+      },
+      "post": {
+        "summary": "Update or terminate a live call",
+        "description": "Three flows on the same endpoint (mirrors Twilio):\n  * `Status=completed|canceled` — terminate the call.\n  * `Twiml=<inline>` — execute inline TwiML on the live call\n    (wins over `Url` when both are present).\n  * `Url=…` — fetch new TwiML and execute it on the live call\n    (live redirect / hot swap).\nIf `Status` is present alongside any TwiML source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCallRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update applied. Full Call resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Call"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "502": {
+            "description": "TwiML fetch / execute failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Calls"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a call record",
+        "responses": {
+          "204": {
+            "description": "Call deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "summary": "List active conferences for the account",
+        "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via TwiML\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
+        "responses": {
+          "200": {
+            "description": "Page of conferences.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConferenceList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Conference subsystem not configured (passive AMD-on-fork mode).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Conferences"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ConferenceSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a single conference",
+        "responses": {
+          "200": {
+            "description": "Conference resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Conference"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences"
+        ]
+      },
+      "post": {
+        "summary": "End an active conference",
+        "description": "v1 supports only `Status=completed` — kicks every participant\nand tears down the room. Twilio's other update fields\n(`Announce*`) are not yet implemented.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "completed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conference ended (synthesised post-end view).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Conference"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ConferenceSid"
+        }
+      ],
+      "get": {
+        "summary": "List participants in a conference",
+        "responses": {
+          "200": {
+            "description": "Page of participants.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParticipantList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences / Participants"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ConferenceSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a single participant",
+        "responses": {
+          "200": {
+            "description": "Participant resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences / Participants"
+        ]
+      },
+      "post": {
+        "summary": "Mute / unmute / hold a participant",
+        "description": "At least one of `Muted` or `Hold` must be set. Twilio's\n`HoldUrl` (custom hold-music URL) and `AnnounceUrl` are\nnot yet implemented.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Muted": {
+                    "type": "boolean",
+                    "description": "Mute / unmute the participant."
+                  },
+                  "Hold": {
+                    "type": "boolean",
+                    "description": "Place the participant on hold (default hold-music profile) or remove from hold."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Participant resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences / Participants"
+        ]
+      },
+      "delete": {
+        "summary": "Kick a participant out of the conference",
+        "responses": {
+          "204": {
+            "description": "Participant kicked."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Conferences / Participants"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Queues": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "summary": "Create a queue",
+        "description": "Create a named queue. Idempotent — POSTing the same\nFriendlyName a second time returns the existing queue rather\nthan erroring (matches Twilio).\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "FriendlyName"
+                ],
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "MaxSize": {
+                    "type": "integer",
+                    "default": 100,
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Queue resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Queue"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Queues"
+        ]
+      },
+      "get": {
+        "summary": "List queues for the account (paged, FriendlyName ASC)",
+        "responses": {
+          "200": {
+            "description": "Page of queues.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Queues"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/QueueSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a queue",
+        "responses": {
+          "200": {
+            "description": "Queue resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Queue"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Queues"
+        ]
+      },
+      "post": {
+        "summary": "Update a queue (FriendlyName / MaxSize)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "MaxSize": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Queue resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Queue"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Queues"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a queue",
+        "description": "Refused with 409 if any members are still waiting — caller must\ndrain the queue first (matches Twilio's behaviour).\n",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Queue still has waiting members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Queues"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/QueueSid"
+        }
+      ],
+      "get": {
+        "summary": "List waiting members in a queue",
+        "description": "Returned ordered by position; position 1 = longest waiting\n(front of queue).\n",
+        "responses": {
+          "200": {
+            "description": "Members list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueMemberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Queues / Members"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/Front": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/QueueSid"
+        }
+      ],
+      "get": {
+        "summary": "Peek the longest-waiting member",
+        "responses": {
+          "200": {
+            "description": "Front-of-queue member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueMember"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Queue empty or not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Queues / Members"
+        ]
+      },
+      "post": {
+        "summary": "Dequeue the front member to a TwiML URL",
+        "description": "Pops the longest-waiting member and redirects their call to the\nURL in the body. The member's <Enqueue> wait-loop fetches that\nURL and runs the returned TwiML on their leg as continuation.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Url"
+                ],
+                "properties": {
+                  "Url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "HTTPS-only."
+                  },
+                  "Method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ],
+                    "default": "POST"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dequeued member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Queue empty or not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Queues / Members"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/{CallSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/QueueSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a specific member by CallSid",
+        "responses": {
+          "200": {
+            "description": "Queue member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueMember"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Queues / Members"
+        ]
+      },
+      "post": {
+        "summary": "Dequeue a specific member to a TwiML URL",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Url"
+                ],
+                "properties": {
+                  "Url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "Method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ],
+                    "default": "POST"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dequeued member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Queues / Members"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Applications": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "summary": "Create an Application",
+        "description": "Persistent named TwiML+callback bundle — referenced by\n`<Dial><Application>AP…</Application></Dial>`. The agent's\nDial verb resolves the SID, fetches voice_url, and runs the\nreturned TwiML on the call leg.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceCallerIdLookup": {
+                    "type": "boolean"
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "StatusCallbackEvent": {
+                    "type": "string",
+                    "description": "Comma-separated."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Application resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Applications"
+        ]
+      },
+      "get": {
+        "summary": "List Applications for the account (paged, FriendlyName ASC)",
+        "responses": {
+          "200": {
+            "description": "Page of Applications.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Applications"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Applications/{ApplicationSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ApplicationSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch an Application",
+        "responses": {
+          "200": {
+            "description": "Application resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Applications"
+        ]
+      },
+      "post": {
+        "summary": "Update an Application (partial — only set fields are touched)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceCallerIdLookup": {
+                    "type": "boolean"
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "StatusCallbackEvent": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Applications"
+        ]
+      },
+      "delete": {
+        "summary": "Delete an Application",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Applications"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Recordings": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "summary": "List recordings for the account",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of recordings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recordings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recording"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Recordings"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List recordings for one call",
+        "responses": {
+          "200": {
+            "description": "Page of recordings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recordings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recording"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Recordings"
+        ]
+      },
+      "post": {
+        "summary": "Start a recording mid-call",
+        "description": "Begins a fresh recording on the live call leg via FreeSWITCH's\n`uuid_record`. The new Recording resource is returned in the\n201 response. Distinct from `Record=true` on `POST /Calls`,\nwhich captures from the start of the call.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "RecordingMaxDuration": {
+                    "type": "integer",
+                    "description": "Cap recording length in seconds. 0 = no limit."
+                  },
+                  "RecordingChannels": {
+                    "type": "string",
+                    "enum": [
+                      "mono",
+                      "dual"
+                    ]
+                  },
+                  "PlayBeep": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "RecordingStatusCallback": {
+                    "type": "string"
+                  },
+                  "RecordingStatusCallbackMethod": {
+                    "type": "string",
+                    "default": "POST"
+                  },
+                  "RecordingStatusCallbackEvent": {
+                    "type": "string",
+                    "description": "Comma-separated: in-progress,completed,absent"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recording started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Call not active.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Recordings"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List active media streams for the call",
+        "description": "Returns 0 or 1 entries — mod_audio_fork supports a single\nactive fork per call uuid, matching the slot model on the\nVoiceML tracker. Pagination envelope is the canonical\nTwilio shape so SDK auto-paginators round-trip cleanly.\n",
+        "responses": {
+          "200": {
+            "description": "Page of streams (0 or 1 entry).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "streams",
+                    "page",
+                    "page_size",
+                    "total"
+                  ],
+                  "properties": {
+                    "streams": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Stream"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "num_pages": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Streams"
+        ]
+      },
+      "post": {
+        "summary": "Start a media stream on the call (REST equivalent of `<Connect><Stream>`/`<Start><Stream>`)",
+        "description": "Issues `uuid_audio_fork start` on the call leg via the same\nexecutor primitive the TwiML verbs use. Returns the new Stream\nresource with an MZ-prefixed sid.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Url"
+                ],
+                "properties": {
+                  "Url": {
+                    "type": "string",
+                    "description": "wss:// endpoint for the customer's WebSocket server. Required."
+                  },
+                  "Track": {
+                    "type": "string",
+                    "enum": [
+                      "inbound_track",
+                      "outbound_track",
+                      "both_tracks"
+                    ]
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "default": "POST"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stream started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Streams"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams/{Sid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "name": "Sid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Stream sid (MZ...)"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a single stream by sid",
+        "responses": {
+          "200": {
+            "description": "Stream resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Streams"
+        ]
+      },
+      "post": {
+        "summary": "Update a media stream — only Status=stopped is meaningful",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "stopped"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stream stopped.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Streams"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List active SIPREC sessions for the call",
+        "description": "Returns 0 or 1 entries — mod_siprec supports one mirror per\ncall uuid. Pagination envelope is the canonical Twilio shape.\n",
+        "responses": {
+          "200": {
+            "description": "Page of SIPREC sessions (0 or 1 entry).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "siprec",
+                    "page",
+                    "page_size",
+                    "total"
+                  ],
+                  "properties": {
+                    "siprec": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SiprecSession"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "num_pages": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Siprec"
+        ]
+      },
+      "post": {
+        "summary": "Start a SIPREC session on the call (REST equivalent of `<Start><Siprec>`)",
+        "description": "Invokes the `siprec` dialplan app via `uuid_broadcast` against\nthe configured connector profile. Returns the new Siprec\nresource with an SR-prefixed sid.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "ConnectorName": {
+                    "type": "string",
+                    "description": "mod_siprec profile name. Empty falls back to SIPREC_DEFAULT_PROFILE then `default`."
+                  },
+                  "Track": {
+                    "type": "string",
+                    "enum": [
+                      "inbound_track",
+                      "outbound_track",
+                      "both_tracks"
+                    ]
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "default": "POST"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIPREC session started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiprecSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Siprec"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec/{Sid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "name": "Sid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "SIPREC sid (SR...)"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a single SIPREC session by sid",
+        "responses": {
+          "200": {
+            "description": "SIPREC resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiprecSession"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Siprec"
+        ]
+      },
+      "post": {
+        "summary": "Update a SIPREC session — clears tracking only",
+        "description": "StefanYohansson/mod_siprec doesn't expose a stop verb; the SRS\nrecording session continues until the call hangs up. This\nendpoint clears VoiceML's session-tracking entry only.\nDocumented mod_siprec limitation.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "stopped"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tracking cleared.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiprecSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Siprec"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List active transcriptions for the call",
+        "description": "Returns 0 or 1 entries. Pagination envelope is the canonical\nTwilio shape.\n",
+        "responses": {
+          "200": {
+            "description": "Page of transcriptions (0 or 1 entry).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "transcriptions",
+                    "page",
+                    "page_size",
+                    "total"
+                  ],
+                  "properties": {
+                    "transcriptions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CallTranscription"
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "num_pages": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Transcriptions"
+        ]
+      },
+      "post": {
+        "summary": "Start real-time transcription on the call (REST equivalent of `<Start><Transcription>`)",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Track": {
+                    "type": "string",
+                    "enum": [
+                      "inbound_track",
+                      "outbound_track",
+                      "both_tracks"
+                    ]
+                  },
+                  "LanguageCode": {
+                    "type": "string",
+                    "default": "en-US"
+                  },
+                  "TranscriptionEngine": {
+                    "type": "string",
+                    "enum": [
+                      "deepgram",
+                      "google",
+                      "aws",
+                      "azure"
+                    ]
+                  },
+                  "ProfanityFilter": {
+                    "type": "boolean"
+                  },
+                  "PartialResults": {
+                    "type": "boolean"
+                  },
+                  "Hints": {
+                    "type": "string"
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "default": "POST"
+                  },
+                  "StatusCallbackEvents": {
+                    "type": "string",
+                    "description": "Comma-separated event filter."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transcription started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallTranscription"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Transcriptions"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions/{Sid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "name": "Sid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Transcription sid (RT...)"
+        }
+      ],
+      "get": {
+        "summary": "Fetch a single transcription by sid",
+        "responses": {
+          "200": {
+            "description": "Transcription resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallTranscription"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Transcriptions"
+        ]
+      },
+      "post": {
+        "summary": "Update a transcription — only Status=stopped is meaningful",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "stopped"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transcription stopped.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallTranscription"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Calls / Transcriptions"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List per-call notifications (compat stub)",
+        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through Prometheus + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list.\n",
+        "responses": {
+          "200": {
+            "description": "Empty list (always — stub).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "notifications",
+                    "page",
+                    "page_size",
+                    "total",
+                    "uri"
+                  ],
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Notifications"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Events": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "get": {
+        "summary": "List per-call lifecycle events (compat stub)",
+        "description": "Twilio's fine-grained per-call event stream. VoiceML\ndelivers equivalent data via `StatusCallback` (initiated /\nringing / answered / completed); this endpoint is mounted\nas a stub returning an empty list so SDK helpers iterate\ncleanly. The canonical event source is the customer's\n`StatusCallback` URL.\n",
+        "responses": {
+          "200": {
+            "description": "Empty list (always — stub).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "events",
+                    "page",
+                    "page_size",
+                    "total",
+                    "uri"
+                  ],
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Events"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/UserDefinedMessages": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "post": {
+        "summary": "Send a user-defined message on a live call (NOT IMPLEMENTED)",
+        "description": "Twilio's chat-style messages on a live call. Real\nmessage-passing infrastructure (a websocket on the\ncustomer-facing leg) that's out of scope for VoiceML.\nReturns 501 with Twilio code 20501.\n",
+        "responses": {
+          "501": {
+            "description": "Not implemented.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / UserDefinedMessages"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ConferenceSid"
+        }
+      ],
+      "get": {
+        "summary": "List recordings captured by a conference",
+        "description": "Returns recordings created by `<Dial><Conference record=\"record-from-start\">`\nverbs that ran in this conference. Pagination envelope same as\n`/Recordings`.\n",
+        "responses": {
+          "200": {
+            "description": "Page of conference-scoped recordings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recordings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recording"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "tags": [
+          "Conferences / Recordings"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{RecordingSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "$ref": "#/components/parameters/RecordingSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch recording metadata for a specific call (call-scoped form)",
+        "description": "Same JSON resource as `/Recordings/{RecordingSid}` but enforces\nthe call-scope from the URL path. 404 if the recording exists\nbut is attached to a different call.\n",
+        "responses": {
+          "200": {
+            "description": "Recording metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Recordings"
+        ]
+      },
+      "post": {
+        "summary": "Update a mid-call recording's status",
+        "description": "Wires `uuid_record stop|pause|resume` on the live call leg.\nAll three transitions return 200 + the post-mutation\nRecording resource. Tenant-scoped: a RecordingSid that\nbelongs to a different account returns 404 without leaking\nexistence.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "stopped",
+                      "paused",
+                      "in-progress"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recording resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Pause / resume failed against the live call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Recordings"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a recording (row + local WAV + S3 object when present)",
+        "description": "Removes the memdb row, unlinks the on-disk WAV, and (when\n`RECORDING_S3_BUCKET` is configured) issues an S3 DeleteObject\non the archived copy. S3 deletion is best-effort: failure logs\nbut does not fail the API call (the bucket lifecycle policy is\nthe long-stop cleanup). Tenant-scoped — cross-tenant DELETE\nreturns 404 without affecting the row.\n",
+        "responses": {
+          "204": {
+            "description": "Recording deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Calls / Recordings"
+        ]
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/RecordingSid"
+        }
+      ],
+      "get": {
+        "summary": "Fetch recording metadata or audio",
+        "description": "Returns JSON metadata when the path ends in `/{RecordingSid}`\n(no extension). When the path ends in `/{RecordingSid}.wav`\nthe response is the captured audio as `audio/wav` with one\nof three delivery shapes:\n\n  * `200 OK` — local file present (typical for the first\n    `RECORDING_LOCAL_GRACE` window after the call ends).\n  * `302 Found` — local file cleaned up but archived to S3;\n    `Location` header points at a presigned URL with TTL\n    `RECORDING_PRESIGN_TTL`.\n  * `410 Gone` — local file gone AND no `s3_key` set\n    (typically: archival not configured + cleanup ran, or\n    archival failed and the WAV was lost).\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
+        "responses": {
+          "200": {
+            "description": "Recording metadata or WAV audio.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              },
+              "audio/wav": {}
+            }
+          },
+          "302": {
+            "description": "WAV archived to S3; `Location` is a presigned URL.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Presigned S3 URL with `RECORDING_PRESIGN_TTL` lifetime."
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Recording audio is no longer available (no local file, no S3 key).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Recordings"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a recording (row + local WAV + S3 object when present)",
+        "description": "Removes the memdb row, unlinks the on-disk WAV, and (when\n`RECORDING_S3_BUCKET` is configured) issues an S3 DeleteObject\non the archived copy. S3 deletion is best-effort: failure logs\nbut does not fail the API call (the bucket lifecycle policy is\nthe long-stop cleanup). Tenant-scoped — cross-tenant DELETE\nreturns 404 without affecting the row.\n",
+        "responses": {
+          "204": {
+            "description": "Recording deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "tags": [
+          "Recordings"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Deep liveness probe",
+        "description": "Composite probe with two-tier severity. Hard checks (memdb,\ndisk free space, FreeSWITCH process + required modules +\nSofia profile RUNNING) flip the LB-facing `ok` boolean.\nSoft checks (host CPU loadavg, memory pressure, FS workload\npercents, Raft cluster) surface in `warnings` only — the LB\nstays in rotation. Result cached 5 s on full success.\n",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "All Hard checks pass. `warnings` may still be populated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HealthFailure"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "One or more Hard checks failed. Body lists failures + any concurrent warnings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "failures"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "failures": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HealthFailure"
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HealthFailure"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Diagnostics"
+        ]
+      }
+    },
+    "/openapi.yaml": {
+      "get": {
+        "summary": "OpenAPI spec (YAML)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "This document.",
+            "content": {
+              "application/yaml": {}
+            }
+          }
+        },
+        "tags": [
+          "Diagnostics"
+        ]
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "OpenAPI spec (JSON)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "This document, JSON-encoded.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "tags": [
+          "Diagnostics"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Applications"
+    },
+    {
+      "name": "Calls"
+    },
+    {
+      "name": "Calls / Events"
+    },
+    {
+      "name": "Calls / Notifications"
+    },
+    {
+      "name": "Calls / Recordings"
+    },
+    {
+      "name": "Calls / Siprec"
+    },
+    {
+      "name": "Calls / Streams"
+    },
+    {
+      "name": "Calls / Transcriptions"
+    },
+    {
+      "name": "Calls / UserDefinedMessages"
+    },
+    {
+      "name": "Conferences"
+    },
+    {
+      "name": "Conferences / Participants"
+    },
+    {
+      "name": "Conferences / Recordings"
+    },
+    {
+      "name": "Diagnostics"
+    },
+    {
+      "name": "Queues"
+    },
+    {
+      "name": "Queues / Members"
+    },
+    {
+      "name": "Recordings"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Voice — calls",
+      "tags": [
+        "Calls",
+        "Calls / Recordings",
+        "Calls / Streams",
+        "Calls / Siprec",
+        "Calls / Transcriptions"
+      ]
+    },
+    {
+      "name": "Voice — call telemetry",
+      "tags": [
+        "Calls / Events",
+        "Calls / Notifications",
+        "Calls / UserDefinedMessages"
+      ]
+    },
+    {
+      "name": "Conferences",
+      "tags": [
+        "Conferences",
+        "Conferences / Participants",
+        "Conferences / Recordings"
+      ]
+    },
+    {
+      "name": "Queues",
+      "tags": [
+        "Queues",
+        "Queues / Members"
+      ]
+    },
+    {
+      "name": "Applications",
+      "tags": [
+        "Applications"
+      ]
+    },
+    {
+      "name": "Recordings (top-level)",
+      "tags": [
+        "Recordings"
+      ]
+    },
+    {
+      "name": "Diagnostics",
+      "tags": [
+        "Diagnostics"
+      ]
+    }
+  ]
+}

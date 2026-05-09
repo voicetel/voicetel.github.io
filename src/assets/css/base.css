@@ -191,6 +191,10 @@ main > .container:first-child {
 	flex-wrap: wrap;
 }
 
+.hero-actions--center {
+	justify-content: center;
+}
+
 @media (width <= 720px) {
 	.hero {
 		padding-top: var(--space-5);

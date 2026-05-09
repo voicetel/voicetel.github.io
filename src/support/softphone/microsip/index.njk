@@ -1,0 +1,54 @@
+---
+layout: layouts/page.njk
+title: "Configure MicroSIP for VoiceTel"
+description: "Add a VoiceTel SIP account to MicroSIP, the lightweight open-source Windows softphone built on PJSIP."
+---
+
+<p class="eyebrow">Support / Softphone / MicroSIP</p>
+<h1>Configure MicroSIP for VoiceTel.</h1>
+<p class="lede">MicroSIP is a free, lightweight Windows-only softphone built on PJSIP. Configuration is straightforward — one Account dialog, no nested menus.</p>
+
+<section class="section-block">
+	<h2>Steps</h2>
+	<ol>
+		<li>Open MicroSIP → click the down-arrow next to the account selector → <strong>Add Account</strong>.</li>
+		<li>Fill in the Account dialog:
+			<ul>
+				<li><strong>Account Name:</strong> VoiceTel</li>
+				<li><strong>SIP Server:</strong> VoiceTel SIP server host</li>
+				<li><strong>SIP Proxy:</strong> leave blank (uses SIP Server)</li>
+				<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Domain:</strong> same as SIP Server</li>
+				<li><strong>Login:</strong> same as Username (auth user)</li>
+				<li><strong>Password:</strong> SIP password from onboarding</li>
+				<li><strong>Display Name:</strong> caller's name</li>
+				<li><strong>Voicemail Number:</strong> blank unless onboarding gave one</li>
+				<li><strong>Transport:</strong> UDP (or TLS)</li>
+				<li><strong>Public Address:</strong> Auto (or leave blank)</li>
+				<li><strong>Register on Startup:</strong> ticked</li>
+				<li><strong>Allow Rewrite Contact Header:</strong> ticked</li>
+				<li><strong>Allow Via Rewrite:</strong> ticked</li>
+				<li><strong>Encryption:</strong> None (or SRTP if onboarding required encrypted media)</li>
+			</ul>
+		</li>
+		<li>Click <strong>Save</strong>. The status bar at the bottom of the main window should change to <strong>Online</strong>.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Codec preferences</h2>
+	<p>Open <strong>Tools → Account → Codecs</strong>. Enable PCMU and PCMA. Disable wideband codecs MicroSIP pre-enables unless onboarding confirmed support.</p>
+</section>
+
+<section class="section-block">
+	<h2>Auto-answer / hotline mode</h2>
+	<p>MicroSIP supports auto-answer and hotline modes useful for kiosk-style deployments. Configure under <strong>Account → Advanced → Auto-Answer code</strong> if needed.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="microsip-cta-heading">
+	<h2 id="microsip-cta-heading">Need provisioning XML?</h2>
+	<p>MicroSIP supports loading account credentials from an XML file at startup — useful for kiosk and call-center deployments. Contact VoiceTel engineering for a template.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

@@ -1,0 +1,83 @@
+---
+layout: layouts/page.njk
+title: "Add a VoiceTel SIP trunk to 3CX"
+description: "Configure 3CX SIP trunk to VoiceTel — generic SIP trunk template with Digest or IP authentication, DID routing, outbound rules."
+---
+
+<p class="eyebrow">Support / PBX / 3CX</p>
+<h1>Add a VoiceTel SIP trunk to 3CX.</h1>
+<p class="lede">3CX has a SIP trunk wizard with templates for many providers. VoiceTel doesn't ship as a named template; use the <strong>Generic SIP Trunk</strong> template and fill in the fields below.</p>
+
+<section class="section-block">
+	<h2>1. Create the trunk</h2>
+	<ol>
+		<li>3CX Management Console → <strong>SIP Trunks → Add SIP Trunk</strong>.</li>
+		<li>In the country selector, pick <strong>Generic</strong> → <strong>Generic SIP Trunk</strong>.</li>
+		<li>Enter a <strong>Main Trunk No.</strong> — typically your primary VoiceTel-assigned DID (in E.164, e.g. <code>+12125551234</code>).</li>
+		<li>Click <strong>OK</strong> to open the trunk-edit form.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>2. General tab</h2>
+	<ul>
+		<li><strong>Enter name for Trunk:</strong> VoiceTel</li>
+		<li><strong>Registrar / Server / Gateway Hostname or IP:</strong> the VoiceTel SIP server host</li>
+		<li><strong>Outbound Proxy:</strong> same as Registrar</li>
+		<li><strong>Number of SIM Calls:</strong> your provisioned concurrent-call cap (or unlimited if you have an unmetered trunk)</li>
+		<li><strong>Type of Authentication:</strong>
+			<ul>
+				<li>Digest: select <strong>Register/Account based</strong></li>
+				<li>IP auth: select <strong>IP based</strong> and add the 3CX server's public IP to your VoiceTel ACL</li>
+			</ul>
+		</li>
+		<li><strong>Authentication ID:</strong> SIP username from VoiceTel onboarding</li>
+		<li><strong>Authentication Password:</strong> SIP password from onboarding</li>
+		<li><strong>3 Way Calling Method:</strong> Re-Invite (default)</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>3. Options tab</h2>
+	<ul>
+		<li><strong>Disallow video calls:</strong> ticked (unless onboarding confirmed video support)</li>
+		<li><strong>Send all calls to default voicemail:</strong> unticked</li>
+		<li><strong>Require registration for incoming calls:</strong> ticked (Digest) or unticked (IP auth)</li>
+		<li><strong>Re-Invite Mode:</strong> Pass-through (default)</li>
+		<li><strong>SIP Reinvite handling:</strong> Default</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>4. Inbound parameters tab</h2>
+	<ul>
+		<li><strong>Source identification:</strong> match by <em>Caller ID</em> if your VoiceTel ACL covers multiple source IPs; otherwise leave default</li>
+		<li>Map your VoiceTel-assigned DIDs to extensions / IVRs / queues here.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>5. Outbound rules</h2>
+	<ol>
+		<li><strong>Outbound Rules → Add</strong>.</li>
+		<li><strong>Rule Name:</strong> Outbound via VoiceTel</li>
+		<li><strong>Apply this rule to these calls:</strong> by length / by prefix per your dialing plan</li>
+		<li><strong>Make outbound calls on:</strong> the VoiceTel trunk</li>
+		<li><strong>Strip Digits:</strong> 0 (unless your dialing plan requires)</li>
+		<li><strong>Prepend:</strong> as needed (e.g. <code>+1</code> if your extensions dial 10-digit and VoiceTel expects E.164)</li>
+		<li>Save.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<p>3CX Management Console → <strong>SIP Trunks</strong>. The trunk should show <strong>Registered</strong> within a minute. Check <strong>Activity → SIP Trunk</strong> for an OPTIONS ping every 30 seconds with <code>200 OK</code> responses.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="threecx-cta-heading">
+	<h2 id="threecx-cta-heading">Add 3CX as a named provider template?</h2>
+	<p>3CX accepts SIP trunk template <code>tpl</code> files. VoiceTel engineering can supply a "VoiceTel" template that pre-fills these fields. Contact us to request the template.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

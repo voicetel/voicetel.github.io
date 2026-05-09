@@ -1,0 +1,95 @@
+---
+layout: layouts/page.njk
+title: "Add a VoiceTel SIP gateway to FusionPBX"
+description: "Configure a FusionPBX gateway and outbound route to VoiceTel — Digest or IP authentication, codec negotiation, OPTIONS ping."
+---
+
+<p class="eyebrow">Support / PBX / FusionPBX</p>
+<h1>Add a VoiceTel SIP gateway to FusionPBX.</h1>
+<p class="lede">FusionPBX uses FreeSWITCH gateways under the hood. The Gateway form maps directly to the gateway XML; same fields, same semantics as a raw FreeSWITCH gateway.</p>
+
+<section class="section-block">
+	<h2>1. Create the gateway</h2>
+	<ol>
+		<li>FusionPBX UI → <strong>Accounts → Gateways → Add</strong>.</li>
+		<li>Fill in:
+			<ul>
+				<li><strong>Gateway:</strong> <code>voicetel</code></li>
+				<li><strong>Username:</strong> SIP username from VoiceTel onboarding (leave blank for IP auth)</li>
+				<li><strong>Password:</strong> SIP password from onboarding (leave blank for IP auth)</li>
+				<li><strong>From User:</strong> SIP username</li>
+				<li><strong>From Domain:</strong> the VoiceTel SIP server host</li>
+				<li><strong>Proxy:</strong> the VoiceTel SIP server host</li>
+				<li><strong>Register Proxy:</strong> same as Proxy (or blank for IP auth)</li>
+				<li><strong>Register Transport:</strong> udp (or tls)</li>
+				<li><strong>Register:</strong> True (Digest) or False (IP auth)</li>
+				<li><strong>Expire Seconds:</strong> 600</li>
+				<li><strong>Retry Seconds:</strong> 30</li>
+				<li><strong>Ping:</strong> 30</li>
+				<li><strong>Caller ID In From:</strong> True</li>
+				<li><strong>Extension In Contact:</strong> True</li>
+				<li><strong>Profile:</strong> external</li>
+				<li><strong>Hostname:</strong> blank (uses local hostname)</li>
+				<li><strong>Enabled:</strong> True</li>
+			</ul>
+		</li>
+		<li>Save.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>2. Apply the gateway</h2>
+	<p>FusionPBX writes the XML config but FreeSWITCH won't pick it up until the external profile is rescanned:</p>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia profile external rescan
+fs_cli&gt; sofia status
+# Look for: voicetel gateway REGED expsec=600 ping=30</code></pre>
+	<p>Or click the green refresh icon in the FusionPBX Gateways list — same effect.</p>
+</section>
+
+<section class="section-block">
+	<h2>3. Outbound route</h2>
+	<ol>
+		<li><strong>Dialplan → Outbound Routes → Add</strong>.</li>
+		<li>Fill in:
+			<ul>
+				<li><strong>Gateway:</strong> voicetel (the gateway you just created)</li>
+				<li><strong>Dialplan Expression:</strong> <code>^(\+?1?\d{10})$</code> (US 10/11-digit; adjust for your dialing rules)</li>
+				<li><strong>Description:</strong> Outbound to VoiceTel</li>
+				<li><strong>Order:</strong> 100</li>
+				<li><strong>Enabled:</strong> True</li>
+			</ul>
+		</li>
+		<li>Save and click the green refresh icon to rescan dialplan.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>4. Inbound route</h2>
+	<ol>
+		<li><strong>Dialplan → Inbound Routes → Add</strong>.</li>
+		<li>Fill in:
+			<ul>
+				<li><strong>Destination Number:</strong> the VoiceTel-assigned DID, e.g. <code>+12125551234</code> (or a regex for multiple DIDs)</li>
+				<li><strong>Action:</strong> transfer to extension / IVR / time condition / etc.</li>
+				<li><strong>Context:</strong> public</li>
+				<li><strong>Enabled:</strong> True</li>
+			</ul>
+		</li>
+		<li>Save + rescan dialplan.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia status gateway voicetel
+fs_cli&gt; sofia loglevel all 9    # SIP trace
+fs_cli&gt; show channels</code></pre>
+</section>
+
+<aside class="cta-block" aria-labelledby="fusionpbx-cta-heading">
+	<h2 id="fusionpbx-cta-heading">Multi-tenant FusionPBX?</h2>
+	<p>If each tenant has its own VoiceTel trunk, configure one gateway per tenant under that tenant's domain. VoiceTel engineering can help with multi-tenant routing patterns.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

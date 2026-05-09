@@ -1,0 +1,64 @@
+---
+layout: layouts/page.njk
+title: "Configure Linphone for VoiceTel"
+description: "Add a VoiceTel SIP account to the Linphone open-source softphone on Windows, macOS, Linux, iOS, or Android."
+---
+
+<p class="eyebrow">Support / Softphone / Linphone</p>
+<h1>Configure Linphone for VoiceTel.</h1>
+<p class="lede">Linphone is open-source and free across desktop and mobile. Configuration is the same on every platform — only the menu paths differ.</p>
+
+<section class="section-block">
+	<h2>Steps (Linphone desktop)</h2>
+	<ol>
+		<li>Open Linphone → <strong>Preferences → Accounts → Add account</strong>.</li>
+		<li>Choose <strong>Use a SIP Account</strong>.</li>
+		<li>Enter your credentials:
+			<ul>
+				<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Password:</strong> SIP password from onboarding</li>
+				<li><strong>SIP Domain:</strong> VoiceTel SIP server host</li>
+				<li><strong>Display Name:</strong> caller's name</li>
+				<li><strong>Transport:</strong> UDP (or TLS)</li>
+			</ul>
+		</li>
+		<li>Click <strong>Validate</strong>.</li>
+		<li>Open the account's <strong>Advanced</strong> tab:
+			<ul>
+				<li><strong>Outbound proxy:</strong> same as SIP Domain</li>
+				<li><strong>Register expires:</strong> 60</li>
+				<li><strong>STUN / TURN:</strong> Off</li>
+				<li><strong>NAT and Firewall:</strong> Direct connection (or "Use NAT address" if you have a static public IP)</li>
+			</ul>
+		</li>
+		<li>Open <strong>Preferences → Audio → Codec preferences</strong>. Enable PCMU and PCMA; move them to the top of the list.</li>
+		<li>Save. Account status should show <strong>Registered</strong>.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Linphone mobile</h2>
+	<p>iOS / Android flow: <strong>Settings → Accounts → Add Account → Use SIP Account</strong>. Same fields as desktop. Disable STUN/TURN unless engineering directed otherwise.</p>
+</section>
+
+<section class="section-block">
+	<h2>Linphone CLI (Linux server / scripted)</h2>
+	<p>For automation or headless deployments, use <code>linphonecsh</code>:</p>
+	<pre class="code-block" data-lang="bash"><code>linphonec
+linphonec&gt; proxy add
+Your SIP identity: sip:&lt;username&gt;@&lt;voicetel-sip-server&gt;
+SIP proxy: sip:&lt;voicetel-sip-server&gt;
+Route (optional):
+Register at startup [yes]: yes
+Publish presence info [no]: no
+Expires [600]: 60</code></pre>
+	<p>Persist credentials via <code>~/.linphonerc</code>.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="linphone-cta-heading">
+	<h2 id="linphone-cta-heading">Linphone SDK integration?</h2>
+	<p>Linphone exposes a C/C++ SDK for embedding voice into custom apps. VoiceTel engineering can review compatibility — contact us with your integration plan.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

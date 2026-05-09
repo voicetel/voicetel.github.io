@@ -1,0 +1,80 @@
+---
+layout: layouts/page.njk
+title: "FreeSWITCH SBC trunk to VoiceTel"
+description: "Configure FreeSWITCH as an SBC for VoiceTel SIP trunking — Sofia external profile, gateway, ACL, and dialplan bridging."
+---
+
+<p class="eyebrow">Support / SBC / FreeSWITCH</p>
+<h1>FreeSWITCH SBC trunk to VoiceTel.</h1>
+<p class="lede">FreeSWITCH ships with a usable SBC role out of the box. The configuration below adds VoiceTel as a gateway on the external SIP profile, plus a dialplan rule to bridge inbound calls to your downstream PBX.</p>
+
+<section class="section-block">
+	<h2>1. Define the gateway</h2>
+	<p>Drop <code>conf/sip_profiles/external/voicetel.xml</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;include&gt;
+  &lt;gateway name="voicetel"&gt;
+    &lt;param name="proxy" value="&lt;voicetel-sip-server&gt;"/&gt;
+    &lt;param name="register-proxy" value="&lt;voicetel-sip-server&gt;"/&gt;
+    &lt;param name="username" value="&lt;sip-username&gt;"/&gt;
+    &lt;param name="password" value="&lt;sip-password&gt;"/&gt;
+    &lt;param name="from-domain" value="&lt;voicetel-sip-server&gt;"/&gt;
+    &lt;param name="register" value="true"/&gt;
+    &lt;param name="register-transport" value="udp"/&gt;
+    &lt;param name="expire-seconds" value="600"/&gt;
+    &lt;param name="ping" value="30"/&gt;
+    &lt;param name="caller-id-in-from" value="true"/&gt;
+    &lt;param name="extension-in-contact" value="true"/&gt;
+  &lt;/gateway&gt;
+&lt;/include&gt;</code></pre>
+	<p>For IP authentication (no Digest), set <code>register</code> to <code>false</code> and omit <code>username</code>/<code>password</code>. VoiceTel authorizes by source IP based on the ACL you've registered with onboarding.</p>
+</section>
+
+<section class="section-block">
+	<h2>2. Reload Sofia + verify registration</h2>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia profile external rescan
+fs_cli&gt; sofia status
+# Look for: voicetel  gateway  REGED  expsec=600  ping=30</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>3. Outbound dialplan</h2>
+	<p>Bridge to the gateway from your dialplan, e.g. <code>conf/dialplan/default.xml</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;extension name="voicetel-out"&gt;
+  &lt;condition field="destination_number" expression="^(1?\d{10})$"&gt;
+    &lt;action application="set" data="effective_caller_id_number=${caller_id_number}"/&gt;
+    &lt;action application="set" data="hangup_after_bridge=true"/&gt;
+    &lt;action application="bridge" data="sofia/gateway/voicetel/$1"/&gt;
+  &lt;/condition&gt;
+&lt;/extension&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>4. Inbound dialplan (from VoiceTel)</h2>
+	<p>Inbound calls land on the public IP. Add a public dialplan in <code>conf/dialplan/public.xml</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;extension name="voicetel-inbound"&gt;
+  &lt;condition field="destination_number" expression="^(\+?1?(\d{10}))$"&gt;
+    &lt;action application="transfer" data="$2 XML default"/&gt;
+  &lt;/condition&gt;
+&lt;/extension&gt;</code></pre>
+	<p>Replace the transfer target with whichever extension or context routes calls to your downstream PBX.</p>
+</section>
+
+<section class="section-block">
+	<h2>5. ACL for IP authentication</h2>
+	<p>If using IP auth, add VoiceTel's source IPs to the external profile's ACL (configured under <code>conf/autoload_configs/acl.conf.xml</code>) so unauthenticated INVITEs from VoiceTel are accepted.</p>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia status gateway voicetel
+fs_cli&gt; sofia loglevel all 9      # SIP trace
+fs_cli&gt; show channels</code></pre>
+</section>
+
+<aside class="cta-block" aria-labelledby="freeswitch-cta-heading">
+	<h2 id="freeswitch-cta-heading">FreeSWITCH SBC role in front of UCM / Asterisk?</h2>
+	<p>VoiceTel engineering can review FreeSWITCH SBC configs that bridge to downstream Cisco UCM, Asterisk, FusionPBX, or 3CX. Send your <code>vars.xml</code> + Sofia profile and we'll review.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

@@ -75,7 +75,7 @@ description: "VoiceTel pricing for voice, messaging, numbers, and lookups. Sprea
 					</td>
 				</tr>
 					{%- for service in group.services %}
-				<tr data-service data-service-id="{{ service.id }}" data-base-rate="{{ service.baseRate }}"{% if service.poolId %} data-pool="{{ service.poolId }}"{% endif %}{% if service._curve %} data-curve="{{ service._curve | dump | safe }}"{% else %} data-tiers='{{ service.discountTiers | dump | safe }}'{% endif %}>
+				<tr data-service data-service-id="{{ service.id }}" data-base-rate="{{ service.baseRate }}"{% if service.poolId %} data-pool="{{ service.poolId }}"{% endif %}{% if service.bundledFree %} data-bundled-free='{{ service.bundledFree | dump | safe }}'{% endif %}{% if service._curve %} data-curve="{{ service._curve | dump | safe }}"{% else %} data-tiers='{{ service.discountTiers | dump | safe }}'{% endif %}>
 					<th scope="row">{{ service.name }}{% if service.unitIcon %} <span class="pricing-calc__unit-icon">{% icon service.unitIcon, service.unit %}</span>{% endif %}</th>
 					<td class="pricing-calc__rate"><span data-rate>${{ service.baseRate }}</span></td>
 					<td class="pricing-calc__discount" data-discount>—</td>

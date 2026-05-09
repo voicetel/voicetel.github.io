@@ -1,0 +1,191 @@
+---
+layout: layouts/page.njk
+title: "Platform & flows — Get started with business messaging"
+description: "Choose a messaging platform, register or verify your sender, build your first message flows, and set up STOP / HELP / preferences plus business-system integrations."
+---
+
+<p class="eyebrow">Messaging / Getting started / 2. Platform &amp; flows</p>
+<h1>Platform &amp; flows.</h1>
+<p class="lede">Steps 7 through 11. Choose your platform, register your sender, build the first message flows, and wire up STOP / HELP / preference handling and integrations to the business systems that already drive your customer journeys.</p>
+
+<section class="section-block">
+	<h2>Step 7: Choose your messaging platform</h2>
+	<p>Your provider should support the type of messaging you plan to send, the countries where you operate, and the systems your team already uses.</p>
+
+	<h3>What to look for</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Capability</th><th scope="col">Why it matters</th></tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">Sender registration / verification support</th><td>Helps you prepare the brand and campaign information required for business messaging.</td></tr>
+				<tr><th scope="row">Consent and opt-out handling</th><td>Keeps suppression lists, STOP handling, and subscriber status reliable.</td></tr>
+				<tr><th scope="row">Automation tools</th><td>Lets you trigger welcome messages, reminders, alerts, and follow-ups.</td></tr>
+				<tr><th scope="row">CRM / ecommerce integrations</th><td>Syncs leads, customers, purchases, appointments, and preferences.</td></tr>
+				<tr><th scope="row">Reporting</th><td>Tracks delivery, opt-outs, clicks, conversions, and campaign performance.</td></tr>
+				<tr><th scope="row">Branded link support</th><td>Helps customers recognize your business and avoid public link shorteners.</td></tr>
+				<tr><th scope="row">Role-based access</th><td>Lets marketing, support, and operations work safely in the same system.</td></tr>
+				<tr><th scope="row">API access</th><td>Gives your engineering team flexibility for custom workflows.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Platform questions to ask</h3>
+	<ul>
+		<li>Which sender types are available for my use case?</li>
+		<li>What registration or verification is required before sending?</li>
+		<li>How are STOP, HELP, and opt-outs handled?</li>
+		<li>Can I store and export consent records?</li>
+		<li>Can I segment subscribers by source, preference, or purchase behavior?</li>
+		<li>Can I connect messaging to my CRM, website forms, scheduling tool, or ecommerce platform?</li>
+		<li>What reporting is available for delivery, opt-outs, clicks, and conversions?</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Step 8: Register or verify your sender</h2>
+	<p>Depending on your country, number type, message type, and provider, your business may need to register or verify its sender before launching.</p>
+
+	<h3>Information to prepare</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Item</th><th scope="col">Example</th></tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">Legal business name</th><td>The exact legal name tied to your tax ID or business registration.</td></tr>
+				<tr><th scope="row">Public brand name</th><td>The name customers recognize on your website and in messages.</td></tr>
+				<tr><th scope="row">Business website</th><td>A live site that clearly represents the brand and use case.</td></tr>
+				<tr><th scope="row">Tax ID or business ID</th><td>The official identifier required for verification.</td></tr>
+				<tr><th scope="row">Contact information</th><td>Business address, support email, support phone, and authorized contact.</td></tr>
+				<tr><th scope="row">Use case</th><td>Marketing, appointment reminders, customer care, alerts, or another defined purpose.</td></tr>
+				<tr><th scope="row">Campaign description</th><td>A plain-language explanation of who receives messages and why.</td></tr>
+				<tr><th scope="row">Message flow</th><td>How users opt in and what disclosure they see.</td></tr>
+				<tr><th scope="row">Sample messages</th><td>Realistic examples that match the use case.</td></tr>
+				<tr><th scope="row">Privacy and terms links</th><td>Public pages that support the messaging program.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Registration tips</h3>
+	<ul>
+		<li>Use the exact legal name and tax information from official records.</li>
+		<li>Make sure the website brand matches the business you register.</li>
+		<li>Describe one clear use case per campaign where possible.</li>
+		<li>Make sample messages match what you will actually send.</li>
+		<li>Use branded links, not public URL shorteners.</li>
+		<li>Don't claim consent from sources you cannot prove.</li>
+	</ul>
+	<p>For deeper coverage of 10DLC vetting in particular, see the <a href="/support/messaging/10dlc/">10DLC vetting guide</a>.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 9: Build your first message flows</h2>
+	<p>Start with a small number of high-value flows. Each flow should have a purpose, an audience, a trigger, a message, and a success metric.</p>
+
+	<h3>Flow 1: Website lead welcome</h3>
+	<p><strong>Purpose:</strong> Respond quickly when someone requests information.</p>
+	<p><strong>Trigger:</strong> A website visitor submits a form and opts in to text messages.</p>
+	<pre class="code-block"><code>[Brand]: Thanks for your interest. We received your request and will follow up soon. You can also book a time here: [branded link]. Reply STOP to cancel, HELP for help.</code></pre>
+	<p><strong>Success metric:</strong> Booking rate, reply rate, lead-to-customer conversion.</p>
+
+	<h3>Flow 2: Appointment confirmation</h3>
+	<p><strong>Purpose:</strong> Reduce missed appointments and improve customer experience.</p>
+	<p><strong>Trigger:</strong> Appointment is booked.</p>
+	<pre class="code-block"><code>[Brand]: Your appointment is confirmed for [date] at [time]. Need to make a change? Call [phone] or visit [branded link]. Reply STOP to cancel.</code></pre>
+	<p><strong>Success metric:</strong> Confirmation rate, no-show rate, reschedule rate.</p>
+
+	<h3>Flow 3: Promotional campaign</h3>
+	<p><strong>Purpose:</strong> Drive sales from subscribers who opted in to marketing.</p>
+	<p><strong>Trigger:</strong> Scheduled campaign or audience segment.</p>
+	<pre class="code-block"><code>[Brand]: This week only, save [offer] on [product/service]. Shop or book here: [branded link]. Reply STOP to cancel, HELP for help.</code></pre>
+	<p><strong>Success metric:</strong> Click rate, redemption rate, revenue, opt-out rate.</p>
+
+	<h3>Flow 4: Post-purchase / post-service follow-up</h3>
+	<p><strong>Purpose:</strong> Improve satisfaction and gather feedback.</p>
+	<p><strong>Trigger:</strong> Order delivered or service completed.</p>
+	<pre class="code-block"><code>[Brand]: Thanks for choosing us. How did we do? Share feedback here: [branded link]. Reply STOP to cancel.</code></pre>
+	<p><strong>Success metric:</strong> Review rate, satisfaction score, repeat purchase rate.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 10: Set up STOP, HELP, and preferences</h2>
+	<p>Customers should always be able to control whether they receive messages.</p>
+
+	<h3>Required customer controls</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Control</th><th scope="col">What it should do</th></tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">STOP</th><td>Unsubscribes the customer from the messaging program.</td></tr>
+				<tr><th scope="row">HELP</th><td>Returns support contact information and basic program help.</td></tr>
+				<tr><th scope="row">Preference center</th><td>Lets customers choose message types, frequency, or channels where possible.</td></tr>
+				<tr><th scope="row">Suppression list</th><td>Prevents future sends to opted-out numbers.</td></tr>
+				<tr><th scope="row">Support access</th><td>Lets your team view opt-in source and opt-out status.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>STOP confirmation</h3>
+	<pre class="code-block"><code>[Brand]: You have been unsubscribed and will receive no further text messages from this program. Reply HELP for help.</code></pre>
+
+	<h3>HELP response</h3>
+	<pre class="code-block"><code>[Brand]: For help, contact [support email], call [support phone], or visit [support URL]. Reply STOP to cancel.</code></pre>
+
+	<h3>Operational rule</h3>
+	<p>Before every send, check whether the customer is currently opted in for that message type. Don't send marketing texts to numbers that are opted out, suppressed, or missing marketing consent.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 11: Connect messaging to your business systems</h2>
+	<p>Messaging becomes more useful when it connects to your existing tools.</p>
+
+	<h3>Common integrations</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">System</th><th scope="col">Messaging opportunity</th></tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">Website forms</th><td>Welcome messages, quote follow-ups, lead routing.</td></tr>
+				<tr><th scope="row">CRM</th><td>Sales follow-ups, lifecycle campaigns, segmentation.</td></tr>
+				<tr><th scope="row">Ecommerce platform</th><td>Order updates, cart reminders, win-back campaigns.</td></tr>
+				<tr><th scope="row">Scheduling tool</th><td>Appointment confirmations, reminders, rescheduling links.</td></tr>
+				<tr><th scope="row">Helpdesk</th><td>Support updates, case follow-ups, satisfaction surveys.</td></tr>
+				<tr><th scope="row">Loyalty platform</th><td>Rewards updates, birthday offers, VIP campaigns.</td></tr>
+				<tr><th scope="row">Analytics platform</th><td>Attribution, conversion tracking, campaign reporting.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Data to store</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Data point</th><th scope="col">Why it matters</th></tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">Phone number</th><td>Identifies the message recipient.</td></tr>
+				<tr><th scope="row">Consent status</th><td>Shows whether the person can receive a message.</td></tr>
+				<tr><th scope="row">Consent source</th><td>Shows where the opt-in happened.</td></tr>
+				<tr><th scope="row">Consent timestamp</th><td>Shows when the opt-in happened.</td></tr>
+				<tr><th scope="row">Disclosure version</th><td>Shows what the customer saw when opting in.</td></tr>
+				<tr><th scope="row">Message type</th><td>Separates marketing, transactional, and support messaging.</td></tr>
+				<tr><th scope="row">Opt-out timestamp</th><td>Shows when the customer revoked consent.</td></tr>
+				<tr><th scope="row">Campaign or flow ID</th><td>Connects messages to reporting and compliance records.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="next2-cta-heading">
+	<h2 id="next2-cta-heading">Next: launch &amp; grow</h2>
+	<p>Soft-launch with a small audience, measure delivery and conversion, expand into additional customer journeys.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/messaging/getting-started/launch-and-grow/">Continue: Launch &amp; grow</a>
+		<a class="btn btn-secondary" href="/messaging/getting-started/strategy-and-consent/">Back: Strategy &amp; consent</a>
+	</p>
+</aside>

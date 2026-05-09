@@ -94,6 +94,12 @@ function updateRowDisplay(row, volume, effectiveRate, discount) {
 function recalcAll(table) {
 	const rows = Array.from(table.querySelectorAll("tr[data-service]"));
 
+	// Snapshot volumes so bundle-free checks don't depend on iteration order.
+	const volumeByServiceId = new Map();
+	for (const row of rows) {
+		volumeByServiceId.set(row.dataset.serviceId, readVolume(row));
+	}
+
 	const pools = new Map();
 	for (const row of rows) {
 		const id = row.dataset.pool;
@@ -111,11 +117,29 @@ function recalcAll(table) {
 	let anyDiscount = false;
 	for (const row of rows) {
 		const volume = readVolume(row);
-		const id = row.dataset.pool;
-		const rateInfo =
-			id && sharedRates.has(id) ? sharedRates.get(id) : getRateForVolume(row, volume);
+
+		// Bundle-free override: if any peer in `bundledFree` has volume > 0, this
+		// service is free. Bundled "discounts" don't trigger the minimum-row.
+		let rateInfo = null;
+		let isBundled = false;
+		if (row.dataset.bundledFree) {
+			const bundleIds = JSON.parse(row.dataset.bundledFree);
+			const bundleActive = bundleIds.some((id) => (volumeByServiceId.get(id) || 0) > 0);
+			if (bundleActive) {
+				const baseRate = parseFloat(row.dataset.baseRate);
+				rateInfo = { effectiveRate: 0, discount: baseRate > 0 ? 100 : 0 };
+				isBundled = true;
+			}
+		}
+
+		if (!rateInfo) {
+			const id = row.dataset.pool;
+			rateInfo =
+				id && sharedRates.has(id) ? sharedRates.get(id) : getRateForVolume(row, volume);
+		}
+
 		const result = updateRowDisplay(row, volume, rateInfo.effectiveRate, rateInfo.discount);
-		if (result.discount > 0) anyDiscount = true;
+		if (result.discount > 0 && !isBundled) anyDiscount = true;
 		grandTotal += result.rowTotal;
 	}
 

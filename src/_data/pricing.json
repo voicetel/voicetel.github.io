@@ -77,6 +77,125 @@
 			]
 		},
 		{
+			"label": "VoiceML",
+			"description": "Programmable voice markup runtime. Included free when used with Voice Calling minutes; billed at the per-minute Voice rate when used standalone (BYO carrier).",
+			"services": [
+				{
+					"id": "voiceml-out",
+					"name": "Outbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"bundledFree": ["voice-out-us50", "voice-in-local"],
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "voiceml-in",
+					"name": "Inbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"bundledFree": ["voice-out-us50", "voice-in-local"],
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Speech (BYO)",
+			"description": "Speech-to-text and recording transcription. VoiceTel does not bill for transcription; bring your own STT vendor (Deepgram, Google, AWS, Azure, etc.) and pay the vendor directly.",
+			"services": [
+				{
+					"id": "stt-realtime",
+					"name": "Live transcription",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				},
+				{
+					"id": "stt-recording",
+					"name": "Recording transcription",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				},
+				{
+					"id": "stt-voicemail",
+					"name": "Voicemail transcription",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				}
+			]
+		},
+		{
+			"label": "Included Tools",
+			"description": "Platform features and applications included at no additional charge. Listed as line items so quotes compare cleanly against carriers that bill for them.",
+			"services": [
+				{
+					"id": "vad",
+					"name": "Voice Activity Detection",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				}
+			]
+		},
+		{
+			"label": "Applications",
+			"description": "VoiceTel-developed phone applications for browser, desktop, and mobile. Included at no additional charge per user.",
+			"services": [
+				{
+					"id": "app-webrtc",
+					"name": "Webclient",
+					"unit": "user",
+					"unitIcon": "calendar-month",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				},
+				{
+					"id": "app-desktop",
+					"name": "Desktop",
+					"unit": "user",
+					"unitIcon": "calendar-month",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				},
+				{
+					"id": "app-mobile",
+					"name": "Mobile",
+					"unit": "user",
+					"unitIcon": "calendar-month",
+					"baseRate": 0.0,
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				}
+			]
+		},
+		{
 			"label": "SMS Messaging",
 			"description": "Application-to-person text messaging on local long-code numbers. Inbound and outbound volumes pool together for tier discounts.",
 			"services": [
@@ -347,6 +466,27 @@
 						"minVolume": 10,
 						"maxVolume": 1000,
 						"minRate": 0.25,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Software Defined Networking",
+			"description": "Plug-and-play SIP traversal appliance for NAT, ALG, UDP timer, and firewall workarounds. Billed monthly per appliance.",
+			"services": [
+				{
+					"id": "sdn",
+					"name": "SDN Appliance",
+					"unit": "appliance",
+					"unitIcon": "calendar-month",
+					"baseRate": 10.0,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 500,
+						"minRate": 5.0,
 						"exponent": 0.35
 					}
 				}

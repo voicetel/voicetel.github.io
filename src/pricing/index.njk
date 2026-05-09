@@ -1,35 +1,155 @@
 ---
 layout: layouts/page.njk
 title: "Pricing"
-description: "VoiceTel pricing copy for voice, messaging, numbers, SIP trunking, lookups, emergency service, and competitor comparisons using source-dated data."
+description: "VoiceTel pricing for voice, messaging, numbers, and lookups. Spreadsheet-style calculator with volume-tier discounts; published list rates appear in your customer portal."
 ---
 
 <p class="eyebrow">Pricing</p>
-<h1>Know what every minute, message, number, and lookup costs.</h1>
-<p class="lede">VoiceTel pricing is built for buyers who want line-item math instead of bundled mystery. Compare minutes, messages, DIDs, emergency service, lookups, and optional voice features using source-dated public list prices.</p>
+<h1>Model your monthly spend, line by line.</h1>
+<p class="lede">Enter expected monthly volume per service and the calculator applies the volume-tier discount automatically. Inputs stay in your browser — nothing is sent to a server.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Request pricing review</a>
-	<a class="btn btn-secondary" href="/voiceml/calculator/">Open calculator</a>
+	<a class="btn btn-primary" href="/contact/">Request a pricing review</a>
+	<a class="btn btn-secondary" href="/voiceml/calculator/">VoiceML migration calculator</a>
+	<button type="button" class="btn btn-secondary" data-print-quote>Save quote as PDF</button>
 </p>
 
-<section class="section-block" data-section-type="rate-table-copy">
-	<h2>Rate table sections</h2>
+<div class="quote-doc quote-doc--header" aria-hidden="true">
+	<div class="quote-doc__company">
+		<p class="quote-doc__brand">VoiceTel Communications</p>
+		<p class="quote-doc__legal">d.b.a United Internet Services</p>
+		<address>
+			{{ site.offices[1].street }}<br>
+			{{ site.offices[1].city }}, {{ site.offices[1].region }} {{ site.offices[1].postalCode }}<br>
+			{{ site.offices[1].phone }}<br>
+			{{ site.supportEmail }}<br>
+			{{ site.url | replace("https://", "") }}
+		</address>
+	</div>
+	<div class="quote-doc__meta">
+		<p class="quote-doc__title">Quote</p>
+		<dl>
+			<dt>Quote #</dt>
+			<dd data-quote-id>—</dd>
+			<dt>Date</dt>
+			<dd><time data-print-date>—</time></dd>
+			<dt>Valid for</dt>
+			<dd>30 days</dd>
+		</dl>
+	</div>
+</div>
+
+<div class="quote-doc quote-doc__bill-to" data-bill-to-section aria-hidden="true">
+	<p class="quote-doc__bill-to-label">Prepared for</p>
+	<p class="quote-doc__bill-to-name" data-customer-name></p>
+</div>
+
+<h2 class="quote-doc__heading" aria-hidden="true">Quote for services</h2>
+
+{%- if pricingRuntime.draft %}
+<div class="alert alert-warning" role="note">
+	<p>Final list rates will appear by default in your customer portal once your account has been provisioned and your sales associate has configured them.</p>
+</div>
+{%- endif %}
+
+<section class="section-block">
+	<h2>Pricing calculator</h2>
+
+
+	<div class="pricing-calc-wrapper">
+		<table class="pricing-calc" data-pricing-calculator data-minimum-percent="{{ pricingRuntime.minimumPercent }}" aria-label="Pricing calculator">
+			<thead>
+				<tr>
+					<th scope="col">Service</th>
+					<th scope="col">Rate</th>
+					<th scope="col">Savings</th>
+					<th scope="col">Volume / month</th>
+					<th scope="col">Total / month</th>
+				</tr>
+			</thead>
+			<tbody>
+				{%- for group in pricingRuntime.groups %}
+				<tr>
+					<td colspan="5" class="pricing-calc__group-label">
+						<span class="pricing-calc__group-title">{{ group.label }}</span>
+						{%- if group.description %}<span class="pricing-calc__group-description">{{ group.description }}</span>{%- endif %}
+					</td>
+				</tr>
+					{%- for service in group.services %}
+				<tr data-service data-service-id="{{ service.id }}" data-base-rate="{{ service.baseRate }}"{% if service.poolId %} data-pool="{{ service.poolId }}"{% endif %}{% if service._curve %} data-curve="{{ service._curve | dump | safe }}"{% else %} data-tiers='{{ service.discountTiers | dump | safe }}'{% endif %}>
+					<th scope="row">{{ service.name }}{% if service.unitIcon %} <span class="pricing-calc__unit-icon">{% icon service.unitIcon, service.unit %}</span>{% endif %}</th>
+					<td class="pricing-calc__rate"><span data-rate>${{ service.baseRate }}</span></td>
+					<td class="pricing-calc__discount" data-discount>—</td>
+					<td><label class="visually-hidden" for="vol-{{ service.id }}">{{ group.label }} {{ service.name }} monthly volume</label><input id="vol-{{ service.id }}" type="text" data-volume value="{{ service.defaultVolume }}" inputmode="numeric" pattern="[0-9,]*"></td>
+					<td class="pricing-calc__total"><span data-row-total>$0.00</span></td>
+				</tr>
+					{%- endfor %}
+				{%- endfor %}
+			</tbody>
+			<tfoot>
+				<tr class="pricing-calc__minimum">
+					<th scope="row" colspan="4">Estimated monthly minimum</th>
+					<td class="pricing-calc__total"><span data-grand-minimum>$0.00</span></td>
+				</tr>
+				<tr class="pricing-calc__grand">
+					<th scope="row" colspan="4">Total</th>
+					<td class="pricing-calc__total"><span data-grand-total>$0.00</span></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+
+	<div class="pricing-calc-footer">
+		<div class="pricing-calc-meta pricing-calc-meta--legend" role="group" aria-label="Unit legend">
+			<span><span class="pricing-calc__unit-icon">{% icon "clock" %}</span> minute</span>
+			<span><span class="pricing-calc__unit-icon">{% icon "chat-text" %}</span> message part</span>
+			<span><span class="pricing-calc__unit-icon">{% icon "calendar-month" %}</span> per month</span>
+			<span><span class="pricing-calc__unit-icon">{% icon "search" %}</span> query</span>
+		</div>
+	</div>
+
+	{%- if pricingRuntime.competitorReferences and pricingRuntime.competitorReferences.length %}
+	<p class="pricing-calc-meta">
+		<em>Reference rates:
+		{%- for ref in pricingRuntime.competitorReferences %}
+			{{ ref.vendor }} {{ ref.product }} ${{ ref.rate }}/{{ ref.unit }} (captured {{ ref.capturedDate }}{% if ref.source %}, <a href="{{ ref.source }}" rel="nofollow">source</a>{% endif %}){% if not loop.last %};{% endif %}
+		{%- endfor %}.</em>
+	</p>
+	{%- endif %}
+</section>
+
+<section class="section-block">
+	<h2>What's outside the calculator</h2>
 	<ul>
-		<li><strong>Voice</strong> — Inbound local minutes, outbound US-50 and Canada minutes, toll-free inbound, AMD, recording, conferences, streams, transcription, and optional media features.</li>
-		<li><strong>Messaging</strong> — SMS outbound, SMS inbound, MMS outbound, MMS inbound, carrier pass-through fees, A2P 10DLC, toll-free messaging, and campaign fees where applicable.</li>
-		<li><strong>Numbers</strong> — Local number monthly, toll-free number monthly, emergency-service monthly, porting, CNAM, caller-ID, and number-type notes.</li>
-		<li><strong>Lookups</strong> — CNAM, caller ID, LRN, MNP, carrier-of-record, batch pricing, and cache behavior.</li>
-		<li><strong>SIP and PBX</strong> — Trunking, hosted PBX, SDN appliance, phone applications, and any monthly service fees is clearly separated from usage.</li>
+		<li><strong>Taxes and regulatory charges</strong> — Excluded unless explicitly noted on your invoice.</li>
+		<li><strong>Carrier pass-through fees</strong> — A2P 10DLC fees, surcharges, and fee changes from underlying carriers are listed separately.</li>
+		<li><strong>Speech and storage vendors</strong> — If you bring your own STT, TTS, or recording-storage providers, those vendors bill you directly.</li>
+		<li><strong>Custom capacity</strong> — Large messaging or SIP workloads may require a capacity review for final pricingRuntime.</li>
 	</ul>
 </section>
 
-<section class="section-block" data-section-type="not-on-rate-sheet">
-	<h2>What may be outside the rate sheet</h2>
-	<ul>
-		<li><strong>Taxes and regulatory charges</strong> — Show them as excluded unless the rate file explicitly includes them.</li>
-		<li><strong>Carrier pass-through fees</strong> — List separately and explain that carriers can change them.</li>
-		<li><strong>Speech and storage vendors</strong> — If customers bring their own STT, TTS, or storage providers, state that those vendors bill separately.</li>
-		<li><strong>Custom capacity</strong> — Large messaging or SIP workloads may require capacity review before final pricing.</li>
-	</ul>
-</section>
+<aside class="cta-block" aria-labelledby="pricing-cta-heading">
+	<h2 id="pricing-cta-heading">Need a modeled invoice for a real workload?</h2>
+	<p>Bring an invoice or recent CDR sample and VoiceTel can build a detailed cost model from your actual usage patterns.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request a pricing review</a>
+	</p>
+</aside>
 
+<div class="quote-doc quote-doc--footer" aria-hidden="true">
+	<p class="quote-doc__disclaimer">This is a non-binding pricing estimate based on the volumes entered. Final pricing depends on KYC verification, capacity review, and contract terms. Excludes taxes, regulatory fees, carrier pass-through fees, and merchant processor fees.</p>
+	<p>Questions? Contact <strong>{{ site.supportEmail }}</strong> or visit <strong>{{ site.url | replace("https://", "") }}</strong>.</p>
+	<p class="quote-doc__regulatory">{{ site.legalName }} · FCC Filer ID 829231 · OCN 470J · RMD ID RMD0004909</p>
+</div>
+
+<dialog class="quote-dialog" data-quote-dialog aria-labelledby="quote-dialog-title">
+	<form method="dialog" data-quote-form>
+		<h2 id="quote-dialog-title">Save quote</h2>
+		<p>Add a name to label this quote (optional).</p>
+		<label for="quote-customer-input">Prepared for</label>
+		<input type="text" id="quote-customer-input" data-customer-input maxlength="120" placeholder="Customer or company name" autocomplete="organization">
+		<div class="quote-dialog__actions">
+			<button type="button" class="btn btn-secondary" data-quote-cancel>Cancel</button>
+			<button type="submit" class="btn btn-primary">Save as PDF</button>
+		</div>
+	</form>
+</dialog>

@@ -762,6 +762,533 @@ textarea {
 	max-width: 360px;
 }
 
+/* ─── Pricing calculator (spreadsheet-style) ─── */
+
+.pricing-calc {
+	width: 100%;
+	border-collapse: collapse;
+	font-variant-numeric: tabular-nums;
+	background: var(--paper);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow);
+}
+
+.pricing-calc th,
+.pricing-calc td {
+	padding: var(--space-2) var(--space-3);
+	border-bottom: 1px solid var(--border-color);
+	border-right: 1px solid var(--border-color);
+	text-align: left;
+	vertical-align: middle;
+}
+
+.pricing-calc th:last-child,
+.pricing-calc td:last-child {
+	border-right: 0;
+}
+
+.pricing-calc thead th {
+	background: var(--light-bg);
+	font-size: var(--text-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-weight: var(--weight-semibold);
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.pricing-calc__group-label {
+	background: var(--light-bg);
+	color: var(--primary-color);
+}
+
+.pricing-calc__group-title {
+	display: block;
+	font-weight: var(--weight-semibold);
+	font-size: var(--text-sm);
+	letter-spacing: 0.3px;
+}
+
+.pricing-calc__group-description {
+	display: block;
+	font-weight: var(--weight-normal);
+	font-size: var(--text-xs);
+	color: var(--text-muted);
+	margin-top: 2px;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.pricing-calc__rate,
+.pricing-calc__total {
+	font-family: var(--font-mono);
+	text-align: right;
+	white-space: nowrap;
+}
+
+.pricing-calc__unit {
+	color: var(--text-muted);
+	font-size: var(--text-sm);
+	margin-left: 4px;
+	white-space: nowrap;
+}
+
+.pricing-calc__unit-icon {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	margin-left: 4px;
+	color: var(--btn-primary-bg);
+}
+
+.pricing-calc__unit-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.pricing-calc-meta--legend {
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+	margin: 0;
+}
+
+.pricing-calc-meta--legend .pricing-calc__unit-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.pricing-calc-footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+	margin-top: var(--space-3);
+	padding-top: var(--space-3);
+	border-top: 1px solid var(--border-color);
+}
+
+.pricing-calc-footer__brand {
+	margin: 0;
+	font-weight: var(--weight-bold);
+	font-size: var(--text-lg);
+	letter-spacing: -0.5px;
+	color: var(--primary-color);
+}
+
+.pricing-calc__discount {
+	color: var(--text-muted);
+	font-family: var(--font-mono);
+	text-align: right;
+	white-space: nowrap;
+	font-size: var(--text-sm);
+}
+
+.pricing-calc__discount--active {
+	color: var(--success-color);
+	font-weight: var(--weight-semibold);
+}
+
+.pricing-calc input[data-volume] {
+	width: 100%;
+	max-width: 140px;
+	padding: var(--space-1) var(--space-2);
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	text-align: right;
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	background: var(--paper);
+}
+
+.pricing-calc input[data-volume]:focus {
+	outline: 2px solid var(--primary-light);
+	outline-offset: 1px;
+	border-color: var(--primary-light);
+}
+
+.pricing-calc tfoot tr {
+	background: var(--light-bg);
+}
+
+.pricing-calc tfoot th,
+.pricing-calc tfoot td {
+	font-weight: var(--weight-bold);
+	font-size: var(--text-md);
+	border-bottom: 0;
+}
+
+.pricing-calc tfoot td.pricing-calc__total {
+	font-size: var(--text-lg);
+	color: var(--primary-color);
+}
+
+.pricing-calc tfoot tr.is-hidden {
+	display: none;
+}
+
+.pricing-calc tfoot tr.pricing-calc__minimum {
+	background: #dbeafe;
+}
+
+.pricing-calc tfoot tr.pricing-calc__minimum th,
+.pricing-calc tfoot tr.pricing-calc__minimum td {
+	border-top: 2px solid var(--primary-color);
+	color: var(--primary-color);
+}
+
+.pricing-calc tfoot tr.pricing-calc__grand {
+	background: var(--btn-secondary-bg);
+}
+
+.pricing-calc tfoot tr.pricing-calc__grand th,
+.pricing-calc tfoot tr.pricing-calc__grand td,
+.pricing-calc tfoot tr.pricing-calc__grand td.pricing-calc__total {
+	color: var(--primary-color);
+	border-top: 2px solid var(--btn-secondary-border);
+}
+
+.pricing-calc-wrapper {
+	overflow-x: auto;
+	margin: var(--space-5) 0;
+}
+
+.pricing-calc-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+	margin: var(--space-3) 0 var(--space-2);
+}
+
+.pricing-calc-meta strong {
+	color: var(--text-default);
+}
+
+@media (width <= 720px) {
+	.pricing-calc input[data-volume] {
+		max-width: 100px;
+	}
+
+	.pricing-calc th,
+	.pricing-calc td {
+		padding: var(--space-2);
+		font-size: var(--text-sm);
+	}
+}
+
+/* Quote dialog (customer name capture before print) */
+
+.quote-dialog {
+	max-width: 480px;
+	width: calc(100% - 2rem);
+	padding: var(--space-5);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	box-shadow: var(--shadow-lg, 0 8px 24px rgb(0 0 0 / 18%));
+	background: var(--paper);
+	color: var(--text-default);
+}
+
+.quote-dialog::backdrop {
+	background: rgb(0 0 0 / 40%);
+}
+
+.quote-dialog h2 {
+	font-size: var(--text-xl);
+	margin: 0 0 var(--space-2);
+	color: var(--primary-color);
+}
+
+.quote-dialog p {
+	margin: 0 0 var(--space-3);
+	color: var(--text-muted);
+	font-size: var(--text-sm);
+}
+
+.quote-dialog label {
+	display: block;
+	font-weight: var(--weight-semibold);
+	font-size: var(--text-sm);
+	margin-bottom: 4px;
+	color: var(--text-default);
+}
+
+.quote-dialog input[type="text"] {
+	width: 100%;
+	padding: var(--space-2) var(--space-3);
+	font-size: var(--text-md);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	background: var(--paper);
+	color: var(--text-default);
+}
+
+.quote-dialog input[type="text"]:focus {
+	outline: 2px solid var(--primary-light);
+	outline-offset: 1px;
+	border-color: var(--primary-light);
+}
+
+.quote-dialog__actions {
+	display: flex;
+	gap: var(--space-2);
+	justify-content: flex-end;
+	margin-top: var(--space-4);
+}
+
+/* Quote document: hidden on screen, formatted as a business quote in print */
+
+.quote-doc {
+	display: none;
+}
+
+.quote-doc__bill-to.is-shown {
+	display: block;
+}
+
+@media print {
+	body {
+		background: #fff;
+		color: #000;
+	}
+
+	header,
+	nav,
+	footer,
+	.skip-link,
+	.alert,
+	.hero-actions,
+	.cta-block,
+	.eyebrow,
+	.lede {
+		display: none !important;
+	}
+
+	main h1,
+	main > h2:not(.quote-doc__heading) {
+		display: none;
+	}
+
+	.section-block > h2 {
+		display: none;
+	}
+
+	.section-block {
+		margin: 0 0 var(--space-3);
+		padding: 0;
+		page-break-inside: avoid;
+	}
+
+	.pricing-calc-meta {
+		display: none;
+	}
+
+	.pricing-calc-wrapper {
+		margin: 0;
+		overflow: visible;
+		page-break-inside: avoid;
+	}
+
+	.pricing-calc {
+		box-shadow: none;
+		border: 1px solid #000;
+		font-size: 10pt;
+		width: 100%;
+	}
+
+	/* Prevent tfoot from repeating on every printed page; render it once at the
+	   natural end of the table. */
+	.pricing-calc tfoot {
+		display: table-row-group;
+	}
+
+	.pricing-calc tfoot tr {
+		page-break-inside: avoid;
+	}
+
+	.pricing-calc thead th {
+		background: #f0f0f0 !important;
+		color: #000 !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.pricing-calc__group-label {
+		background: #f0f0f0 !important;
+		color: #000 !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.pricing-calc tfoot tr.pricing-calc__minimum {
+		background: #dbeafe !important;
+		color: var(--primary-color) !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.pricing-calc tfoot tr.pricing-calc__grand {
+		background: var(--btn-secondary-bg) !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.pricing-calc tfoot tr.pricing-calc__grand th,
+	.pricing-calc tfoot tr.pricing-calc__grand td {
+		color: var(--primary-color) !important;
+		border-top: 2px solid var(--btn-secondary-border) !important;
+	}
+
+	.pricing-calc input[data-volume] {
+		border: 0;
+		background: transparent;
+		padding: 0;
+		width: auto;
+	}
+
+	/* Quote header document */
+
+	.quote-doc--header {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 24pt;
+		align-items: start;
+		border-bottom: 2pt solid var(--primary-color);
+		padding-bottom: 12pt;
+		margin-bottom: 14pt;
+	}
+
+	.quote-doc__brand {
+		font-size: 22pt;
+		font-weight: var(--weight-bold);
+		margin: 0 0 2pt;
+		color: var(--primary-color);
+		letter-spacing: -0.5pt;
+	}
+
+	.quote-doc__legal {
+		font-size: 9pt;
+		margin: 0 0 6pt;
+		color: #555;
+	}
+
+	.quote-doc__company address {
+		font-style: normal;
+		font-size: 9pt;
+		line-height: 1.55;
+		color: #222;
+	}
+
+	.quote-doc__meta {
+		text-align: right;
+	}
+
+	.quote-doc__title {
+		font-size: 28pt;
+		font-weight: var(--weight-bold);
+		letter-spacing: 4pt;
+		text-transform: uppercase;
+		margin: 0 0 10pt;
+		color: var(--primary-color);
+	}
+
+	.quote-doc__meta dl {
+		display: grid;
+		grid-template-columns: auto auto;
+		justify-content: end;
+		gap: 2pt 12pt;
+		font-size: 9pt;
+		margin: 0;
+		text-align: right;
+	}
+
+	.quote-doc__meta dt {
+		font-weight: var(--weight-semibold);
+		color: #555;
+		text-align: left;
+	}
+
+	.quote-doc__meta dd {
+		margin: 0;
+		color: #000;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.quote-doc__heading {
+		display: block;
+		font-size: 13pt;
+		font-weight: var(--weight-semibold);
+		text-transform: uppercase;
+		letter-spacing: 1.5pt;
+		color: var(--primary-color);
+		margin: 0 0 10pt;
+	}
+
+	/* Bill-to / customer name block (only rendered when populated) */
+
+	.quote-doc__bill-to {
+		display: none;
+		margin: 0 0 14pt;
+		padding: 8pt 12pt;
+		background: #f7f7f7 !important;
+		border-left: 3pt solid var(--primary-color);
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.quote-doc__bill-to.is-shown {
+		display: block;
+	}
+
+	.quote-doc__bill-to-label {
+		font-size: 8pt;
+		text-transform: uppercase;
+		letter-spacing: 1pt;
+		color: #666;
+		margin: 0 0 2pt;
+	}
+
+	.quote-doc__bill-to-name {
+		font-size: 12pt;
+		font-weight: var(--weight-semibold);
+		color: var(--primary-color);
+		margin: 0;
+	}
+
+	/* Quote footer document */
+
+	.quote-doc--footer {
+		display: block;
+		margin-top: 18pt;
+		padding-top: 12pt;
+		border-top: 1pt solid #999;
+		font-size: 8.5pt;
+		line-height: 1.5;
+		color: #333;
+		page-break-inside: avoid;
+	}
+
+	.quote-doc--footer p {
+		margin: 0 0 6pt;
+	}
+
+	.quote-doc__disclaimer {
+		font-style: italic;
+	}
+
+	.quote-doc__regulatory {
+		color: #666;
+		font-size: 7.5pt;
+		margin-top: 8pt !important;
+	}
+
+	@page {
+		margin: 0.5in 0.6in;
+	}
+}
+
 /* ─── Tables ─── */
 
 .table-container {

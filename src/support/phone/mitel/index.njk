@@ -1,0 +1,66 @@
+---
+layout: layouts/page.njk
+title: "Configure Mitel 6900 series phones for VoiceTel"
+description: "SIP account setup for Mitel 6920, 6930, 6940, 6970 (formerly Aastra) phones running MiNet/SIP firmware against VoiceTel."
+---
+
+<p class="eyebrow">Support / Phone / Mitel</p>
+<h1>Configure Mitel 6900 series for VoiceTel.</h1>
+<p class="lede">Mitel 6920, 6930, 6940, and 6970 (and the older Aastra-branded 67xxi) phones can run either MiNet or SIP firmware. SIP firmware is what you want for VoiceTel.</p>
+
+<section class="section-block">
+	<h2>Confirm SIP firmware</h2>
+	<p>Press <strong>Settings → Status → Phone Info</strong>. The firmware version should be <code>SIP-</code> prefixed (e.g. <code>5.2.0.10000</code> with the SIP load). If it shows <code>MiNet-</code>, convert to SIP firmware first via Mitel's downloads area.</p>
+</section>
+
+<section class="section-block">
+	<h2>Web UI configuration</h2>
+	<ol>
+		<li>Find the IP address: <strong>Settings → Status → Network → IP Address</strong>.</li>
+		<li>Open <code>http://&lt;phone-ip&gt;</code>. Sign in (default <code>admin</code> / <code>22222</code> — change immediately).</li>
+		<li>Open <strong>Advanced Settings → Account Configuration → Line 1</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>Line Mode:</strong> Generic</li>
+				<li><strong>Screen Name:</strong> caller's name</li>
+				<li><strong>Phone Number:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Caller ID:</strong> caller's name</li>
+				<li><strong>Authentication Name:</strong> SIP username</li>
+				<li><strong>Password:</strong> SIP password</li>
+			</ul>
+		</li>
+		<li>Open <strong>Advanced Settings → Network → SIP Server</strong>:
+			<ul>
+				<li><strong>Configuration Server:</strong> the VoiceTel SIP server host (port 5060)</li>
+				<li><strong>Backup Server:</strong> a backup VoiceTel host if your onboarding email lists one</li>
+				<li><strong>Outbound Proxy:</strong> same as Configuration Server</li>
+				<li><strong>Registration Period:</strong> 60</li>
+				<li><strong>Transport:</strong> UDP (or TLS)</li>
+			</ul>
+		</li>
+		<li>Open <strong>Advanced Settings → Audio → Audio Codecs</strong>. Arrange PCMU and PCMA at the top of the list.</li>
+		<li>Click <strong>Save Settings</strong>. The phone restarts the SIP stack and registers.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>NAT &amp; keepalive</h2>
+	<p>Open <strong>Advanced Settings → Network → NAT Settings</strong>:</p>
+	<ul>
+		<li><strong>NAT Refresh Interval:</strong> 30 seconds</li>
+		<li><strong>NAT Type:</strong> Static (or set Public IP if the phone has a public IP)</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Auto-provisioning</h2>
+	<p>Mitel SIP firmware fetches <code>aastra.cfg</code> (global) and <code>&lt;mac&gt;.cfg</code> (per-phone) at boot via TFTP, FTP, HTTP, or HTTPS. Configure <strong>Advanced Settings → Configuration Server → Download Protocol</strong> to point at your provisioning server. Contact VoiceTel engineering for a Mitel <code>aastra.cfg</code> template.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="mitel-cta-heading">
+	<h2 id="mitel-cta-heading">MiNet to SIP migration?</h2>
+	<p>Migrating from a Mitel MX-One or MiVoice setup? VoiceTel engineering can advise on feature mapping, hot-desking, and button-module behavior.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

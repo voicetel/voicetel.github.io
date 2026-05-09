@@ -31,7 +31,7 @@ description: "Disable the SIP application-level gateway on Netgear Nighthawk, Or
 
 <section class="section-block">
 	<h2>UDP NAT timeout</h2>
-	<p>Netgear consumer firmware doesn't expose a UDP conntrack timeout. If you see registration drops between calls, shorten the SIP REGISTER interval on each device to 30–60 seconds. ProSAFE business firmware exposes session timeouts under <strong>Security → Schedule Profile</strong>; raise UDP idle timeout to 600 s for SIP traffic if your model supports it.</p>
+	<p>Netgear consumer firmware doesn't expose a UDP conntrack timeout. If you see registration drops between calls, set each device's SIP REGISTER interval to 360 seconds with NAT keepalive at 30 seconds. ProSAFE business firmware exposes session timeouts under <strong>Security → Schedule Profile</strong>; raise UDP idle timeout to 600 s for SIP traffic if your model supports it.</p>
 </section>
 
 <section class="section-block">

@@ -24,21 +24,16 @@ description: "Configure a FusionPBX gateway and outbound route to VoiceTel — D
 				<li><strong>Username:</strong> <code>yourusername</code> — your SIP username from VoiceTel onboarding</li>
 				<li><strong>Password:</strong> <code>yourpassword</code> — your SIP password</li>
 				<li><strong>From User:</strong> <code>yourusername</code> — <em>same as Username, NOT a caller-ID number</em></li>
-				<li><strong>From Domain:</strong> <code>&lt;sip-host-from-portal&gt;</code> (or the host from your onboarding)</li>
 				<li><strong>Proxy:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
-				<li><strong>Register Proxy:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
 				<li><strong>Realm:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
-				<li><strong>Register Transport:</strong> udp</li>
 				<li><strong>Register:</strong> True</li>
 				<li><strong>Expire Seconds:</strong> 360</li>
-				<li><strong>Retry Seconds:</strong> 60</li>
-				<li><strong>Ping:</strong> 30</li>
+				<li><strong>Retry Seconds:</strong> 600</li>
 				<li><strong>Caller ID In From:</strong> <strong>False</strong> (do not set True — that overrides From User with the dialplan caller ID and breaks trunk auth)</li>
-				<li><strong>Extension In Contact:</strong> True</li>
 				<li><strong>Profile:</strong> external</li>
-				<li><strong>Hostname:</strong> blank (uses local hostname)</li>
 				<li><strong>Enabled:</strong> True</li>
 			</ul>
+			<p>Leave the remaining gateway fields (From Domain, Register Proxy, Outbound Proxy, Register Transport, Ping, Extension In Contact, Hostname, etc.) blank — they aren't needed for VoiceTel and inherit sensible defaults.</p>
 		</li>
 		<li>For IP authentication: leave Username and Password blank, set Register to <strong>False</strong>. Everything else stays the same — including From User = your SIP account username.</li>
 		<li>Save.</li>
@@ -50,7 +45,7 @@ description: "Configure a FusionPBX gateway and outbound route to VoiceTel — D
 	<p>FusionPBX writes the XML config but FreeSWITCH won't pick it up until the external profile is rescanned:</p>
 	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia profile external rescan
 fs_cli&gt; sofia status
-# Look for: voicetel gateway REGED expsec=600 ping=30</code></pre>
+# Look for: voicetel gateway REGED expsec=360</code></pre>
 	<p>Or click the green refresh icon in the FusionPBX Gateways list — same effect.</p>
 </section>
 

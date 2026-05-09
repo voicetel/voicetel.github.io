@@ -29,7 +29,7 @@ description: "Disable SIP Passthrough on ASUS RT-AX, ZenWiFi, and Nighthawk-clas
 	<h2>UDP NAT timeout — increase if registration drops</h2>
 	<p>Stock ASUSWRT doesn't expose a UDP conntrack timeout knob in the GUI. If you see SIP registration drops between calls (typical symptom: inbound calls only work right after an outbound call refreshes the mapping), use one of these:</p>
 	<ul>
-		<li><strong>Best:</strong> shorten the SIP REGISTER interval on your device to 30–60 seconds, so the registration refreshes before the router's UDP timeout (~120s on most ASUS firmware).</li>
+		<li><strong>Best:</strong> set the SIP REGISTER interval on your device to 360 seconds with NAT keepalive at 30 seconds; the keepalive refreshes the NAT mapping between registers.</li>
 		<li><strong>If running ASUSWRT-Merlin:</strong> SSH in and apply <code>echo 600 &gt; /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream</code>; persist via the firmware's <code>nat-start</code> script under <strong>Tools → User Scripts</strong>.</li>
 	</ul>
 </section>

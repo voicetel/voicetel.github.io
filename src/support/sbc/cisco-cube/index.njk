@@ -18,7 +18,7 @@ description: "Configure Cisco CUBE on ISR/ASR or CSR1000v as a SIP trunk to Voic
  sip
   bind control source-interface GigabitEthernet0/0/0
   bind media source-interface GigabitEthernet0/0/0
-  registrar server expires max 3600 min 60
+  registrar server expires max 360 min 60
   early-offer forced
   midcall-signaling passthru
   pass-thru content custom-sdp
@@ -47,7 +47,7 @@ description: "Configure Cisco CUBE on ISR/ASR or CSR1000v as a SIP trunk to Voic
  sip-server dns:&lt;sip-host-from-portal&gt;
  reason-header override
  nat symmetric check-media-src
- registrar dns:&lt;sip-host-from-portal&gt; expires 600 tcp
+ registrar dns:&lt;sip-host-from-portal&gt; expires 360 tcp
  transport udp</code></pre>
 	<p>For IP authentication (no Digest), drop the <code>credentials</code> and <code>authentication</code> lines and remove the <code>registrar</code> line — VoiceTel authorizes by source IP.</p>
 </section>

@@ -5,26 +5,61 @@ description: "Contact VoiceTel for sales, support, billing, porting, partnership
 ---
 
 <p class="eyebrow">Contact</p>
-<h1>Route the request to the team that can actually solve it.</h1>
-<p class="lede">Use separate contact paths for sales, technical support, billing, porting, partnerships, legal, and press so the first response starts with context instead of triage.</p>
+<h1>Contact Us.</h1>
+<p class="lede">We'd love to hear from you.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="mailto:support@voicetel.com">Email support</a>
-	<a class="btn btn-secondary" href="https://www.voicetel.com">Sign in</a>
+	<button type="button" class="btn btn-primary" data-open-chat>Email Support</button>
+	<a class="btn btn-secondary" href="mailto:{{ site.webEmails.sales }}">Email Sales</a>
+	<a class="btn btn-secondary" href="mailto:{{ site.webEmails.compliance }}">Email Compliance</a>
 </p>
 
-<section class="section-block" data-section-type="contact-grid">
-	<h2>Contact paths</h2>
-	<ul>
-		<li><strong>Sales</strong> — Pricing reviews, migrations, volume modeling, SIP trunking, hosted PBX, messaging, and procurement questions.</li>
-		<li><strong>Support</strong> — Call failures, SIP traces, webhook errors, number routing, messaging delivery, app access, and SDN connectivity.</li>
-		<li><strong>Billing</strong> — Invoices, rate questions, credits, payment method issues, and account-level billing changes.</li>
-		<li><strong>Porting</strong> — Number inventory, LOA, losing-carrier data, rejection resolution, scheduling, and cutover coordination.</li>
-		<li><strong>Partnerships</strong> — Carrier, reseller, platform, integration, and channel opportunities.</li>
-		<li><strong>Press and legal</strong> — Media requests, legal notices, policy questions, and compliance routing.</li>
-	</ul>
+<section class="section-block">
+	<h2>Offices</h2>
+	<div class="offices-grid">
+		{%- for office in site.offices %}
+		<div class="office">
+			<h3 id="office-{{ loop.index }}">{{ office.label }}</h3>
+			<address aria-labelledby="office-{{ loop.index }}">
+				<p>
+					{{ office.street }}<br>
+					{{ office.city }}
+				</p>
+				<p>
+					<span class="office-label">Phone</span> <a href="tel:{{ office.phoneTel }}">{{ office.phone | replace(" ", "&nbsp;") | replace("-", "&#8209;") | safe }}</a><br>
+					<span class="office-label">Fax</span> {{ office.fax | replace(" ", "&nbsp;") | replace("-", "&#8209;") | safe }}
+				</p>
+			</address>
+			<iframe
+				class="office-map"
+				title="Map of {{ office.label }} office"
+				src="https://maps.google.com/maps?output=embed&z=15&q={{ (office.street + ', ' + office.city) | urlencode }}"
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"></iframe>
+		</div>
+		{%- endfor %}
+	</div>
 </section>
 
-<section class="section-block" data-section-type="form-copy">
-	<h2>Form copy</h2>
-	<p>For account-specific issues, ask customers to sign in so VoiceTel can attach account, service, and ticket context automatically. For non-account requests, route by topic.</p>
-</section>
+<!-- FreeScout chat widget — floats bottom-right on this page only. -->
+<script>var FreeScoutW={s:{"color":"#2c3e50","position":"br","locale":"en","id":3852066026}};(function(d,e,s){if(d.getElementById("freescout-w"))return;a=d.createElement(e);m=d.getElementsByTagName(e)[0];a.async=1;a.id="freescout-w";a.src=s;m.parentNode.insertBefore(a, m)})(document,"script","https://desk.support.voicetel.com/modules/enduserportal/js/widget.js?v=2437");</script>
+
+<!-- Hero "Email support" CTA opens the FreeScout widget by clicking its
+     launcher (#fsw-btn). Polls briefly because the widget script is
+     async; gives up after ~3s. -->
+<script>
+	document.querySelectorAll("[data-open-chat]").forEach((trigger) => {
+		trigger.addEventListener("click", () => {
+			let attempts = 0;
+			const tryOpen = () => {
+				const launcher = document.getElementById("fsw-btn");
+				if (launcher) {
+					launcher.click();
+				} else if (attempts++ < 30) {
+					setTimeout(tryOpen, 100);
+				}
+			};
+			tryOpen();
+		});
+	});
+</script>
+

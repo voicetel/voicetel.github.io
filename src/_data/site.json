@@ -12,7 +12,30 @@
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "https://phone.voicetel.com",
 	"supportEmail": "support@voicetel.com",
-	"pops": ["NYC", "CLT", "ORD", "DEN", "DFW", "SJC"],
+	"webEmails": {
+		"compliance": "compliance+ws@voicetel.com",
+		"sales": "sales+ws@voicetel.com"
+	},
+	"pops": ["NYC", "CLT", "ORD", "DEN", "DFW", "SJC", "AMS"],
+	"cloudRegions": ["US East 1", "US East 2", "US West 1"],
+	"offices": [
+		{
+			"label": "Manhattan, NY",
+			"street": "630 Fifth Avenue, Suite 2000",
+			"city": "New York, NY 10111",
+			"phone": "(212) 401-6220",
+			"phoneTel": "+12124016220",
+			"fax": "(212) 401-6230"
+		},
+		{
+			"label": "Hackensack, NJ",
+			"street": "411 Hackensack Avenue, Suite 200",
+			"city": "Hackensack, NJ 07601",
+			"phone": "(201) 366-0000",
+			"phoneTel": "+12013660000",
+			"fax": "(201) 366-0600"
+		}
+	],
 	"nav": [
 		{
 			"label": "Products",
@@ -159,7 +182,7 @@
 				{
 					"label": "Sign up",
 					"icon": "person-plus",
-					"href": "https://www.voicetel.com/signup",
+					"href": "/signup/",
 					"description": "Create a VoiceTel account."
 				}
 			]
@@ -225,7 +248,7 @@
 			"key": "voice",
 			"title": "Voice",
 			"tagline": "Wholesale origination and termination",
-			"description": "STIR/SHAKEN attestation. Six US POPs. US-based NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
+			"description": "STIR/SHAKEN attestation. Global colocation footprint and cloud regions. US-based NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
 			"href": "/voice/",
 			"cta": "See voice features"
 		},
@@ -278,13 +301,14 @@
 			"cta": "Read the docs"
 		}
 	],
+	"turnstileSiteKey": "0x4AAAAAADLv9FeMyVatjUFx",
 	"formEndpoints": {
-		"signup": "/signup",
+		"signup": "/signup.php",
 		"login": "/login",
 		"passwordRecovery": "/password-recovery.html",
 		"porting": "/porting",
 		"resellerInquiry": "/reseller-inquiry",
 		"contact": "/contact"
 	},
-	"_note": "site.formEndpoints.signup is the path on portalUrl; the marketing site renders the button label as 'Signup'."
+	"_note": "site.formEndpoints.signup is the AJAX endpoint on portalUrl that the /signup/ form posts to. Site navigation links to /signup/ (the marketing page), not directly to formEndpoints.signup."
 }

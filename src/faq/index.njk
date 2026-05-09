@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "Frequently asked questions"
-description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, numbers, SIP trunking, emergency service, compatibility, and support."
+description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, hosted PBX, emergency service, compatibility, and support."
 ---
 
 <p class="eyebrow">Help</p>
@@ -13,29 +13,121 @@ description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messagin
 </p>
 
 <section class="section-block faq-block">
-	<h2>FAQ categories</h2>
-</section>
-
-<section class="section-block faq-block">
-	<h2>Starter FAQ copy</h2>
+	<h2>General</h2>
 	<details class="faq-item">
 		<summary>Is VoiceTel only for developers?</summary>
 		<p>No. VoiceTel serves developers, telecom engineers, operators, and business buyers across programmable voice, messaging, SIP trunking, numbers, hosted PBX, and phone applications.</p>
 	</details>
 	<details class="faq-item">
-		<summary>Can I migrate a compatible Twilio voice app?</summary>
-		<p>Yes, if the app stays inside the supported VoiceML-compatible voice surface. Check compatibility and run test calls before cutover.</p>
+		<summary>Do calculator inputs leave the browser?</summary>
+		<p>No. The calculator states that usage inputs remain client-side.</p>
 	</details>
+</section>
+
+<section id="voice" class="section-block faq-block">
+	<h2>Voice</h2>
+	<details class="faq-item">
+		<summary>Can existing Twilio voice applications migrate?</summary>
+		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the <a href="/voiceml/compatibility/">compatibility matrix</a> and the <a href="/voiceml/migrate/">migration guide</a> before production cutover.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Does VoiceTel provide speech services directly?</summary>
+		<p>Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. BYO services include:</p>
+		<ul>
+			<li>OpenAI TTS</li>
+			<li>Amazon Polly</li>
+			<li>Google Cloud TTS</li>
+			<li>ElevenLabs</li>
+			<li>Azure Cognitive Services</li>
+		</ul>
+		<p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>
+	</details>
+	<details class="faq-item">
+		<summary>How are voice rates displayed?</summary>
+		<p>Current rates are displayed in the customer portal.</p>
+	</details>
+</section>
+
+<section id="messaging" class="section-block faq-block">
+	<h2>Messaging</h2>
+	<details class="faq-item">
+		<summary>Does VoiceTel handle A2P 10DLC?</summary>
+		<p>Yes. VoiceTel supports A2P 10DLC workflows. Registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms. The 10DLC application and any associated fees are the sole responsibility of the customer.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Are carrier fees included?</summary>
+		<p>Carrier pass-through fees are listed separately from base message prices unless pricing data explicitly includes them.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can high-volume senders get dedicated SMPP binds for increased capacity?</summary>
+		<p>Yes. Speak with your messaging specialist to discuss your use case.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can VoiceTel handle traffic for phone numbers it doesn't own?</summary>
+		<p>Yes. With a Letter of Authorization (LOA), we can SMS-enable any phone number.</p>
+	</details>
+</section>
+
+<section id="numbers" class="section-block faq-block">
+	<h2>Numbers</h2>
+	<details class="faq-item">
+		<summary>Can I port my number to your service?</summary>
+		<p>Yes. We can port most North American phone numbers, provided the number is eligible for porting. If your number is portable, we can help transfer it to our service.</p>
+	</details>
+</section>
+
+<section id="hosted-pbx" class="section-block faq-block">
+	<h2>Hosted PBX</h2>
+	<details class="faq-item">
+		<summary>Can we keep existing desk phones?</summary>
+		<p>Device compatibility depends on SIP support, firmware, provisioning, and security policy. Bring your own device is allowed, but its management, configuration, and support are solely the customer's responsibility. We highly recommend using VoiceTel devices and software applications.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can hosted PBX use VoiceTel numbers?</summary>
+		<p>Yes, numbers and emergency-service records are managed through the VoiceTel number workflow. The PBX product requires at least one emergency number per physical address.</p>
+	</details>
+</section>
+
+<section class="section-block faq-block">
+	<h2>Pricing &amp; rates</h2>
 	<details class="faq-item">
 		<summary>Are VoiceTel rates public?</summary>
 		<p>VoiceTel publishes approved public rates when available. Account-specific rates are labeled custom or handled through sales.</p>
 	</details>
-	<details class="faq-item">
-		<summary>Do calculator inputs leave the browser?</summary>
-		<p>No. The calculator states that usage inputs remain client-side.</p>
-	</details>
+</section>
+
+<section class="section-block faq-block">
+	<h2>Emergency services</h2>
 	<details class="faq-item">
 		<summary>Does VoiceTel support emergency calling?</summary>
-		<p>Emergency-service availability and limitations depend on number type, service address, product configuration, and signed terms. The legal page and service terms explain those limitations.</p>
+		<p>Emergency-service availability and limitations depend on number type, service address, product configuration, and signed terms. The <a href="/legal/">legal page</a> and service terms explain those limitations.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can I dial 911 for emergency services?</summary>
+		<p>Emergency-service availability depends on number type, service address, product configuration, and signed terms. See the <a href="/legal/">legal page</a> for the full E911 limitations.</p>
+	</details>
+</section>
+
+<section class="section-block faq-block">
+	<h2>Account &amp; activation</h2>
+	<details class="faq-item">
+		<summary>How can I find my lost account information?</summary>
+		<p>Please use our <a href="https://www.voicetel.com/password-recovery.html">account recovery tool</a> which emails your lost account information to the account holder. We recommend you immediately change your password in the control panel after recovery.</p>
+	</details>
+	<details class="faq-item">
+		<summary>I can log into the Control Panel but cannot utilize the service. What's wrong?</summary>
+		<p>Shortly after signup you received an email providing instructions on enabling your account. Please check your inbox and explicitly follow the instructions contained within the account activation email.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Why did the service stop working?</summary>
+		<p>Please ensure that you have available funds in your account. VoiceTel is a prepaid service. If your balance goes below zero, your account will be temporarily suspended.</p>
+	</details>
+	<details class="faq-item">
+		<summary>I received "Incorrect or Expired Pin" text during the activation process.</summary>
+		<p>The pin is case and time sensitive. Please verify your mobile number immediately after receiving the account activation email.</p>
+	</details>
+	<details class="faq-item">
+		<summary>I received "Manual Verification Required" text during the activation process.</summary>
+		<p>We'll need additional information from you. Please obtain copies of your current utility or phone bill along with matching photo identification. You'll then need to provide this documentation to <a href="https://www.voicetel.com/#support">customer support</a> to manually validate your account.</p>
 	</details>
 </section>

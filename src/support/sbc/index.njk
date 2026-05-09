@@ -28,7 +28,7 @@ description: "SIP trunk-side configuration for AudioCodes, Cisco CUBE, FreeSWITC
 		<li><strong>PRACK / 100rel</strong> — VoiceTel sends 18x with 100rel for early-media services. Ensure your SBC negotiates PRACK rather than rejecting it.</li>
 		<li><strong>T.38 fax</strong> — re-INVITE to T.38 is supported. SBC must not block re-INVITE or strip SDP for fax to land.</li>
 		<li><strong>CallerID format</strong> — Use full E.164 in From display-name and P-Asserted-Identity. Local-format CallerIDs may fail STIR/SHAKEN attestation downstream.</li>
-		<li><strong>Codec re-INVITE</strong> — VoiceTel may renegotiate from G.711µ to OPUS or back during the call; don't pin codecs in a way that rejects the renegotiation.</li>
+		<li><strong>Codecs and fax</strong> — Voice codecs are G.711µ (ulaw), G.711a (alaw), and G.729. Fax is T.38 (re-INVITE during an active G.711 call to switch to T.38/UDPTL).</li>
 	</ul>
 </section>
 

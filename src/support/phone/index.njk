@@ -15,15 +15,14 @@ description: "SIP account configuration for Yealink, Poly/Polycom, Cisco MPP, Gr
 <section class="section-block">
 	<h2>Common fields, recommended values</h2>
 	<ul>
-		<li><strong>Transport</strong> — UDP for most deployments. Use TLS (5061) where the firewall blocks UDP or registration drops are persistent.</li>
-		<li><strong>SIP server / proxy</strong> — Provided in your VoiceTel onboarding (Anycast or Geocast assignment).</li>
+		<li><strong>Transport</strong> — UDP (most common) or TCP.</li>
+		<li><strong>SIP server / proxy</strong> — Shown in the customer portal under your trunk's settings.</li>
 		<li><strong>Outbound proxy</strong> — Same value as the SIP server unless engineering specified otherwise.</li>
 		<li><strong>Username / Auth name</strong> — Per-trunk SIP credentials (not the portal account).</li>
 		<li><strong>Register expiry</strong> — 60 seconds if your firewall has a short UDP NAT timeout; 3600 otherwise.</li>
 		<li><strong>NAT keepalive</strong> — Enable; 30 seconds. Most vendors call this "keepalive interval" or "NAT traversal."</li>
 		<li><strong>DTMF</strong> — RFC 2833 (in-RTP). Use SIP INFO only if your application explicitly requires it.</li>
 		<li><strong>Codecs</strong> — G.711µ (PCMU) primary, G.711a (PCMA) fallback, OPUS where supported.</li>
-		<li><strong>SRTP</strong> — Optional; use with TLS transport for encrypted media.</li>
 	</ul>
 </section>
 

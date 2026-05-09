@@ -12,14 +12,22 @@ description: "SIP trunk-side configuration for AudioCodes, Cisco CUBE, FreeSWITC
 	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking overview</a>
 </p>
 
+<aside class="caveat-block" aria-labelledby="sbc-fromuser-heading">
+	<h3 id="sbc-fromuser-heading">From-tag rule: <code>From:</code> username = SIP account username, always</h3>
+	<p>On every platform — FreeSWITCH, Asterisk, AudioCodes, Cisco CUBE, Ribbon, Oracle — the SIP <code>From:</code> header username on outbound INVITEs must be your SIP account username, never the caller ID. VoiceTel uses the From username for trunk identification and STIR/SHAKEN attestation; substituting the caller ID breaks both.</p>
+	<p>Caller ID belongs in the <code>P-Asserted-Identity</code> header (number) and the From <em>display-name</em> (caller's name). See <a href="https://desk.support.voicetel.com/hc/1878557642/6/termination-fromtag">termination From-tag handling</a> for examples and a SIP-trace walkthrough.</p>
+</aside>
+
 <section class="section-block">
 	<h2>Common interop pain points</h2>
+	<p>The registration host for your SIP trunk is shown in the customer portal under your trunk's settings. Use UDP transport (most common) or TCP.</p>
 	<ul>
 		<li><strong>Authentication mode</strong> — VoiceTel supports Digest or IP authentication. Pick one and stick to it; mixed-mode trunks have rare but real edge cases.</li>
-		<li><strong>From / P-Asserted-Identity</strong> — STIR/SHAKEN attestation depends on consistent identity headers. Don't strip P-Asserted-Identity at the SBC.</li>
+		<li><strong>From username</strong> — Always the SIP account username, never the caller ID (see callout above).</li>
+		<li><strong>P-Asserted-Identity</strong> — STIR/SHAKEN attestation depends on consistent identity headers. Don't strip P-Asserted-Identity at the SBC.</li>
 		<li><strong>PRACK / 100rel</strong> — VoiceTel sends 18x with 100rel for early-media services. Ensure your SBC negotiates PRACK rather than rejecting it.</li>
 		<li><strong>T.38 fax</strong> — re-INVITE to T.38 is supported. SBC must not block re-INVITE or strip SDP for fax to land.</li>
-		<li><strong>CallerID</strong> — Use full E.164 in From and P-Asserted-Identity. Local-format CallerIDs may fail STIR/SHAKEN attestation downstream.</li>
+		<li><strong>CallerID format</strong> — Use full E.164 in From display-name and P-Asserted-Identity. Local-format CallerIDs may fail STIR/SHAKEN attestation downstream.</li>
 		<li><strong>Codec re-INVITE</strong> — VoiceTel may renegotiate from G.711µ to OPUS or back during the call; don't pin codecs in a way that rejects the renegotiation.</li>
 	</ul>
 </section>

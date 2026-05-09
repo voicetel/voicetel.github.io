@@ -17,9 +17,9 @@ description: "Add a VoiceTel SIP account to the Linphone open-source softphone o
 			<ul>
 				<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
 				<li><strong>Password:</strong> SIP password from onboarding</li>
-				<li><strong>SIP Domain:</strong> VoiceTel SIP server host</li>
+				<li><strong>SIP Domain:</strong> SIP server host (shown in the customer portal)</li>
 				<li><strong>Display Name:</strong> caller's name</li>
-				<li><strong>Transport:</strong> UDP (or TLS)</li>
+				<li><strong>Transport:</strong> UDP</li>
 			</ul>
 		</li>
 		<li>Click <strong>Validate</strong>.</li>
@@ -46,8 +46,8 @@ description: "Add a VoiceTel SIP account to the Linphone open-source softphone o
 	<p>For automation or headless deployments, use <code>linphonecsh</code>:</p>
 	<pre class="code-block" data-lang="bash"><code>linphonec
 linphonec&gt; proxy add
-Your SIP identity: sip:&lt;username&gt;@&lt;voicetel-sip-server&gt;
-SIP proxy: sip:&lt;voicetel-sip-server&gt;
+Your SIP identity: sip:&lt;username&gt;@&lt;sip-host-from-portal&gt;
+SIP proxy: sip:&lt;sip-host-from-portal&gt;
 Route (optional):
 Register at startup [yes]: yes
 Publish presence info [no]: no

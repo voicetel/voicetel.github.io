@@ -43,12 +43,12 @@ description: "Configure SIP softphones — Bria, Zoiper, Linphone, MicroSIP — 
 <section class="section-block">
 	<h2>Common account fields</h2>
 	<ul>
-		<li><strong>Domain / SIP server / Host:</strong> the VoiceTel SIP server host from your onboarding email</li>
+		<li><strong>Domain / SIP server / Host:</strong> the SIP server host shown in your customer portal from your onboarding email</li>
 		<li><strong>Username:</strong> the SIP username from your VoiceTel trunk</li>
 		<li><strong>Password:</strong> the SIP password from your VoiceTel trunk</li>
 		<li><strong>Auth user / Auth ID:</strong> usually same as username; some softphones split them</li>
 		<li><strong>Outbound proxy:</strong> same as Domain unless engineering said otherwise</li>
-		<li><strong>Transport:</strong> UDP (or TLS where supported and your network needs it)</li>
+		<li><strong>Transport:</strong> UDP</li>
 		<li><strong>STUN / NAT traversal:</strong> Disabled in most cases — VoiceTel handles NAT traversal at the platform level</li>
 		<li><strong>Register expiry:</strong> 60 seconds for tight-NAT networks; 3600 otherwise</li>
 		<li><strong>DTMF:</strong> RFC 2833 (in-RTP)</li>

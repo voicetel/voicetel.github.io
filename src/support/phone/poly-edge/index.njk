@@ -23,7 +23,7 @@ description: "SIP account setup for Poly Edge B10, B20, B30, E300, E350, E400, E
 		<li>Identity section:
 			<ul>
 				<li><strong>Display Name:</strong> caller's name</li>
-				<li><strong>Address:</strong> <code>sip:&lt;sip-username&gt;@&lt;voicetel-sip-server&gt;</code></li>
+				<li><strong>Address:</strong> <code>sip:&lt;sip-username&gt;@&lt;sip-host-from-portal&gt;</code></li>
 				<li><strong>Authentication User ID:</strong> SIP username from VoiceTel onboarding</li>
 				<li><strong>Authentication Password:</strong> SIP password</li>
 				<li><strong>Label:</strong> short label shown on the line key</li>
@@ -31,9 +31,9 @@ description: "SIP account setup for Poly Edge B10, B20, B30, E300, E350, E400, E
 		</li>
 		<li>Server section:
 			<ul>
-				<li><strong>Address:</strong> the VoiceTel SIP server host</li>
-				<li><strong>Port:</strong> 5060 (or 5061 for TLS)</li>
-				<li><strong>Transport:</strong> UDP only (or TLS)</li>
+				<li><strong>Address:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>Port:</strong> 5060</li>
+				<li><strong>Transport:</strong> UDP only</li>
 				<li><strong>Expires:</strong> 60</li>
 				<li><strong>Register:</strong> Enabled</li>
 			</ul>

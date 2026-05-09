@@ -14,7 +14,7 @@ description: "Configure an AudioCodes Mediant SBC SIP trunk to VoiceTel — IP g
 	<ul>
 		<li><strong>Name:</strong> <code>VoiceTel-PS</code></li>
 		<li><strong>SBC IPv4 SIP Interface:</strong> the SBC's WAN interface</li>
-		<li><strong>Proxy Address:</strong> the VoiceTel SIP server host (port 5060, transport UDP)</li>
+		<li><strong>Proxy Address:</strong> the SIP server host shown in your customer portal (port 5060, transport UDP)</li>
 		<li><strong>Proxy Keep-Alive:</strong> Using OPTIONS (every 30 seconds)</li>
 	</ul>
 </section>
@@ -27,7 +27,7 @@ description: "Configure an AudioCodes Mediant SBC SIP trunk to VoiceTel — IP g
 		<li><strong>Type:</strong> Server</li>
 		<li><strong>Proxy Set:</strong> VoiceTel-PS (created above)</li>
 		<li><strong>Authentication Mode:</strong> Authentication per Call (or per User if VoiceTel issued user-level credentials)</li>
-		<li><strong>SIP Group Name:</strong> the VoiceTel SIP server host (used in Request-URI)</li>
+		<li><strong>SIP Group Name:</strong> the SIP server host shown in your customer portal (used in Request-URI)</li>
 		<li><strong>Inbound Message Manipulation Set:</strong> -1 (none, unless engineering supplied one)</li>
 		<li><strong>Outbound Message Manipulation Set:</strong> -1</li>
 	</ul>
@@ -68,7 +68,7 @@ description: "Configure an AudioCodes Mediant SBC SIP trunk to VoiceTel — IP g
 		<li><strong>Serving IP Group:</strong> VoiceTel-IPG</li>
 		<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
 		<li><strong>Password:</strong> SIP password from onboarding</li>
-		<li><strong>Host Name:</strong> the VoiceTel SIP server host</li>
+		<li><strong>Host Name:</strong> the SIP server host shown in your customer portal</li>
 		<li><strong>Register:</strong> yes (Digest) or no (IP auth)</li>
 	</ul>
 </section>

@@ -35,7 +35,7 @@ description: "Disable SIP transformations and enable consistent NAT on SonicWall
 	<p>SonicWall's default UDP connection timeout is 30 seconds. SIP devices REGISTER hourly by default; the firewall closes the NAT mapping between registrations and inbound calls fail silently. Raise the timeout for SIP signaling:</p>
 	<ol>
 		<li>Open <strong>Network → Services</strong>.</li>
-		<li>Find or create a service object for <code>UDP 5060</code> (and <code>5061</code> for TLS).</li>
+		<li>Find or create a service object for <code>UDP 5060</code>.</li>
 		<li>Set its <strong>UDP Connection Inactivity Timeout</strong> to <code>600</code> seconds (or higher).</li>
 		<li>Reference the service from your VoIP firewall rule so the per-service timeout applies.</li>
 	</ol>

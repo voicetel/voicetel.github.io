@@ -22,7 +22,9 @@
 		{
 			"label": "Manhattan, NY",
 			"street": "630 Fifth Avenue, Suite 2000",
-			"city": "New York, NY 10111",
+			"city": "New York",
+			"region": "NY",
+			"postalCode": "10111",
 			"phone": "(212) 401-6220",
 			"phoneTel": "+12124016220",
 			"fax": "(212) 401-6230"
@@ -30,7 +32,9 @@
 		{
 			"label": "Hackensack, NJ",
 			"street": "411 Hackensack Avenue, Suite 200",
-			"city": "Hackensack, NJ 07601",
+			"city": "Hackensack",
+			"region": "NJ",
+			"postalCode": "07601",
 			"phone": "(201) 366-0000",
 			"phoneTel": "+12013660000",
 			"fax": "(201) 366-0600"

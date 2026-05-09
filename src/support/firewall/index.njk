@@ -25,11 +25,11 @@ description: "Disable SIP ALG and configure NAT correctly on consumer and busine
 
 <section class="section-block">
 	<h2>UDP NAT timeout — the second silent killer</h2>
-	<p>Even with SIP ALG off, SIP registration over UDP fails if the firewall closes the NAT translation between REGISTER refreshes. Default UDP NAT timeouts on consumer routers run as low as <strong>30 seconds</strong>. SIP devices typically refresh registration every <strong>3600 seconds</strong>. The math doesn't work — registration silently drops, inbound calls fail, then the device re-REGISTERs and recovers.</p>
+	<p>Even with SIP ALG off, SIP registration over UDP fails if the firewall closes the NAT translation between REGISTER refreshes. Default UDP NAT timeouts on consumer routers run as low as <strong>30 seconds</strong>. The recommended VoiceTel REGISTER interval is <strong>360 seconds</strong>. Without something keeping the NAT mapping alive in between, registration silently drops, inbound calls fail, then the device re-REGISTERs and recovers.</p>
 	<p>Fix one of three ways, in order of preference:</p>
 	<ol>
 		<li><strong>Raise the firewall's UDP NAT timeout to 600 seconds or more.</strong> Best fix; covered per-vendor below where the knob exists.</li>
-		<li><strong>Lower the SIP REGISTER interval on the device to 30–60 seconds.</strong> Works on every firewall but adds signaling load.</li>
+		<li><strong>Set the SIP REGISTER interval on the device to 360 seconds, paired with NAT keepalive at 30 seconds.</strong> Keepalive refreshes the NAT mapping; the longer REGISTER interval keeps signaling load low.</li>
 		<li><strong>Enable SIP NAT keepalive on the device.</strong> Most IP phones and softphones have a "NAT keepalive" or "OPTIONS ping" interval — set to 25–30s.</li>
 	</ol>
 	<p>VoiceTel sends OPTIONS pings on registered SIP trunks at 30-second intervals by default. If your firewall closes UDP translations faster than that, raise the timeout or shorten the device REGISTER interval.</p>

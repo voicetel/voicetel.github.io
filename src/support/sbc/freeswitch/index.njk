@@ -19,22 +19,17 @@ description: "Configure FreeSWITCH as an SBC for VoiceTel SIP trunking — Sofia
 	<p>Drop <code>conf/sip_profiles/external/voicetel.xml</code>:</p>
 	<pre class="code-block" data-lang="xml"><code>&lt;include&gt;
   &lt;gateway name="voicetel"&gt;
-    &lt;param name="username"          value="yourusername"/&gt;
-    &lt;param name="password"          value="yourpassword"/&gt;
-    &lt;param name="from-user"         value="yourusername"/&gt;
-    &lt;param name="from-domain"       value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="proxy"             value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="register-proxy"    value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="realm"             value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="register"          value="true"/&gt;
-    &lt;param name="register-transport" value="udp"/&gt;
-    &lt;param name="expire-seconds"    value="360"/&gt;
-    &lt;param name="retry-seconds"     value="60"/&gt;
-    &lt;param name="ping"              value="30"/&gt;
-    &lt;param name="extension-in-contact" value="true"/&gt;
+    &lt;param name="username"      value="yourusername"/&gt;
+    &lt;param name="password"      value="yourpassword"/&gt;
+    &lt;param name="from-user"     value="yourusername"/&gt;
+    &lt;param name="proxy"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="realm"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="register"      value="true"/&gt;
+    &lt;param name="expire-seconds" value="360"/&gt;
+    &lt;param name="retry-seconds"  value="600"/&gt;
   &lt;/gateway&gt;
 &lt;/include&gt;</code></pre>
-	<p>The host (<code>&lt;sip-host-from-portal&gt;</code> above) is your VoiceTel-assigned proxy from onboarding — Geocast customers use <code>&lt;sip-host-from-portal&gt;</code>, Anycast customers may have a different host. Substitute what your onboarding email gave you.</p>
+	<p>The host (<code>&lt;sip-host-from-portal&gt;</code>) is the SIP server host shown in your customer portal under your trunk's settings.</p>
 	<p><strong>Do NOT set</strong> <code>caller-id-in-from="true"</code> — that puts the channel's caller ID in the <code>From:</code> username (<code>$fU</code>) and breaks trunk identification. Caller ID belongs in the dialplan via <code>effective_caller_id_number</code>.</p>
 </section>
 
@@ -43,14 +38,12 @@ description: "Configure FreeSWITCH as an SBC for VoiceTel SIP trunking — Sofia
 	<p>For IP-auth trunks, the same rule applies — <code>from-user</code> stays the SIP account username — but registration is disabled and credentials are omitted. VoiceTel authorizes by source IP based on the ACL you've registered with onboarding.</p>
 	<pre class="code-block" data-lang="xml"><code>&lt;include&gt;
   &lt;gateway name="voicetel"&gt;
-    &lt;param name="from-user"         value="yourusername"/&gt;
-    &lt;param name="from-domain"       value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="proxy"             value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="realm"             value="&lt;sip-host-from-portal&gt;"/&gt;
-    &lt;param name="register"          value="false"/&gt;
-    &lt;param name="register-transport" value="udp"/&gt;
-    &lt;param name="ping"              value="30"/&gt;
-    &lt;param name="extension-in-contact" value="true"/&gt;
+    &lt;param name="from-user"     value="yourusername"/&gt;
+    &lt;param name="proxy"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="realm"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="register"      value="false"/&gt;
+    &lt;param name="expire-seconds" value="360"/&gt;
+    &lt;param name="retry-seconds"  value="600"/&gt;
   &lt;/gateway&gt;
 &lt;/include&gt;</code></pre>
 </section>
@@ -59,7 +52,7 @@ description: "Configure FreeSWITCH as an SBC for VoiceTel SIP trunking — Sofia
 	<h2>2. Reload Sofia + verify registration</h2>
 	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia profile external rescan
 fs_cli&gt; sofia status
-# Look for: voicetel  gateway  REGED  expsec=600  ping=30</code></pre>
+# Look for: voicetel  gateway  REGED  expsec=360</code></pre>
 </section>
 
 <section class="section-block">

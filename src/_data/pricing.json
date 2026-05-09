@@ -1,0 +1,356 @@
+{
+	"_note": "Sample list rates and per-product volume-tier discounts driving the /pricing/ calculator. Edit baseRate, defaultVolume, and discountTiers per service. Marked DRAFT until owner-confirmed.",
+	"draft": true,
+	"currency": "USD",
+	"capturedDate": "2026-05-09",
+	"discountNote": "Origination services (outbound voice US-50, SMS outbound, MMS outbound) use a continuous power-curve discount: 0% below 100k units scaling to 90% at 5M units (effective $0.001). Other services use stepped volume tiers. Each service has its own formula.",
+	"minimumPercent": 80,
+	"minimumNote": "When volume-tier discounts apply, a monthly minimum commitment of {percent}% of the discounted total is required for that quote period. The minimum does not apply at full list rates.",
+	"groups": [
+		{
+			"label": "Voice Calling (US, CA)",
+			"description": "Voice origination and termination across the US-50 and Canadian footprints.",
+			"services": [
+				{
+					"id": "voice-out-us50",
+					"name": "Outbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35,
+						"_note": "Origination curve: 0% below 100k, ~50% at 1M, capped at 90% (= $0.001) at 5M. Same curve as sms-out + mms-out."
+					}
+				},
+				{
+					"id": "voice-in-local",
+					"name": "Inbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Toll-Free Voice",
+			"description": "Inbound voice on toll-free numbers. Outbound calls to a toll-free number are not billed.",
+			"services": [
+				{
+					"id": "voice-out-tollfree",
+					"name": "Outbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.0,
+					"_rule": "Outbound to a toll-free number is free; the toll-free owner pays the inbound leg.",
+					"defaultVolume": 0,
+					"discountTiers": [{ "min": 0, "discount": 0 }]
+				},
+				{
+					"id": "voice-in-tollfree",
+					"name": "Inbound",
+					"unit": "minute",
+					"unitIcon": "clock",
+					"baseRate": 0.025,
+					"_rule": "Toll-free voice base = inbound local voice base + $0.015. If local base moves, toll-free moves with it.",
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.0025,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "SMS Messaging",
+			"description": "Application-to-person text messaging on local long-code numbers. Inbound and outbound volumes pool together for tier discounts.",
+			"services": [
+				{
+					"id": "sms-out",
+					"name": "Outbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"poolId": "sms",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "sms-in",
+					"name": "Inbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"poolId": "sms",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "MMS Messaging",
+			"description": "Multimedia messaging on local long-code numbers. Inbound and outbound pool together for tier discounts.",
+			"services": [
+				{
+					"id": "mms-out",
+					"name": "Outbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.025,
+					"defaultVolume": 0,
+					"poolId": "mms",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.01,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "mms-in",
+					"name": "Inbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.025,
+					"defaultVolume": 0,
+					"poolId": "mms",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.01,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Toll-Free SMS Messaging",
+			"description": "Text messaging on verified toll-free numbers. Inbound and outbound pool together.",
+			"services": [
+				{
+					"id": "sms-out-tollfree",
+					"name": "Outbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"poolId": "sms-tollfree",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "sms-in-tollfree",
+					"name": "Inbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.01,
+					"defaultVolume": 0,
+					"poolId": "sms-tollfree",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.001,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Toll-Free MMS Messaging",
+			"description": "Multimedia messaging on verified toll-free numbers. Inbound and outbound pool together.",
+			"services": [
+				{
+					"id": "mms-out-tollfree",
+					"name": "Outbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.025,
+					"defaultVolume": 0,
+					"poolId": "mms-tollfree",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.01,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "mms-in-tollfree",
+					"name": "Inbound",
+					"unit": "message part",
+					"unitIcon": "chat-text",
+					"baseRate": 0.025,
+					"defaultVolume": 0,
+					"poolId": "mms-tollfree",
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 100000,
+						"maxVolume": 5000000,
+						"minRate": 0.01,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Phone Numbers (DIDs)",
+			"description": "Direct-inward-dial numbers and 911 emergency-service records. Billed monthly per number or record.",
+			"services": [
+				{
+					"id": "did-local",
+					"name": "Local DID",
+					"unit": "number",
+					"unitIcon": "calendar-month",
+					"baseRate": 1.0,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 10000,
+						"minRate": 0.1,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "did-tollfree",
+					"name": "Toll-Free DID",
+					"unit": "number",
+					"unitIcon": "calendar-month",
+					"baseRate": 1.0,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 10000,
+						"minRate": 0.35,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "e911",
+					"name": "E911 Record",
+					"unit": "record",
+					"unitIcon": "calendar-month",
+					"baseRate": 2.5,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 10000,
+						"minRate": 0.6,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Lookups",
+			"description": "Per-query carrier and caller-name data services.",
+			"services": [
+				{
+					"id": "lookup-cnam",
+					"name": "CNAM Lookup",
+					"unit": "query",
+					"unitIcon": "search",
+					"baseRate": 0.0075,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 50000,
+						"maxVolume": 1000000,
+						"minRate": 0.0025,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "lookup-carrier",
+					"name": "Carrier Lookup (LRN/MNP)",
+					"unit": "query",
+					"unitIcon": "search",
+					"baseRate": 0.008,
+					"_source": "Owner-confirmed 2026-05-09: matches Twilio Lookup v2 — Line Type Intelligence.",
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 50000,
+						"maxVolume": 1000000,
+						"minRate": 0.003,
+						"exponent": 0.35
+					}
+				}
+			]
+		},
+		{
+			"label": "Hosted PBX",
+			"description": "Multi-tenant cloud PBX. Billed monthly per tenant and per extension.",
+			"services": [
+				{
+					"id": "pbx-tenant",
+					"name": "PBX Tenant",
+					"unit": "tenant",
+					"unitIcon": "calendar-month",
+					"baseRate": 10.0,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 500,
+						"minRate": 5.0,
+						"exponent": 0.35
+					}
+				},
+				{
+					"id": "pbx-extension",
+					"name": "PBX Extension",
+					"unit": "extension",
+					"unitIcon": "calendar-month",
+					"baseRate": 1.0,
+					"defaultVolume": 0,
+					"discountFormula": {
+						"type": "powerCurve",
+						"minVolume": 10,
+						"maxVolume": 1000,
+						"minRate": 0.25,
+						"exponent": 0.35
+					}
+				}
+			]
+		}
+	]
+}

@@ -56,6 +56,17 @@ description: "SIP account setup for Grandstream GRP series phones and HT80x anal
 </section>
 
 <section class="section-block">
+	<h2>Fax over T.38 (HT8xx)</h2>
+	<p>Plug a fax machine into an FXS port instead of a handset. Open <strong>FXS Port N → Audio Settings</strong>:</p>
+	<ul>
+		<li><strong>Fax Mode:</strong> T.38 (Auto Detect)</li>
+		<li><strong>Re-INVITE After Fax Tone Detected:</strong> Yes</li>
+		<li><strong>Jitter Buffer Type:</strong> Fixed (better for fax than Adaptive)</li>
+	</ul>
+	<p>Send a test fax. The ATA detects the CNG tone, sends a SIP re-INVITE switching media from G.711 to T.38, and negotiates the fax session over UDPTL.</p>
+</section>
+
+<section class="section-block">
 	<h2>Auto-provisioning</h2>
 	<p>Register the device MAC at <code>https://fm.grandstream.com/gs</code> (Grandstream's GAPS portal); point GAPS at your VoiceTel provisioning URL. Devices boot, hit GAPS, get redirected, fetch config, register.</p>
 </section>

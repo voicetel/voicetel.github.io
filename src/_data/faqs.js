@@ -65,6 +65,10 @@ const categories = [
 				q: "Can VoiceTel handle traffic for phone numbers it doesn't own?",
 				a: "Yes. With a Letter of Authorization (LOA), we can SMS-enable any phone number.",
 			},
+			{
+				q: "Who pays for compliance?",
+				a: "10DLC brand registration, campaign filing, and any associated fees are the sole responsibility of the customer. VoiceTel supports A2P 10DLC workflows as the messaging transport — registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms.",
+			},
 		],
 	},
 	{

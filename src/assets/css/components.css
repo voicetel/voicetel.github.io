@@ -978,35 +978,93 @@ textarea {
 	}
 }
 
-/* Open-source project entries on /open-source/ */
+/* Open-source project cards on /open-source/ */
 
-.oss-project {
-	margin: var(--space-4) 0;
-	padding-top: var(--space-4);
-	border-top: 1px solid var(--border-color);
-}
-
-.oss-project:first-of-type {
-	border-top: 0;
-	padding-top: 0;
+.oss-cards {
+	display: grid;
+	gap: var(--space-4);
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 	margin-top: var(--space-3);
 }
 
-.oss-project h3 {
-	margin: 0 0 var(--space-2);
+.oss-card {
+	display: flex;
+	flex-direction: column;
+	background: var(--paper);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	padding: var(--space-4);
+	transition:
+		border-color 0.15s,
+		box-shadow 0.15s,
+		transform 0.15s;
 }
 
-.oss-project p {
-	margin: 0 0 var(--space-2);
+.oss-card:hover,
+.oss-card:focus-within {
+	border-color: var(--primary-light);
+	box-shadow: 0 4px 14px rgb(0 0 0 / 8%);
+	transform: translateY(-1px);
 }
 
-.oss-project__meta {
-	font-size: var(--text-sm);
-	color: var(--text-muted);
+.oss-card__header {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin-bottom: var(--space-3);
+	padding-bottom: var(--space-2);
+	border-bottom: 1px solid var(--border-color);
+}
+
+.oss-card__icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	color: var(--primary-color);
+}
+
+.oss-card__icon svg {
+	width: 22px;
+	height: 22px;
+}
+
+.oss-card__title {
 	font-family: var(--font-mono);
+	font-size: var(--text-md);
+	margin: 0;
+	color: var(--primary-color);
+	letter-spacing: -0.2px;
+	overflow-wrap: anywhere;
 }
 
-.oss-project__meta a {
+.oss-card__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.oss-card__title a:hover {
+	color: var(--primary-light);
+	text-decoration: underline;
+}
+
+.oss-card__description {
+	flex: 1;
+	margin: 0 0 var(--space-3);
+	font-size: var(--text-sm);
+	line-height: 1.55;
+	color: var(--text-default);
+}
+
+.oss-card__url {
+	margin: 0;
+	padding-top: var(--space-2);
+	border-top: 1px solid var(--border-color);
+	font-family: var(--font-mono);
+	font-size: var(--text-xs);
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+.oss-card__url a {
 	color: inherit;
 }
 

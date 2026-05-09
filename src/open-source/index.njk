@@ -13,23 +13,34 @@ description: "VoiceTel open-source projects: memdb in-RAM SQLite with PostgreSQL
 </p>
 
 <section class="section-block">
-	<h2>Pinned projects</h2>
+	<h2>Our Projects</h2>
 
-	<article class="oss-project">
-		<h3><a href="https://github.com/voicetel/memdb">memdb</a></h3>
-		<p>Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library — so existing Postgres clients can connect to an in-memory store without code changes. Built for routing tables, rate caches, and CDR staging where lookup latency dominates over persistence.</p>
-		<p class="oss-project__meta"><a href="https://github.com/voicetel/memdb">github.com/voicetel/memdb</a></p>
-	</article>
+	<div class="oss-cards">
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "github" %}</span>
+				<h3 class="oss-card__title"><a href="https://github.com/voicetel/memdb">memdb</a></h3>
+			</header>
+			<p class="oss-card__description">Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library — so existing Postgres clients connect to an in-memory store without code changes.</p>
+			<p class="oss-card__url"><a href="https://github.com/voicetel/memdb">github.com/voicetel/memdb</a></p>
+		</article>
 
-	<article class="oss-project">
-		<h3><a href="https://github.com/voicetel/mod_siprec">mod_siprec</a></h3>
-		<p>RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server, so a FreeSWITCH deployment can hand off compliance recording, supervisor monitoring, or analytics streams without vendor-specific RTP forking.</p>
-		<p class="oss-project__meta"><a href="https://github.com/voicetel/mod_siprec">github.com/voicetel/mod_siprec</a></p>
-	</article>
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "github" %}</span>
+				<h3 class="oss-card__title"><a href="https://github.com/voicetel/mod_siprec">mod_siprec</a></h3>
+			</header>
+			<p class="oss-card__description">RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server for compliance recording, supervisor monitoring, or analytics — without vendor-specific RTP forking.</p>
+			<p class="oss-card__url"><a href="https://github.com/voicetel/mod_siprec">github.com/voicetel/mod_siprec</a></p>
+		</article>
 
-	<article class="oss-project">
-		<h3><a href="https://github.com/voicetel/freeswitch-security">freeswitch-security</a></h3>
-		<p>Event-driven security layer for FreeSWITCH. Subscribes to the Event Socket Layer (ESL) and watches live signaling for registration floods, call-volume anomalies, and other malicious patterns; an integrated cache keeps detection paths fast without re-querying the dialplan. Useful for any FreeSWITCH operator that wants signal-based mitigation without bolting on a separate IDS.</p>
-		<p class="oss-project__meta"><a href="https://github.com/voicetel/freeswitch-security">github.com/voicetel/freeswitch-security</a></p>
-	</article>
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "github" %}</span>
+				<h3 class="oss-card__title"><a href="https://github.com/voicetel/freeswitch-security">freeswitch-security</a></h3>
+			</header>
+			<p class="oss-card__description">Event-driven security layer for FreeSWITCH. Subscribes to the Event Socket Layer (ESL) and watches live signaling for registration floods, call-volume anomalies, and other malicious patterns; an integrated cache keeps detection paths fast without re-querying the dialplan.</p>
+			<p class="oss-card__url"><a href="https://github.com/voicetel/freeswitch-security">github.com/voicetel/freeswitch-security</a></p>
+		</article>
+	</div>
 </section>

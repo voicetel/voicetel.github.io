@@ -10,13 +10,72 @@
 		<meta property="og:description" content="{{ description or site.description }}">
 		<meta property="og:url" content="{{ site.url }}{{ page.url }}">
 		<meta property="og:image" content="{{ site.url }}/assets/img/og-default.png">
+		<meta property="og:image:width" content="1200">
+		<meta property="og:image:height" content="630">
 		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="{{ site.brand }}">
+		<meta property="og:locale" content="en_US">
 		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="{% if title %}{{ title }} — {{ site.brand }}{% else %}{{ site.brand }} — {{ site.tagline }}{% endif %}">
+		<meta name="twitter:description" content="{{ description or site.description }}">
+		<meta name="twitter:image" content="{{ site.url }}/assets/img/og-default.png">
 		<link rel="icon" href="/assets/img/favicon.ico" sizes="any">
 		<link rel="preload" href="/assets/fonts/plex-mono/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 		<link rel="stylesheet" href="/assets/css/tokens.css">
 		<link rel="stylesheet" href="/assets/css/base.css">
 		<link rel="stylesheet" href="/assets/css/components.css">
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"name": "{{ site.brand }}",
+				"legalName": "{{ site.legalName }}",
+				"url": "{{ site.url }}",
+				"logo": "{{ site.url }}/assets/img/og-default.png",
+				"description": "{{ site.description }}",
+				"email": "{{ site.supportEmail }}",
+				"address": [
+					{%- for office in site.offices %}
+					{
+						"@type": "PostalAddress",
+						"streetAddress": "{{ office.street }}",
+						"addressLocality": "{{ office.city }}",
+						"addressRegion": "{{ office.region }}",
+						"postalCode": "{{ office.postalCode }}",
+						"addressCountry": "US"
+					}{% if not loop.last %},{% endif %}
+					{%- endfor %}
+				],
+				"contactPoint": [
+					{%- for office in site.offices %}
+					{
+						"@type": "ContactPoint",
+						"telephone": "{{ office.phoneTel }}",
+						"contactType": "customer service",
+						"areaServed": "US",
+						"availableLanguage": "en"
+					}{% if not loop.last %},{% endif %}
+					{%- endfor %}
+				],
+				"identifier": [
+					{ "@type": "PropertyValue", "name": "FCC Filer ID", "value": "829231" },
+					{ "@type": "PropertyValue", "name": "Robocall Mitigation Database ID", "value": "RMD0004909" },
+					{ "@type": "PropertyValue", "name": "Operating Company Number", "value": "470J" }
+				]
+			}
+		</script>
+		{%- if page.url == "/" %}
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "{{ site.brand }}",
+				"url": "{{ site.url }}",
+				"description": "{{ site.description }}",
+				"publisher": { "@type": "Organization", "name": "{{ site.brand }}" }
+			}
+		</script>
+		{%- endif %}
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>

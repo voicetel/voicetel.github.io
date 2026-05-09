@@ -22,7 +22,7 @@ description: "Contact VoiceTel for sales, support, billing, porting, partnership
 			<address aria-labelledby="office-{{ loop.index }}">
 				<p>
 					{{ office.street }}<br>
-					{{ office.city }}
+					{{ office.city }}, {{ office.region }} {{ office.postalCode }}
 				</p>
 				<p>
 					<span class="office-label">Phone</span> <a href="tel:{{ office.phoneTel }}">{{ office.phone | replace(" ", "&nbsp;") | replace("-", "&#8209;") | safe }}</a><br>
@@ -32,7 +32,7 @@ description: "Contact VoiceTel for sales, support, billing, porting, partnership
 			<iframe
 				class="office-map"
 				title="Map of {{ office.label }} office"
-				src="https://maps.google.com/maps?output=embed&z=15&q={{ (office.street + ', ' + office.city) | urlencode }}"
+				src="https://maps.google.com/maps?output=embed&z=15&q={{ (office.street + ', ' + office.city + ', ' + office.region + ' ' + office.postalCode) | urlencode }}"
 				loading="lazy"
 				referrerpolicy="no-referrer-when-downgrade"></iframe>
 		</div>

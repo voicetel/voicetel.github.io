@@ -1,0 +1,111 @@
+---
+layout: layouts/page.njk
+permalink: /docs/api/
+title: "API reference"
+description: "VoiceTel REST APIs: VoiceML (Twilio-compatible voice), numbers, messaging, account, and network services. OpenAPI specs rendered with Redoc."
+---
+
+<p class="eyebrow">API reference</p>
+<h1>REST APIs for the VoiceTel platform.</h1>
+<p class="lede">VoiceTel publishes OpenAPI specifications for every customer-facing API surface. Each reference below is rendered from the spec, so the docs match the wire shape one-to-one.</p>
+<section class="section-block">
+	<h2>Programmable Voice</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+			<h3><a href="/docs/api/voiceml/">VoiceML</a></h3>
+			<p>Twilio-compatible voice REST API. Drop-in for existing Twilio SDKs; same wire shape, same webhook signing, same pagination envelope.</p>
+		</li>
+	</ul>
+	<p class="hero-actions hero-actions--center">
+		<a class="btn btn-primary" href="/voiceml/compatibility/">Compatibility</a>
+		<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
+	</p>
+</section>
+
+<section class="section-block">
+	<h2>Numbers</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3><a href="/docs/api/iNumbering/">iNumbering</a></h3>
+			<p>Number provisioning: search, order, configure, and release DIDs.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3><a href="/docs/api/iNumbering-porting/">iNumbering Porting</a></h3>
+			<p>LNP workflows: submit ports, track status, and coordinate cutover.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
+			<h3><a href="/docs/api/numbers/">Numbers Lookup</a></h3>
+			<p>Carrier-of-record, LRN, CNAM, and caller-ID lookups for routing and screening.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Messaging</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3><a href="/docs/api/messaging/">Messaging</a></h3>
+			<p>SMS and MMS send/receive, delivery events, and A2P 10DLC workflows.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Account &amp; security</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-plus" %}</span>
+			<h3><a href="/docs/api/account/">Account</a></h3>
+			<p>Account information, balance, billing data, and sub-account management.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "box-arrow-in-right" %}</span>
+			<h3><a href="/docs/api/auth/">Authentication</a></h3>
+			<p>Bearer-token and API-key flows for programmatic access.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/docs/api/acl/">Access Control Lists</a></h3>
+			<p>Source-IP allow lists, credentials, and per-resource permission rules.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Network services</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
+			<h3><a href="/docs/api/gateways/">SIP Gateways</a></h3>
+			<p>Manage SIP trunk endpoints, authentication, and routing per-account.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/docs/api/e911/">E911</a></h3>
+			<p>Emergency-service registration, address validation, and dispatch records.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3><a href="/docs/api/csp/">Carrier Service Provider</a></h3>
+			<p>Wholesale interconnect operations: rate decks, route management, and traffic reports.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "info-circle" %}</span>
+			<h3><a href="/docs/api/info/">Info</a></h3>
+			<p>Service-level information, network endpoints, and platform metadata.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="api-cta-heading">
+	<h2 id="api-cta-heading">Need a different surface?</h2>
+	<p>Contact engineering for partner APIs, custom integrations, or pre-release endpoints not yet listed here.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Talk to engineering</a>
+	</p>
+</aside>

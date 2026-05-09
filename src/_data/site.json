@@ -130,7 +130,7 @@
 					"label": "Support",
 					"icon": "headset",
 					"href": "/support/",
-					"description": "Router, IP phone, softphone, SBC, and PBX configuration guides."
+					"description": "Voice (SIP, phones, PBX) and messaging (10DLC) configuration guides."
 				},
 				{
 					"label": "Infrastructure & uptime",

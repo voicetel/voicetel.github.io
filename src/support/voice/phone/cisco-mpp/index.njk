@@ -1,0 +1,80 @@
+---
+layout: layouts/page.njk
+title: "Configure Cisco MPP phones for VoiceTel"
+description: "Configure Cisco IP Phone 7800 and 8800 series running Multi-Platform (MPP) firmware to register against VoiceTel SIP trunking."
+---
+
+<p class="eyebrow">Support / Voice / Phone / Cisco MPP</p>
+<h1>Configure Cisco MPP phones for VoiceTel.</h1>
+<p class="lede">Cisco IP Phones 7800/8800 series running Multi-Platform (MPP) firmware operate as standard SIP endpoints — different from Cisco UCM-tied phones. Provision via the web UI or via Cisco's redirection service for fleets.</p>
+
+<section class="section-block">
+	<h2>Convert from Enterprise firmware (if needed)</h2>
+	<p>Phones bought through a Cisco UCM-tied channel ship with Enterprise firmware that doesn't accept third-party SIP. Convert to MPP firmware first:</p>
+	<ul>
+		<li>Download the MPP firmware image from Cisco's downloads area for your model.</li>
+		<li>Upgrade via <strong>Admin Login → Voice → Provisioning → Firmware Upgrade Rule</strong>.</li>
+		<li>The phone reboots into MPP mode after the upgrade.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Web UI configuration</h2>
+	<ol>
+		<li>Press <strong>Settings → Status → Network → IPv4</strong> to find the IP.</li>
+		<li>Open <code>http://&lt;phone-ip&gt;/admin/advanced</code>. Sign in (the admin URL appears once Admin Login is enabled under <strong>Voice → System → System Configuration</strong>).</li>
+		<li>Open <strong>Voice → Ext 1</strong>.</li>
+		<li>General section:
+			<ul>
+				<li><strong>Line Enable:</strong> yes</li>
+			</ul>
+		</li>
+		<li>Proxy and Registration:
+			<ul>
+				<li><strong>Proxy:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>Outbound Proxy:</strong> same as Proxy</li>
+				<li><strong>Use Outbound Proxy:</strong> yes</li>
+				<li><strong>Register:</strong> yes</li>
+				<li><strong>Register Expires:</strong> 360</li>
+			</ul>
+		</li>
+		<li>Subscriber Information:
+			<ul>
+				<li><strong>Display Name:</strong> the user's name</li>
+				<li><strong>User ID:</strong> the SIP username from VoiceTel onboarding</li>
+				<li><strong>Password:</strong> the SIP password from VoiceTel onboarding</li>
+				<li><strong>Auth ID:</strong> same as User ID</li>
+			</ul>
+		</li>
+		<li>SIP Settings:
+			<ul>
+				<li><strong>SIP Transport:</strong> UDP</li>
+				<li><strong>SIP Port:</strong> 5060</li>
+			</ul>
+		</li>
+		<li>NAT Settings:
+			<ul>
+				<li><strong>NAT Mapping Enable:</strong> yes</li>
+				<li><strong>NAT Keep Alive Enable:</strong> yes</li>
+				<li><strong>NAT Keep Alive Msg:</strong> $NOTIFY (or REGISTER)</li>
+				<li><strong>NAT Keep Alive Dest:</strong> $PROXY</li>
+			</ul>
+		</li>
+		<li>Audio Configuration:
+			<ul>
+				<li><strong>Preferred Codec:</strong> G711u</li>
+				<li><strong>Second Preferred Codec:</strong> G711a</li>
+				<li><strong>DTMF Tx Method:</strong> AVT (RFC 2833)</li>
+			</ul>
+		</li>
+		<li>Click <strong>Submit All Changes</strong> at the bottom.</li>
+	</ol>
+</section>
+
+<aside class="cta-block" aria-labelledby="cisco-mpp-cta-heading">
+	<h2 id="cisco-mpp-cta-heading">Need provisioning XML?</h2>
+	<p>VoiceTel engineering can supply Cisco MPP <code>spa</code>-format provisioning XML for fleet rollouts via HTTPS. Contact engineering with your model number and rollout count.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

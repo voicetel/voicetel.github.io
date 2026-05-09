@@ -1,0 +1,70 @@
+---
+layout: layouts/page.njk
+title: "Configure Avaya J100 series phones for VoiceTel"
+description: "SIP account setup for Avaya J139, J159, J169, J179, J189, and B100 series phones running Open SIP firmware against VoiceTel."
+---
+
+<p class="eyebrow">Support / Voice / Phone / Avaya</p>
+<h1>Configure Avaya J100 series for VoiceTel.</h1>
+<p class="lede">Avaya J139, J159, J169, J179, and J189 ship with either Aura SIP firmware (tied to Avaya Aura) or Open SIP firmware (works with any SIP server). Open SIP is what you need for VoiceTel.</p>
+
+<section class="section-block">
+	<h2>Verify Open SIP firmware</h2>
+	<p>Press <strong>Main → Network Information → Software</strong>. The "App File" name should start with <code>SIP_</code> (Open SIP) — for example <code>SIP_J189_4.1.x.x_release.tar</code>. If it starts with <code>S_</code>, you have Aura firmware and need to convert to Open SIP first via Avaya's downloads area.</p>
+</section>
+
+<section class="section-block">
+	<h2>Provisioning file (recommended)</h2>
+	<p>J100 phones strongly prefer central provisioning over per-phone manual setup. Drop a <code>46xxsettings.txt</code> on your provisioning HTTP/HTTPS server with at minimum:</p>
+	<pre class="code-block" data-lang="ini"><code>SET ENABLE_OPS_SCREEN 1
+SET ENABLE_OPS_PASSWORD 0
+SET SIPDOMAIN &lt;sip-host-from-portal&gt;
+SET SIP_CONTROLLER_LIST &lt;sip-host-from-portal&gt;:5060;transport=udp
+SET REGISTERWAIT 360
+SET DSCPSIG 24
+SET DSCPAUD 46
+SET ENABLE_PRESENCE 0
+SET ENABLE_AVAYA_ENVIRONMENT 0</code></pre>
+	<p>Set <strong>Provisioning Server</strong> on the phone (Main → Administration → Provisioning) to your HTTP server URL. The phone fetches <code>46xxsettings.txt</code> at boot and applies the settings.</p>
+</section>
+
+<section class="section-block">
+	<h2>Per-phone manual configuration</h2>
+	<ol>
+		<li>Press <strong>Main → Administration</strong> (the admin code defaults to <code>27238</code> = "CRAFT" on a phone keypad; change immediately).</li>
+		<li>Open <strong>SIP → SIP Global Settings</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>SIP Domain:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>SIP Proxy Server List:</strong> the SIP server host shown in your customer portal, port 5060, transport UDP</li>
+				<li><strong>Avaya Environment:</strong> No</li>
+				<li><strong>Reg Wait:</strong> 60</li>
+			</ul>
+		</li>
+		<li>Open <strong>SIP → User → Identity</strong> for line 1:
+			<ul>
+				<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Auth Username:</strong> same as Username</li>
+				<li><strong>Auth Password:</strong> SIP password</li>
+				<li><strong>Display Name:</strong> caller's name</li>
+			</ul>
+		</li>
+		<li>Save and reboot.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Codec preference</h2>
+	<p>In <code>46xxsettings.txt</code>, set:</p>
+	<pre class="code-block" data-lang="ini"><code>SET AUDIO_CODEC G711U,G711A
+SET DTMF_PAYLOAD_TYPE 101</code></pre>
+	<p>Per phone: <strong>Main → Administration → Audio → Codecs</strong>; arrange G.711 µ-law / A-law at the top.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="avaya-cta-heading">
+	<h2 id="avaya-cta-heading">Migrating from Avaya Aura?</h2>
+	<p>If you're migrating from a CM/Aura environment, contact VoiceTel engineering for help with PPM/Aura-specific feature mapping (busy-lamp field, button modules, hot-desking) onto VoiceTel.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

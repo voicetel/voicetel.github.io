@@ -1,0 +1,110 @@
+---
+layout: layouts/page.njk
+title: "FreeSWITCH SBC trunk to VoiceTel"
+description: "Configure FreeSWITCH as an SBC for VoiceTel SIP trunking — Sofia external profile, gateway, ACL, and dialplan bridging."
+---
+
+<p class="eyebrow">Support / Voice / SBC / FreeSWITCH</p>
+<h1>FreeSWITCH SBC trunk to VoiceTel.</h1>
+<p class="lede">FreeSWITCH ships with a usable SBC role out of the box. The configuration below adds VoiceTel as a gateway on the external SIP profile, plus a dialplan rule to bridge inbound calls to your downstream PBX.</p>
+
+<aside class="caveat-block" aria-labelledby="freeswitch-fromuser-heading">
+	<h3 id="freeswitch-fromuser-heading">Critical: <code>from-user</code> must be the SIP account username, not the caller ID</h3>
+	<p>The most common SIP integration mistake on FreeSWITCH is putting the caller-ID number in the SIP <code>From:</code> header username (the <code>$fU</code> channel variable). VoiceTel's termination side uses the From username for trunk identification and STIR/SHAKEN attestation; it must equal the SIP account username on every outbound call.</p>
+	<p>Set caller ID via the dialplan with <code>effective_caller_id_number</code> / <code>effective_caller_id_name</code> channel variables (which become P-Asserted-Identity and the From display-name) — never via <code>caller-id-in-from</code> on the gateway. See <a href="https://desk.support.voicetel.com/hc/1878557642/6/termination-fromtag">termination From-tag handling</a> for the full rationale.</p>
+</aside>
+
+<section class="section-block">
+	<h2>1. Define the gateway (Digest authentication)</h2>
+	<p>Drop <code>conf/sip_profiles/external/voicetel.xml</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;include&gt;
+  &lt;gateway name="voicetel"&gt;
+    &lt;param name="username"      value="yourusername"/&gt;
+    &lt;param name="password"      value="yourpassword"/&gt;
+    &lt;param name="from-user"     value="yourusername"/&gt;
+    &lt;param name="proxy"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="realm"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="register"      value="true"/&gt;
+    &lt;param name="expire-seconds" value="360"/&gt;
+    &lt;param name="retry-seconds"  value="600"/&gt;
+  &lt;/gateway&gt;
+&lt;/include&gt;</code></pre>
+	<p>The host (<code>&lt;sip-host-from-portal&gt;</code>) is the SIP server host shown in your customer portal under your trunk's settings.</p>
+	<p><strong>Do NOT set</strong> <code>caller-id-in-from="true"</code> — that puts the channel's caller ID in the <code>From:</code> username (<code>$fU</code>) and breaks trunk identification. Caller ID belongs in the dialplan via <code>effective_caller_id_number</code>.</p>
+</section>
+
+<section class="section-block">
+	<h2>1 (alt). Define the gateway (IP authentication)</h2>
+	<p>For IP-auth trunks, the same rule applies — <code>from-user</code> stays the SIP account username — but registration is disabled and credentials are omitted. VoiceTel authorizes by source IP based on the ACL you've registered with onboarding.</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;include&gt;
+  &lt;gateway name="voicetel"&gt;
+    &lt;param name="from-user"     value="yourusername"/&gt;
+    &lt;param name="proxy"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="realm"         value="&lt;sip-host-from-portal&gt;"/&gt;
+    &lt;param name="register"      value="false"/&gt;
+    &lt;param name="expire-seconds" value="360"/&gt;
+    &lt;param name="retry-seconds"  value="600"/&gt;
+  &lt;/gateway&gt;
+&lt;/include&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>2. Reload Sofia + verify registration</h2>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia profile external rescan
+fs_cli&gt; sofia status
+# Look for: voicetel  gateway  REGED  expsec=360</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>3. Outbound dialplan — set caller ID here, not on the gateway</h2>
+	<p>Bridge to the gateway from your dialplan, e.g. <code>conf/dialplan/default.xml</code>. The <code>effective_caller_id_*</code> variables become the P-Asserted-Identity number and the From display-name on the outbound INVITE; the From username (<code>$fU</code>) stays the gateway's <code>from-user</code> — this is the desired behavior.</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;extension name="voicetel-out"&gt;
+  &lt;condition field="destination_number" expression="^(1?\d{10})$"&gt;
+    &lt;action application="set" data="effective_caller_id_number=+1${caller_id_number}"/&gt;
+    &lt;action application="set" data="effective_caller_id_name=${caller_id_name}"/&gt;
+    &lt;action application="set" data="hangup_after_bridge=true"/&gt;
+    &lt;action application="bridge" data="sofia/gateway/voicetel/$1"/&gt;
+  &lt;/condition&gt;
+&lt;/extension&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>4. Inbound dialplan (from VoiceTel)</h2>
+	<p>Inbound calls land on the public IP. Add a public dialplan in <code>conf/dialplan/public.xml</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;extension name="voicetel-inbound"&gt;
+  &lt;condition field="destination_number" expression="^(\+?1?(\d{10}))$"&gt;
+    &lt;action application="transfer" data="$2 XML default"/&gt;
+  &lt;/condition&gt;
+&lt;/extension&gt;</code></pre>
+	<p>Replace the transfer target with whichever extension or context routes calls to your downstream PBX.</p>
+</section>
+
+<section class="section-block">
+	<h2>5. ACL for IP authentication</h2>
+	<p>If using IP auth, add VoiceTel's source IPs to the external profile's ACL (configured under <code>conf/autoload_configs/acl.conf.xml</code>) so unauthenticated INVITEs from VoiceTel are accepted.</p>
+</section>
+
+<section class="section-block">
+	<h2>Verify <code>$fU</code> is the SIP username on outbound calls</h2>
+	<p>Capture a SIP trace and confirm the <code>From:</code> header username on outbound INVITEs is the SIP account username, not the caller ID:</p>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia loglevel all 9
+# Place a test call, watch for outbound INVITE.
+# Expected:  From: "Caller Name" &lt;sip:yourusername@&lt;sip-host-from-portal&gt;&gt;;tag=...
+# Wrong:     From: "Caller Name" &lt;sip:+12125551234@&lt;sip-host-from-portal&gt;&gt;;tag=...
+#                                      ^^^^^^^^^^^ — caller ID in username, will fail trunk auth</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<pre class="code-block" data-lang="bash"><code>fs_cli&gt; sofia status gateway voicetel
+fs_cli&gt; sofia loglevel all 9      # SIP trace
+fs_cli&gt; show channels</code></pre>
+</section>
+
+<aside class="cta-block" aria-labelledby="freeswitch-cta-heading">
+	<h2 id="freeswitch-cta-heading">FreeSWITCH SBC role in front of UCM / Asterisk?</h2>
+	<p>VoiceTel engineering can review FreeSWITCH SBC configs that bridge to downstream Cisco UCM, Asterisk, FusionPBX, or 3CX. Send your <code>vars.xml</code> + Sofia profile and we'll review.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

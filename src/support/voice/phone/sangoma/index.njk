@@ -1,0 +1,70 @@
+---
+layout: layouts/page.njk
+title: "Configure Sangoma IP phones for VoiceTel"
+description: "SIP account setup for Sangoma S-series and D-series desk phones (S205, S305, S505, S705, D60, D80) working with VoiceTel SIP trunking."
+---
+
+<p class="eyebrow">Support / Voice / Phone / Sangoma</p>
+<h1>Configure Sangoma IP phones for VoiceTel.</h1>
+<p class="lede">Sangoma desk phones — S-series (S205, S305, S405, S505, S705, S715) and the newer D-series (D60, D62, D65, D80) — share a common SIP account configuration menu. The web UI is the simplest path; Phone Apps / EndPoint Manager is the right path for FreePBX-managed fleets.</p>
+
+<section class="section-block">
+	<h2>Web UI configuration</h2>
+	<ol>
+		<li>Find the IP address: press <strong>Menu → Status → Network</strong>.</li>
+		<li>Open <code>http://&lt;phone-ip&gt;</code>. Sign in (default admin password is printed on the phone's barcode sticker; change it on first login).</li>
+		<li>Open <strong>Account → Account 1 → General</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>Account Active:</strong> Enabled</li>
+				<li><strong>Display Name:</strong> caller's name</li>
+				<li><strong>SIP User ID:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Authenticate ID:</strong> same as SIP User ID</li>
+				<li><strong>Authenticate Password:</strong> SIP password</li>
+				<li><strong>SIP Server:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>SIP Port:</strong> 5060</li>
+				<li><strong>Outbound Proxy:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>Transport:</strong> UDP</li>
+				<li><strong>Server Expires:</strong> 360</li>
+			</ul>
+		</li>
+		<li>Open <strong>Account → Network</strong>:
+			<ul>
+				<li><strong>NAT Traversal:</strong> Keep-Alive</li>
+				<li><strong>NAT Keep-Alive Interval:</strong> 30</li>
+			</ul>
+		</li>
+		<li>Open <strong>Account → Codec</strong>. Enable PCMU, PCMA, and G.729; move PCMU to the top.</li>
+		<li>Open <strong>Account → SIP → Advanced</strong>:
+			<ul>
+				<li><strong>DTMF Type:</strong> RFC 2833</li>
+				<li><strong>RFC 2833 Payload Type:</strong> 101</li>
+			</ul>
+		</li>
+		<li>Click <strong>Save</strong>; the phone reloads the SIP stack and registers within a few seconds.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>FreePBX EndPoint Manager / Phone Apps</h2>
+	<p>If your downstream PBX is FreePBX (or PBXact), the Sangoma Phone Apps service auto-provisions Sangoma desk phones with FreePBX-managed extensions, line keys, and BLF presence:</p>
+	<ul>
+		<li>Activate the Phone Apps module in FreePBX.</li>
+		<li>Add the phone's MAC under <strong>Connectivity → Endpoint Manager → Add Extension Mapping</strong>.</li>
+		<li>The phone boots, contacts FreePBX over HTTPS, fetches its config (including the VoiceTel trunk's outbound route), and registers as the assigned extension.</li>
+	</ul>
+	<p>For trunks pointed directly at VoiceTel (no FreePBX in the middle), use the manual web-UI steps above.</p>
+</section>
+
+<section class="section-block">
+	<h2>Auto-provisioning (non-FreePBX)</h2>
+	<p>S-series and D-series phones support standard HTTPS auto-provisioning. The phone fetches a per-MAC <code>cfg&lt;mac&gt;.xml</code> file from a configurable provisioning URL. Contact VoiceTel engineering for a Sangoma config template if you're rolling out more than a handful of phones outside a FreePBX context.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="sangoma-cta-heading">
+	<h2 id="sangoma-cta-heading">Older Digium-branded phones?</h2>
+	<p>Sangoma acquired Digium in 2018; older D40/D50/D70 phones running Digium firmware accept the same SIP configuration but the menu paths differ slightly. Send VoiceTel engineering your model number and firmware version for the matching screen-by-screen guide.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

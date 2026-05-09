@@ -1,0 +1,93 @@
+---
+layout: layouts/page.njk
+title: "Add a VoiceTel SIP trunk to FreePBX"
+description: "Configure a FreePBX (or PBXact) PJSIP trunk to VoiceTel — General, PJSIP Settings, Outbound Routes."
+---
+
+<p class="eyebrow">Support / Voice / PBX / FreePBX</p>
+<h1>Add a VoiceTel SIP trunk to FreePBX.</h1>
+<p class="lede">FreePBX 16 / 17 use PJSIP by default. Avoid the legacy chan_sip driver — VoiceTel's STIR/SHAKEN handling is cleaner on PJSIP. Steps below cover both Digest and IP authentication.</p>
+
+<section class="section-block">
+	<h2>1. Create the trunk</h2>
+	<ol>
+		<li>FreePBX UI → <strong>Connectivity → Trunks → Add Trunk → Add SIP (chan_pjsip) Trunk</strong>.</li>
+		<li>General tab:
+			<ul>
+				<li><strong>Trunk Name:</strong> <code>voicetel</code></li>
+				<li><strong>Outbound CallerID:</strong> your VoiceTel-assigned DID in E.164, e.g. <code>"VoiceTel" &lt;+12125551234&gt;</code></li>
+				<li><strong>Maximum Channels:</strong> leave blank for unlimited (or set to your concurrent-call cap)</li>
+			</ul>
+		</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>2. PJSIP Settings tab — Digest authentication</h2>
+	<ul>
+		<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
+		<li><strong>Secret:</strong> SIP password from VoiceTel onboarding</li>
+		<li><strong>Authentication:</strong> Outbound</li>
+		<li><strong>Registration:</strong> Send</li>
+		<li><strong>SIP Server:</strong> the SIP server host shown in your customer portal</li>
+		<li><strong>SIP Server Port:</strong> 5060</li>
+		<li><strong>Transport:</strong> UDP</li>
+	</ul>
+	<p>Advanced sub-tab:</p>
+	<ul>
+		<li><strong>Qualify Frequency:</strong> 30</li>
+		<li><strong>From User:</strong> SIP username</li>
+		<li><strong>From Domain:</strong> the SIP server host shown in your customer portal</li>
+		<li><strong>Send Connected Line:</strong> Yes</li>
+		<li><strong>Trust RPID/PAI:</strong> Yes</li>
+		<li><strong>Send PAI:</strong> Yes</li>
+		<li><strong>Force rport:</strong> Yes</li>
+		<li><strong>Symmetric RTP:</strong> Yes</li>
+		<li><strong>Rewrite Contact:</strong> Yes</li>
+		<li><strong>DTMF Mode:</strong> RFC 4733</li>
+	</ul>
+	<p>Codecs sub-tab: enable <code>ulaw</code>, <code>alaw</code>, and <code>g729</code>; move ulaw to the top.</p>
+</section>
+
+<section class="section-block">
+	<h2>2 (alt). PJSIP Settings — IP authentication</h2>
+	<p>For IP auth trunks, change two things:</p>
+	<ul>
+		<li><strong>Authentication:</strong> None</li>
+		<li><strong>Registration:</strong> None</li>
+	</ul>
+	<p>VoiceTel authorizes inbound INVITEs by source IP based on the ACL you've registered with onboarding. Add the FreePBX server's public IP to that ACL.</p>
+</section>
+
+<section class="section-block">
+	<h2>3. Submit and apply</h2>
+	<p>Click <strong>Submit</strong>, then <strong>Apply Config</strong> in the red banner at the top. The trunk shows up in <strong>Reports → Asterisk Info → PJSIP Endpoints</strong>; status should be <code>Reachable</code> within a minute.</p>
+</section>
+
+<section class="section-block">
+	<h2>4. Outbound route</h2>
+	<ol>
+		<li><strong>Connectivity → Outbound Routes → Add Outbound Route</strong>.</li>
+		<li><strong>Route Name:</strong> <code>voicetel-out</code></li>
+		<li><strong>Trunk Sequence:</strong> select the <code>voicetel</code> trunk created above</li>
+		<li><strong>Dial Patterns</strong> tab: add patterns for your dialing rules (e.g. <code>1NXXNXXXXXX</code> for 11-digit US, or <code>NXXNXXXXXX</code> for 10-digit + prepend rule).</li>
+		<li>Submit + Apply Config.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<pre class="code-block" data-lang="bash"><code># From the FreePBX server CLI
+asterisk -rvvvv
+*CLI&gt; pjsip show registrations
+*CLI&gt; pjsip show endpoints
+*CLI&gt; pjsip set logger on    # SIP trace if needed</code></pre>
+</section>
+
+<aside class="cta-block" aria-labelledby="freepbx-cta-heading">
+	<h2 id="freepbx-cta-heading">PBXact / commercial FreePBX?</h2>
+	<p>Configuration is identical on PBXact (Sangoma's commercial FreePBX). Contact VoiceTel engineering if you need help with PBXact's specific UI variations.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

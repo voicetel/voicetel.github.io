@@ -9,7 +9,6 @@
 		<article
 			class="menu-carousel-slide{% if item.isHero %} menu-carousel-slide--hero{% endif %}"
 			data-slide-index="{{ loop.index0 }}"
-			role="group"
 			aria-roledescription="slide"
 			aria-label="{{ loop.index }} of {{ site.menuCarousel | length }}: {{ item.title }}"
 			{%- if loop.index0 !== 0 %} inert{% endif %}

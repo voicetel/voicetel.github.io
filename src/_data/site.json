@@ -291,7 +291,7 @@
 			"key": "phone",
 			"title": "Phone apps",
 			"tagline": "Web, desktop, and mobile",
-			"description": "VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. SIP-over-TLS and WebRTC. Encrypted by default. One app, three form factors.",
+			"description": "VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. WebRTC media. One app, three form factors.",
 			"href": "/phone/",
 			"cta": "Get the app"
 		},

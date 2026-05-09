@@ -8,31 +8,39 @@ description: "Configure a FusionPBX gateway and outbound route to VoiceTel — D
 <h1>Add a VoiceTel SIP gateway to FusionPBX.</h1>
 <p class="lede">FusionPBX uses FreeSWITCH gateways under the hood. The Gateway form maps directly to the gateway XML; same fields, same semantics as a raw FreeSWITCH gateway.</p>
 
+<aside class="caveat-block" aria-labelledby="fusionpbx-fromuser-heading">
+	<h3 id="fusionpbx-fromuser-heading">Critical: From User must be the SIP account username, not the caller ID</h3>
+	<p>The most common mistake on FusionPBX is setting <strong>From User</strong> (or <strong>Caller ID In From: True</strong>) so the SIP <code>From:</code> header username carries the caller ID. VoiceTel uses the From username for trunk identification and STIR/SHAKEN attestation; it must equal the SIP account username on every outbound call.</p>
+	<p>Caller ID is set in the dialplan via <code>effective_caller_id_number</code> / <code>effective_caller_id_name</code>, which become the P-Asserted-Identity number and the From display-name. See <a href="https://desk.support.voicetel.com/hc/1878557642/6/termination-fromtag">termination From-tag handling</a> for the full rationale.</p>
+</aside>
+
 <section class="section-block">
 	<h2>1. Create the gateway</h2>
 	<ol>
 		<li>FusionPBX UI → <strong>Accounts → Gateways → Add</strong>.</li>
-		<li>Fill in:
+		<li>Fill in (Digest authentication):
 			<ul>
 				<li><strong>Gateway:</strong> <code>voicetel</code></li>
-				<li><strong>Username:</strong> SIP username from VoiceTel onboarding (leave blank for IP auth)</li>
-				<li><strong>Password:</strong> SIP password from onboarding (leave blank for IP auth)</li>
-				<li><strong>From User:</strong> SIP username</li>
-				<li><strong>From Domain:</strong> the VoiceTel SIP server host</li>
-				<li><strong>Proxy:</strong> the VoiceTel SIP server host</li>
-				<li><strong>Register Proxy:</strong> same as Proxy (or blank for IP auth)</li>
-				<li><strong>Register Transport:</strong> udp (or tls)</li>
-				<li><strong>Register:</strong> True (Digest) or False (IP auth)</li>
-				<li><strong>Expire Seconds:</strong> 600</li>
-				<li><strong>Retry Seconds:</strong> 30</li>
+				<li><strong>Username:</strong> <code>yourusername</code> — your SIP username from VoiceTel onboarding</li>
+				<li><strong>Password:</strong> <code>yourpassword</code> — your SIP password</li>
+				<li><strong>From User:</strong> <code>yourusername</code> — <em>same as Username, NOT a caller-ID number</em></li>
+				<li><strong>From Domain:</strong> <code>&lt;sip-host-from-portal&gt;</code> (or the host from your onboarding)</li>
+				<li><strong>Proxy:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
+				<li><strong>Register Proxy:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
+				<li><strong>Realm:</strong> <code>&lt;sip-host-from-portal&gt;</code></li>
+				<li><strong>Register Transport:</strong> udp</li>
+				<li><strong>Register:</strong> True</li>
+				<li><strong>Expire Seconds:</strong> 360</li>
+				<li><strong>Retry Seconds:</strong> 60</li>
 				<li><strong>Ping:</strong> 30</li>
-				<li><strong>Caller ID In From:</strong> True</li>
+				<li><strong>Caller ID In From:</strong> <strong>False</strong> (do not set True — that overrides From User with the dialplan caller ID and breaks trunk auth)</li>
 				<li><strong>Extension In Contact:</strong> True</li>
 				<li><strong>Profile:</strong> external</li>
 				<li><strong>Hostname:</strong> blank (uses local hostname)</li>
 				<li><strong>Enabled:</strong> True</li>
 			</ul>
 		</li>
+		<li>For IP authentication: leave Username and Password blank, set Register to <strong>False</strong>. Everything else stays the same — including From User = your SIP account username.</li>
 		<li>Save.</li>
 	</ol>
 </section>

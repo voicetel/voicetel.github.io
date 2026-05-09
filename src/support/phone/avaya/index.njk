@@ -18,8 +18,8 @@ description: "SIP account setup for Avaya J139, J159, J169, J179, J189, and B100
 	<p>J100 phones strongly prefer central provisioning over per-phone manual setup. Drop a <code>46xxsettings.txt</code> on your provisioning HTTP/HTTPS server with at minimum:</p>
 	<pre class="code-block" data-lang="ini"><code>SET ENABLE_OPS_SCREEN 1
 SET ENABLE_OPS_PASSWORD 0
-SET SIPDOMAIN &lt;voicetel-sip-server&gt;
-SET SIP_CONTROLLER_LIST &lt;voicetel-sip-server&gt;:5060;transport=udp
+SET SIPDOMAIN &lt;sip-host-from-portal&gt;
+SET SIP_CONTROLLER_LIST &lt;sip-host-from-portal&gt;:5060;transport=udp
 SET REGISTERWAIT 60
 SET DSCPSIG 24
 SET DSCPAUD 46
@@ -35,8 +35,8 @@ SET ENABLE_AVAYA_ENVIRONMENT 0</code></pre>
 		<li>Open <strong>SIP → SIP Global Settings</strong>.</li>
 		<li>Set:
 			<ul>
-				<li><strong>SIP Domain:</strong> the VoiceTel SIP server host</li>
-				<li><strong>SIP Proxy Server List:</strong> the VoiceTel SIP server host, port 5060, transport UDP</li>
+				<li><strong>SIP Domain:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>SIP Proxy Server List:</strong> the SIP server host shown in your customer portal, port 5060, transport UDP</li>
 				<li><strong>Avaya Environment:</strong> No</li>
 				<li><strong>Reg Wait:</strong> 60</li>
 			</ul>

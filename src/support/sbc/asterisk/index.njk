@@ -18,19 +18,19 @@ password = &lt;sip-password&gt;
 
 [voicetel-aor]
 type = aor
-contact = sip:&lt;voicetel-sip-server&gt;
+contact = sip:&lt;sip-host-from-portal&gt;
 qualify_frequency = 30
 
 [voicetel-identify]
 type = identify
 endpoint = voicetel
-match = &lt;voicetel-sip-server&gt;
+match = &lt;sip-host-from-portal&gt;
 
 [voicetel-registration]
 type = registration
 outbound_auth = voicetel-auth
-server_uri = sip:&lt;voicetel-sip-server&gt;
-client_uri = sip:&lt;sip-username&gt;@&lt;voicetel-sip-server&gt;
+server_uri = sip:&lt;sip-host-from-portal&gt;
+client_uri = sip:&lt;sip-username&gt;@&lt;sip-host-from-portal&gt;
 expiration = 600
 retry_interval = 60
 
@@ -41,7 +41,7 @@ disallow = all
 allow = ulaw,alaw,opus
 outbound_auth = voicetel-auth
 aors = voicetel-aor
-from_domain = &lt;voicetel-sip-server&gt;
+from_domain = &lt;sip-host-from-portal&gt;
 direct_media = no
 trust_id_inbound = yes
 send_pai = yes
@@ -56,14 +56,14 @@ dtmf_mode = rfc4733</code></pre>
 	<p>For IP-auth trunks, omit the Auth and Registration objects and add the VoiceTel source IP to the Identify match list:</p>
 	<pre class="code-block" data-lang="ini"><code>[voicetel-aor]
 type = aor
-contact = sip:&lt;voicetel-sip-server&gt;
+contact = sip:&lt;sip-host-from-portal&gt;
 qualify_frequency = 30
 
 [voicetel-identify]
 type = identify
 endpoint = voicetel
-match = &lt;voicetel-source-ip&gt;
-match = &lt;voicetel-sip-server&gt;
+match = &lt;sip-source-ip-from-portal&gt;
+match = &lt;sip-host-from-portal&gt;
 
 [voicetel]
 type = endpoint
@@ -71,7 +71,7 @@ context = from-voicetel
 disallow = all
 allow = ulaw,alaw,opus
 aors = voicetel-aor
-from_domain = &lt;voicetel-sip-server&gt;
+from_domain = &lt;sip-host-from-portal&gt;
 direct_media = no
 trust_id_inbound = yes
 send_pai = yes

@@ -55,7 +55,7 @@ end</code></pre>
 	<p>FortiGate's default UDP session timeout is 180 seconds. SIP REGISTER intervals are typically 3600 seconds. The firewall closes the NAT mapping between registrations and inbound calls fail silently until the next REGISTER refresh. Raise the per-service timeout for SIP traffic to at least 600 seconds:</p>
 	<pre class="code-block" data-lang="bash"><code>config firewall service custom
     edit "SIP-UDP"
-        set udp-portrange 5060 5061
+        set udp-portrange 5060 5060
         set session-ttl 3600
     next
 end

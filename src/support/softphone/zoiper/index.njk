@@ -6,7 +6,7 @@ description: "Add a VoiceTel SIP account to Zoiper 5 on Windows, macOS, Linux, i
 
 <p class="eyebrow">Support / Softphone / Zoiper</p>
 <h1>Configure Zoiper for VoiceTel.</h1>
-<p class="lede">Zoiper 5 across all platforms accepts standard SIP account credentials. The free tier supports SIP unencrypted; the Pro tier adds TLS, SRTP, and codec packs.</p>
+<p class="lede">Zoiper 5 across all platforms accepts standard SIP account credentials. The free tier covers SIP-over-UDP, which is what VoiceTel SIP trunks use.</p>
 
 <section class="section-block">
 	<h2>Steps (Zoiper 5 desktop)</h2>
@@ -17,13 +17,13 @@ description: "Add a VoiceTel SIP account to Zoiper 5 on Windows, macOS, Linux, i
 			<ul>
 				<li><strong>Username:</strong> SIP username from VoiceTel onboarding</li>
 				<li><strong>Password:</strong> SIP password from onboarding</li>
-				<li><strong>Domain / Host:</strong> VoiceTel SIP server host</li>
+				<li><strong>Domain / Host:</strong> SIP server host (shown in the customer portal)</li>
 			</ul>
 		</li>
 		<li>Click <strong>Next</strong>. Zoiper auto-detects the registration server and authentication settings.</li>
 		<li>If auto-detection fails, click <strong>Skip</strong> and configure the account manually:
 			<ul>
-				<li><strong>Domain:</strong> the VoiceTel SIP server host</li>
+				<li><strong>Domain:</strong> the SIP server host shown in your customer portal</li>
 				<li><strong>Outbound proxy:</strong> same as Domain</li>
 				<li><strong>Auth username:</strong> same as Username</li>
 				<li><strong>Use outbound proxy:</strong> Yes</li>
@@ -31,7 +31,7 @@ description: "Add a VoiceTel SIP account to Zoiper 5 on Windows, macOS, Linux, i
 		</li>
 		<li>Open the new account's <strong>Network</strong> sub-tab:
 			<ul>
-				<li><strong>Transport:</strong> UDP (TLS for Pro)</li>
+				<li><strong>Transport:</strong> UDP</li>
 				<li><strong>Use STUN:</strong> off — leave disabled</li>
 				<li><strong>Registration interval:</strong> 60</li>
 			</ul>
@@ -44,11 +44,6 @@ description: "Add a VoiceTel SIP account to Zoiper 5 on Windows, macOS, Linux, i
 <section class="section-block">
 	<h2>Zoiper mobile</h2>
 	<p>Same flow on iOS / Android: <strong>Add account → Manual configuration → SIP</strong>. Enter Domain, Username, Password. Set Transport to UDP, disable STUN, set Registration to 60.</p>
-</section>
-
-<section class="section-block">
-	<h2>Free vs Pro</h2>
-	<p>Zoiper Free supports SIP over UDP, G.711µ, G.711a, GSM. If your account requires TLS or SRTP, upgrade to Pro or use VoiceTel Phone (which has TLS+SRTP built-in).</p>
 </section>
 
 <aside class="cta-block" aria-labelledby="zoiper-cta-heading">

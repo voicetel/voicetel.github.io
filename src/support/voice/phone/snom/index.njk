@@ -1,0 +1,63 @@
+---
+layout: layouts/page.njk
+title: "Configure Snom IP phones for VoiceTel"
+description: "SIP account setup for Snom D7xx, D8xx, M-series wireless, and meeting devices working with VoiceTel SIP trunking."
+---
+
+<p class="eyebrow">Support / Voice / Phone / Snom</p>
+<h1>Configure Snom IP phones for VoiceTel.</h1>
+<p class="lede">Snom D7xx series (D712, D717, D735, D785) and D8xx series (D862, D865, D885) all share the same Identity-based SIP configuration. Snom Redirection Service handles fleet provisioning.</p>
+
+<section class="section-block">
+	<h2>Web UI configuration</h2>
+	<ol>
+		<li>Find the IP address: press <strong>Settings → Information → System Info</strong>.</li>
+		<li>Open <code>http://&lt;phone-ip&gt;</code>. The first sign-in lets you set the admin password (older firmware default: <code>admin</code> / <code>0000</code>).</li>
+		<li>Click <strong>Identity 1</strong> in the left sidebar.</li>
+		<li>Login tab:
+			<ul>
+				<li><strong>Identity active:</strong> on</li>
+				<li><strong>Display name:</strong> caller's name</li>
+				<li><strong>Account:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Password:</strong> SIP password</li>
+				<li><strong>Registrar:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>Outbound Proxy:</strong> the SIP server host shown in your customer portal</li>
+				<li><strong>Authentication Username:</strong> same as Account</li>
+				<li><strong>Mailbox:</strong> blank (or your VoiceTel-assigned voicemail URI if present)</li>
+				<li><strong>Ringtone:</strong> per preference</li>
+			</ul>
+		</li>
+		<li>SIP tab:
+			<ul>
+				<li><strong>Music on hold server:</strong> blank</li>
+				<li><strong>Q-value:</strong> 1.0</li>
+				<li><strong>Proposed Expiry:</strong> 360</li>
+				<li><strong>NAT keep-alive:</strong> options (or "register")</li>
+				<li><strong>Send hold as inactive:</strong> on</li>
+			</ul>
+		</li>
+		<li>RTP tab:
+			<ul>
+				<li>Move <strong>PCMU</strong> and <strong>PCMA</strong> to the top of the codec preference list</li>
+				<li><strong>RTP Encryption:</strong> off (unless onboarding required SRTP)</li>
+				<li><strong>DTMF Style:</strong> RFC 2833</li>
+				<li><strong>RFC 2833 Payload Type:</strong> 101</li>
+			</ul>
+		</li>
+		<li>Click <strong>Apply</strong> at the bottom; the identity registers within a few seconds.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Auto-provisioning</h2>
+	<p>Snom Redirection Service (SRS) is the equivalent of Yealink RPS / Polycom ZTP. Phones are factory-pointed at <code>provisioning.snom.com</code>; register your phone's MAC range in your SRS portal account and point it at your VoiceTel provisioning URL. Phones boot, hit SRS, redirect, fetch their config, register.</p>
+	<p>Self-hosted provisioning: phones look for <code>snom&lt;model&gt;-&lt;mac&gt;.xml</code> via HTTP/HTTPS. Contact VoiceTel engineering for a Snom config template.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="snom-cta-heading">
+	<h2 id="snom-cta-heading">Snom M-series DECT?</h2>
+	<p>Snom M300 / M700 wireless DECT base stations use a different config schema (per-DECT-handset registration). VoiceTel engineering can supply M-series base config templates.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

@@ -1,0 +1,55 @@
+---
+layout: layouts/page.njk
+title: "Disable SIP transformations on SonicWall"
+description: "Disable SIP transformations and enable consistent NAT on SonicWall TZ and NSA firewalls so SIP and RTP pass cleanly to VoiceTel."
+---
+
+<p class="eyebrow">Support / Voice / Firewall / SonicWall</p>
+<h1>Disable SIP transformations on SonicWall.</h1>
+<p class="lede">SonicWall calls SIP ALG "SIP transformations." TZ and NSA firewalls ship it on; production VoIP traffic needs it off, plus consistent NAT enabled.</p>
+
+<section class="section-block">
+	<h2>Steps</h2>
+	<ol>
+		<li>Sign in to the SonicWall web UI as <strong>admin</strong>.</li>
+		<li>Open <strong>VoIP → Settings</strong> (called <strong>VoIP → Configuration</strong> on some firmware).</li>
+		<li>Under <strong>General Settings</strong>:
+			<ul>
+				<li>Untick <strong>Enable SIP Transformations</strong>.</li>
+				<li>Untick <strong>Enable SIP Back-to-Back User Agent (B2BUA) support</strong>.</li>
+			</ul>
+		</li>
+		<li>Open <strong>VoIP → Settings → Consistent NAT</strong>.</li>
+		<li>Tick <strong>Enable Consistent NAT</strong>.</li>
+		<li>Click <strong>Accept</strong> at the top of the page.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Why consistent NAT matters</h2>
+	<p>SIP endpoints announce their RTP port in the SDP body. SonicWall's default NAT randomizes source ports per destination, which breaks SIP NAT keepalive. <strong>Consistent NAT</strong> preserves the source port across destinations, which the SIP signaling expects.</p>
+</section>
+
+<section class="section-block">
+	<h2>Raise UDP timeout for SIP signaling</h2>
+	<p>SonicWall's default UDP connection timeout is 30 seconds. SIP devices REGISTER hourly by default; the firewall closes the NAT mapping between registrations and inbound calls fail silently. Raise the timeout for SIP signaling:</p>
+	<ol>
+		<li>Open <strong>Network → Services</strong>.</li>
+		<li>Find or create a service object for <code>UDP 5060</code>.</li>
+		<li>Set its <strong>UDP Connection Inactivity Timeout</strong> to <code>600</code> seconds (or higher).</li>
+		<li>Reference the service from your VoIP firewall rule so the per-service timeout applies.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<p>Place a test call. Listen for two-way audio. If audio drops at ~30s, double-check that SIP transformations are <strong>off</strong> and consistent NAT is <strong>on</strong>; both must be set. Wait 5–10 minutes idle then place an inbound call to confirm registration survived.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="sonicwall-cta-heading">
+	<h2 id="sonicwall-cta-heading">SonicOS 7.x specifics?</h2>
+	<p>The menu structure changed in SonicOS 7.x. Send VoiceTel engineering your firmware version and we'll point you at the matching menu paths.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

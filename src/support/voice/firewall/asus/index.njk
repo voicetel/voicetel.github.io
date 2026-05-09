@@ -1,0 +1,53 @@
+---
+layout: layouts/page.njk
+title: "Disable SIP ALG on ASUS routers"
+description: "Disable SIP Passthrough on ASUS RT-AX, ZenWiFi, and Nighthawk-class routers so SIP signaling and RTP audio reach VoiceTel uninterrupted."
+---
+
+<p class="eyebrow">Support / Voice / Firewall / ASUS</p>
+<h1>Disable SIP ALG on ASUS routers.</h1>
+<p class="lede">ASUS calls SIP ALG "SIP Passthrough." It's enabled by default on RT-AX, ZenWiFi, and ASUSWRT-based routers. Disable it before placing production traffic.</p>
+
+<section class="section-block">
+	<h2>Steps</h2>
+	<ol>
+		<li>Sign in to the router admin UI: <code>http://router.asus.com</code> or <code>http://192.168.50.1</code>.</li>
+		<li>In the left sidebar, open <strong>WAN</strong> (under Advanced Settings).</li>
+		<li>Click the <strong>NAT Passthrough</strong> tab.</li>
+		<li>Find <strong>SIP Passthrough</strong> — change the dropdown to <strong>Disable</strong>.</li>
+		<li>Click <strong>Apply</strong> at the bottom of the page.</li>
+		<li>Reboot the router (<strong>Administration → System</strong> → Reboot) to clear any cached SIP sessions.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Merlin firmware</h2>
+	<p>If you're running ASUSWRT-Merlin, the path is identical. Some Merlin builds also expose a <code>nf_conntrack_sip</code> kernel-module toggle under <strong>Tools → Other Settings</strong> — leave it disabled.</p>
+</section>
+
+<section class="section-block">
+	<h2>UDP NAT timeout — increase if registration drops</h2>
+	<p>Stock ASUSWRT doesn't expose a UDP conntrack timeout knob in the GUI. If you see SIP registration drops between calls (typical symptom: inbound calls only work right after an outbound call refreshes the mapping), use one of these:</p>
+	<ul>
+		<li><strong>Best:</strong> set the SIP REGISTER interval on your device to 360 seconds with NAT keepalive at 30 seconds; the keepalive refreshes the NAT mapping between registers.</li>
+		<li><strong>If running ASUSWRT-Merlin:</strong> SSH in and apply <code>echo 600 &gt; /proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream</code>; persist via the firmware's <code>nat-start</code> script under <strong>Tools → User Scripts</strong>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<ul>
+		<li>Place a test call in both directions (inbound and outbound).</li>
+		<li>Confirm two-way audio for at least one minute.</li>
+		<li>Stay on the call past 30 minutes — re-INVITE failures from ALG often surface there.</li>
+		<li>Wait 5–10 minutes between calls without traffic; place an inbound test call. If it goes to voicemail / fails until you place an outbound call first, raise the UDP timeout or shorten REGISTER interval.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="asus-cta-heading">
+	<h2 id="asus-cta-heading">Still no audio after disabling?</h2>
+	<p>Send VoiceTel engineering a SIP trace and your router model. Some ASUS firmware revisions cache SIP-tracked NAT state across reboots; we can advise.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

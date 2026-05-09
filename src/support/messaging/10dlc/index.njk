@@ -1,0 +1,215 @@
+---
+layout: layouts/page.njk
+title: "10DLC campaign registry vetting guide"
+description: "Pass A2P 10DLC vetting on the first try. Standards from CTIA, GSMA, and The Campaign Registry; filing logic reviewers expect; sample application; common mistakes."
+---
+
+<p class="eyebrow">Support / Messaging / 10DLC</p>
+<h1>10DLC campaign registry vetting guide.</h1>
+<p class="lede">Source scope: CTIA, GSMA, and The Campaign Registry (TCR) — the official, standards-side material that drives vetting outcomes. This guide distills what passes vetting, the structure reviewers expect, and the mistakes that get applications rejected.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Talk to a messaging specialist</a>
+	<a class="btn btn-secondary" href="/messaging/">Messaging product overview</a>
+</p>
+
+<section class="section-block">
+	<h2>What 10DLC means in the official ecosystem</h2>
+	<p>For U.S. 10DLC, The Campaign Registry states that <strong>any business that wants to use SMS on 10DLC to communicate with customers and/or employees must register</strong>, including businesses sending individual non-marketing messages. TCR treats all business messaging as non-consumer, or A2P, messaging. A <strong>Campaign</strong> is the messaging use case — it defines the type of content being sent, such as marketing, customer care, delivery notifications, fraud alerts, or other standard or special use cases.</p>
+	<p>CTIA uses the term <strong>Non-Consumer Messaging</strong> for messages sent by or to a business, organization, entity, political campaign, medical practice, school, nonprofit, customer-service operation, or similar sender. CTIA says these senders should follow non-consumer messaging best practices — especially around consumer consent, privacy, security, and unwanted-message prevention.</p>
+	<p>TCR separates ecosystem roles. A business sending messages is a <strong>Brand</strong> and generally registers through its messaging service provider. A <strong>Campaign Service Provider (CSP)</strong> can register directly with TCR and submit Brands and Campaigns into the 10DLC ecosystem. TCR describes itself as the centralized hub where CSPs register their customers' brands and messaging campaigns so the ecosystem knows what to expect.</p>
+</section>
+
+<section class="section-block">
+	<h2>The filing logic reviewers expect</h2>
+	<p>A passing application creates one consistent compliance story:</p>
+	<aside class="caveat-block" aria-labelledby="story-arc-heading">
+		<h3 id="story-arc-heading">Compliance arc</h3>
+		<p><strong>Brand identity → use case → opt-in method → privacy/terms → sample messages → STOP/HELP → actual traffic.</strong></p>
+	</aside>
+	<p>Consistency matters because TCR requires a Brand to reach <strong>Verified</strong> or <strong>Vetted_Verified</strong> status before campaigns can be created. TCR says an unverified brand often fails because the legal company name and EIN do not match government records, and emphasizes correcting Brand details before resubmission, appeal, or vetting.</p>
+	<p>Once the Brand is verified, the campaign filing requires the selected Brand, use case, carrier-terms preview, detailed campaign description, message flow / call-to-action, sample messages, campaign and content attributes, connectivity partner, and reseller details where applicable.</p>
+</section>
+
+<section class="section-block">
+	<h2>Standards that matter most for a passable campaign</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Area</th>
+					<th scope="col">Official standard</th>
+					<th scope="col">Practical filing implication</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th scope="row">Consent</th>
+					<td>CTIA: non-consumer senders are expected to obtain consent generally, express written consent for marketing, and allow revocation of consent.</td>
+					<td>Don't say "customers may receive texts" vaguely. Describe exactly how the user opts in.</td>
+				</tr>
+				<tr>
+					<th scope="row">Call-to-action</th>
+					<td>CTIA: the call-to-action should clearly disclose the program/product, originating number or code, sender identity, opt-in language, fees and charges, opt-out, customer care, and privacy policy. Opt-in details should not be hidden in terms.</td>
+					<td>Put the SMS disclosure next to the phone-number field or checkbox, not only in the privacy policy.</td>
+				</tr>
+				<tr>
+					<th scope="row">Opt-in evidence</th>
+					<td>CTIA: senders should retain consent details — timestamp, consent medium, the language or action used to secure consent, the specific campaign, IP address where applicable, phone number, and identity / session identifier.</td>
+					<td>Keep screenshots of the opt-in form and logs showing who opted in, when, where, and for which campaign.</td>
+				</tr>
+				<tr>
+					<th scope="row">One opt-in per campaign</th>
+					<td>CTIA: opt-in should not be transferable; it applies only to the specific campaign and sender for which consent was obtained.</td>
+					<td>Don't reuse appointment-reminder consent to send marketing unless the marketing opt-in was separately disclosed.</td>
+				</tr>
+				<tr>
+					<th scope="row">STOP / opt-out</th>
+					<td>CTIA: consumers must be able to opt out at any time. STOP must work, natural-language opt-outs should be honored, and no further messages should be sent after the final confirmation.</td>
+					<td>Include STOP in sample messages and configure STOP, END, UNSUBSCRIBE, CANCEL, QUIT, and similar terms.</td>
+				</tr>
+				<tr>
+					<th scope="row">HELP</th>
+					<td>TCR: HELP keyword handling is required, with a help message explaining how customers can contact the sender.</td>
+					<td>Include a real support phone number, email, or support URL in the HELP response.</td>
+				</tr>
+				<tr>
+					<th scope="row">Privacy policy</th>
+					<td>CTIA: senders should maintain a clear, easy-to-access privacy policy linked from the initial call-to-action and describing how information is collected, used, and shared.</td>
+					<td>The privacy policy should be live, branded, accessible, and consistent with the opt-in form.</td>
+				</tr>
+				<tr>
+					<th scope="row">Lists</th>
+					<td>CTIA: senders should not use rented, sold, or shared opt-in lists — they should create and vet their own.</td>
+					<td>Never describe lead-gen, affiliate, purchased, scraped, or shared lists as your consent source.</td>
+				</tr>
+				<tr>
+					<th scope="row">Links</th>
+					<td>CTIA: embedded links should not conceal the sender's identity, and linked websites should identify the owner and include contact information. TCR does not accept public URL shorteners such as Bitly or TinyURL.</td>
+					<td>Use your own branded domain, not public shorteners.</td>
+				</tr>
+				<tr>
+					<th scope="row">Security &amp; abuse prevention</th>
+					<td>CTIA: service providers may block traffic where risk assessment suggests unwanted messages — fraud, grey routes, lack of authentication, or repeated abuse of best practices.</td>
+					<td>Align actual sending behavior with the registered use case and secure API credentials.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>GSMA's anti-spam code reinforces the same consent-first posture: it applies to unsolicited SMS / MMS, including commercial messages sent without consent and bulk fraudulent messages, and calls for customer consent, customer control, opt-out mechanisms, and records of how and when consent was received.</p>
+</section>
+
+<section class="section-block">
+	<h2>Model "success story" application</h2>
+	<p>Below is a clean campaign filing that tells a coherent story. <strong>This is not a guarantee of approval</strong> — it's a standards-aligned pattern reviewers recognize.</p>
+
+	<h3>Brand</h3>
+	<ul>
+		<li><strong>Legal name:</strong> Northstar Home Services LLC</li>
+		<li><strong>DBA:</strong> Northstar Heating &amp; Air</li>
+		<li><strong>Website:</strong> Active site showing the same business name or DBA, real services, contact information, privacy policy, and terms.</li>
+		<li><strong>Tax / EIN:</strong> Entered exactly as registered with the IRS or government record.</li>
+		<li><strong>Brand status goal:</strong> Verified or Vetted_Verified before filing the campaign.</li>
+	</ul>
+	<p>This matters because TCR says Verified status is required to register campaigns and send on 10DLC, and that legal-name / EIN mismatch is a leading reason for Unverified status.</p>
+
+	<h3>Campaign use case</h3>
+	<ul>
+		<li><strong>Use case:</strong> Marketing, Standard</li>
+		<li><strong>Why not "Mixed":</strong> This campaign is promotional only. Service reminders, appointment updates, or support messages should be filed under a separate appropriate use case unless the business truly needs a mixed campaign and has consent covering each content type.</li>
+	</ul>
+	<p>CTIA's one-opt-in-per-campaign rule makes separate, specific campaigns cleaner.</p>
+
+	<h3>Campaign description</h3>
+	<pre class="code-block"><code>Northstar Home Services LLC, doing business as Northstar Heating &amp; Air, sends recurring promotional SMS messages to customers and website visitors who explicitly opt in through our website form or by texting JOIN. Messages include seasonal HVAC offers, maintenance-plan promotions, and scheduling links. Messages identify Northstar Heating &amp; Air, include STOP and HELP instructions, and are sent only to subscribers who consented to this marketing campaign.</code></pre>
+
+	<h3>Message flow / call-to-action</h3>
+	<pre class="code-block"><code>Website opt-in: A visitor enters their mobile number on the "Get HVAC Offers by Text" form at northstarhomeservices.com/offers. The form includes an optional, unchecked SMS checkbox next to the phone-number field. The disclosure reads: "By checking this box, I agree to receive recurring marketing text messages from Northstar Heating &amp; Air at the mobile number provided. Message frequency varies. Message and data rates may apply. Reply STOP to cancel or HELP for help. View our Terms and Privacy Policy."
+
+Keyword opt-in: A customer may text JOIN to the Northstar 10DLC number after seeing the same disclosure on printed or web materials.</code></pre>
+	<p>This structure follows CTIA's requirements that the call-to-action disclose the program, sender identity, opt-in terms, fees, opt-out, customer care, and privacy policy — and that opt-in details not be hidden in unrelated terms.</p>
+
+	<h3>Opt-in proof retained</h3>
+	<p>Northstar retains the consent timestamp, opt-in source, exact disclosure shown, campaign name, phone number, IP address for web submissions, and customer / session identifier. That mirrors CTIA's recommended consent-record data.</p>
+
+	<h3>Sample messages</h3>
+	<p>TCR's guide shows Marketing as a campaign type requiring at least two sample messages, so provide at least two representative messages.</p>
+	<h4>Sample 1 — Opt-in confirmation</h4>
+	<pre class="code-block"><code>Northstar Heating &amp; Air: You're subscribed to recurring HVAC offers. Msg freq varies. Msg&amp;data rates may apply. Reply HELP for help, STOP to cancel.</code></pre>
+	<h4>Sample 2 — Promotional message</h4>
+	<pre class="code-block"><code>Northstar Heating &amp; Air: Save $49 on a spring HVAC tune-up booked by May 31. Schedule: northstarhomeservices.com/schedule Reply STOP to cancel, HELP for help.</code></pre>
+	<p>CTIA says recurring-message confirmation should identify the program / product, provide customer-care contact or HELP instructions, explain opt-out, disclose recurrence and frequency, and include clear language about fees or charges.</p>
+
+	<h3>STOP response</h3>
+	<pre class="code-block"><code>Northstar Heating &amp; Air: You are opted out and will receive no further marketing texts. Reply HELP for help.</code></pre>
+	<p>Aligns with CTIA's guidance to send one final opt-out confirmation and then stop messaging that consumer for the campaign.</p>
+
+	<h3>HELP response</h3>
+	<pre class="code-block"><code>Northstar Heating &amp; Air: For help, call 555-555-1212 or email support@northstarhomeservices.com. Reply STOP to cancel.</code></pre>
+	<p>TCR requires the universal HELP keyword and a help message that tells subscribers how to contact the sender.</p>
+
+	<h3>Campaign / content attributes</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">Subscriber opt-in</th><td>Yes</td></tr>
+				<tr><th scope="row">Subscriber opt-out</th><td>Yes</td></tr>
+				<tr><th scope="row">Subscriber help</th><td>Yes</td></tr>
+				<tr><th scope="row">Embedded link</th><td>Yes — branded domain only</td></tr>
+				<tr><th scope="row">Embedded phone number</th><td>No, except HELP contact information</td></tr>
+				<tr><th scope="row">Age-gated content</th><td>No</td></tr>
+				<tr><th scope="row">Direct lending or loan arrangement</th><td>No</td></tr>
+				<tr><th scope="row">Affiliate marketing</th><td>No</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>TCR requires opt-in for most campaign types except M2M, opt-out for most campaign types except 2FA and M2M, HELP handling, disclosure of embedded links, embedded phone numbers, age-gated content, direct lending / loan content, and a terms-and-conditions attestation about affiliate marketing.</p>
+</section>
+
+<section class="section-block">
+	<h2>Common filing mistakes that cause vetting trouble</h2>
+	<ul>
+		<li>Legal-name / EIN mismatch.</li>
+		<li>Vague campaign descriptions.</li>
+		<li>Unclear opt-in source.</li>
+		<li>Missing or hidden CTA disclosures.</li>
+		<li>No privacy policy.</li>
+		<li>Sample messages that don't match the use case.</li>
+		<li>Public URL shorteners (Bitly, TinyURL).</li>
+		<li>Rented, shared, scraped, or purchased lead lists.</li>
+		<li>Using one consent event for multiple unrelated campaigns.</li>
+	</ul>
+	<p>TCR specifically points to legal-name / EIN mismatch as a frequent brand-verification problem. CTIA warns against hidden opt-in details, rented or sold or shared lists, misleading links, and transferring consent between campaigns.</p>
+</section>
+
+<section class="section-block">
+	<h2>Pass-vetting summary</h2>
+	<aside class="caveat-block" aria-labelledby="passing-summary-heading">
+		<h3 id="passing-summary-heading">The simplest passing story</h3>
+		<p>Real brand, real website, exact EIN match, one clear use case, visible opt-in disclosure, documented consent, privacy policy linked from the CTA, compliant samples, working STOP and HELP, and traffic that matches the filing.</p>
+	</aside>
+</section>
+
+<section class="section-block">
+	<h2>References</h2>
+	<ul>
+		<li>CTIA, <em>Messaging Principles and Best Practices</em>, May 2023. <a href="https://api.ctia.org/wp-content/uploads/2023/05/230523-CTIA-Messaging-Principles-and-Best-Practices-FINAL.pdf">PDF</a></li>
+		<li>CTIA, <em>Messaging Security Best Practices</em>, October 2025. <a href="https://api.ctia.org/wp-content/uploads/2025/10/Messaging-Security-Best-Practices-_October-2025.pdf">PDF</a></li>
+		<li>GSMA, <em>Spam Reporting Service Code of Practice</em>. <a href="https://www.gsma.com/solutions-and-impact/connectivity-for-good/public-policy/wp-content/uploads/2012/04/codeofpractice.pdf">PDF</a></li>
+		<li>The Campaign Registry, <em>TCR Introduction</em>, 2026. <a href="https://www.campaignregistry.com/wp-content/uploads/TCR-Intro-2026-v4_comp.pdf">PDF</a></li>
+		<li>The Campaign Registry, <em>CSP User Guide</em>, August 21, 2025. <a href="https://www.campaignregistry.com/wp-content/uploads/CSP-User-Guide_Aug-21-2025-v8.pdf">PDF</a></li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="dlc-cta-heading">
+	<h2 id="dlc-cta-heading">Need a pre-submission review?</h2>
+	<p>VoiceTel's messaging specialists can review your draft 10DLC application — brand, use case, CTA, samples, attributes — before you submit. Catching legal-name / EIN mismatches and CTA gaps before vetting is much cheaper than after.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request a review</a>
+	</p>
+</aside>

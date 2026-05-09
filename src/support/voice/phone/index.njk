@@ -1,0 +1,81 @@
+---
+layout: layouts/page.njk
+title: "Hardware IP phones"
+description: "SIP account configuration for Yealink, Poly/Polycom, Cisco MPP, Grandstream, and Snom IP desk phones working with VoiceTel SIP trunking."
+---
+
+<p class="eyebrow">Support / Voice / Phone</p>
+<h1>Hardware IP phone configuration.</h1>
+<p class="lede">Most SIP desk phones expose the same handful of account fields. The defaults differ vendor to vendor; the values to set them to don't.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking overview</a>
+</p>
+
+<section class="section-block">
+	<h2>Common fields, recommended values</h2>
+	<ul>
+		<li><strong>Transport</strong> — UDP (most common) or TCP.</li>
+		<li><strong>SIP server / proxy</strong> — Shown in the customer portal under your trunk's settings.</li>
+		<li><strong>Outbound proxy</strong> — Same value as the SIP server unless engineering specified otherwise.</li>
+		<li><strong>Username / Auth name</strong> — Per-trunk SIP credentials (not the portal account).</li>
+		<li><strong>Register expiry</strong> — 360 seconds.</li>
+		<li><strong>NAT keepalive</strong> — Enable; 30 seconds. Most vendors call this "keepalive interval" or "NAT traversal."</li>
+		<li><strong>DTMF</strong> — RFC 2833 (in-RTP). Use SIP INFO only if your application explicitly requires it.</li>
+		<li><strong>Codecs</strong> — G.711µ (PCMU) primary, G.711a (PCMA) fallback, G.729.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Vendors</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3><a href="/support/voice/phone/yealink/">Yealink</a></h3>
+			<p>T46U, T48S, T54W, T57W, T33G — most common SOHO/business desk phones.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/polycom/">Polycom VVX</a></h3>
+			<p>VVX 250, 350, 450, 601 running UC Software 6.x.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/poly-edge/">Poly Edge</a></h3>
+			<p>Edge B10/B20/B30 and E series — Poly's post-VVX line running Poly OS.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/cisco-mpp/">Cisco MPP</a></h3>
+			<p>Cisco IP Phone 7800/8800 series running Multi-Platform (MPP) firmware.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/grandstream/">Grandstream</a></h3>
+			<p>GRP series, HT80x ATAs, GXP series legacy phones.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/avaya/">Avaya</a></h3>
+			<p>J100 series (J139, J159, J169, J179, J189) running Open SIP firmware.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/mitel/">Mitel</a></h3>
+			<p>6900 series (6920, 6930, 6940, 6970) running SIP firmware.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/snom/">Snom</a></h3>
+			<p>D7xx and D8xx desk phones plus M-series DECT bases.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/fanvil/">Fanvil</a></h3>
+			<p>X-series desk phones, V-series video phones, i-series door phones, ATAs.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/phone/sangoma/">Sangoma</a></h3>
+			<p>S-series (S205–S715) and D-series (D60–D80) desk phones, plus FreePBX EndPoint Manager integration.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="phone-cta-heading">
+	<h2 id="phone-cta-heading">Need provisioning at scale?</h2>
+	<p>VoiceTel can provide auto-provisioning configs (HTTPS XML or SIP redirect) for hundreds-of-phone deployments. Contact engineering with your phone model and rollout count.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

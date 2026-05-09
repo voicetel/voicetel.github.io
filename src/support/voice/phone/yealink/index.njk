@@ -1,0 +1,66 @@
+---
+layout: layouts/page.njk
+title: "Configure Yealink IP phones for VoiceTel"
+description: "SIP account setup for Yealink T46U, T48S, T54W, and other T-series desk phones, including NAT keepalive and DTMF settings."
+---
+
+<p class="eyebrow">Support / Voice / Phone / Yealink</p>
+<h1>Configure Yealink IP phones for VoiceTel.</h1>
+<p class="lede">Yealink T-series phones (T46U, T48S, T54W, T57W, T33G) all share the same SIP account configuration menu. Provision via the web UI or via Yealink RPS for fleet rollouts.</p>
+
+<section class="section-block">
+	<h2>Web UI configuration</h2>
+	<ol>
+		<li>Find the phone's IP address: press <strong>OK</strong> (or <strong>Menu → Status</strong> on T33G).</li>
+		<li>Sign in to the web UI at <code>http://&lt;phone-ip&gt;</code> (default credentials: <code>admin</code> / <code>admin</code> — change immediately).</li>
+		<li>Open <strong>Account → Register</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>Line Active:</strong> Enabled</li>
+				<li><strong>Label / Display Name:</strong> the user's name as it should appear on the phone screen</li>
+				<li><strong>Register Name:</strong> the SIP username from VoiceTel onboarding</li>
+				<li><strong>User Name:</strong> same as Register Name (auth user)</li>
+				<li><strong>Password:</strong> the SIP password from VoiceTel onboarding</li>
+				<li><strong>SIP Server 1 Host:</strong> the SIP server host shown in your customer portal from your onboarding email</li>
+				<li><strong>SIP Server 1 Port:</strong> 5060</li>
+				<li><strong>Transport:</strong> UDP</li>
+				<li><strong>Server Expires:</strong> 360</li>
+			</ul>
+		</li>
+		<li>Open <strong>Account → Advanced</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>NAT Keep Alive Type:</strong> Default (or "Always" to be explicit)</li>
+				<li><strong>NAT Keep Alive Interval:</strong> 30</li>
+				<li><strong>DTMF Type:</strong> RFC2833</li>
+				<li><strong>DTMF Payload Type:</strong> 101</li>
+			</ul>
+		</li>
+		<li>Click <strong>Confirm</strong> at the bottom of each tab.</li>
+		<li>Open <strong>Status</strong> on the home tab — the line should show <strong>Registered</strong> within a few seconds.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Codec preference</h2>
+	<p>Open <strong>Account → Codec</strong>. Enable <code>PCMU</code>, <code>PCMA</code>, and <code>G.729</code>; move PCMU to the top.</p>
+</section>
+
+<section class="section-block">
+	<h2>Auto-provisioning (fleet rollout)</h2>
+	<p>For ten or more phones, use auto-provisioning instead of per-phone configuration:</p>
+	<ul>
+		<li>Yealink RPS (Redirection and Provisioning Service) ships every Yealink phone factory-pointed at <code>https://rps.yealink.com</code>.</li>
+		<li>Register your VoiceTel provisioning server URL in the RPS portal under your account's MAC range.</li>
+		<li>Phones boot, contact RPS, get redirected to the VoiceTel provisioning URL, fetch their config, and register — no on-site touch required.</li>
+	</ul>
+	<p>Contact VoiceTel engineering for the provisioning URL and config templates.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="yealink-cta-heading">
+	<h2 id="yealink-cta-heading">Phone won't register?</h2>
+	<p>Capture a syslog (<strong>Settings → Configuration → Local Log → Syslog</strong>) and send it to VoiceTel engineering with the phone model and firmware version.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

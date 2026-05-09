@@ -978,6 +978,38 @@ textarea {
 	}
 }
 
+/* Open-source project entries on /open-source/ */
+
+.oss-project {
+	margin: var(--space-4) 0;
+	padding-top: var(--space-4);
+	border-top: 1px solid var(--border-color);
+}
+
+.oss-project:first-of-type {
+	border-top: 0;
+	padding-top: 0;
+	margin-top: var(--space-3);
+}
+
+.oss-project h3 {
+	margin: 0 0 var(--space-2);
+}
+
+.oss-project p {
+	margin: 0 0 var(--space-2);
+}
+
+.oss-project__meta {
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+	font-family: var(--font-mono);
+}
+
+.oss-project__meta a {
+	color: inherit;
+}
+
 /* Quote dialog (customer name capture before print) */
 
 .quote-dialog {

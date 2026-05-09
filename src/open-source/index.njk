@@ -1,29 +1,35 @@
 ---
 layout: layouts/page.njk
 title: "Open Source"
-description: "VoiceTel open-source projects, samples, SDK helpers, reference integrations, VoiceML examples, SDN appliance assets, and telecom tooling."
+description: "VoiceTel open-source projects: memdb in-RAM SQLite with PostgreSQL wire protocol, mod_siprec RFC 7866 recording client for FreeSWITCH, and freeswitch-security event-driven threat detection."
 ---
 
 <p class="eyebrow">Open Source</p>
 <h1>Reference tools for the communications problems we solve in production.</h1>
-<p class="lede">VoiceTel open-source work helps customers inspect, test, and integrate the same patterns the platform supports: voice markup examples, SDK host overrides, SIP integrations, SDN appliance assets, and operational tooling.</p>
+<p class="lede">VoiceTel publishes libraries, modules, and security tools we build to run our own platform. Each project is dual-purpose: it solves a problem we have, and it's useful to anyone running similar infrastructure.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="https://github.com/voicetel">Browse GitHub</a>
 	<a class="btn btn-secondary" href="/contact/">Suggest a project</a>
 </p>
 
-<section class="section-block" data-section-type="project-types">
-	<h2>What to publish</h2>
-	<ul>
-		<li><strong>VoiceML examples</strong> — Small, readable call flows for IVR, click-to-call, recordings, conferences, queues, and webhook validation.</li>
-		<li><strong>SDK migration helpers</strong> — Minimal host-override examples and tests for supported helper-library patterns.</li>
-		<li><strong>SIP integration guides</strong> — Example configuration for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and firewalls.</li>
-		<li><strong>SDN appliance assets</strong> — Image references, deployment notes, and troubleshooting workflows where publicly releasable.</li>
-		<li><strong>Operational tools</strong> — Trace analyzers, webhook validators, rate-modeling helpers, and support utilities.</li>
-	</ul>
-</section>
+<section class="section-block">
+	<h2>Pinned projects</h2>
 
-<section class="section-block" data-section-type="license-copy">
-	<h2>Licensing</h2>
-	<p>State the license per repository. Do not claim MIT, Apache-2.0, or CC BY coverage unless the individual repository uses that license.</p>
+	<article class="oss-project">
+		<h3><a href="https://github.com/voicetel/memdb">memdb</a></h3>
+		<p>Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library — so existing Postgres clients can connect to an in-memory store without code changes. Built for routing tables, rate caches, and CDR staging where lookup latency dominates over persistence.</p>
+		<p class="oss-project__meta"><a href="https://github.com/voicetel/memdb">github.com/voicetel/memdb</a></p>
+	</article>
+
+	<article class="oss-project">
+		<h3><a href="https://github.com/voicetel/mod_siprec">mod_siprec</a></h3>
+		<p>RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server, so a FreeSWITCH deployment can hand off compliance recording, supervisor monitoring, or analytics streams without vendor-specific RTP forking.</p>
+		<p class="oss-project__meta"><a href="https://github.com/voicetel/mod_siprec">github.com/voicetel/mod_siprec</a></p>
+	</article>
+
+	<article class="oss-project">
+		<h3><a href="https://github.com/voicetel/freeswitch-security">freeswitch-security</a></h3>
+		<p>Event-driven security layer for FreeSWITCH. Subscribes to the Event Socket Layer (ESL) and watches live signaling for registration floods, call-volume anomalies, and other malicious patterns; an integrated cache keeps detection paths fast without re-querying the dialplan. Useful for any FreeSWITCH operator that wants signal-based mitigation without bolting on a separate IDS.</p>
+		<p class="oss-project__meta"><a href="https://github.com/voicetel/freeswitch-security">github.com/voicetel/freeswitch-security</a></p>
+	</article>
 </section>

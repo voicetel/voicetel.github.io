@@ -127,6 +127,12 @@
 					"description": "Account, billing, voice, messaging, e911."
 				},
 				{
+					"label": "Support",
+					"icon": "headset",
+					"href": "/support/",
+					"description": "Router, IP phone, softphone, SBC, and PBX configuration guides."
+				},
+				{
 					"label": "Infrastructure & uptime",
 					"icon": "geo-alt",
 					"href": "/infrastructure/",
@@ -214,6 +220,7 @@
 			"items": [
 				{ "label": "Documentation", "href": "/docs/" },
 				{ "label": "FAQ", "href": "/faq/" },
+				{ "label": "Support", "href": "/support/" },
 				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },
 				{ "label": "Network status", "href": "/status/" }
 			]

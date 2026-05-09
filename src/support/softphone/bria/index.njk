@@ -1,0 +1,66 @@
+---
+layout: layouts/page.njk
+title: "Configure Bria for VoiceTel"
+description: "Add a VoiceTel SIP account to Bria Solo, Bria Teams, or Bria Enterprise on Windows, macOS, iOS, or Android."
+---
+
+<p class="eyebrow">Support / Softphone / Bria</p>
+<h1>Configure Bria for VoiceTel.</h1>
+<p class="lede">CounterPath Bria (Solo, Teams, Enterprise) accepts standard SIP account credentials. Configuration is identical across desktop and mobile editions.</p>
+
+<section class="section-block">
+	<h2>Steps (Bria 5 / Bria Solo desktop)</h2>
+	<ol>
+		<li>Open <strong>Softphone → Account Settings → SIP Accounts</strong> (Windows) or <strong>Bria → Preferences → Accounts</strong> (macOS).</li>
+		<li>Click <strong>Add</strong> and select <strong>SIP</strong>.</li>
+		<li>Account tab:
+			<ul>
+				<li><strong>Account name:</strong> VoiceTel</li>
+				<li><strong>Protocol:</strong> SIP</li>
+				<li><strong>User ID:</strong> SIP username from VoiceTel onboarding</li>
+				<li><strong>Domain:</strong> VoiceTel SIP server host</li>
+				<li><strong>Password:</strong> SIP password from onboarding</li>
+				<li><strong>Display name:</strong> the caller's name</li>
+				<li><strong>Authorization name:</strong> same as User ID</li>
+			</ul>
+		</li>
+		<li>Topology tab:
+			<ul>
+				<li><strong>Firewall traversal method:</strong> Use Local IP address (or Auto-detect)</li>
+				<li>Leave STUN / TURN disabled unless engineering directed otherwise</li>
+			</ul>
+		</li>
+		<li>Transport tab:
+			<ul>
+				<li><strong>Signaling transport:</strong> UDP (or TLS where required)</li>
+				<li><strong>SIP listening port:</strong> Auto</li>
+			</ul>
+		</li>
+		<li>Voicemail tab: leave default unless onboarding gave a specific voicemail URI.</li>
+		<li>Click <strong>OK</strong>; the account should show <strong>Registered</strong> within a few seconds.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Bria mobile (iOS / Android)</h2>
+	<p>The mobile UI is similar but in a single Account screen:</p>
+	<ol>
+		<li>Open <strong>Settings → Accounts → Add</strong> → <strong>SIP</strong>.</li>
+		<li>Enter the same fields: User ID, Domain, Password, Authorization name, Display name.</li>
+		<li>Under <strong>Advanced</strong>: set Transport to UDP, Signal Encryption to None (use TLS if your VoiceTel onboarding required TLS).</li>
+		<li>Save. The account registers on cellular and Wi-Fi.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Codec preferences</h2>
+	<p>Open <strong>Audio Codecs</strong> (desktop: <em>Preferences → Audio Codecs</em>; mobile: <em>Settings → Account → Codecs</em>). Enable PCMU, PCMA, and OPUS (if your account supports OPUS). Disable wideband codecs Bria pre-enables (G.722) unless onboarding confirmed support.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="bria-cta-heading">
+	<h2 id="bria-cta-heading">Bria Teams / Enterprise deployment?</h2>
+	<p>For organization-wide Bria deployment with provisioned config push, contact VoiceTel engineering. We can supply Bria provisioning XML for the Stretto Provisioning Server.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

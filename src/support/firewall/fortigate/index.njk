@@ -1,0 +1,91 @@
+---
+layout: layouts/page.njk
+title: "Disable SIP ALG on Fortinet FortiGate"
+description: "Disable the SIP session helper and SIP ALG profile on Fortinet FortiGate so SIP and RTP pass cleanly to VoiceTel."
+---
+
+<p class="eyebrow">Support / Firewall / FortiGate</p>
+<h1>Disable SIP ALG on Fortinet FortiGate.</h1>
+<p class="lede">FortiGate has both a SIP <em>session helper</em> (kernel-level) and a SIP <em>ALG profile</em> (policy-level). Production SIP traffic needs both off. The CLI is faster than the GUI for this.</p>
+
+<section class="section-block">
+	<h2>CLI — disable the SIP session helper</h2>
+	<pre class="code-block" data-lang="bash"><code>config system settings
+    set sip-helper disable
+    set sip-nat-trace disable
+end
+
+config system session-helper
+    show
+    # Find the entry where name = sip; note its id (often 13)
+    delete &lt;id-of-sip-entry&gt;
+end</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>CLI — disable SIP inspection on the firewall policy</h2>
+	<pre class="code-block" data-lang="bash"><code>config voip profile
+    edit "no-sip-alg"
+        config sip
+            set status disable
+        end
+    next
+end
+
+# Apply the profile to your VoIP firewall policy
+config firewall policy
+    edit &lt;policy-id&gt;
+        set utm-status enable
+        set voip-profile "no-sip-alg"
+    next
+end</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>GUI alternative</h2>
+	<ol>
+		<li>Open <strong>Security Profiles → VoIP</strong>.</li>
+		<li>Create a new profile named <code>no-sip-alg</code>; under <strong>SIP</strong>, set <strong>Status</strong> to disabled.</li>
+		<li>Apply this profile to your egress firewall policy under <strong>Policy &amp; Objects → Firewall Policy</strong>.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Raise UDP session timeout for SIP registration</h2>
+	<p>FortiGate's default UDP session timeout is 180 seconds. SIP REGISTER intervals are typically 3600 seconds. The firewall closes the NAT mapping between registrations and inbound calls fail silently until the next REGISTER refresh. Raise the per-service timeout for SIP traffic to at least 600 seconds:</p>
+	<pre class="code-block" data-lang="bash"><code>config firewall service custom
+    edit "SIP-UDP"
+        set udp-portrange 5060 5061
+        set session-ttl 3600
+    next
+end
+
+# Reference SIP-UDP from the policy that handles VoiceTel-bound traffic
+config firewall policy
+    edit &lt;policy-id&gt;
+        append service "SIP-UDP"
+    next
+end</code></pre>
+	<p>For RTP traffic specifically, the default timeout is usually fine (RTP packets every 20 ms keep the state refreshed during an active call). The problem is signalling between calls.</p>
+</section>
+
+<section class="section-block">
+	<h2>Verify</h2>
+	<pre class="code-block" data-lang="bash"><code># Confirm the SIP helper is disabled
+diagnose sys session list | grep -i sip
+# Should return no matches with stateful SIP rewriting
+
+# Confirm the new session-ttl is applied
+diagnose sys session filter dport 5060
+diagnose sys session list
+# Look for "expire=" — it should count down from ~3600, not ~180</code></pre>
+	<p>Place a test call and confirm two-way audio.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="fortigate-cta-heading">
+	<h2 id="fortigate-cta-heading">FortiGate cluster or VDOM setup?</h2>
+	<p>HA cluster sync of session-helper changes occasionally requires a member reboot. Contact engineering for HA-specific guidance.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

@@ -1,0 +1,90 @@
+---
+layout: layouts/page.njk
+title: "ISP cable, DSL, and fiber gateways"
+description: "Disable SIP ALG on ISP-supplied modems and gateways from Comcast, Spectrum, AT&amp;T, Verizon, Cox, and CenturyLink — bridge mode and per-vendor workarounds."
+---
+
+<p class="eyebrow">Support / Firewall / Cable modems</p>
+<h1>ISP cable, DSL, and fiber gateways.</h1>
+<p class="lede">ISP-supplied gateways ship with SIP ALG enabled and almost never expose a toggle to disable it. The reliable fix is to put the gateway in <strong>bridge mode</strong> (a.k.a. passthrough, IP passthrough, transparent bridging) and run your own router behind it.</p>
+
+<section class="section-block">
+	<h2>Why ISP gateways are the hardest to fix</h2>
+	<ul>
+		<li>The "VoIP optimization" or "QoS" features the ISP markets are usually SIP ALG by another name.</li>
+		<li>Customer admin accounts often hide the ALG toggle.</li>
+		<li>Some ISPs reset configuration changes during overnight firmware refreshes.</li>
+		<li>Even when SIP ALG can be disabled, default UDP NAT timeouts on these gateways are aggressively short.</li>
+	</ul>
+	<p>Bridge mode is the canonical workaround — the ISP gateway becomes a dumb modem and your own router (covered in the <a href="/support/firewall/">other firewall guides</a>) handles NAT, ALG, and timeouts on terms you control.</p>
+</section>
+
+<section class="section-block">
+	<h2>Comcast / Xfinity Business Gateway</h2>
+	<p>Models: XB6, XB7, XB8, Cisco DPC3941B, Technicolor TG3482G.</p>
+	<ol>
+		<li>Sign in at <code>http://10.0.0.1</code> with admin credentials (default: <code>cusadmin</code> / <code>highspeed</code> on older firmware; check the sticker for newer).</li>
+		<li>Open <strong>Gateway → At a Glance</strong>.</li>
+		<li>Find <strong>Bridge Mode</strong> and click <strong>Enable</strong>. The gateway reboots; Wi-Fi and the LAN switch are disabled — your downstream router handles those.</li>
+	</ol>
+	<p>If you can't enable bridge mode (some Comcast Business Voice plans block it), call Comcast Business support and request "transparent bridge mode" or escalate to disable SIP ALG.</p>
+</section>
+
+<section class="section-block">
+	<h2>Spectrum / Charter</h2>
+	<p>Spectrum gateways (Sagemcom, Askey, Hitron) usually don't expose a customer-controlled bridge toggle. Two paths:</p>
+	<ul>
+		<li>Call Spectrum and request the modem be placed in bridge mode at the provisioning level. They can flip it remotely on most accounts.</li>
+		<li>Buy your own DOCSIS modem (Motorola, Netgear, Arris) — Spectrum supports BYO equipment on most service tiers. Pair with your own router for full SIP control.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>AT&amp;T BGW210, BGW320 (Fiber)</h2>
+	<ol>
+		<li>Sign in to <code>http://192.168.1.254</code>.</li>
+		<li>Open <strong>Firewall → IP Passthrough</strong>.</li>
+		<li>Set <strong>Allocation Mode</strong> to <strong>Passthrough</strong>.</li>
+		<li>Set <strong>Default Server Internal Address</strong> to your downstream router's MAC or fixed LAN IP.</li>
+		<li>Save and reboot.</li>
+	</ol>
+	<p>The BGW gateway can't be fully bridged (it must terminate the AT&amp;T VLAN), but IP Passthrough hands the public IP to your downstream router, which then handles NAT/SIP.</p>
+</section>
+
+<section class="section-block">
+	<h2>Verizon Fios (G1100, G3100)</h2>
+	<p>Fios routers don't have a SIP ALG toggle. Bridge them via the Verizon admin UI:</p>
+	<ol>
+		<li>Sign in to <code>http://192.168.1.1</code>.</li>
+		<li>Open <strong>Advanced → Network Settings → Network Connections</strong>.</li>
+		<li>Disable the routing function and set the gateway to bridge the ONT directly to your downstream router via Ethernet.</li>
+	</ol>
+	<p>For Fios setups using coax (MoCA) instead of Ethernet, contact Verizon to switch the ONT to Ethernet handoff before bridging — necessary for downstream routing to work cleanly.</p>
+</section>
+
+<section class="section-block">
+	<h2>Cox Business</h2>
+	<p>Cox calls SIP ALG "VoIP optimization." Sign in to the Cox Business gateway admin UI and untick the relevant checkbox under <strong>Advanced → SIP</strong>. If your Cox plan includes hosted voice, Cox often refuses to disable ALG on the same gateway — request bridge mode instead.</p>
+</section>
+
+<section class="section-block">
+	<h2>CenturyLink / Quantum Fiber</h2>
+	<p>CenturyLink gateways (C3000A, C4000) expose a transparent bridging mode under <strong>Advanced Setup → WAN Settings → Transparent Bridging</strong>. Enable it; the gateway becomes a layer-2 modem and your downstream router handles NAT and SIP traversal.</p>
+</section>
+
+<section class="section-block">
+	<h2>If bridge mode isn't an option</h2>
+	<p>Some service plans (especially ISP-bundled hosted voice) block bridge mode. Two workarounds:</p>
+	<ul>
+		<li><strong>Double NAT.</strong> Plug your own router into the ISP gateway's LAN. Disable ALG on your router (per the <a href="/support/firewall/">vendor guides</a>). The ISP gateway's ALG still misbehaves on traffic that originates there, but downstream-only SIP traffic should work.</li>
+		<li><strong>VoiceTel SDN appliance.</strong> The <a href="/sdn/">SDN appliance</a> tunnels SIP and RTP over an encrypted overlay back to VoiceTel — the ISP gateway can't inspect or modify the SIP that's wrapped inside the tunnel. Reliable fix when you have no admin access to the ISP equipment.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="cable-modem-cta-heading">
+	<h2 id="cable-modem-cta-heading">Stuck on an ISP gateway you can't bridge?</h2>
+	<p>Send VoiceTel engineering the ISP, gateway model, and a SIP trace if you have one. We've documented workarounds for most US ISP equipment.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

@@ -1,0 +1,47 @@
+---
+layout: layouts/page.njk
+title: "Session Border Controllers"
+description: "SIP trunk-side configuration for AudioCodes, Cisco CUBE, FreeSWITCH, Asterisk, and other SBCs interconnecting to VoiceTel."
+---
+
+<p class="eyebrow">Support / SBC</p>
+<h1>SBC interop with VoiceTel.</h1>
+<p class="lede">SBC deployments terminate SIP trunks for downstream PBXes, contact-centers, and hosted voice platforms. The interop fields are mostly the same across vendors; the menu paths differ and the codec/SRTP/PRACK behavior varies subtly.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking overview</a>
+</p>
+
+<section class="section-block">
+	<h2>Common interop pain points</h2>
+	<ul>
+		<li><strong>Authentication mode</strong> — VoiceTel supports Digest or IP authentication. Pick one and stick to it; mixed-mode trunks have rare but real edge cases.</li>
+		<li><strong>From / P-Asserted-Identity</strong> — STIR/SHAKEN attestation depends on consistent identity headers. Don't strip P-Asserted-Identity at the SBC.</li>
+		<li><strong>PRACK / 100rel</strong> — VoiceTel sends 18x with 100rel for early-media services. Ensure your SBC negotiates PRACK rather than rejecting it.</li>
+		<li><strong>T.38 fax</strong> — re-INVITE to T.38 is supported. SBC must not block re-INVITE or strip SDP for fax to land.</li>
+		<li><strong>CallerID</strong> — Use full E.164 in From and P-Asserted-Identity. Local-format CallerIDs may fail STIR/SHAKEN attestation downstream.</li>
+		<li><strong>Codec re-INVITE</strong> — VoiceTel may renegotiate from G.711µ to OPUS or back during the call; don't pin codecs in a way that rejects the renegotiation.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Vendors</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3><a href="/support/sbc/audiocodes/">AudioCodes Mediant</a></h3>
+			<p>Mediant 500/800/1000/2600/4000/9000 hardware and Mediant CE virtual.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/sbc/cisco-cube/">Cisco CUBE</a></h3>
+			<p>Cisco Unified Border Element on ISR, ASR, CSR, or virtual CUBE.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/sbc/freeswitch/">FreeSWITCH</a></h3>
+			<p>Open-source SBC role via Sofia SIP profile + ACL.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/sbc/asterisk/">Asterisk</a></h3>
+			<p>Asterisk PJSIP endpoint as SBC for trunk termination and PBX bridge.</p>
+		</li>
+	</ul>
+</section>

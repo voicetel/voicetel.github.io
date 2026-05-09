@@ -1,0 +1,70 @@
+---
+layout: layouts/page.njk
+title: "Configure Grandstream IP phones and ATAs for VoiceTel"
+description: "SIP account setup for Grandstream GRP series phones and HT80x analog telephone adapters working with VoiceTel."
+---
+
+<p class="eyebrow">Support / Phone / Grandstream</p>
+<h1>Configure Grandstream IP phones and ATAs for VoiceTel.</h1>
+<p class="lede">Grandstream GRP series desk phones (GRP2604, GRP2615, GRP2624) and HT80x analog telephone adapters use a near-identical Account configuration menu. Provision per-device via the web UI or via Grandstream GAPS (Auto-Provisioning Service) for fleets.</p>
+
+<section class="section-block">
+	<h2>GRP series desk phones</h2>
+	<ol>
+		<li>Press <strong>Menu → Status → Network Status</strong> to find the IP.</li>
+		<li>Open <code>http://&lt;phone-ip&gt;</code>. Sign in (default <code>admin</code> / random password printed on the phone's barcode sticker).</li>
+		<li>Open <strong>Accounts → Account 1 → General Settings</strong>.</li>
+		<li>Set:
+			<ul>
+				<li><strong>Account Active:</strong> Yes</li>
+				<li><strong>Account Name:</strong> short label</li>
+				<li><strong>SIP Server:</strong> the VoiceTel SIP server host</li>
+				<li><strong>Secondary SIP Server:</strong> if VoiceTel onboarding gave a secondary, enter it</li>
+				<li><strong>Outbound Proxy:</strong> the VoiceTel SIP server host (same as primary)</li>
+				<li><strong>SIP User ID:</strong> the SIP username from VoiceTel onboarding</li>
+				<li><strong>Authenticate ID:</strong> same as SIP User ID</li>
+				<li><strong>Authenticate Password:</strong> the SIP password from VoiceTel onboarding</li>
+				<li><strong>Name:</strong> caller-ID display name</li>
+			</ul>
+		</li>
+		<li>Open <strong>Network Settings</strong> (still under Account 1):
+			<ul>
+				<li><strong>NAT Traversal:</strong> Keep-Alive</li>
+				<li><strong>SIP Transport:</strong> UDP</li>
+				<li><strong>SIP URI Scheme When Using TLS:</strong> sip (only matters if you switch to TLS)</li>
+			</ul>
+		</li>
+		<li>Open <strong>SIP Settings → Basic Settings</strong>:
+			<ul>
+				<li><strong>Register Expiration:</strong> 1 (minute, i.e. 60 seconds)</li>
+			</ul>
+		</li>
+		<li>Open <strong>Audio Settings → Codec Settings</strong>. Move <code>PCMU</code> and <code>PCMA</code> to the top of the preferred list.</li>
+		<li>Save and apply.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>HT80x ATAs (analog telephone adapter)</h2>
+	<p>HT801, HT802, HT812, HT814, HT818 expose the same Accounts menu but with one account per FXS port. Configuration is otherwise identical:</p>
+	<ol>
+		<li>Open <code>http://&lt;ata-ip&gt;</code>. Default password printed on the device sticker.</li>
+		<li>Open <strong>FXS Port 1</strong>. Apply the same fields listed above for the GRP phones.</li>
+		<li>For multi-port HT812/HT814/HT818, repeat per port with the corresponding line credentials.</li>
+		<li>Save and apply.</li>
+	</ol>
+	<p>Test by plugging an analog handset into FXS Port 1 and dialing a test number.</p>
+</section>
+
+<section class="section-block">
+	<h2>Auto-provisioning</h2>
+	<p>Register the device MAC at <code>https://fm.grandstream.com/gs</code> (Grandstream's GAPS portal); point GAPS at your VoiceTel provisioning URL. Devices boot, hit GAPS, get redirected, fetch config, register.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="grandstream-cta-heading">
+	<h2 id="grandstream-cta-heading">Need a config template?</h2>
+	<p>VoiceTel engineering can supply Grandstream <code>cfg&lt;mac&gt;.xml</code> templates for fleet rollouts. Contact engineering with your model number and onboarding details.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact engineering</a>
+	</p>
+</aside>

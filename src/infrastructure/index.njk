@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "Infrastructure & uptime"
-description: "VoiceTel infrastructure copy covering six US POPs, carrier handoffs, redundancy, status visibility, and the voice availability target."
+description: "VoiceTel network infrastructure: colocation facilities, cloud regions, carrier handoffs, redundancy, status visibility, and the voice availability target."
 ---
 
 <p class="eyebrow">Infrastructure</p>
@@ -12,8 +12,8 @@ description: "VoiceTel infrastructure copy covering six US POPs, carrier handoff
 	<a class="btn btn-secondary" href="/contact/">Request SLA terms</a>
 </p>
 
-<section class="section-block" data-section-type="pops">
-	<h2>POP locations</h2>
+<section class="section-block">
+	<h2>Colocation Facilities</h2>
 	<ul>
 		<li><strong>NYC</strong> — New York metro</li>
 		<li><strong>CLT</strong> — Charlotte</li>
@@ -21,16 +21,16 @@ description: "VoiceTel infrastructure copy covering six US POPs, carrier handoff
 		<li><strong>DEN</strong> — Denver</li>
 		<li><strong>DFW</strong> — Dallas</li>
 		<li><strong>SJC</strong> — San Jose</li>
+		<li><strong>AMS</strong> — Amsterdam</li>
 	</ul>
 </section>
 
-<section class="section-block" data-section-type="network">
-	<h2>Network model</h2>
+<section class="section-block">
+	<h2>Cloud Infrastructure</h2>
 	<ul>
-		<li><strong>Carrier handoffs</strong> — Describe redundant carrier handoffs per POP only where current network inventory confirms them.</li>
-		<li><strong>Failover</strong> — Explain routing failover at a platform level and keep service-specific guarantees in agreements.</li>
-		<li><strong>Availability target</strong> — Use 99.99% as a voice availability target, not a universal SLA, unless signed terms say otherwise.</li>
-		<li><strong>Status history</strong> — Publish incident summaries and monthly uptime only when the status feed is connected.</li>
+		{%- for region in site.cloudRegions %}
+		<li><strong>{{ region }}</strong></li>
+		{%- endfor %}
 	</ul>
 </section>
 

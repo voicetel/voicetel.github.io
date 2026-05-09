@@ -4,6 +4,10 @@
 	box-sizing: border-box;
 }
 
+[hidden] {
+	display: none !important;
+}
+
 html {
 	text-size-adjust: 100%;
 	tab-size: 4;

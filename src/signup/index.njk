@@ -1,22 +1,68 @@
 ---
 layout: layouts/page.njk
 title: "Sign up"
-description: "Create a VoiceTel account to start voice, messaging, numbers, SIP trunking, VoiceML, hosted PBX, phone apps, and lookup workflows."
+description: "Create a VoiceTel account for voice, messaging, numbers, SIP trunking, VoiceML, hosted PBX, phone apps, and lookup workflows."
 ---
 
 <p class="eyebrow">Account</p>
 <h1>Create a VoiceTel account.</h1>
 <p class="lede">Start with the product you need now: VoiceML migration, programmable voice, messaging, SIP trunking, numbers, hosted PBX, phone apps, SDN appliance, or lookup services.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="https://www.voicetel.com/signup">Continue to signup</a>
-	<a class="btn btn-secondary" href="/contact/">Talk to sales</a>
-</p>
 
-<section class="section-block" data-section-type="signup-copy">
-	<h2>Signup form copy</h2>
-	<p>Keep the public form short. Capture email and product interest, then complete identity, compliance, billing, and service configuration in the portal.</p>
+<section class="section-block">
+	<h2>Sign up</h2>
+	<p>Enter your name and email. We'll send you an activation link with portal access and onboarding next steps.</p>
+
+	<aside class="caveat-block" aria-labelledby="kyc-heading">
+		<h3 id="kyc-heading">KYC required for activation</h3>
+		<p>Full Know Your Customer verification is required by law before service is enabled. After signup you will be asked to provide:</p>
+		<ul>
+			<li>A valid state-issued driver's license or government-issued photo ID.</li>
+			<li>Address verification via a recent utility bill or mobile telephone bill.</li>
+			<li>A photo of yourself holding the same ID for verification purposes.</li>
+			<li>A signed certification that the documents are valid, including a statement describing the nature of the traffic you intend to send.</li>
+		</ul>
+	</aside>
+
+	<form id="signup-form" action="{{ site.portalUrl }}{{ site.formEndpoints.signup }}" data-fallback-url="{{ site.portalUrl }}/signup.html" method="post" class="form-grid full-width">
+		<div class="form-row">
+			<label for="signup-name">Name <span class="required" aria-hidden="true">*</span></label>
+			<input id="signup-name" name="name" type="text" required minlength="3" maxlength="30" autocomplete="name" pattern="[A-Za-z]([0-9A-Za-z \.]){2,29}">
+		</div>
+		<div class="form-row">
+			<label for="signup-email">Email <span class="required" aria-hidden="true">*</span></label>
+			<input id="signup-email" name="email" type="email" required minlength="6" maxlength="255" autocomplete="email">
+		</div>
+		<div class="form-row form-row--full">
+			<div class="cf-turnstile" data-sitekey="{{ site.turnstileSiteKey }}" data-theme="light" data-size="normal"></div>
+		</div>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary">Create an Account</button>
+		</div>
+	</form>
+
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+	<div id="signup-result" class="alert alert-success" hidden role="status" aria-live="polite">
+		<p><strong>Check your email.</strong> Your activation link is on the way.</p>
+		<dl class="signup-credentials"></dl>
+		<p>Once activated, sign in to the <a href="{{ site.portalUrl }}">portal</a> to add billing, configure services, and provision numbers.</p>
+	</div>
 </section>
 
-<section class="section-block" data-section-type="next-steps">
-	<h2>After signup</h2>
+<section class="section-block">
+	<h2>What happens next</h2>
+	<ol>
+		<li><strong>Verify your phone number.</strong> A one-time PIN is sent by SMS; enter it to confirm the number is yours.</li>
+		<li><strong>Verify your email.</strong> Check your inbox for an activation link from VoiceTel and click through to confirm.</li>
+		<li><strong>Complete KYC.</strong> Submit your government-issued photo ID, address-verification bill, ID-holding selfie, and signed nature-of-traffic certification for review.</li>
+		<li><strong>Start building.</strong> Use API keys, SIP credentials, or VoiceTel apps to make your first call or send your first message.</li>
+	</ol>
 </section>
+
+<aside class="cta-block" aria-labelledby="signup-help-heading">
+	<h2 id="signup-help-heading">Need help before signing up?</h2>
+	<p>Talk to a VoiceTel engineer for product questions, migration planning, or volume pricing.</p>
+	<p class="hero-actions">
+		<a class="btn btn-secondary" href="/contact/">Talk to sales</a>
+	</p>
+</aside>

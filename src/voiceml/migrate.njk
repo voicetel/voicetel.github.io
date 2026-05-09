@@ -13,15 +13,6 @@ description: "A practical migration page for compatible Twilio voice application
 	<a class="btn btn-secondary" href="/voiceml/calculator/">Run calculator</a>
 </p>
 
-<section class="section-block" data-section-type="steps">
-	<h2>Four-step migration</h2>
-</section>
-
-<section class="section-block code-block-section">
-	<h2>Direct HTTP test call</h2>
-	<p>A one-call test proves credentials, routing, webhook reachability, and basic call control before deeper migration work.</p>
-</section>
-
 <section class="section-block" data-section-type="same-different">
 	<h2>What stays the same; what is checked</h2>
 	<ul>
@@ -31,13 +22,328 @@ description: "A practical migration page for compatible Twilio voice application
 	</ul>
 </section>
 
-<section class="section-block" data-section-type="comparison">
-	<h2>Migration pricing comparison</h2>
-	<p>Show a source-dated comparison for the exact workload: inbound minutes, outbound minutes, AMD calls, recordings, media features, numbers, and messages if the migration includes messaging. Percentage claims appear only when backed by a line-item table.</p>
+<section class="section-block">
+	<h2>Four-step migration</h2>
+	<ol>
+		<li><strong>Get account credentials</strong> — VoiceTel onboarding returns an account SID (Twilio-format <code>AC</code> + 32 hex) and an API key. The API key is shown once at create or rotate time — capture it on your side immediately.</li>
+		<li><strong>Override the SDK host</strong> — Subclass your Twilio helper library's HTTP client and rewrite outbound URLs from <code>api.twilio.com</code> to the VoiceTel host. About five lines per language. Authentication, signing, request shapes, and response shapes match Twilio exactly — only the destination host differs.</li>
+		<li><strong>Verify webhook signatures</strong> — VoiceTel signs every webhook with <code>X-Twilio-Signature</code> using the per-tenant API key. The Twilio SDK's verification middleware works without modification: pass the API key wherever the SDK asks for the auth token.</li>
+		<li><strong>Cut over a single call flow</strong> — Run a real call against VoiceTel; verify origination, webhook delivery, recordings if used, and the per-call billing line. Expand to additional flows once the test passes.</li>
+	</ol>
 </section>
 
-<aside class="cta-block">
-	<h2>Bring one call flow and one bill.</h2>
+<section class="section-block code-block-section">
+	<h2>Direct HTTP test call</h2>
+	<p>A one-call test proves credentials, routing, webhook reachability, and basic call control before deeper migration work. The URL shape is identical to Twilio's — only the host changes.</p>
+	<pre class="code-block" data-lang="bash"><code>SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+KEY="..."  # api_key from onboarding
+HOST="voiceml.voicetel.com"
+
+curl -u "$SID:$KEY" \
+  -d "To=+18005551234" \
+  -d "From=+18005550000" \
+  -d "Url=https://your-app/voicemarkup" \
+  -d "MachineDetection=Enable" \
+  https://$HOST/2010-04-01/Accounts/$SID/Calls</code></pre>
+	<p>HTTP Basic auth: username = SID, password = API key — the same convention Twilio's docs use for <code>AccountSid:AuthToken</code>.</p>
+</section>
+
+<section class="section-block">
+	<h2>SDK examples</h2>
+	<aside class="caveat-block" aria-labelledby="sdk-disclaimer-heading">
+		<h3 id="sdk-disclaimer-heading">For migration testing only</h3>
+		<p>Redirecting an official Twilio SDK to VoiceTel is intended for compatibility validation and migration testing — not for production traffic. For production workloads, use VoiceTel's native APIs and SDKs.</p>
+	</aside>
+	<p>Each SDK accepts a custom HTTP client. Subclass the bundled client and rewrite outbound URLs from <code>api.twilio.com</code> to <code>voiceml.voicetel.com</code> — about five lines per language. Authentication, request shapes, and webhook signing match Twilio exactly; only the destination host differs.</p>
+
+	<div class="code-tabs" data-tabs>
+		<div role="tablist" aria-label="SDK examples" class="code-tabs__list">
+			<button type="button" role="tab" id="tab-node" aria-controls="panel-node" aria-selected="true" class="code-tabs__tab">Node.js</button>
+			<button type="button" role="tab" id="tab-python" aria-controls="panel-python" aria-selected="false" tabindex="-1" class="code-tabs__tab">Python</button>
+			<button type="button" role="tab" id="tab-go" aria-controls="panel-go" aria-selected="false" tabindex="-1" class="code-tabs__tab">Go</button>
+			<button type="button" role="tab" id="tab-csharp" aria-controls="panel-csharp" aria-selected="false" tabindex="-1" class="code-tabs__tab">C#</button>
+			<button type="button" role="tab" id="tab-php" aria-controls="panel-php" aria-selected="false" tabindex="-1" class="code-tabs__tab">PHP</button>
+			<button type="button" role="tab" id="tab-java" aria-controls="panel-java" aria-selected="false" tabindex="-1" class="code-tabs__tab">Java</button>
+			<button type="button" role="tab" id="tab-ruby" aria-controls="panel-ruby" aria-selected="false" tabindex="-1" class="code-tabs__tab">Ruby</button>
+		</div>
+
+		<div role="tabpanel" id="panel-node" aria-labelledby="tab-node">
+			<pre class="code-block"><code>// npm install twilio
+const twilio = require('twilio');
+const RequestClient = require('twilio/lib/base/RequestClient');
+
+class VoiceTelClient extends RequestClient {
+	async request(opts) {
+		opts.uri = opts.uri.replace(
+			/https:\/\/[^/]+\.twilio\.com/,
+			'https://voiceml.voicetel.com'
+		);
+		return super.request(opts);
+	}
+}
+
+const client = twilio(
+	process.env.VOICETEL_ACCOUNT_SID,
+	process.env.VOICETEL_API_KEY,
+	{ httpClient: new VoiceTelClient() }
+);
+
+const call = await client.calls.create({
+	to:   '+18005551234',
+	from: '+18005550000',
+	url:  'https://your-app/voicemarkup',
+});
+console.log(call.sid);</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-python" aria-labelledby="tab-python">
+			<pre class="code-block"><code># pip install twilio
+import os
+from twilio.rest import Client
+from twilio.http.http_client import TwilioHttpClient
+
+class VoiceTelClient(TwilioHttpClient):
+	def request(self, method, url, *args, **kwargs):
+		url = url.replace(
+			'https://api.twilio.com',
+			'https://voiceml.voicetel.com',
+		)
+		return super().request(method, url, *args, **kwargs)
+
+client = Client(
+	os.environ['VOICETEL_ACCOUNT_SID'],
+	os.environ['VOICETEL_API_KEY'],
+	http_client=VoiceTelClient(),
+)
+
+call = client.calls.create(
+	to='+18005551234',
+	from_='+18005550000',
+	url='https://your-app/voicemarkup',
+)
+print(call.sid)</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-go" aria-labelledby="tab-go">
+			<pre class="code-block"><code>// go get github.com/twilio/twilio-go
+package main
+
+import (
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+
+	"github.com/twilio/twilio-go"
+	"github.com/twilio/twilio-go/client"
+	openapi "github.com/twilio/twilio-go/rest/api/v2010"
+)
+
+type voiceTelClient struct{ inner *http.Client }
+
+func (c *voiceTelClient) Do(req *http.Request) (*http.Response, error) {
+	if strings.HasSuffix(req.URL.Host, ".twilio.com") {
+		rewritten, _ := url.Parse("https://voiceml.voicetel.com" +
+			req.URL.RequestURI())
+		req.URL = rewritten
+		req.Host = rewritten.Host
+	}
+	return c.inner.Do(req)
+}
+
+func main() {
+	httpClient := &amp;voiceTelClient{inner: http.DefaultClient}
+
+	tw := twilio.NewRestClientWithParams(twilio.ClientParams{
+		Username: os.Getenv("VOICETEL_ACCOUNT_SID"),
+		Password: os.Getenv("VOICETEL_API_KEY"),
+		Client: &amp;client.Client{
+			HTTPClient: httpClient,
+			Credentials: client.NewCredentials(
+				os.Getenv("VOICETEL_ACCOUNT_SID"),
+				os.Getenv("VOICETEL_API_KEY"),
+			),
+		},
+	})
+
+	params := &amp;openapi.CreateCallParams{}
+	params.SetTo("+18005551234")
+	params.SetFrom("+18005550000")
+	params.SetUrl("https://your-app/voicemarkup")
+
+	call, err := tw.Api.CreateCall(params)
+	if err != nil { panic(err) }
+	println(*call.Sid)
+}</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-csharp" aria-labelledby="tab-csharp">
+			<pre class="code-block"><code>// dotnet add package Twilio
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Twilio;
+using Twilio.Clients;
+using Twilio.Http;
+using Twilio.Rest.Api.V2010.Account;
+
+public class VoiceTelHttpClient : SystemNetHttpClient
+{
+	public VoiceTelHttpClient(HttpClient http) : base(http) { }
+
+	public override Response MakeRequest(Request request)
+	{
+		var rewritten = request.Url.ToString().Replace(
+			"https://api.twilio.com",
+			"https://voiceml.voicetel.com");
+		request.Url = new Uri(rewritten);
+		return base.MakeRequest(request);
+	}
+}
+
+class Program
+{
+	static async Task Main()
+	{
+		var http = new HttpClient();
+		TwilioClient.Init(
+			Environment.GetEnvironmentVariable("VOICETEL_ACCOUNT_SID"),
+			Environment.GetEnvironmentVariable("VOICETEL_API_KEY"),
+			new VoiceTelHttpClient(http));
+
+		var call = await CallResource.CreateAsync(
+			to:   new Twilio.Types.PhoneNumber("+18005551234"),
+			from: new Twilio.Types.PhoneNumber("+18005550000"),
+			url:  new Uri("https://your-app/voicemarkup"));
+
+		Console.WriteLine(call.Sid);
+	}
+}</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-php" aria-labelledby="tab-php">
+			<pre class="code-block"><code>// composer require twilio/sdk
+&lt;?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Twilio\Rest\Client;
+use Twilio\Http\CurlClient;
+use Twilio\Http\Response;
+
+class VoiceTelClient extends CurlClient {
+	public function request(
+		string $method, string $url, array $params = [],
+		array $data = [], array $headers = [],
+		?string $user = null, ?string $password = null,
+		?int $timeout = null
+	): Response {
+		$url = preg_replace(
+			'#https://[^/]+\.twilio\.com#',
+			'https://voiceml.voicetel.com',
+			$url);
+		return parent::request(
+			$method, $url, $params, $data, $headers,
+			$user, $password, $timeout);
+	}
+}
+
+$client = new Client(
+	getenv('VOICETEL_ACCOUNT_SID'),
+	getenv('VOICETEL_API_KEY'),
+	null, null,
+	new VoiceTelClient()
+);
+
+$call = $client-&gt;calls-&gt;create(
+	'+18005551234',
+	'+18005550000',
+	['url' =&gt; 'https://your-app/voicemarkup']
+);
+echo $call-&gt;sid . "\n";</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-java" aria-labelledby="tab-java">
+			<pre class="code-block"><code>// Gradle: implementation 'com.twilio.sdk:twilio:10.+'
+import com.twilio.Twilio;
+import com.twilio.http.NetworkHttpClient;
+import com.twilio.http.Request;
+import com.twilio.http.Response;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.api.v2010.account.Call;
+import com.twilio.type.PhoneNumber;
+import java.net.URI;
+
+public class VoiceTelApp {
+	static class VoiceTelClient extends NetworkHttpClient {
+		@Override
+		public Response makeRequest(Request request) {
+			String original = request.constructURL().toString();
+			String rewritten = original.replaceFirst(
+				"https://[^/]+\\.twilio\\.com",
+				"https://voiceml.voicetel.com");
+			Request copy = new Request(request.getMethod(), rewritten);
+			request.getQueryParams().forEach(
+				(k, v) -&gt; v.forEach(val -&gt; copy.addQueryParam(k, val)));
+			request.getPostParams().forEach(
+				(k, v) -&gt; v.forEach(val -&gt; copy.addPostParam(k, val)));
+			return super.makeRequest(copy);
+		}
+	}
+
+	public static void main(String[] args) {
+		String sid = System.getenv("VOICETEL_ACCOUNT_SID");
+		String key = System.getenv("VOICETEL_API_KEY");
+		Twilio.init(sid, key);
+		Twilio.setRestClient(new TwilioRestClient.Builder(sid, key)
+			.httpClient(new VoiceTelClient()).build());
+
+		Call call = Call.creator(
+			new PhoneNumber("+18005551234"),
+			new PhoneNumber("+18005550000"),
+			URI.create("https://your-app/voicemarkup")
+		).create();
+
+		System.out.println(call.getSid());
+	}
+}</code></pre>
+		</div>
+
+		<div role="tabpanel" id="panel-ruby" aria-labelledby="tab-ruby">
+			<pre class="code-block"><code># gem install twilio-ruby
+require 'twilio-ruby'
+
+class VoiceTelHttpClient &lt; Twilio::HTTP::Client
+	def request(method, host, port, uri, params, data, headers,
+				auth, timeout, allow_redirects)
+		rewritten = uri.sub(
+			%r{https://[^/]+\.twilio\.com},
+			'https://voiceml.voicetel.com'
+		)
+		super(method, 'voiceml.voicetel.com', port,
+			  rewritten, params, data, headers,
+			  auth, timeout, allow_redirects)
+	end
+end
+
+client = Twilio::REST::Client.new(
+	ENV['VOICETEL_ACCOUNT_SID'],
+	ENV['VOICETEL_API_KEY'],
+	nil, nil,
+	VoiceTelHttpClient.new
+)
+
+call = client.calls.create(
+	to:   '+18005551234',
+	from: '+18005550000',
+	url:  'https://your-app/voicemarkup'
+)
+puts call.sid</code></pre>
+		</div>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="migrate-cta-heading">
+	<h2 id="migrate-cta-heading">Bring one call flow and one bill.</h2>
 	<p>VoiceTel can validate compatibility and model the current workload before you move production traffic.</p>
 	<p class="hero-actions">
 		<a class="btn btn-primary" href="/contact/">Contact VoiceTel</a>

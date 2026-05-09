@@ -1,0 +1,45 @@
+---
+layout: layouts/page.njk
+title: "Network status"
+description: "Current VoiceTel service status for voice, messaging, API, portal, phone apps, SDN appliance connectivity, and support systems."
+---
+
+<p class="eyebrow">Status</p>
+<h1>Current service health and incident history.</h1>
+<p class="lede">The status page is factual, timestamped, and free of marketing language. Show active incidents, affected components, update times, and resolved incident summaries.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Contact support</a>
+	<a class="btn btn-secondary" href="/infrastructure/">Infrastructure overview</a>
+</p>
+
+<section class="section-block">
+	<h2>Network Status</h2>
+	<ul class="status-list">
+		<li><span class="status-name">Europe</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">US East</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">US West</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">NYC</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">CLT</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">ORD</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">DEN</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">DFW</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">SJC</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="components">
+	<h2>Components</h2>
+	<ul>
+		<li><strong>Voice</strong> — Origination, termination, VoiceML call control, and callbacks.</li>
+		<li><strong>Messaging</strong> — SMS, MMS, delivery receipts, and inbound webhooks.</li>
+		<li><strong>Numbers</strong> — Provisioning, porting, emergency-service records, and lookup workflows.</li>
+		<li><strong>API</strong> — REST API availability and webhook delivery.</li>
+		<li><strong>Portal</strong> — Account login, signup, billing, provisioning, and support forms.</li>
+		<li><strong>Phone apps and SDN</strong> — Web phone, desktop/mobile app connectivity, and SDN tunnel status.</li>
+	</ul>
+</section>
+
+<section class="section-block" data-section-type="status-copy">
+	<h2>Incident copy rules</h2>
+	<p>Incident updates include timestamp, impact, affected regions or products, mitigation status, next update expectation, and final root-cause summary when resolved.</p>
+</section>

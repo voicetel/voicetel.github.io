@@ -10,11 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
-	// src/CNAME intentionally not copied while voicetel.com is rolled back to
-	// the old portal. To re-enable the GitHub Pages custom domain, uncomment
-	// the line below and update the Pages config (gh api repos/.../pages -X
-	// PUT --input - <<<'{"cname":"voicetel.com"}').
-	// eleventyConfig.addPassthroughCopy("src/CNAME");
+	eleventyConfig.addPassthroughCopy("src/CNAME");
 	eleventyConfig.addPassthroughCopy("src/robots.txt");
 
 	eleventyConfig.addPlugin(syntaxHighlight, {

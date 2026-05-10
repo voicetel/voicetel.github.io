@@ -122,6 +122,38 @@ const categories = [
 		],
 	},
 	{
+		id: "kyc",
+		label: "KYC & verification",
+		items: [
+			{
+				q: "What is KYC and why does VoiceTel require it?",
+				a: "Know Your Customer (KYC) verification confirms the identity of every account holder before service is activated. It is required by federal regulation and by the underlying carriers VoiceTel routes through, and it helps prevent fraud, illegal robocalling, and caller-ID spoofing.",
+			},
+			{
+				q: "What documents do I need to provide?",
+				a: 'A valid government-issued photo ID, a recent utility or mobile-telephone bill for address verification, a photo of you holding the same ID, and a signed certification describing the documents and the nature of traffic you intend to send. <a href="/signup/">See the signup page</a> for the full list.',
+				plain: "A valid government-issued photo ID, a recent utility or mobile-telephone bill for address verification, a photo of you holding the same ID, and a signed certification describing the documents and the nature of traffic you intend to send. See the signup page for the full list.",
+			},
+			{
+				q: "Can I use the platform before KYC is complete?",
+				a: "No. Outbound calling, messaging, and number provisioning are gated behind account activation, which requires a completed KYC review.",
+			},
+			{
+				q: "What happens if my documents are rejected?",
+				a: "You will receive instructions through the customer portal explaining what to resubmit. Common reasons include expired IDs, illegible photos, address mismatches, and missing signatures on the certification document.",
+			},
+			{
+				q: "Do business accounts need different documentation?",
+				a: 'Business accounts also need formation documents (articles of incorporation or equivalent) and authorization for the account signer. <a href="/contact/">Contact support</a> with your business profile so we can route you to the correct intake.',
+				plain: "Business accounts also need formation documents (articles of incorporation or equivalent) and authorization for the account signer. Contact support with your business profile so we can route you to the correct intake.",
+			},
+			{
+				q: "Is my submitted documentation kept private?",
+				a: "KYC documents are accessed only by authorized VoiceTel compliance staff and retained per applicable record-keeping requirements. They are not shared with third parties except when required by law.",
+			},
+		],
+	},
+	{
 		id: "account",
 		label: "Account & activation",
 		items: [

@@ -159,7 +159,7 @@ const categories = [
 		items: [
 			{
 				q: "How can I find my lost account information?",
-				a: 'Please use our <a href="https://www.voicetel.com/password-recovery.html">account recovery tool</a> which emails your lost account information to the account holder. We recommend you immediately change your password in the control panel after recovery.',
+				a: 'Please use our <a href="https://www.voicetel.com/?recovery">account recovery tool</a> which emails your lost account information to the account holder. We recommend you immediately change your password in the control panel after recovery.',
 				plain: "Please use our account recovery tool which emails your lost account information to the account holder. We recommend you immediately change your password in the control panel after recovery.",
 			},
 			{

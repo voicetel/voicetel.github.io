@@ -10,6 +10,10 @@ if (form) {
 	const result = document.getElementById("signup-result");
 	const nameField = document.getElementById("signup-name");
 	const emailField = document.getElementById("signup-email");
+	const kycDialog = document.querySelector("[data-signup-dialog]");
+	const kycConfirmForm = document.querySelector("[data-signup-confirm-form]");
+	const kycCancelBtn = document.querySelector("[data-signup-cancel]");
+	let kycAcknowledged = false;
 
 	form.addEventListener("submit", async (event) => {
 		event.preventDefault();
@@ -18,6 +22,34 @@ if (form) {
 		// Trigger the browser's reportValidity here for a consistent UX.
 		if (!form.reportValidity()) return;
 
+		// Gate submission behind a one-time KYC acknowledgement so visitors who
+		// can't complete verification don't generate dead accounts.
+		if (!kycAcknowledged && kycDialog && typeof kycDialog.showModal === "function") {
+			kycDialog.showModal();
+			return;
+		}
+
+		await submitSignup();
+	});
+
+	if (kycConfirmForm) {
+		kycConfirmForm.addEventListener("submit", (event) => {
+			event.preventDefault();
+			kycDialog.close("confirm");
+			kycAcknowledged = true;
+			// Defer the resubmit so the dialog has a chance to fully close
+			// before we kick off the network request.
+			setTimeout(() => form.requestSubmit(), 0);
+		});
+	}
+
+	if (kycCancelBtn) {
+		kycCancelBtn.addEventListener("click", () => {
+			kycDialog.close("cancel");
+		});
+	}
+
+	async function submitSignup() {
 		const submitBtn = form.querySelector('button[type="submit"]');
 		const originalLabel = submitBtn.textContent;
 		submitBtn.disabled = true;
@@ -45,7 +77,7 @@ if (form) {
 			submitBtn.textContent = originalLabel;
 			showError(error.message);
 		}
-	});
+	}
 
 	function renderResult(data) {
 		const dl = result.querySelector(".signup-credentials");

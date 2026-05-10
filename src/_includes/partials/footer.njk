@@ -7,36 +7,22 @@
 					<span class="footer-brand-text">{{ site.brand }}</span>
 				</div>
 				<p class="footer-tagline">{{ site.tagline }}</p>
-				<ul class="footer-quick-links">
-					<li>
-						<a href="/pricing/">
-							<span class="footer-quick-icon" aria-hidden="true">{% icon "tag" %}</span>
-							Pricing
-						</a>
-					</li>
-					<li>
-						<a href="{{ site.portalUrl }}">
-							<span class="footer-quick-icon" aria-hidden="true">{% icon "box-arrow-in-right" %}</span>
-							Sign in
-						</a>
-					</li>
-					<li>
-						<a href="https://github.com/voicetel/" rel="external">
-							<span class="footer-quick-icon" aria-hidden="true">{% icon "github" %}</span>
-							GitHub
-						</a>
-					</li>
-					<li>
-						<a href="/signup/">
-							<span class="footer-quick-icon" aria-hidden="true">{% icon "person-plus" %}</span>
-							Sign up
-						</a>
-					</li>
-				</ul>
+				<p class="footer-actions">
+					<a class="btn btn-primary" href="{{ site.loginUrl }}">Sign in</a>
+					<a class="btn btn-secondary" href="/signup/">Sign up</a>
+				</p>
 			</div>
 			{%- for group in site.footerNav %}
 				<div class="footer-col{% if group.columns == 2 %} footer-col--wide{% endif %}">
-					<h2 class="footer-heading">{{ group.label }}</h2>
+					<div class="footer-heading-row">
+						<h2 class="footer-heading">{{ group.label }}</h2>
+						{%- if group.cta %}
+						<a class="footer-heading-cta" href="{{ group.cta.href }}">
+							{%- if group.cta.icon %}<span class="footer-quick-icon" aria-hidden="true">{% icon group.cta.icon %}</span>{%- endif %}
+							{{ group.cta.label }}
+						</a>
+						{%- endif %}
+					</div>
 					<ul class="footer-links{% if group.columns == 2 %} footer-links--two-col{% endif %}">
 						{%- for item in group.items %}
 						<li><a href="{{ item.href }}">{{ item.label }}</a></li>

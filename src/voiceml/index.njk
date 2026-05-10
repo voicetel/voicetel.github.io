@@ -14,7 +14,20 @@ description: "VoiceML is VoiceTel's XML-based programmable voice runtime for com
 
 <section class="section-block code-block-section">
 	<h2>VoiceML example</h2>
-	<p>The markup stays readable, inspectable, and easy to test before cutover.</p>
+	<p>The markup stays readable, inspectable, and easy to test before cutover. A small inbound IVR — gather a digit, route to a queue, fall back to voicemail:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+    &lt;Say voice="Polly.Joanna"&gt;Welcome to Acme Support. Press 1 for billing, 2 for technical support.&lt;/Say&gt;
+    &lt;Gather numDigits="1" action="/route" method="POST" timeout="6"&gt;
+        &lt;Say&gt;You can also stay on the line to reach the next available agent.&lt;/Say&gt;
+    &lt;/Gather&gt;
+    &lt;Dial timeout="20"&gt;
+        &lt;Queue&gt;support&lt;/Queue&gt;
+    &lt;/Dial&gt;
+    &lt;Record maxLength="120" transcribe="false" action="/voicemail" /&gt;
+    &lt;Say&gt;Thanks. We'll follow up within one business day.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+	<p>Webhook signatures, parameter names, and verb behavior match Twilio's voice markup, so an existing handler at <code>/route</code> or <code>/voicemail</code> works unchanged once you point your application's host at <code>voiceml.voicetel.com</code>.</p>
 </section>
 
 <section class="section-block">

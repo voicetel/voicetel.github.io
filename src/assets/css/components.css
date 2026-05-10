@@ -406,6 +406,19 @@
 	color: var(--primary-color);
 }
 
+.btn-warning {
+	background: var(--btn-warning-bg);
+	color: var(--primary-color);
+	border-color: var(--btn-warning-border);
+	font-weight: var(--weight-semibold);
+}
+
+.btn-warning:hover {
+	background: var(--btn-warning-bg-hover);
+	border-color: var(--btn-warning-border);
+	color: var(--primary-color);
+}
+
 .btn-sm {
 	padding: var(--space-1) var(--space-3);
 	font-size: var(--text-xs);
@@ -2199,6 +2212,69 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 
 .footer-quick-links a:hover {
 	color: var(--primary-light);
+}
+
+/* Brand column: stretch to full grid-row height so the action buttons
+   can be pushed to the bottom edge, level with the bottom of the
+   neighboring columns' link lists. */
+.footer-col:first-child {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Account-action buttons sit at the bottom of the brand column */
+.footer-actions {
+	display: flex;
+	gap: var(--space-2);
+	margin: var(--space-3) 0 0;
+	margin-top: auto;
+}
+
+.footer-actions .btn {
+	flex: 1;
+	justify-content: center;
+}
+
+/* Heading row: column heading + optional inline CTA. In a 2-col footer
+   group (Products), the row mirrors the underlying items grid so the CTA
+   sits directly above the second sub-column (e.g., over "Messaging"). */
+.footer-heading-row {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	margin-bottom: var(--space-3);
+}
+
+.footer-col--wide .footer-heading-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--space-1) var(--space-4);
+	align-items: center;
+}
+
+.footer-heading-row .footer-heading {
+	margin: 0;
+}
+
+.footer-heading-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-self: start;
+	gap: var(--space-2);
+	color: var(--primary-light);
+	font-size: var(--text-sm);
+	font-weight: var(--weight-semibold);
+	text-decoration: none;
+}
+
+.footer-heading-cta:hover {
+	color: var(--primary-color);
+}
+
+.footer-heading-cta:hover .footer-quick-icon {
+	background: var(--primary-light);
+	color: var(--paper);
+	border-color: var(--primary-light);
 }
 
 .footer-quick-icon {

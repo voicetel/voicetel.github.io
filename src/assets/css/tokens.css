@@ -21,6 +21,9 @@
 	--btn-secondary-bg: #d4edda;
 	--btn-secondary-bg-hover: #b8e0c2;
 	--btn-secondary-border: #6cb87f;
+	--btn-warning-bg: #fff3cd;
+	--btn-warning-bg-hover: #ffe69c;
+	--btn-warning-border: #d4a017;
 
 	/* ─── Color: semantic status ─── */
 	--success-color: #28a745;

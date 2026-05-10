@@ -20,6 +20,7 @@ description: "Create a VoiceTel account for voice, messaging, numbers, SIP trunk
 			<li>Address verification via a recent utility bill or mobile telephone bill.</li>
 			<li>A photo of yourself holding the same ID for verification purposes.</li>
 			<li>A signed certification that the documents are valid, including a statement describing the nature of the traffic you intend to send.</li>
+			<li>You must be a US or Canadian resident.</li>
 		</ul>
 	</aside>
 
@@ -45,8 +46,27 @@ description: "Create a VoiceTel account for voice, messaging, numbers, SIP trunk
 	<div id="signup-result" class="alert alert-success" hidden role="status" aria-live="polite">
 		<p><strong>Check your email.</strong> Your activation link is on the way.</p>
 		<dl class="signup-credentials"></dl>
-		<p>Once activated, sign in to the <a href="{{ site.portalUrl }}">portal</a> to add billing, configure services, and provision numbers.</p>
+		<p>Once activated, sign in to the <a href="{{ site.loginUrl }}">portal</a> to add billing, configure services, and provision numbers.</p>
 	</div>
+
+	<dialog class="quote-dialog" data-signup-dialog aria-labelledby="signup-confirm-title">
+		<form method="dialog" data-signup-confirm-form>
+			<h2 id="signup-confirm-title">Before you continue</h2>
+			<p>Account activation is conditional on completing Know Your Customer (KYC) verification. Please confirm you are prepared to provide each of the following:</p>
+			<ul>
+				<li>A valid government-issued photo ID</li>
+				<li>A recent utility or mobile-telephone bill for address verification</li>
+				<li>A photo of yourself holding the same ID</li>
+				<li>A signed certification of document validity and intended traffic</li>
+				<li>Residency in the United States or Canada</li>
+			</ul>
+			<p>Accounts that cannot complete verification will not be activated. If you are not in a position to submit these materials, we'd rather not waste your time.</p>
+			<div class="quote-dialog__actions">
+				<button type="button" class="btn btn-warning" data-signup-cancel>Not yet</button>
+				<button type="submit" class="btn btn-primary" data-signup-confirm>I'm ready — create my account</button>
+			</div>
+		</form>
+	</dialog>
 </section>
 
 <section class="section-block">

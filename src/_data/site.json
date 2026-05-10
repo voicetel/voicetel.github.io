@@ -8,6 +8,7 @@
 	"lang": "en",
 	"url": "https://voicetel.com",
 	"portalUrl": "https://www.voicetel.com",
+	"loginUrl": "https://www.voicetel.com/?login",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "https://phone.voicetel.com",
@@ -186,7 +187,7 @@
 				{
 					"label": "Sign in",
 					"icon": "box-arrow-in-right",
-					"href": "https://www.voicetel.com",
+					"href": "https://www.voicetel.com/?login",
 					"description": "Already have an account."
 				},
 				{
@@ -202,6 +203,7 @@
 		{
 			"label": "Products",
 			"columns": 2,
+			"cta": { "label": "PRICING", "href": "/pricing/", "icon": "tag" },
 			"items": [
 				{ "label": "Voice", "href": "/voice/" },
 				{ "label": "Messaging", "href": "/messaging/" },
@@ -316,7 +318,7 @@
 	"formEndpoints": {
 		"signup": "/signup.php",
 		"login": "/login",
-		"passwordRecovery": "/password-recovery.html",
+		"passwordRecovery": "/?recovery",
 		"porting": "/porting",
 		"resellerInquiry": "/reseller-inquiry",
 		"contact": "/contact"

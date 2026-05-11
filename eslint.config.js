@@ -2,6 +2,9 @@ import globals from "globals";
 
 export default [
 	{
+		ignores: ["src/assets/js/phone-web.js"],
+	},
+	{
 		files: ["src/assets/js/**/*.js", "tools/**/*.{js,mjs}", "eleventy.config.js"],
 		languageOptions: {
 			ecmaVersion: 2024,

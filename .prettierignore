@@ -4,3 +4,6 @@ package-lock.json
 vendor/api-specs/
 src/assets/fonts/
 src/_data/marketingCopy.json
+src/assets/js/phone-web.js
+src/assets/css/phone-web.css
+src/phone/applications/web/index.njk

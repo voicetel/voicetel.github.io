@@ -1,0 +1,59 @@
+---
+layout: layouts/page.njk
+permalink: /phone/applications/mobile/android/
+title: "VoiceTel Phone for Android — Install Guide"
+description: "Install VoiceTel Phone on Android using Developer Options and ADB. Step-by-step install guide for the signed APK from S3."
+---
+
+<p class="eyebrow">VoiceTel Phone &middot; Mobile &middot; Android</p>
+<h1>VoiceTel Phone for Android.</h1>
+<p class="lede">Until the Google Play listing is live, install the signed <code>.apk</code> from S3 via ADB.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.apk">Download .apk</a>
+	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
+</p>
+
+<section id="developer-options" class="section-block">
+	<h2>1. Enable Developer Options &amp; USB Debugging</h2>
+	<ol>
+		<li>Open <strong>Settings &rarr; About Phone</strong> and tap <strong>Build Number</strong> seven times.</li>
+		<li>Go to <strong>Settings &rarr; System &rarr; Developer Options</strong> and enable <strong>USB Debugging</strong>.</li>
+	</ol>
+</section>
+
+<section id="platform-tools" class="section-block">
+	<h2>2. Install platform tools</h2>
+	<ol>
+		<li>Install <strong>Android SDK Platform Tools</strong> (includes <code>adb</code>) from Google.</li>
+		<li>Connect your device via USB and accept the debugging prompt on the phone.</li>
+	</ol>
+</section>
+
+<section id="download" class="section-block">
+	<h2>3. Download the APK</h2>
+	<ol>
+		<li>Download <a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.apk">VoiceTel-3.5.6.apk</a>.</li>
+		<li>Verify SHA-256: <code>99c49cf9e921662a0978bb4d6bce2c6317bb207858d423b3457e6825c0b0b84c</code></li>
+	</ol>
+</section>
+
+<section id="install" class="section-block">
+	<h2>4. Install with ADB</h2>
+	<ol>
+		<li>Open Terminal or Command Prompt in the download directory.</li>
+		<li>Run <code>adb devices</code> to verify the device is listed.</li>
+		<li>Install: <code>adb install -r VoiceTel-3.5.6.apk</code></li>
+	</ol>
+	<div class="alert alert-info" role="note">
+		<p><strong>Tip:</strong> If you see <em>device offline</em>, run <code>adb kill-server</code> then <code>adb start-server</code>, and reconnect the phone.</p>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="phone-android-cta-heading">
+	<h2 id="phone-android-cta-heading">Need credentials first?</h2>
+	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Android device that needs to make calls.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign Up</a>
+		<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
+	</p>
+</aside>

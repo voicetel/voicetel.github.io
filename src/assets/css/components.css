@@ -1482,21 +1482,25 @@ textarea {
 }
 
 .menu-carousel-track {
-	display: flex;
-	width: 100%;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	.menu-carousel-track {
-		transition: transform 0.5s ease;
-	}
+	display: grid;
 }
 
 .menu-carousel-slide {
-	flex: 0 0 100%;
+	grid-area: 1 / 1;
 	box-sizing: border-box;
 	min-height: 220px;
 	background: var(--paper);
+	opacity: 0;
+}
+
+.menu-carousel-slide:not([inert]) {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.menu-carousel-slide {
+		transition: opacity 1.2s ease;
+	}
 }
 
 .menu-carousel-eyebrow {
@@ -1619,12 +1623,6 @@ textarea {
 .menu-carousel-dot:focus-visible {
 	outline: 2px solid var(--primary-light);
 	outline-offset: 2px;
-}
-
-/* Hide manual nav (arrows + dots); pause toggle stays visible for WCAG 2.2.2. */
-.menu-carousel-arrow,
-.menu-carousel-dots {
-	display: none;
 }
 
 @media (width <= 720px) {
@@ -1752,6 +1750,11 @@ textarea {
 
 .section-block h3 {
 	margin: 0 0 var(--space-2) 0;
+}
+
+.section-block > h3:not(:first-of-type),
+.section-block h3 + * + h3 {
+	margin-top: var(--space-6);
 }
 
 .section-block .lede {

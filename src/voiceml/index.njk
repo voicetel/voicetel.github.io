@@ -7,7 +7,7 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 <p class="eyebrow">Programmable Voice, VoiceML</p>
 <h1>Move compatible Programmable Voice workloads without rewriting call logic.</h1>
 <p class="lede">VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel.</p>
-<p class="lede">Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams.</p>
+<p class="lede">Build voice workflows on VoiceTel without paying retail markup on every layer of the call. Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/voiceml/migrate/">Start migration</a>
 	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
@@ -84,6 +84,30 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 		<li><strong>Unsupported payment verb</strong> — The payment verb is intentionally not implemented because PCI scope belongs in a fully certified payment flow.</li>
 		<li><strong>Number provisioning path</strong> — DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
 	</ul>
+</section>
+
+<section class="section-block faq-block">
+	<h2>VoiceML FAQ</h2>
+	<details class="faq-item">
+		<summary>Can existing Twilio voice applications migrate?</summary>
+		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Does VoiceTel provide speech services directly?</summary>
+		<p>Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. BYO services include:</p>
+		<ul>
+			<li>OpenAI TTS</li>
+			<li>Amazon Polly</li>
+			<li>Google Cloud TTS</li>
+			<li>ElevenLabs</li>
+			<li>Azure Cognitive Services</li>
+		</ul>
+		<p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>
+	</details>
+	<details class="faq-item">
+		<summary>How are rates displayed?</summary>
+		<p>Current public rates are on the <a href="/pricing/">pricing page</a>, with a calculator that applies volume-tier discounts. Your customer portal displays the same rates plus any account-specific contract pricing.</p>
+	</details>
 </section>
 
 <section class="section-block" data-section-type="advantages">

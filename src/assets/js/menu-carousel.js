@@ -1,6 +1,5 @@
 const ROOT = document.querySelector("[data-menu-carousel]");
 if (ROOT) {
-	const track = ROOT.querySelector("[data-carousel-track]");
 	const slides = Array.from(ROOT.querySelectorAll(".menu-carousel-slide"));
 	const dots = Array.from(ROOT.querySelectorAll("[data-carousel-dot]"));
 	const prev = ROOT.querySelector("[data-carousel-prev]");
@@ -11,7 +10,7 @@ if (ROOT) {
 	const pauseLabel = ROOT.querySelector("[data-pause-label]");
 
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-	const ADVANCE_MS = 6000;
+	const ADVANCE_MS = 10000;
 
 	let current = 0;
 	let timer = null;
@@ -19,7 +18,6 @@ if (ROOT) {
 
 	function show(index) {
 		current = (index + slides.length) % slides.length;
-		track.style.transform = `translateX(-${current * 100}%)`;
 		slides.forEach((slide, i) => {
 			slide.inert = i !== current;
 		});

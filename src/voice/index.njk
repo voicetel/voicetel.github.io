@@ -5,8 +5,8 @@ description: "Wholesale Voice Calling with origination, termination, VoiceML cal
 ---
 
 <p class="eyebrow">Voice Calling</p>
-<h1>Wholesale voice for applications, carriers, and operators.</h1>
-<p class="lede">Build voice workflows on VoiceTel without paying retail markup on every layer of the call.</p>
+<h1>Wholesale voice for managed service providers, carriers, and operators.</h1>
+<p class="lede">Intelligent routing directs traffic to the nearest or most optimal node using Anycast, or to nodes within a specific geographic area with Geocast, ensuring fast, localized delivery. Diverse path routing enhances reliability by automatically switching among multiple network paths or carriers to avoid failures and congestion. Together, these techniques support business continuity by maximizing performance, resilience, and uninterrupted delivery of critical services.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/pricing/">See pricing</a>
 	<a class="btn btn-secondary" href="/voiceml/">Explore VoiceML</a>
@@ -22,13 +22,18 @@ description: "Wholesale Voice Calling with origination, termination, VoiceML cal
 		</li>
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Intelligent Routing</h3>
-			<p>Anycast routes traffic to the nearest or best available node among multiple nodes advertising the same address — commonly used for DNS, CDNs, and resilient network services. Geocast routes traffic to nodes within a specific geographic area, helping deliver ultra-low-latency, high-quality voice by keeping media paths local and efficient.</p>
+			<h3>Anycast</h3>
+			<p>Anycast routes outbound traffic to the nearest or best available node among multiple nodes advertising the same address — commonly used for DNS, CDNs, and resilient network services.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
+			<h3>Geocast</h3>
+			<p>Geocast routes outbound traffic to nodes within a specific geographic area, helping deliver ultra-low-latency, high-quality voice by keeping media paths local and efficient.</p>
 		</li>
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Diverse Path Routing</h3>
-			<p>Diverse inbound routing tries multiple network paths, carriers, or routes until a successful one is found. This improves reliability by avoiding failed, congested, or poor-quality routes, automatically switching to an alternate path, and pinholing the last hop to maintain a stable final connection.</p>
+			<h3>Diverse Routing</h3>
+			<p>Diverse inbound routing tests multiple network paths or carriers, automatically selecting the best route and maintaining stability to the last hop.</p>
 		</li>
 	</ul>
 </section>
@@ -55,7 +60,7 @@ description: "Wholesale Voice Calling with origination, termination, VoiceML cal
 </section>
 
 <section class="section-block">
-	<h2>Licensed wholesale operations</h2>
+	<h2>Fully licensed and compliant operations</h2>
 	<ul>
 		<li><strong>FCC Non-Interconnected VoIP Provider</strong> — Form 499 registered.</li>
 		<li><strong>Competitive Local Exchange Carrier (CLEC)</strong> status.</li>
@@ -63,30 +68,6 @@ description: "Wholesale Voice Calling with origination, termination, VoiceML cal
 		<li><strong>STIR/SHAKEN attestation</strong> on every call.</li>
 		<li><strong>Operating continuously since 1999</strong> — twenty-seven years moving carrier traffic, one company, same engineering team.</li>
 	</ul>
-</section>
-
-<section class="section-block faq-block">
-	<h2>Voice FAQ</h2>
-	<details class="faq-item">
-		<summary>Can existing Twilio voice applications migrate?</summary>
-		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Does VoiceTel provide speech services directly?</summary>
-		<p>Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. BYO services include:</p>
-		<ul>
-			<li>OpenAI TTS</li>
-			<li>Amazon Polly</li>
-			<li>Google Cloud TTS</li>
-			<li>ElevenLabs</li>
-			<li>Azure Cognitive Services</li>
-		</ul>
-		<p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>
-	</details>
-	<details class="faq-item">
-		<summary>How are rates displayed?</summary>
-		<p>Current public rates are on the <a href="/pricing/">pricing page</a>, with a calculator that applies volume-tier discounts. Your customer portal displays the same rates plus any account-specific contract pricing.</p>
-	</details>
 </section>
 
 <aside class="cta-block" aria-labelledby="voice-cta-heading">

@@ -36,8 +36,8 @@ const categories = [
 			},
 			{
 				q: "Does VoiceTel provide speech services directly?",
-				a: "<p>Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. BYO services include:</p><ul><li>OpenAI TTS</li><li>Amazon Polly</li><li>Google Cloud TTS</li><li>ElevenLabs</li><li>Azure Cognitive Services</li></ul><p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>",
-				plain: "Speech services are positioned as configurable or bring-your-own unless a specific managed VoiceTel bundle is confirmed. BYO services include OpenAI TTS, Amazon Polly, Google Cloud TTS, ElevenLabs, and Azure Cognitive Services. VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.",
+				a: "<p>Bring your own speech provider. Supported integrations include:</p><ul><li>OpenAI TTS</li><li>Amazon Polly</li><li>Google Cloud TTS</li><li>ElevenLabs</li><li>Azure Cognitive Services</li></ul><p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>",
+				plain: "Bring your own speech provider. Supported integrations include OpenAI TTS, Amazon Polly, Google Cloud TTS, ElevenLabs, and Azure Cognitive Services. VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.",
 			},
 			{
 				q: "How are voice rates displayed?",

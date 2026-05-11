@@ -241,13 +241,13 @@
 		{
 			"key": "intro",
 			"isHero": true,
-			"tagline": "Programmable voice platform",
-			"title": "Run your Twilio app on VoiceTel.",
-			"description": "Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage. Point your existing voice URL at our endpoint and your <Say>, <Gather>, <Dial>, and <Record> work unchanged.",
-			"href": "/voiceml/migrate/",
-			"cta": "Migrate in 5 minutes",
-			"secondaryHref": "/voiceml/compatibility/",
-			"secondaryCta": "Compatibility matrix"
+			"tagline": "Wholesale telecommunications since 1999",
+			"title": "The carrier you build on.",
+			"description": "Programmable voice that runs your existing Twilio voice application without rewriting it. Wholesale origination and termination with line-item rates. Messaging with no platform tax. Twenty-seven years moving carrier traffic, one phone number for support.",
+			"href": "/pricing/",
+			"cta": "See the rates",
+			"secondaryHref": "/voiceml/migrate/",
+			"secondaryCta": "Run your Twilio app"
 		},
 		{
 			"key": "voiceml",

@@ -1,0 +1,120 @@
+---
+layout: layouts/page.njk
+permalink: /phone/applications/desktop/macos/
+title: "VoiceTel Phone for macOS — Install Guide & FAQ"
+description: "Download, install, and troubleshoot VoiceTel Phone on macOS (.dmg / .zip) for Apple Silicon and Intel Macs. Step-by-step setup, SHA-256 checksums, and FAQ."
+---
+
+<p class="eyebrow">VoiceTel Phone &middot; Desktop &middot; macOS</p>
+<h1>VoiceTel Phone for macOS.</h1>
+<p class="lede">Step-by-step guide for downloading, installing, and troubleshooting the macOS app (.dmg or .zip), for Apple Silicon and Intel Macs.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Sign Up</a>
+	<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
+</p>
+
+<section id="download" class="section-block">
+	<h2>1. Download</h2>
+	<p>Choose the build format that matches your Mac. If unsure, use the <strong>.dmg</strong> for your architecture.</p>
+
+	<div class="oss-cards">
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Apple Silicon (.dmg) &mdash; arm64</h3>
+			</header>
+			<p class="oss-card__description">Drag-and-drop installation. For M-series Macs.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6-arm64.dmg">Download .dmg</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Apple Silicon (.zip) &mdash; arm64</h3>
+			</header>
+			<p class="oss-card__description">Unzip and move the app to Applications.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6-arm64-mac.zip">Download .zip</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Intel Mac (.dmg) &mdash; x64</h3>
+			</header>
+			<p class="oss-card__description">Drag-and-drop installation. For Intel Macs.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.dmg">Download .dmg</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Intel Mac (.zip) &mdash; x64</h3>
+			</header>
+			<p class="oss-card__description">Unzip and move the app to Applications.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6-mac.zip">Download .zip</a></p>
+		</article>
+	</div>
+
+	<p><strong>SHA-256 checksums</strong></p>
+	<pre class="code-block" data-lang="sha256"><code>ae015853fdf2adab21b442494d00a530a35a64e30a7a3b1044c463fb1514ba4d  VoiceTel-3.5.6.dmg
+84f9d3ca97bb2e1efc961d40d9a87c5bcc633e228034ddc09bb0b28b0f5dc50b  VoiceTel-3.5.6-mac.zip
+e8303606c0dde9f35f5cfce4af6adf721fddc7862b4f524f3f0ea30df24a5117  VoiceTel-3.5.6-arm64.dmg
+9a5faad46e70638f3dcb3196c7686baf6b2bb06df38ef262eea3be4640fda90c  VoiceTel-3.5.6-arm64-mac.zip</code></pre>
+</section>
+
+<section id="verify" class="section-block">
+	<h2>2. Verify checksum (optional)</h2>
+	<p>Validate file integrity by comparing SHA-256 checksums.</p>
+	<ol>
+		<li>Open <code>Terminal</code>.</li>
+		<li>Run: <code>shasum -a 256 VoiceTel-3.5.6-arm64.dmg</code> (or whichever file you downloaded).</li>
+		<li>Compare the output with the value listed above.</li>
+	</ol>
+</section>
+
+<section id="install" class="section-block">
+	<h2>3. Install</h2>
+	<ol>
+		<li>Open the downloaded <strong>.dmg</strong>.</li>
+		<li>Drag <strong>VoiceTel Phone.app</strong> to the <strong>Applications</strong> folder. Eject the disk image when finished.</li>
+		<li>If macOS warns that the app is from the Internet on first launch, go to <em>System Settings &rarr; Privacy &amp; Security</em>, scroll to the security message for VoiceTel Phone, and click <em>Open Anyway</em>.</li>
+	</ol>
+</section>
+
+<section id="firstlaunch" class="section-block">
+	<h2>4. First launch</h2>
+	<ol>
+		<li>Open <strong>VoiceTel Phone</strong> from Applications.</li>
+		<li>Allow microphone access when prompted. If you missed the prompt, go to <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for <em>VoiceTel Phone</em>.</li>
+		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal.</li>
+	</ol>
+</section>
+
+<section id="faq" class="section-block faq-block">
+	<h2>FAQ</h2>
+	<details class="faq-item">
+		<summary>How do I uninstall VoiceTel Phone?</summary>
+		<p>Quit the app, open <em>Applications</em>, and drag <strong>VoiceTel Phone.app</strong> to the Trash.</p>
+	</details>
+	<details class="faq-item">
+		<summary>The app won't open after installation</summary>
+		<p>Right-click the app and choose <em>Open</em> to bypass Gatekeeper. You can also go to <em>System Settings &rarr; Privacy &amp; Security</em> and click <em>Open Anyway</em>.</p>
+	</details>
+	<details class="faq-item">
+		<summary>The microphone isn't working</summary>
+		<p>Ensure VoiceTel Phone has permission under <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em>. Also check <em>System Settings &rarr; Sound</em> for the correct input device.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Can I pre-configure the app for my users?</summary>
+		<p>Yes. Place <code>voicetel.json</code> under <code>~/Library/Application Support/VoiceTelPhone/</code> for user-level deployment, or <code>/Library/Application Support/VoiceTelPhone/</code> for system-wide deployment.</p>
+	</details>
+</section>
+
+<aside class="cta-block" aria-labelledby="phone-macos-cta-heading">
+	<h2 id="phone-macos-cta-heading">Need credentials first?</h2>
+	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Mac that needs to make calls.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free Trial</a>
+		<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
+	</p>
+</aside>

@@ -1,0 +1,60 @@
+---
+layout: layouts/page.njk
+permalink: /phone/applications/mobile/ios/
+title: "VoiceTel Phone for iPhone — Install Guide"
+description: "Sideload VoiceTel Phone on iPhone using Developer Mode and Apple Configurator 2 or Xcode. Step-by-step install guide for the signed .ipa from S3."
+---
+
+<p class="eyebrow">VoiceTel Phone &middot; Mobile &middot; iPhone</p>
+<h1>VoiceTel Phone for iPhone.</h1>
+<p class="lede">Until the App Store listing is live, install the signed <code>.ipa</code> using a Mac with Apple Configurator 2 or Xcode. Developer Mode is required on the device.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.ipa">Download .ipa</a>
+	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
+</p>
+
+<section id="developer-mode" class="section-block">
+	<h2>1. Enable Developer Mode on iPhone</h2>
+	<ol>
+		<li>Update iOS to the latest version.</li>
+		<li>Go to <strong>Settings &rarr; Privacy &amp; Security</strong>.</li>
+		<li>Scroll to <strong>Developer Mode</strong>, toggle it on, and restart.</li>
+	</ol>
+</section>
+
+<section id="mac-tools" class="section-block">
+	<h2>2. Install required software (Mac)</h2>
+	<ol>
+		<li>Install <strong>Apple Configurator 2</strong> from the Mac App Store (or <strong>Xcode</strong>).</li>
+		<li>Sign in with an Apple ID if prompted.</li>
+	</ol>
+</section>
+
+<section id="download" class="section-block">
+	<h2>3. Download the iOS binary</h2>
+	<ol>
+		<li>Download <a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.ipa">VoiceTel-3.5.6.ipa</a>.</li>
+		<li>Verify SHA-256: <code>7fb52ca52a98c4b1eff67c138d52c933b0d1b8735d953e85a60a57bd036948ba</code></li>
+	</ol>
+</section>
+
+<section id="install" class="section-block">
+	<h2>4. Install the IPA</h2>
+	<ol>
+		<li>Connect the iPhone via USB and unlock it.</li>
+		<li>Open <strong>Apple Configurator 2</strong> and drag the <code>.ipa</code> onto the device. Alternatively, in <strong>Xcode &rarr; Window &rarr; Devices and Simulators</strong>, select your device and press <strong>+</strong> to add the <code>.ipa</code>.</li>
+		<li>On first launch, if prompted, go to <strong>Settings &rarr; General &rarr; VPN &amp; Device Management</strong> and trust the developer app.</li>
+	</ol>
+	<div class="alert alert-info" role="note">
+		<p><strong>Note:</strong> Installing an <code>.ipa</code> requires a valid provisioning profile. If you encounter signing errors, contact your administrator for an enterprise or TestFlight build.</p>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="phone-ios-cta-heading">
+	<h2 id="phone-ios-cta-heading">Need credentials first?</h2>
+	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every iPhone that needs to make calls.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free Trial</a>
+		<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
+	</p>
+</aside>

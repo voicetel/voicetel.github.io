@@ -3,7 +3,7 @@
 	"updated": "2026-05-08",
 	"brand": "VoiceTel",
 	"legalName": "VoiceTel Communications",
-	"tagline": "Licensed Wholesale Telecommunication Services",
+	"tagline": "Providing Services since 1999",
 	"description": "Run your Twilio app on VoiceTel. Same voice markup. Same webhook signatures. Up to 30% less on list rates, with volume discounts that scale with usage.",
 	"lang": "en",
 	"url": "https://voicetel.com",
@@ -11,7 +11,7 @@
 	"loginUrl": "https://www.voicetel.com/?login",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
-	"phoneUrl": "https://phone.voicetel.com",
+	"phoneUrl": "/phone/applications/",
 	"supportEmail": "support@voicetel.com",
 	"webEmails": {
 		"compliance": "compliance+ws@voicetel.com",
@@ -97,7 +97,7 @@
 					"description": "LRN, MNP, and carrier of record lookups."
 				},
 				{
-					"label": "Phone Applications",
+					"label": "Applications",
 					"icon": "phone-vibrate",
 					"href": "/phone/",
 					"description": "VoIP calling on web, desktop, mobile."
@@ -213,7 +213,7 @@
 				{ "label": "Hosted PBX", "href": "/pbx/" },
 				{ "label": "Caller Lookup", "href": "/caller-lookup/" },
 				{ "label": "Carrier Lookup", "href": "/carrier-lookup/" },
-				{ "label": "Phone Applications", "href": "/phone/" },
+				{ "label": "Applications", "href": "/phone/" },
 				{ "label": "SDN Appliance", "href": "/sdn/" }
 			]
 		},
@@ -296,6 +296,14 @@
 			"description": "VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. WebRTC media. One app, three form factors.",
 			"href": "/phone/",
 			"cta": "Get the app"
+		},
+		{
+			"key": "applications",
+			"title": "Applications",
+			"tagline": "Pick your platform",
+			"description": "Download the VoiceTel Phone client for the platform you need: web (no install), Windows / macOS / Linux desktop, or iPhone / Android mobile. Every install guide on one page.",
+			"href": "/phone/applications/",
+			"cta": "View applications"
 		},
 		{
 			"key": "pricing",

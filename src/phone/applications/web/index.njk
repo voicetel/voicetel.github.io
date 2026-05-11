@@ -1,0 +1,203 @@
+---
+layout: layouts/page.njk
+permalink: /phone/applications/web/
+title: "VoiceTel Phone — Web client"
+description: "Browser-based VoIP calling for VoiceTel — SIP over WebSocket, WebRTC media. Sign in with your VoiceTel SIP credentials and place a call from any modern browser."
+eleventyExcludeFromCollections: true
+---
+
+<link rel="stylesheet" href="/assets/css/phone-web.css">
+
+<p class="eyebrow">VoiceTel Phone &middot; Web</p>
+<h1>Calling in the browser. No install.</h1>
+<p class="lede">Sign in below with your VoiceTel SIP credentials and place a call. The web client runs entirely in the browser using SIP-over-WebSocket signaling and WebRTC media — useful for quick calls, lightweight setups, and any environment where installing a desktop or mobile app isn't an option. Everything is stored in your browser, 100%.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Sign Up</a>
+	<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
+</p>
+
+<div class="phone-app">
+	<div class="container">
+		<div class="header">
+			<div class="header-buttons">
+				<button class="header-toggle active" onclick="showPhone()" title="Phone">📞</button>
+				<button class="header-toggle" onclick="showHistory()" title="Call History">📜</button>
+				<button class="header-toggle" onclick="showLog()" title="Event Log">📋</button>
+				<button class="header-toggle" onclick="showSettings()" title="Settings">⚙️</button>
+			</div>
+			<h1><span class="phone-app__logo" aria-hidden="true">{% icon "phone-square" %}</span> VoiceTel</h1>
+			<div id="status" class="status">Disconnected</div>
+		</div>
+
+		<div class="content">
+			<div class="section config-section" id="configSection">
+				<h2>Settings</h2>
+
+				<div class="button-group" style="margin-bottom: 25px;">
+					<button id="registerBtn" class="btn-primary" onclick="register()">Register</button>
+					<button id="unregisterBtn" class="btn-secondary" onclick="unregister()" disabled>Unregister</button>
+				</div>
+				<input type="hidden" id="sipServer" value="">
+
+				<div class="form-group">
+					<label>
+						Username
+						<small style="color: var(--text-muted)">Must be exactly 10 digits (your phone number)</small>
+					</label>
+					<input type="tel" id="username" placeholder="e.g. 5551234567" maxlength="10" pattern="[0-9]{10}" required inputmode="numeric">
+					<small id="usernameError" style="color: var(--error-color); display: none; margin-top: 5px;">
+						Username must be exactly 10 numeric digits
+					</small>
+				</div>
+
+				<div class="form-group">
+					<label>Password</label>
+					<input type="password" id="password" placeholder="password">
+				</div>
+
+				<div class="form-group">
+					<label>Display Name</label>
+					<input type="text" id="displayName" placeholder="Your Name">
+				</div>
+
+				<div class="form-group">
+					<label>
+						Caller ID Number
+						<small style="color: var(--text-muted)">Optional — North American format only (10 digits)</small>
+					</label>
+					<input type="tel" id="callerID" placeholder="e.g. 8005551234" maxlength="10" pattern="[2-9][0-9]{2}[2-9][0-9]{6}" inputmode="numeric">
+					<small id="callerIDError" style="color: var(--error-color); display: none; margin-top: 5px;">
+						Please enter a valid 10-digit North American phone number
+					</small>
+				</div>
+
+				<div class="form-group" style="background: var(--light-bg); padding: 15px; border-radius: var(--radius); margin-top: 20px;">
+					<label style="display: flex; align-items: center; cursor: pointer; color: var(--primary-light); font-weight: 600;">
+						<input type="checkbox" id="saveCredentials" style="width: auto; margin-right: 8px;">
+						Save credentials
+					</label>
+					<small style="color: var(--text-muted); display: block; margin-top: 8px;">
+						💾 Credentials are saved in local storage
+					</small>
+
+					<label style="display: flex; align-items: center; cursor: pointer; color: var(--primary-light); font-weight: 600; margin-top: 20px;">
+						<input type="checkbox" id="registerOnStartup">
+						<span>Register automatically</span>
+					</label>
+					<small style="color: var(--text-muted); display: block; margin-top: 8px;">
+						🤖 Register automatically on startup
+					</small>
+
+					<div class="storage-info" style="display: none;" id="storageInfo">
+						Settings saved locally on this device
+					</div>
+
+					<button class="btn-secondary" onclick="clearAllData()" style="margin-top: 10px; padding: 8px 16px; font-size: 12px;">
+						Clear All Saved Data
+					</button>
+				</div>
+			</div>
+
+			<div class="section hideable" id="callSection">
+				<div id="incomingCall" class="incoming-call">
+					<div style="text-align: center; font-size: 32px; margin-bottom: 10px;">📞</div>
+					<div class="incoming-caller" id="incomingCallerName">Incoming Call</div>
+					<div class="incoming-number" id="incomingCallerNumber">Unknown Number</div>
+					<div class="incoming-buttons">
+						<button class="btn-answer" onclick="answerCall()">✔ Answer</button>
+						<button class="btn-decline" onclick="declineCall()">✗ Decline</button>
+					</div>
+					<div style="text-align: center; margin-top: 10px; font-size: 11px; opacity: 0.8;">
+						Press Enter to answer • Escape to decline
+					</div>
+				</div>
+
+				<div class="form-group">
+					<input type="text" id="callNumber" placeholder="Enter number to dial / DTMF during call" inputmode="numeric">
+				</div>
+
+				<div class="dialpad">
+					<button onclick="appendNumber('1')">1</button>
+					<button onclick="appendNumber('2')">2</button>
+					<button onclick="appendNumber('3')">3</button>
+					<button onclick="appendNumber('4')">4</button>
+					<button onclick="appendNumber('5')">5</button>
+					<button onclick="appendNumber('6')">6</button>
+					<button onclick="appendNumber('7')">7</button>
+					<button onclick="appendNumber('8')">8</button>
+					<button onclick="appendNumber('9')">9</button>
+					<button onclick="appendNumber('*')">*</button>
+					<button onclick="appendNumber('0')">0</button>
+					<button onclick="appendNumber('#')">#</button>
+				</div>
+
+				<div class="form-group" style="margin-top: 15px;">
+					<label style="display: flex; align-items: center; cursor: pointer;">
+						<input type="checkbox" id="hideCallerID" style="width: auto; margin-right: 8px;">
+						Hide Caller ID (Privacy)
+					</label>
+				</div>
+
+				<div class="button-group">
+					<button id="callBtn" class="btn-success" onclick="makeCall()" disabled>📞 Call</button>
+					<button class="btn-secondary" onclick="clearNumber()">Clear</button>
+				</div>
+
+				<div id="callControls" class="call-controls">
+					<div class="call-info">
+						<div id="callStatus">Call in progress</div>
+						<div id="callDuration">00:00</div>
+					</div>
+					<div id="ringingIndicator">🔔 Ringing...</div>
+					<div class="button-group" style="max-width: 300px; margin: 0 auto;">
+						<button id="muteBtn" class="btn-secondary" onclick="toggleMute()">Mute</button>
+						<button id="hangupBtn" class="btn-danger" onclick="hangup()">Hang Up</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="section log-section" id="logSection">
+				<h2>Event Log</h2>
+				<div id="log" class="log"></div>
+				<div style="text-align: center; margin-top: 10px; color: var(--text-muted); font-size: 12px;">
+					WebSocket: Loading… | SIP Domain: Loading…
+				</div>
+
+				<details style="margin-top: 15px; padding: 10px; background: var(--light-bg); border-radius: var(--radius);">
+					<summary style="cursor: pointer; color: var(--primary-light); font-weight: 600;">
+						⚠️ Troubleshooting Tips
+					</summary>
+					<div style="margin-top: 10px; font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+						<ul style="margin-left: 20px;">
+							<li>Ensure microphone permissions are granted</li>
+							<li>Try using Chrome or Firefox (latest versions)</li>
+							<li>Check that your firewall allows WebRTC traffic</li>
+							<li>Disable VPN if you're using one</li>
+						</ul>
+						<p style="margin-top: 10px;">
+							<strong>Need assistance? Contact the <a id="supportEmailPhone" href="#">VoiceTel Support Team</a></strong>
+						</p>
+					</div>
+				</details>
+			</div>
+
+			<div class="section log-section" id="historySection">
+				<h2>Call History</h2>
+				<div id="callHistory" class="log"></div>
+				<div class="history-actions" style="display: flex; gap: 10px; margin-top: 12px;">
+					<button class="btn-secondary" onclick="clearHistory()">Clear History</button>
+					<button class="btn-secondary" onclick="renderCallHistory()">Refresh</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="audio-container">
+			<audio id="remoteAudio" autoplay></audio>
+			<audio id="localAudio" autoplay muted></audio>
+		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sip.js@0.15.11/dist/sip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+<script src="/assets/js/phone-web.js"></script>

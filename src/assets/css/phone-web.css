@@ -1,0 +1,364 @@
+.phone-app * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+.phone-app {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	padding: var(--space-5) var(--space-4);
+	font-family: var(--font-sans);
+	color: var(--text-default);
+}
+.phone-app .container {
+	background: var(--paper);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-lg);
+	max-width: 500px;
+	width: 100%;
+	overflow: hidden;
+}
+.phone-app .header {
+	background: var(--primary-color);
+	color: white;
+	padding: 30px;
+	text-align: left;
+	position: relative;
+}
+.phone-app .header h1 {
+	color: white;
+	font-size: 28px;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.phone-app__logo {
+	display: inline-flex;
+	width: 32px;
+	height: 32px;
+	color: white;
+}
+.phone-app__logo svg {
+	width: 100%;
+	height: 100%;
+	fill: currentColor;
+}
+.phone-app .status {
+	display: inline-block;
+	padding: 5px 15px;
+	border-radius: var(--radius);
+	background: rgba(255, 255, 255, 0.2);
+	font-size: 14px;
+	margin-top: 10px;
+}
+.phone-app .status.registered {
+	background: rgba(76, 175, 80, 0.3);
+}
+.phone-app .header-buttons {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	display: flex;
+	gap: 8px;
+}
+.phone-app .header-toggle {
+	background: rgba(255, 255, 255, 0.2);
+	border: none;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px;
+	transition: all 0.3s;
+}
+.phone-app .header-toggle:hover {
+	background: rgba(255, 255, 255, 0.3);
+	transform: rotate(90deg);
+}
+.phone-app .header-toggle.active {
+	background: rgba(255, 255, 255, 0.4);
+}
+.phone-app .content {
+	padding: 30px;
+}
+.phone-app .section {
+	margin-bottom: 25px;
+}
+.phone-app .section.config-section {
+	max-height: 0;
+	overflow: hidden;
+	transition:
+		max-height 0.4s ease-out,
+		margin-bottom 0.4s ease-out;
+	margin-bottom: 0;
+}
+.phone-app .section.config-section.visible {
+	max-height: 1000px;
+	margin-bottom: 25px;
+}
+.phone-app .section.log-section {
+	max-height: 0;
+	overflow: hidden;
+	transition:
+		max-height 0.4s ease-out,
+		margin-bottom 0.4s ease-out;
+	margin-bottom: 0;
+}
+.phone-app .section.log-section.visible {
+	max-height: 800px;
+	margin-bottom: 25px;
+}
+.phone-app #historySection.visible {
+	margin-bottom: 25px;
+}
+.phone-app #callSection.visible {
+	display: block;
+}
+.phone-app #historySection .log {
+	padding: 20px;
+	max-height: 260px;
+	border-radius: var(--radius);
+}
+.phone-app .contact-item {
+	padding: 16px 20px;
+	border-bottom: 1px solid var(--border-color);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	background: var(--paper);
+}
+.phone-app .contact-item:hover {
+	background-color: #f8f9fa;
+	transform: translateX(2px);
+}
+.phone-app .contact-item:last-child {
+	border-bottom: none;
+}
+.phone-app .contact-item:active {
+	background-color: #e9ecef;
+}
+.phone-app #historySection .log-entry {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+	padding: 10px 12px;
+	margin-bottom: 8px;
+	background: var(--paper);
+	border-radius: 8px;
+}
+.phone-app .section.hideable {
+	display: block;
+	transition: opacity 0.3s ease-out;
+}
+.phone-app .section.hideable.hidden {
+	display: none;
+}
+.phone-app .section h2 {
+	font-size: 18px;
+	color: var(--text-default);
+	margin-bottom: 15px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--border-color);
+}
+.phone-app .form-group {
+	margin-bottom: 15px;
+}
+.phone-app .form-group label {
+	display: block;
+	margin-bottom: 5px;
+	color: var(--text-muted);
+	font-size: 14px;
+}
+.phone-app .form-group label small {
+	font-weight: normal;
+	display: block;
+	margin-top: 2px;
+}
+.phone-app .form-group input[type="checkbox"] {
+	width: auto;
+	margin-right: 8px;
+}
+.phone-app .form-group input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	font-size: 14px;
+	transition: border-color 0.3s;
+}
+.phone-app .form-group input:focus {
+	outline: none;
+	border-color: var(--primary-light);
+}
+.phone-app .button-group {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+}
+.phone-app button {
+	flex: 1;
+	padding: 12px 20px;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.phone-app .btn-primary {
+	background: var(--primary-color);
+	color: white;
+}
+.phone-app .btn-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow);
+}
+.phone-app .btn-success {
+	background: var(--success-color);
+	color: white;
+}
+.phone-app .btn-danger {
+	background: var(--error-color);
+	color: white;
+}
+.phone-app .btn-secondary {
+	background: var(--border-color);
+	color: var(--text-default);
+}
+.phone-app button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+.phone-app .call-controls {
+	display: none;
+	text-align: center;
+	padding: 20px;
+	background: var(--light-bg);
+	border-radius: var(--radius);
+	margin-top: 20px;
+}
+.phone-app .call-controls.active {
+	display: block;
+}
+.phone-app .call-info {
+	font-size: 16px;
+	color: var(--text-muted);
+	margin-bottom: 15px;
+}
+.phone-app .dialpad {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+	max-width: 250px;
+	margin: 20px auto;
+}
+.phone-app .dialpad button {
+	aspect-ratio: 1;
+	font-size: 20px;
+	background: var(--paper);
+	border: 1px solid var(--border-color);
+	color: var(--text-default);
+}
+.phone-app .dialpad button:hover {
+	background: var(--border-color);
+	transform: none;
+	box-shadow: none;
+}
+.phone-app #callNumber {
+	text-align: center;
+	font-size: 18px;
+	margin-bottom: 10px;
+	font-family: monospace;
+}
+.phone-app .log {
+	background: var(--light-bg);
+	border-radius: 8px;
+	padding: 15px;
+	max-height: 150px;
+	overflow-y: auto;
+	font-family: monospace;
+	font-size: 12px;
+	color: var(--text-muted);
+}
+.phone-app .log-entry {
+	margin-bottom: 5px;
+	padding: 5px;
+	background: var(--paper);
+	border-radius: 4px;
+}
+.phone-app .audio-container {
+	display: none;
+}
+.phone-app .incoming-call {
+	display: none;
+	background: var(--success-color);
+	color: white;
+	padding: 20px;
+	border-radius: var(--radius);
+	margin-bottom: 20px;
+	animation: pulse 1.5s infinite;
+}
+.phone-app .incoming-call.active {
+	display: block;
+}
+.phone-app .incoming-caller {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	text-align: center;
+}
+.phone-app .incoming-number {
+	font-size: 16px;
+	margin-bottom: 15px;
+	text-align: center;
+	opacity: 0.9;
+}
+.phone-app .incoming-buttons {
+	display: flex;
+	gap: 10px;
+}
+.phone-app .btn-answer {
+	background: var(--paper);
+	color: var(--success-color);
+	flex: 1;
+}
+.phone-app .btn-answer:hover {
+	background: var(--border-color);
+}
+.phone-app .btn-decline {
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
+	flex: 1;
+}
+.phone-app .btn-decline:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+.phone-app .storage-info {
+	background: #e3f2fd;
+	border: 1px solid #90caf9;
+	border-radius: 8px;
+	padding: 10px;
+	margin-top: 10px;
+	font-size: 12px;
+	color: var(--primary-light);
+}
+.phone-app .history-call {
+	color: var(--primary-light);
+	text-decoration: none;
+	cursor: pointer;
+}
+.phone-app .history-call:hover {
+	text-decoration: underline;
+}
+.phone-app #ringingIndicator {
+	display: none;
+	font-size: 18px;
+	color: var(--primary-light);
+	margin: 10px 0;
+}

@@ -1,0 +1,121 @@
+---
+layout: layouts/page.njk
+permalink: /phone/applications/desktop/linux/
+title: "VoiceTel Phone for Linux — Install Guide & FAQ"
+description: "Download, install, and troubleshoot VoiceTel Phone on Linux (AppImage / .deb / .rpm). Step-by-step setup, SHA-256 checksums, first-launch walkthrough, and FAQ."
+---
+
+<p class="eyebrow">VoiceTel Phone &middot; Desktop &middot; Linux</p>
+<h1>VoiceTel Phone for Linux.</h1>
+<p class="lede">Step-by-step guide for downloading, installing, and troubleshooting the Linux app (AppImage, .deb, .rpm).</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Sign Up</a>
+	<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
+</p>
+
+<section id="download" class="section-block">
+	<h2>1. Download</h2>
+	<p>Pick the package that matches your distro. If you're unsure, use the <strong>AppImage</strong>.</p>
+
+	<div class="oss-cards">
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">AppImage</h3>
+			</header>
+			<p class="oss-card__description">Portable. Runs across most distros without installation.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.AppImage">Download .AppImage</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Debian / Ubuntu (.deb)</h3>
+			</header>
+			<p class="oss-card__description">Integrates with APT and the system menu.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.deb">Download .deb</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "layers" %}</span>
+				<h3 class="oss-card__title">Fedora / Red Hat (.rpm)</h3>
+			</header>
+			<p class="oss-card__description">Integrates with DNF/yum and the system menu.</p>
+			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.rpm">Download .rpm</a></p>
+		</article>
+	</div>
+
+	<p><strong>SHA-256 checksums</strong></p>
+	<pre class="code-block" data-lang="sha256"><code>09a68cb1bd788ab37503d025b1f104c60caf14be148fb5e4e24d9a5cd3c91b8c  VoiceTel-3.5.6.AppImage
+b4d4a04fb580f6749e54cc185a600248a9f4c8f9b89cc7eb678b16d325c55c68  VoiceTel-3.5.6.deb
+5dd437bdc0ac70ddffcef386ee6834ea87457d440a42497078404615cbe98e46  VoiceTel-3.5.6.rpm</code></pre>
+</section>
+
+<section id="verify" class="section-block">
+	<h2>2. Verify checksum (optional)</h2>
+	<p>Validate file integrity by comparing SHA-256 checksums.</p>
+	<ol>
+		<li>Open your terminal.</li>
+		<li>Run: <code>sha256sum VoiceTel-3.5.6.AppImage</code> (or whichever file you downloaded).</li>
+		<li>Compare the output with the value listed above.</li>
+	</ol>
+</section>
+
+<section id="install" class="section-block">
+	<h2>3. Install</h2>
+	<h3>AppImage</h3>
+	<ol>
+		<li>Right-click the file &rarr; <em>Properties</em> &rarr; <em>Permissions</em>.</li>
+		<li>Enable <em>Allow executing file as program</em>.</li>
+		<li>Double-click to launch (optional: move to <code>~/Applications</code>).</li>
+	</ol>
+	<h3>Debian / Ubuntu</h3>
+	<ol>
+		<li>Open Terminal in the download directory.</li>
+		<li>Run <code>sudo apt install ./VoiceTel-3.5.6.deb</code>.</li>
+	</ol>
+	<h3>Fedora / Red Hat</h3>
+	<ol>
+		<li>Open Terminal in the download directory.</li>
+		<li>Run <code>sudo rpm -i VoiceTel-3.5.6.rpm</code>.</li>
+	</ol>
+</section>
+
+<section id="firstlaunch" class="section-block">
+	<h2>4. First launch</h2>
+	<ol>
+		<li>Start <strong>VoiceTel Phone</strong> from your app launcher.</li>
+		<li>Allow microphone access if your desktop environment prompts for it.</li>
+		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal.</li>
+	</ol>
+</section>
+
+<section id="faq" class="section-block faq-block">
+	<h2>FAQ</h2>
+	<details class="faq-item">
+		<summary>How do I uninstall?</summary>
+		<p><strong>AppImage:</strong> delete the file. <strong>Debian / Ubuntu:</strong> <code>sudo apt remove voicetel-phone</code>. <strong>Fedora / Red Hat:</strong> <code>sudo rpm -e voicetel-phone</code>.</p>
+	</details>
+	<details class="faq-item">
+		<summary>No audio device or PipeWire issues</summary>
+		<p>Verify PulseAudio or PipeWire is running and select the correct input/output device in your system sound settings.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Wayland screen sharing</summary>
+		<p>Install <code>xdg-desktop-portal</code> and your desktop-environment-specific portal (e.g. <code>xdg-desktop-portal-gnome</code> or <code>-kde</code>).</p>
+	</details>
+	<details class="faq-item">
+		<summary>Pre-seed configuration</summary>
+		<p>User: <code>~/.config/VoiceTelPhone/voicetel.json</code> &middot; System-wide: <code>/etc/VoiceTelPhone/voicetel.json</code>.</p>
+	</details>
+</section>
+
+<aside class="cta-block" aria-labelledby="phone-linux-cta-heading">
+	<h2 id="phone-linux-cta-heading">Need credentials first?</h2>
+	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Linux workstation that needs to make calls.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign Up</a>
+		<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
+	</p>
+</aside>

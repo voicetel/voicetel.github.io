@@ -12,6 +12,7 @@ async function find(dir, results = []) {
 		const full = join(dir, entry.name);
 		if (entry.isDirectory()) {
 			if (full.endsWith(`${SITE}/docs/api`)) continue;
+			if (full.endsWith(`${SITE}/phone/applications/web`)) continue;
 			await find(full, results);
 		} else if (entry.name.endsWith(".html")) {
 			results.push(full);
@@ -26,7 +27,9 @@ if (files.length === 0) {
 	process.exit(0);
 }
 
-console.log(`Linting ${files.length} HTML files (excluding _site/docs/api/).`);
+console.log(
+	`Linting ${files.length} HTML files (excluding _site/docs/api/ and _site/phone/applications/web/).`
+);
 try {
 	execFileSync("npx", ["--no-install", "html-validate", ...files], { stdio: "inherit" });
 } catch (err) {

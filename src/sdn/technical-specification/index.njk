@@ -1,0 +1,119 @@
+---
+layout: layouts/page.njk
+permalink: /sdn/technical-specification/
+title: "VoiceTel SDN Appliance — Technical Specification"
+description: "Technical specification for the VoiceTel VoIP SDN Appliance: hardware requirements, LAN requirements, installation, image download with MD5 sums, authentication, DID routing, and Asterisk / FreePBX / FreeSWITCH / FusionPBX configuration."
+---
+
+<p class="eyebrow">SDN Appliance &middot; Technical Specification</p>
+<h1>VoIP Software-Defined Networking Appliance.</h1>
+<p class="lede">The VoiceTel SDN Appliance intelligently controls the network from the end-user's LAN and delivers unobstructed communications to the VoiceTel core, with optional in-call High Availability (HA). This is the white paper, requirements, installation, and configuration reference.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Sign Up</a>
+	<a class="btn btn-secondary" href="/sdn/">SDN appliance overview</a>
+</p>
+
+<figure class="product-figure product-figure--left product-figure--sm">
+	<img src="/assets/img/sdn-rpi.jpg" alt="VoiceTel SDN appliance — a small Raspberry Pi-form-factor device" width="600" height="401" loading="lazy">
+	<figcaption>The VoiceTel SDN appliance — Raspberry Pi form factor, deploys alongside any PBX or SBC.</figcaption>
+</figure>
+
+<section class="section-block">
+	<h2>Problem</h2>
+	<p>Firewalls are devices that inhibit or prevent the flow of IP communications. When not optimally configured, they can cause:</p>
+	<ul>
+		<li>Dropped calls</li>
+		<li>No audio</li>
+		<li>One-way audio</li>
+		<li>Unclear audio</li>
+		<li>Rejected calls</li>
+	</ul>
+	<p>Even perfectly configured end-user firewalls can occasionally suffer from these issues, since network assets beyond the end-user's control — routers, modems, upstream policies — can affect IP communications.</p>
+</section>
+
+<section class="section-block">
+	<h2>Background</h2>
+	<p>VoiceTel provides free end-user support to address firewall and traversal issues. However, each hardware vendor is unique and there is no standard for configuration options or naming conventions. Some firewalls also react in unexpected ways across firmware and model variations, making proper configuration of unobstructed IP communications challenging.</p>
+</section>
+
+<section class="section-block">
+	<h2>Solution</h2>
+	<p>VoiceTel offers a VoIP SDN Appliance as a service to address obstructed IP communications. The appliance is placed in the end-user's LAN and automatically establishes an encrypted IP tunnel to the VoiceTel infrastructure. The end-user VoIP infrastructure registers directly to the appliance and benefits from unfettered connectivity without any modification of LAN routing policies. Optionally, the appliance follows intelligent routing to maintain in-call HA when redundant connectivity exists, for full Business Continuity Management (BCM).</p>
+</section>
+
+<section class="section-block">
+	<h2>Requirements</h2>
+	<h3>Hardware</h3>
+	<ol>
+		<li>Raspberry Pi 3 Model B+ or newer.</li>
+		<li>8 GB or larger MicroSD card.</li>
+	</ol>
+
+	<h3>LAN</h3>
+	<p>The VoiceTel VoIP SDN appliance minimally requires that the end-user's LAN have:</p>
+	<ul>
+		<li>DHCP enabled</li>
+		<li>Allow outbound connections</li>
+		<li>UDP timeouts greater than 10 seconds</li>
+		<li>The appliance is located on the <strong>same</strong> LAN as your endpoint</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Installation</h2>
+	<p>Download and write the image to your MicroSD card. Once complete, place the card into the appliance and boot the device. We must authorize the appliance's MAC address to connect to our network, so <a href="/contact/">contact us</a> after the device has been booted for the first time. You can optionally purchase a preconfigured and authorized device that ships ready to deploy. If you don't already have an account, <a href="/signup/">sign up here</a>.</p>
+
+	<h3>Download Image</h3>
+	<p><a href="http://sdn.voicetel.com/_static/sdn.zip">Download</a> the VoiceTel VoIP SDN image.</p>
+
+	<h3>Verify MD5 Sums</h3>
+	<pre class="code-block" data-lang="md5"><code>8e1a4d6b8bda4c44d8e33922868b16b6  sdn.img
+93827769dd93abc1e8f641ca532a6567  sdn.zip</code></pre>
+
+	<h3>Write Image</h3>
+	<p>Write the image to the 8 GB or larger MicroSD card using the platform-appropriate tool:</p>
+	<ul>
+		<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/mac.md">macOS instructions</a></li>
+		<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/windows.md">Windows instructions</a></li>
+		<li><a href="https://www.raspberrypi.org/documentation/installation/installing-images/linux.md">Linux instructions</a></li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Configuration</h2>
+
+	<h3>Authentication</h3>
+	<p>The endpoint must register to the LAN address of the SDN appliance using Digest authentication.</p>
+	<p>Portal &rarr; <code>Settings</code> &rarr; <code>Authentication</code> &rarr; <code>Digest</code></p>
+
+	<h3>DID Routing</h3>
+	<p>Routing of a DID can be one of the following:</p>
+	<ul>
+		<li><strong>User:</strong> sends the call to the account username.</li>
+		<li><strong>SDN:</strong> sends the call to the DID number.</li>
+	</ul>
+	<p>Portal &rarr; <code>Settings</code> &rarr; <code>DID</code></p>
+
+	<h3>Asterisk</h3>
+	<p>Change <code>allowguest=yes</code> in the <code>[general]</code> section of <code>sip.conf</code>. Then run:</p>
+	<pre class="code-block" data-lang="bash"><code>asterisk -rx 'sip reload'</code></pre>
+
+	<h3>FreePBX</h3>
+	<p>Change <strong>Allow Anonymous Inbound Calls</strong> to <strong>Yes</strong> in the Asterisk SIP Settings module, then click <strong>Apply Config</strong>.</p>
+
+	<h3>FreeSWITCH</h3>
+	<p>Add the IP address of the appliance as an <code>allow node</code> in the <code>domains</code> list of <code>acl.conf.xml</code>. Then run:</p>
+	<pre class="code-block" data-lang="bash"><code>fs_cli -x 'reloadacl'</code></pre>
+
+	<h3>FusionPBX</h3>
+	<p>Go to <code>Advanced</code> &rarr; <code>Access Controls</code>. Click the <strong>edit</strong> icon for <code>domains</code>. Under <code>nodes</code>, click the <strong>plus</strong> icon and then <strong>save</strong>. Go to <code>Status</code> &rarr; <code>SIP Status</code> and click <strong>reloadacl</strong>.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="sdn-spec-cta-heading">
+	<h2 id="sdn-spec-cta-heading">Ready to deploy?</h2>
+	<p>The SDN appliance is <strong>$10 per appliance per month</strong>, billed alongside your VoiceTel account. Volume discounts apply at scale. It's the most useful RPi you'll ever buy.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign Up</a>
+		<a class="btn btn-secondary" href="/sdn/">SDN appliance overview</a>
+	</p>
+</aside>

@@ -41,7 +41,7 @@ const categories = [
 			},
 			{
 				q: "How are voice rates displayed?",
-				a: "Current rates are displayed in the customer portal.",
+				a: 'Current public rates are on the <a href="/pricing/">pricing page</a>, with a calculator that applies volume-tier discounts. Your customer portal displays the same rates plus any account-specific contract pricing.',
 			},
 		],
 	},

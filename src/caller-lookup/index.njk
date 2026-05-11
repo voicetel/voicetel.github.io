@@ -43,6 +43,19 @@ description: "CNAM and caller-ID lookup services for inbound screening, customer
 	</ul>
 </section>
 
+<section class="section-block code-block-section">
+	<h2>API example</h2>
+	<p>Look up the caller-ID name for a phone number:</p>
+	<pre class="code-block" data-lang="bash"><code>curl -X POST https://api.voicetel.com/v2.1/info/cnam/ \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "apikey": "YOUR_API_KEY",
+    "cid": 2015551234
+  }'</code></pre>
+	<p>Full reference: <a href="/docs/api/info/#operation/cnam">Info API &rsaquo; CNAM</a>.</p>
+</section>
+
 <aside class="cta-block" aria-labelledby="caller-lookup-cta-heading">
 	<h2 id="caller-lookup-cta-heading">Run 100 numbers through it.</h2>
 	<p>Send a batch of test numbers through the API. See the data quality, latency, and unit cost on your own real numbers before integrating.</p>

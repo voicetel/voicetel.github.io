@@ -77,8 +77,8 @@
 			]
 		},
 		{
-			"label": "VoiceML",
-			"description": "Voice Calling markup runtime. Included free when used with Voice Calling minutes; billed at the per-minute Voice rate when used standalone (BYO carrier).",
+			"label": "Voice",
+			"description": "VoiceML markup runtime. Included free when used with Voice Calling minutes; billed at the per-minute Voice rate when used standalone (BYO carrier).",
 			"services": [
 				{
 					"id": "voiceml-out",

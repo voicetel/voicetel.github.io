@@ -1,0 +1,100 @@
+---
+layout: layouts/page.njk
+title: "Porting procedure: numbers in to VoiceTel"
+description: "How to port phone numbers to VoiceTel: what you'll need, what happens after you submit, common rejection reasons, and FOC timing."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/porting/">Porting</a> / Procedure</p>
+<h1>Porting procedure.</h1>
+<p class="lede">A clear walk-through of what we need from you, what we do after you submit, why ports get rejected, and how to keep service stable through the cutover. Most US ports complete inside a week once your data is correct.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="{{ site.portalUrl }}/lnp/">Open the LNP portal</a>
+	<a class="btn btn-secondary" href="/signup/">Sign Up</a>
+</p>
+
+<section class="section-block">
+	<h2>Start at the LNP portal</h2>
+	<p>Both port-in and port-out workflows live at <a href="{{ site.portalUrl }}/lnp/"><strong>{{ site.portalUrl | replace("https://", "") }}/lnp/</strong></a>. From the same portal you can:</p>
+	<ul>
+		<li><strong>Check portability</strong> for any number before opening a port — confirms whether the number can be moved to VoiceTel and surfaces any blockers up front.</li>
+		<li><strong>Submit a port-in request</strong> using the data below.</li>
+		<li><strong>Generate a port-out PIN</strong> for VoiceTel numbers you're moving to another carrier (see <a href="/support/voice/porting/port-out-pin/">Get a port-out PIN</a>).</li>
+	</ul>
+	<p>Running a portability check first saves a round trip if a number is locked, ineligible, or already in carrier-pool transition.</p>
+</section>
+
+<section class="section-block">
+	<h2>What we'll need from you</h2>
+	<p>Send us the following before we open the port. Anything missing or mismatched against your current carrier's records is the #1 reason ports get rejected.</p>
+	<ul>
+		<li><strong>The phone number(s) you want to port.</strong> E.164 format preferred (e.g. <code>+12015551234</code>).</li>
+		<li><strong>Current carrier name</strong> — whoever bills you for the number today.</li>
+		<li><strong>Account number</strong> with the current carrier.</li>
+		<li><strong>Account PIN or port-out PIN</strong> if your provider uses one. <strong>The PIN is critical — an incorrect or missing PIN is one of the most common causes of port rejection.</strong> Many wireless and VoIP providers require it. See <a href="/support/voice/porting/retrieving-pins/">retrieving PINs by carrier</a> for Verizon, T-Mobile, AT&amp;T, U.S. Cellular, Xfinity, Comcast, Cox, and Frontier procedures.</li>
+		<li><strong>Authorized signer</strong> — the name on the account, exactly as it appears on the bill.</li>
+		<li><strong>Service address</strong> — the address on file with the losing carrier (not necessarily your current mailing address).</li>
+		<li><strong>Billing telephone number (BTN)</strong> if different from the numbers being ported. Important for multi-number accounts.</li>
+		<li><strong>Business or residential</strong> account type.</li>
+		<li><strong>Desired port date.</strong> This is a request — the actual cutover date is set by the losing carrier (the FOC, see below).</li>
+		<li><strong>Service profile</strong> for the ported numbers: voice only, voice + SMS, MMS, fax, e911, CNAM, and the routing destination.</li>
+	</ul>
+	<p>If you have a <strong>recent bill</strong> or a <strong>Customer Service Record (CSR)</strong> from your current carrier, having either ready saves a round trip. The CSR is the gold standard because it shows the exact account name, BTN, and number list the losing carrier has on file.</p>
+</section>
+
+<section class="section-block">
+	<h2>What happens after you submit</h2>
+	<ol>
+		<li><strong>VoiceTel generates the Letter of Authorization (LOA).</strong> Once the port request is created in our workflow, the LOA is generated automatically from the data you provided. You don't need to prepare or send an LOA separately.</li>
+		<li><strong>You upload a recent bill.</strong> After the request is in, we ask for a recent bill copy from your current provider. This serves as proof of ownership and helps catch mismatches before the losing carrier sees them.</li>
+		<li><strong>VoiceTel verifies the LOA against your bill.</strong> If anything material disagrees — name, address, BTN, account number, signer, TN list — we pause, correct the data, and regenerate the LOA before the order moves on.</li>
+		<li><strong>You sign the LOA</strong> (only if the losing carrier requires it). We send it for signature; you review and return.</li>
+		<li><strong>VoiceTel files the order with the losing carrier.</strong> All required documents — signed LOA, bill, CSR if you provided one — go up with the order.</li>
+		<li><strong>The losing carrier issues an FOC.</strong> See below.</li>
+		<li><strong>Cutover and testing.</strong> On the FOC date, the number transfers. We test inbound, outbound, caller ID, and SMS as ordered, then close the ticket.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>FOC: when the port actually happens</h2>
+	<p><strong>FOC</strong> stands for <strong>Firm Order Commitment</strong>. It's the losing carrier's confirmed date and time for the port — and it's the only port date that's binding. Your <em>desired</em> port date is a request; the FOC is the commitment.</p>
+	<p>Typical FOC windows in the US:</p>
+	<ul>
+		<li>Local wireline numbers — usually 2 to 5 business days after a clean submission.</li>
+		<li>Wireless numbers — generally faster (sometimes same business day) once the PIN is confirmed.</li>
+		<li>Toll-free numbers — typically 4 to 7 business days; LOA documentation is usually mandatory.</li>
+		<li>Multi-carrier or multi-account orders — split into separate orders and each gets its own FOC.</li>
+	</ul>
+	<p>Once the FOC arrives, we schedule the cutover, prepare your routing on the VoiceTel side, and notify you of the exact date and time.</p>
+</section>
+
+<section class="section-block">
+	<h2>Don't cancel your old service</h2>
+	<p>Keep the losing carrier active until <strong>after</strong> we confirm the port is complete and tested. Cancelling early is the fastest way to lose your number entirely — the losing carrier may release the number to inventory, and at that point it can't be ported.</p>
+</section>
+
+<section class="section-block">
+	<h2>Common rejection reasons (and how to avoid them)</h2>
+	<p>If a port is rejected, the losing carrier will tell us why. Almost every rejection falls into one of these buckets:</p>
+	<ul>
+		<li><strong>Name mismatch.</strong> The authorized signer on the LOA doesn't match the carrier's records. Use the exact name shown on the bill.</li>
+		<li><strong>Service address mismatch.</strong> The service address on the LOA differs from the address on file. Some carriers store an old address even after you moved.</li>
+		<li><strong>Account number mismatch.</strong> A digit off. Double-check against the bill or call the losing carrier.</li>
+		<li><strong>Missing or incorrect PIN.</strong> Especially common for wireless and VoIP ports. Ask the losing carrier for the port-out PIN; it's often different from the customer-portal PIN.</li>
+		<li><strong>BTN mismatch.</strong> On multi-number accounts, the BTN listed on the LOA must match the actual billing telephone number for the account.</li>
+		<li><strong>Number not active.</strong> Suspended or cancelled numbers can't be ported until they're reinstated.</li>
+		<li><strong>Number not found on account.</strong> The number exists at the carrier but is on a different account. May need to be transferred internally first.</li>
+		<li><strong>Unauthorized signer.</strong> The person who signed the LOA isn't authorized on the account.</li>
+		<li><strong>Account freeze or port protection.</strong> Some carriers offer "port-out protection." It must be disabled by the customer through the losing carrier's portal or support before the port can proceed.</li>
+		<li><strong>Pending balance.</strong> Some carriers refuse to release numbers with an outstanding balance.</li>
+	</ul>
+	<p>If we get a rejection, we'll tell you the exact reason and the corrected information needed. A CSR from the losing carrier is the best way to settle conflicts — it shows their record exactly as they have it.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="porting-cta-heading">
+	<h2 id="porting-cta-heading">Ready to port?</h2>
+	<p>Open an account and send us the inventory you want to move — we'll model the port timeline against your business calendar before any LOA gets signed. E911 records are reissued before each port completes, not after.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign Up</a>
+		<a class="btn btn-secondary" href="/numbers/">Numbers overview</a>
+	</p>
+</aside>

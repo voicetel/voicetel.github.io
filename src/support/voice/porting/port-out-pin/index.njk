@@ -1,0 +1,56 @@
+---
+layout: layouts/page.njk
+title: "Get a port-out PIN for a VoiceTel number"
+description: "How to get the port-out PIN for a VoiceTel number you're moving to another carrier. Use the LNP portal at voicetel.com/lnp/, enter the numbers, validate, and click Update Pins."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/porting/">Porting</a> / Port-out PIN</p>
+<h1>Get a port-out PIN for a VoiceTel number.</h1>
+<p class="lede">If you're moving a number off VoiceTel to another carrier, the gaining carrier will ask for a port-out PIN to verify ownership. Generate the PIN yourself in the LNP portal — no support ticket needed.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="{{ site.portalUrl }}/lnp/">Open the LNP portal</a>
+	<a class="btn btn-secondary" href="/support/voice/porting/">Porting overview</a>
+</p>
+
+<div class="alert alert-info" role="note">
+	<p><strong>Every VoiceTel number is PIN-locked by default.</strong> No one can port a number off your account without the unique PIN you generate here. That's anti-slamming protection: an industry term for the unauthorized switching of phone service to another provider. PIN-locking every number means a slamming attempt fails at the carrier-validation step, before any cutover occurs.</p>
+</div>
+
+<section class="section-block">
+	<h2>Get the PIN</h2>
+	<ol>
+		<li>Open the LNP portal at <a href="{{ site.portalUrl }}/lnp/"><strong>{{ site.portalUrl | replace("https://", "") }}/lnp/</strong></a>.</li>
+		<li>Click the <strong>PIN</strong> tab.</li>
+		<li>Enter the phone numbers you're porting out, in <strong>10-digit format</strong>, one number per line.</li>
+		<li><strong>Validate</strong> each number — the portal confirms the number is in service on your VoiceTel account.</li>
+		<li>Click <strong>Update Pins</strong> to generate the PIN.</li>
+	</ol>
+	<p>The generated PIN is the value you give to the gaining carrier alongside your VoiceTel account number.</p>
+</section>
+
+<section class="section-block">
+	<h2>What the gaining carrier will need</h2>
+	<p>When you submit the port-out request to your new carrier, they'll typically ask for:</p>
+	<ul>
+		<li><strong>The phone number(s)</strong> being ported.</li>
+		<li><strong>VoiceTel account number</strong> — the account that owns the numbers.</li>
+		<li><strong>Port-out PIN</strong> — generated as above.</li>
+		<li><strong>Authorized signer</strong> — the name on the VoiceTel account.</li>
+		<li><strong>Service address</strong> — the address on file for the account.</li>
+		<li><strong>BTN</strong> (billing telephone number) — for multi-number accounts, the carrier may ask for the BTN of the account, not the individual TN being ported.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Don't cancel your VoiceTel service early</h2>
+	<p>Keep your VoiceTel account active until the gaining carrier confirms the port is complete. Cancelling first can release the number to the carrier-of-record pool, at which point the port can fail or the number can be lost entirely.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="port-out-pin-cta-heading">
+	<h2 id="port-out-pin-cta-heading">Need the procedure end-to-end?</h2>
+	<p>The full porting workflow — what gets validated on each side, FOC timing, and rejection handling — is on the porting procedure page.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="{{ site.portalUrl }}/lnp/">Open the LNP portal</a>
+		<a class="btn btn-secondary" href="/support/voice/porting/procedure/">Porting procedure</a>
+	</p>
+</aside>

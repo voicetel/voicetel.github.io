@@ -17,7 +17,7 @@ const categories = [
 		items: [
 			{
 				q: "Is VoiceTel only for developers?",
-				a: "No. VoiceTel serves developers, telecom engineers, operators, and business buyers across programmable voice, messaging, SIP trunking, numbers, hosted PBX, and phone applications.",
+				a: "No. VoiceTel serves developers, telecom engineers, operators, and business buyers across Voice Calling, messaging, SIP trunking, numbers, hosted PBX, and phone applications.",
 			},
 			{
 				q: "Do calculator inputs leave the browser?",

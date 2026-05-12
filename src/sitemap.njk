@@ -19,10 +19,10 @@ eleventyExcludeFromCollections: true
 	</url>
 {%- endif -%}
 {%- endfor %}
-{#- Hand-list the redoc-rendered API pages since they aren't Eleventy collections. -#}
-{%- for spec in ["voiceml", "account", "auth", "acl", "messaging", "numbers", "iNumbering", "iNumbering-porting", "e911", "gateways", "csp", "info"] %}
+{#- Redoc-rendered API pages aren't Eleventy collections; iterate the apiSpecs data feed. -#}
+{%- for name, spec in apiSpecs %}
 	<url>
-		<loc>{{ site.url }}/docs/api/{{ spec }}/</loc>
+		<loc>{{ site.url }}{{ spec.urlPath }}</loc>
 		<changefreq>monthly</changefreq>
 		<priority>0.6</priority>
 	</url>

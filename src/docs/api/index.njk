@@ -2,64 +2,48 @@
 layout: layouts/page.njk
 permalink: /docs/api/
 title: "API reference"
-description: "VoiceTel REST APIs: VoiceTel API v2.2 (consolidated), VoiceML (Twilio-compatible voice), messaging, and 10DLC Campaign Registry. OpenAPI specs rendered with Redoc."
+description: "VoiceTel REST APIs: VoiceML (Twilio-compatible voice), the consolidated VoiceTel API v2.2, and the 10DLC Campaign Registry. OpenAPI specs rendered with Redoc."
 ---
 
 <p class="eyebrow">API reference</p>
 <h1>REST APIs for the VoiceTel platform.</h1>
-<p class="lede">VoiceTel publishes OpenAPI specifications for every customer-facing API surface. Each reference below is rendered from the spec, so the docs match the wire shape one-to-one.</p>
+<p class="lede">VoiceTel publishes OpenAPI specifications for every customer-facing API surface. Each reference is rendered from the spec, so the docs match the wire shape one-to-one.</p>
 
 <section class="section-block">
-	<h2>Current release</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
-			<h3><a href="{{ apiSpecs['v2.2'].urlPath }}">VoiceTel API {{ apiSpecs['v2.2'].version }}</a></h3>
-			<p>Consolidated reference covering account, authentication, ACL, gateways, numbers, CNAM/LRN lookups, e911, iNumbering, and support tickets in a single spec.</p>
-		</li>
-	</ul>
-</section>
+	<h2>API references</h2>
+	<div class="oss-cards">
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "code-slash" %}</span>
+				<h3 class="oss-card__title"><a href="{{ apiSpecs.voiceml.urlPath }}">VoiceML</a></h3>
+			</header>
+			<p class="oss-card__description">Twilio-compatible voice REST API. Drop-in for existing Twilio SDKs; same wire shape, same webhook signing, same pagination envelope. Point your voice URL at <code>voiceml.voicetel.com</code> and your existing markup works unchanged.</p>
+			<p class="oss-card__url"><a href="{{ apiSpecs.voiceml.urlPath }}">voicetel.com{{ apiSpecs.voiceml.urlPath }}</a></p>
+		</article>
 
-<section class="section-block">
-	<h2>Programmable Voice</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-			<h3><a href="{{ apiSpecs.voiceml.urlPath }}">VoiceML</a></h3>
-			<p>Twilio-compatible voice REST API. Drop-in for existing Twilio SDKs; same wire shape, same webhook signing, same pagination envelope.</p>
-		</li>
-	</ul>
-	<p class="hero-actions hero-actions--center">
-		<a class="btn btn-primary" href="/voiceml/compatibility/">Compatibility</a>
-		<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
-	</p>
-</section>
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "tag" %}</span>
+				<h3 class="oss-card__title"><a href="{{ apiSpecs['v2.2'].urlPath }}">VoiceTel API {{ apiSpecs['v2.2'].version }}</a></h3>
+			</header>
+			<p class="oss-card__description">Consolidated REST reference covering account, authentication, ACL, gateways, numbers, CNAM/LRN lookups, e911, iNumbering, and support tickets — every customer-facing platform endpoint in a single OpenAPI spec.</p>
+			<p class="oss-card__url"><a href="{{ apiSpecs['v2.2'].urlPath }}">voicetel.com{{ apiSpecs['v2.2'].urlPath }}</a></p>
+		</article>
 
-<section class="section-block">
-	<h2>Messaging</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3><a href="{{ apiSpecs.messaging.urlPath }}">Messaging</a></h3>
-			<p>SMS and MMS send/receive, delivery events, and A2P 10DLC workflows.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3><a href="{{ apiSpecs.csp.urlPath }}">10DLC Campaign Registry</a></h3>
-			<p>VoiceTel proxy to the TCR Campaign Service Provider API for brand registration, campaign vetting, webhooks, and appeals.</p>
-		</li>
-	</ul>
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "shield-check" %}</span>
+				<h3 class="oss-card__title"><a href="{{ apiSpecs.csp.urlPath }}">10DLC Campaign Registry</a></h3>
+			</header>
+			<p class="oss-card__description">Proxy to The Campaign Registry's Campaign Service Provider (CSP) API for brand registration, campaign vetting, webhooks, and appeals. Required before A2P messaging traffic can run.</p>
+			<p class="oss-card__url"><a href="{{ apiSpecs.csp.urlPath }}">voicetel.com{{ apiSpecs.csp.urlPath }}</a></p>
+		</article>
+	</div>
 </section>
 
 <section class="section-block">
 	<h2>Previous versions</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "book" %}</span>
-			<h3><a href="/docs/api/v2.1/">API v2.1 reference</a></h3>
-			<p>Per-resource OpenAPI specs for VoiceTel API v2.1. Kept for historical reference; most endpoints have been consolidated into v2.2 above.</p>
-		</li>
-	</ul>
+	<p>The <a href="/docs/api/v2.1/">v2.1 per-resource OpenAPI specs</a> remain available for historical reference. Most of those endpoints are now consolidated into VoiceTel API v2.2 above.</p>
 </section>
 
 <aside class="cta-block" aria-labelledby="api-cta-heading">

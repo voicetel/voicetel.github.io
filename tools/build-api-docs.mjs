@@ -38,11 +38,13 @@ for (const spec of specs) {
 		);
 		process.exit(1);
 	}
-	const pageDir = resolve(OUT_DIR, mm, name);
+	// Consolidated release spec (filename matches major.minor) renders at
+	// /docs/api/{mm}/index.html with no name subdirectory.
+	const pageDir = name === mm ? resolve(OUT_DIR, mm) : resolve(OUT_DIR, mm, name);
 	await mkdir(pageDir, { recursive: true });
 	const outFile = resolve(pageDir, "index.html");
 
-	process.stdout.write(`  ${mm}/${name} `);
+	process.stdout.write(`  ${name === mm ? mm : `${mm}/${name}`} `);
 	const start = Date.now();
 	try {
 		await exec("npx", ["--no-install", "redocly", "build-docs", specPath, "--output", outFile]);

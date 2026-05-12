@@ -29,12 +29,17 @@ for (const file of files) {
 	if (!mm) {
 		throw new Error(`apiSpecs: cannot derive majorMinor from version "${version}" for ${file}`);
 	}
+	// A spec whose filename matches its major.minor (e.g. v2.2.json at v2.2.0) is
+	// the consolidated reference for that release and renders at /docs/api/{mm}/
+	// directly. Per-resource specs keep the /docs/api/{mm}/{name}/ shape.
+	const isConsolidated = name === mm;
 	specs[name] = {
 		name,
 		version,
 		majorMinor: mm,
-		urlPath: `/docs/api/${mm}/${name}/`,
+		urlPath: isConsolidated ? `/docs/api/${mm}/` : `/docs/api/${mm}/${name}/`,
 		title: spec.info?.title || name,
+		consolidated: isConsolidated,
 	};
 }
 

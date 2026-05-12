@@ -1,0 +1,4547 @@
+{
+  "openapi": "3.0.1",
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Manage the account SIP authentication type (Digest, IP Auth, or both) and password."
+    },
+    {
+      "name": "ACL",
+      "description": "Manage the IP Access Control List for IP-based SIP authentication. Only routable public IPv4 CIDRs with masks /8, /16, /24, or /32 are accepted."
+    },
+    {
+      "name": "Gateways",
+      "description": "Manage SIP gateways (outbound trunks). System route types (USER, T30, VOICE_BRIDGE, DID, T38, RTC_BRIDGE, SDN) are always present and read-only."
+    },
+    {
+      "name": "Numbers",
+      "description": "Manage telephone numbers: routing, forwarding, DNIS translation, inbound CNAM lookup, outbound Caller ID Name (LIDB), SMS routing, and fax-to-email."
+    },
+    {
+      "name": "Lookups",
+      "description": "Per-lookup billed services. CNAM returns the registered Caller ID Name. LRN returns Location Routing Number and carrier details. Requires the service to be enabled on the account."
+    },
+    {
+      "name": "e911",
+      "description": "Provision and manage e911 emergency service records for telephone numbers on the account."
+    },
+    {
+      "name": "Account",
+      "description": "Account profile, settings, billing charges, credit history, call detail records, SIP registration status, and self-service signup and password recovery."
+    },
+    {
+      "name": "Support",
+      "description": "Support ticket management. Customers see only their own tickets. Administrators see all tickets."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.voicetel.com",
+      "description": "VoiceTel API"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "bearerFormat": "VoiceTel API Key",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "numberTranslationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "type": "string"
+              },
+              "translation": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountMrcResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "charges": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "amount": {
+                      "type": "number"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911Entry": {
+        "type": "object",
+        "properties": {
+          "dn": {
+            "type": "string",
+            "example": "12015551234"
+          },
+          "address2": {
+            "type": "string"
+          },
+          "addressid": {
+            "type": "integer"
+          },
+          "callername": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "address1": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          }
+        },
+        "description": "e911 provisioning record. The sms field is always removed. Additional fields may be present.",
+        "additionalProperties": true
+      },
+      "paymentEntry": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "format": "float",
+            "type": "number",
+            "description": "Payment amount in USD.",
+            "example": 25.0
+          },
+          "payerEmail": {
+            "type": "string",
+            "description": "PayPal email address of the payer.",
+            "example": "customer@example.com"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date and time the payment was received.",
+            "example": "2024-09-30T12:52:59+00:00"
+          },
+          "status": {
+            "type": "string",
+            "example": "Completed",
+            "enum": [
+              "Completed",
+              "Pending",
+              "Reversed",
+              "Refunded",
+              "Failed",
+              "Denied",
+              "Canceled_Reversal"
+            ],
+            "description": "PayPal payment status."
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "PayPal transaction ID.",
+            "example": "2N045992R140725E3"
+          }
+        }
+      },
+      "gatewayNumbersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "numbers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountRecoverResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountData": {
+        "type": "object",
+        "properties": {
+          "notify": {
+            "type": "boolean"
+          },
+          "caller_id": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "services": {
+            "type": "object",
+            "properties": {
+              "intl": {
+                "type": "boolean"
+              },
+              "sms": {
+                "type": "boolean"
+              },
+              "cnam": {
+                "type": "boolean"
+              },
+              "bypass_media": {
+                "type": "boolean"
+              },
+              "dialer": {
+                "type": "boolean"
+              },
+              "e911": {
+                "type": "boolean"
+              },
+              "mms": {
+                "type": "boolean"
+              },
+              "rcid": {
+                "type": "boolean"
+              }
+            }
+          },
+          "ccs": {
+            "type": "integer",
+            "description": "Max concurrent calls."
+          },
+          "username": {
+            "type": "string"
+          },
+          "cash": {
+            "type": "number",
+            "description": "Current balance."
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "email": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "America/Chicago"
+          },
+          "auth_type": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rates": {
+            "type": "object",
+            "properties": {
+              "fax": {
+                "type": "number"
+              },
+              "sms": {
+                "type": "number"
+              },
+              "cnam": {
+                "type": "number"
+              },
+              "did": {
+                "type": "number"
+              },
+              "nibble": {
+                "type": "number"
+              },
+              "tf_adj": {
+                "type": "number"
+              },
+              "lrn": {
+                "type": "number"
+              },
+              "mms": {
+                "type": "number"
+              },
+              "intl_max": {
+                "type": "number"
+              }
+            },
+            "description": "Per-service rates. Read-only for non-administrators."
+          },
+          "notify_threshold": {
+            "type": "integer"
+          }
+        }
+      },
+      "accountPaymentsResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "payments"
+            ],
+            "properties": {
+              "payments": {
+                "type": "array",
+                "description": "All PayPal payments for the account, newest first.",
+                "items": {
+                  "$ref": "#/components/schemas/paymentEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "aclAddResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "added": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountSignupRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "promo": {
+            "type": "string",
+            "description": "Optional promotional code."
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "numberRouteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "integer"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911ProvisionRequest": {
+        "type": "object",
+        "required": [
+          "callername",
+          "address1",
+          "city",
+          "state",
+          "zip"
+        ],
+        "properties": {
+          "address2": {
+            "type": "string"
+          },
+          "callername": {
+            "type": "string",
+            "example": "JOHN DOE"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "address1": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          }
+        }
+      },
+      "successWrapper": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberFaxRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "fax@example.com"
+          }
+        }
+      },
+      "accountCdrRequest": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "description": "Start time as Unix timestamp. Defaults to current time.",
+            "example": 1700000000
+          },
+          "end": {
+            "type": "integer",
+            "description": "End time as Unix timestamp. Defaults to 24 hours before current time.",
+            "example": 1699913600
+          }
+        }
+      },
+      "numberMoveResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "account": {
+                "type": "integer"
+              },
+              "route": {
+                "type": "integer"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberSmsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "email",
+                  "webhook",
+                  "sip",
+                  "unknown"
+                ]
+              },
+              "number": {
+                "type": "string"
+              },
+              "resource": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountRecoverBadRequest": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "requirement": {
+                "type": "string",
+                "enum": [
+                  "Must be valid"
+                ]
+              },
+              "code": {
+                "type": "integer",
+                "example": 400
+              },
+              "message": {
+                "type": "string",
+                "enum": [
+                  "Invalid email address"
+                ]
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          }
+        }
+      },
+      "accountRecoverRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "cnamResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cnam": {
+                "type": "string",
+                "example": "VOICETEL"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numbersListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "numbers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/numberDetail"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ticketReplyResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "enum": [
+                  "Reply added"
+                ]
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "errorResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "integer",
+                "example": 400
+              },
+              "message": {
+                "type": "string",
+                "example": "Field Required: number"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          }
+        }
+      },
+      "accountSignupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "apikey": {
+                "type": "string"
+              },
+              "username": {
+                "type": "integer"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911AllResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/e911Entry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberAddResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "integer"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberForwardRequest": {
+        "type": "object",
+        "required": [
+          "destination"
+        ],
+        "properties": {
+          "destination": {
+            "type": "integer",
+            "description": "10-digit destination number.",
+            "example": 2125551234
+          }
+        }
+      },
+      "accountRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "type": "string",
+                "example": "Zoiper rv2.8.97/"
+              },
+              "uri": {
+                "type": "string",
+                "example": "sip:4592086960@192.0.2.1:5060"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "aclListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "acl": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "authPutRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "6-10 alphanumeric characters with at least one letter and one number.",
+            "example": "abc123"
+          },
+          "authType": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      },
+      "numberTranslationRequest": {
+        "type": "object",
+        "required": [
+          "translation"
+        ],
+        "properties": {
+          "translation": {
+            "type": "string",
+            "description": "DNIS translation. Digits and # only.",
+            "example": "2015559999"
+          }
+        }
+      },
+      "numberCnamRequest": {
+        "type": "object",
+        "required": [
+          "enabled"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "true to enable inbound CNAM lookup, false to disable."
+          }
+        }
+      },
+      "lrnData": {
+        "type": "object",
+        "properties": {
+          "CITY": {
+            "type": "string",
+            "example": "NEW YORK"
+          },
+          "OCN": {
+            "type": "string",
+            "example": "9101"
+          },
+          "RC": {
+            "type": "string"
+          },
+          "LOCAL": {
+            "type": "string",
+            "example": "N"
+          },
+          "LEC": {
+            "type": "string"
+          },
+          "LRN": {
+            "type": "string",
+            "example": "12125550000"
+          },
+          "STATE": {
+            "type": "string",
+            "example": "NY"
+          },
+          "LATA": {
+            "type": "string",
+            "example": "132"
+          },
+          "JURISDICTION": {
+            "type": "string",
+            "example": "INTERSTATE"
+          },
+          "LECTYPE": {
+            "type": "string"
+          }
+        }
+      },
+      "creditEntry": {
+        "type": "object",
+        "required": [
+          "amount",
+          "paid",
+          "date"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Credit amount in USD.",
+            "example": 25.0
+          },
+          "paid": {
+            "type": "boolean",
+            "description": "Invoice fulfillment status. true = customer has paid the invoice for this credit. false = invoice is still outstanding.",
+            "example": false
+          },
+          "date": {
+            "type": "string",
+            "description": "Timestamp the credit was applied to the account.",
+            "example": "2024-09-30T12:52:59+00:00"
+          }
+        }
+      },
+      "authPutResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "updated": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "aclConflictResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "added": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              },
+              "removed": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              },
+              "failed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "DB Insert failed",
+                        "DB delete failed",
+                        "Invalid mask: must be /8, /16, /24, or /32",
+                        "CIDR range must be routable"
+                      ]
+                    },
+                    "cidr": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "error": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          }
+        }
+      },
+      "gatewayUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "gateway": {
+            "type": "string",
+            "example": "203.0.113.20:5060"
+          }
+        }
+      },
+      "gatewayResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/gatewayEntry"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountCdrResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cdr": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "start": {
+                "type": "integer"
+              },
+              "end": {
+                "type": "integer"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "aclRemoveResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "removed": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911AddressRequest": {
+        "type": "object",
+        "required": [
+          "address1",
+          "city",
+          "state",
+          "zip"
+        ],
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "HACKENSACK"
+          },
+          "state": {
+            "type": "string",
+            "example": "NJ"
+          },
+          "address1": {
+            "type": "string",
+            "example": "411 HACKENSACK AVENUE"
+          },
+          "zip": {
+            "type": "string",
+            "example": "07601"
+          },
+          "address2": {
+            "type": "string",
+            "example": "STE 200"
+          }
+        }
+      },
+      "gatewayEntry": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum concurrent calls. Null for system routes.",
+            "example": 23
+          },
+          "system": {
+            "type": "boolean",
+            "description": "True for built-in system route types."
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Digits prepended to outbound calls.",
+            "example": "9"
+          },
+          "id": {
+            "type": "integer",
+            "example": 1000
+          },
+          "gateway": {
+            "type": "string",
+            "description": "Gateway IP:port or system route name (USER, T30, etc.)",
+            "example": "203.0.113.10:5060"
+          }
+        }
+      },
+      "accountPutRequest": {
+        "type": "object",
+        "properties": {
+          "intl": {
+            "type": "boolean",
+            "description": "Admin only."
+          },
+          "notify": {
+            "type": "boolean"
+          },
+          "sms": {
+            "type": "boolean",
+            "description": "Admin only."
+          },
+          "caller_id": {
+            "type": "string"
+          },
+          "ccs": {
+            "type": "integer",
+            "description": "Admin only."
+          },
+          "e911": {
+            "type": "boolean",
+            "description": "Admin only."
+          },
+          "mms": {
+            "type": "boolean",
+            "description": "Admin only."
+          },
+          "timezone": {
+            "type": "string",
+            "example": "America/Chicago"
+          },
+          "notify_threshold": {
+            "type": "integer"
+          }
+        }
+      },
+      "accountAddResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "username": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "masterAccount": {
+                "type": "integer"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "authPutConflictResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "updated": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          }
+        }
+      },
+      "numberLibdRequest": {
+        "type": "object",
+        "required": [
+          "cnam"
+        ],
+        "properties": {
+          "cnam": {
+            "type": "string",
+            "description": "Outbound caller name. Max 15 alphanumeric characters.",
+            "example": "ACME CORP"
+          },
+          "customerOrderReference": {
+            "type": "string",
+            "description": "Optional order reference. Auto-generated if omitted."
+          }
+        }
+      },
+      "numberMoveRequest": {
+        "type": "object",
+        "required": [
+          "account",
+          "route"
+        ],
+        "properties": {
+          "account": {
+            "type": "integer",
+            "description": "Destination account username.",
+            "example": 4592086960
+          },
+          "route": {
+            "type": "integer",
+            "example": 1000
+          }
+        }
+      },
+      "numberForwardResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "forwardTo": {
+                "type": "string"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "authGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "authType": {
+                "type": "integer",
+                "enum": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "description": "0=Digest, 1=IP Auth, 2=Digest OR IP Auth, 3=Digest AND IP Auth"
+              },
+              "authTypeDescription": {
+                "type": "string",
+                "example": "IP Auth"
+              },
+              "acl": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/cidrEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberDetail": {
+        "type": "object",
+        "properties": {
+          "smsEnabled": {
+            "type": "boolean"
+          },
+          "cnam": {
+            "type": "boolean",
+            "description": "Inbound CNAM lookup enabled."
+          },
+          "faxEnabled": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "gateway": {
+            "type": "string",
+            "nullable": true,
+            "example": "203.0.113.10:5060"
+          },
+          "translated": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "forwardTo": {
+            "type": "string",
+            "nullable": true
+          },
+          "forward": {
+            "type": "boolean"
+          },
+          "route": {
+            "type": "integer",
+            "example": 1000
+          },
+          "carrier": {
+            "type": "integer"
+          }
+        }
+      },
+      "numberRouteRequest": {
+        "type": "object",
+        "required": [
+          "route"
+        ],
+        "properties": {
+          "route": {
+            "type": "integer",
+            "example": 1000
+          }
+        }
+      },
+      "lrnResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "ani": {
+                "type": "string"
+              },
+              "destination": {
+                "type": "string"
+              },
+              "lrn": {
+                "$ref": "#/components/schemas/lrnData"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ticketResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "ticket": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberSmsRequest": {
+        "type": "object",
+        "required": [
+          "type",
+          "resource"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "email",
+              "webhook",
+              "sip"
+            ],
+            "description": "email=forward to email address, webhook=HTTP POST, sip=direct IP delivery."
+          },
+          "resource": {
+            "type": "string",
+            "description": "Email address, webhook URL, or IP address depending on type.",
+            "example": "user@example.com"
+          }
+        }
+      },
+      "ticketThreadsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "threads": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "creditFilteredEntry": {
+        "type": "object",
+        "required": [
+          "amount",
+          "paid",
+          "date"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Credit amount in USD.",
+            "example": 25.0
+          },
+          "paid": {
+            "type": "boolean",
+            "description": "Invoice fulfillment status. Always true on the /credits/paid endpoint. Always false on the /credits/unpaid endpoint.",
+            "example": true
+          },
+          "date": {
+            "type": "string",
+            "description": "Timestamp the credit was applied to the account.",
+            "example": "2024-09-30T12:52:59+00:00"
+          }
+        }
+      },
+      "e911ProvisionByIdRequest": {
+        "type": "object",
+        "required": [
+          "callername",
+          "addressid"
+        ],
+        "properties": {
+          "addressid": {
+            "type": "integer",
+            "description": "Address ID from POST /e911/validate.",
+            "example": 123456
+          },
+          "callername": {
+            "type": "string",
+            "example": "JOHN DOE"
+          }
+        }
+      },
+      "ticketUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountCreditsResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "credits"
+            ],
+            "properties": {
+              "credits": {
+                "type": "array",
+                "description": "Full credit history, newest first. Each entry has a paid flag indicating invoice status.",
+                "items": {
+                  "$ref": "#/components/schemas/creditEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberLibdResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cnam": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Local database updated",
+                  "Remote database updated"
+                ]
+              },
+              "number": {
+                "type": "integer"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountCreditsUnpaidResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "credits"
+            ],
+            "properties": {
+              "credits": {
+                "type": "array",
+                "description": "Credits with outstanding invoices (paid=false), newest first.",
+                "items": {
+                  "$ref": "#/components/schemas/creditFilteredEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberFaxResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911RecordResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "record": {
+                "$ref": "#/components/schemas/e911Entry"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "gatewayAddRequest": {
+        "type": "object",
+        "required": [
+          "gateway"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "description": "Max concurrent calls. Default: 23.",
+            "example": 23
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Digits to prepend on outbound calls.",
+            "example": "9"
+          },
+          "gateway": {
+            "type": "string",
+            "description": "IP or hostname with optional port. Must resolve to a routable public IPv4 address.",
+            "example": "203.0.113.10:5060"
+          }
+        }
+      },
+      "aclModifyRequest": {
+        "type": "object",
+        "required": [
+          "acl"
+        ],
+        "properties": {
+          "acl": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            }
+          }
+        }
+      },
+      "accountCreditsPaidResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "credits"
+            ],
+            "properties": {
+              "credits": {
+                "type": "array",
+                "description": "Credits with fulfilled invoices (paid=true), newest first.",
+                "items": {
+                  "$ref": "#/components/schemas/creditFilteredEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ticketCreateRequest": {
+        "type": "object",
+        "required": [
+          "subject",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Please help me..."
+          },
+          "subject": {
+            "type": "string",
+            "example": "I need help with my account"
+          },
+          "email": {
+            "type": "string",
+            "description": "Admin only: create ticket on behalf of this customer email."
+          }
+        }
+      },
+      "numberDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/numberDetail"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "accountPutResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "updated": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ticketUpdateRequest": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "pending",
+              "closed",
+              "spam"
+            ]
+          }
+        }
+      },
+      "numberAddRequest": {
+        "type": "object",
+        "required": [
+          "number"
+        ],
+        "properties": {
+          "route": {
+            "type": "integer",
+            "description": "Gateway route ID. Defaults to 4 (DID).",
+            "example": 4
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          }
+        }
+      },
+      "accountAddRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "username",
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "integer",
+            "description": "10-digit numeric username."
+          },
+          "name": {
+            "type": "string"
+          },
+          "masterAccount": {
+            "type": "integer",
+            "description": "Billing account. Defaults to username."
+          }
+        }
+      },
+      "gatewaysListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "gateways": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/gatewayEntry"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "numberCnamResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cnam": {
+                "type": "boolean"
+              },
+              "number": {
+                "type": "string"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "e911ValidateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "address": {
+                "$ref": "#/components/schemas/e911Entry"
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "ticketsListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "totalCount": {
+                "type": "integer"
+              },
+              "tickets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "transactionEntry": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "format": "float",
+            "type": "number",
+            "description": "Transaction amount in USD.",
+            "example": 25.0
+          },
+          "paid": {
+            "type": "boolean",
+            "description": "True if the customer has fulfilled the invoice for this credit. False if the invoice is still outstanding. Present on credits history only.",
+            "example": false
+          },
+          "date": {
+            "type": "string",
+            "description": "Timestamp the transaction was applied.",
+            "example": "2024-09-30T12:52:59"
+          }
+        }
+      },
+      "ticketReplyRequest": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Thank you for your reply."
+          }
+        }
+      },
+      "accountGetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/accountData"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "cidrEntry": {
+        "type": "object",
+        "required": [
+          "cidr"
+        ],
+        "properties": {
+          "cidr": {
+            "type": "string",
+            "description": "IPv4 CIDR. Must be routable public address. Mask must be /8, /16, /24, or /32.",
+            "example": "203.0.113.0/24"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v2.2/account/signup": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountSignup",
+        "description": "Creates a new account. No authentication required. Returns account credentials and API key. A verification email is sent.",
+        "responses": {
+          "409": {
+            "description": "Creation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountSignupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Sign up for a new account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountSignupRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/{number}": {
+      "get": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersGet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "description": "10-digit telephone number.",
+            "schema": {
+              "type": "string",
+              "example": "2015551234"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get number detail",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersDelete",
+        "description": "Permanently removes the number from the account. Numbers currently porting cannot be removed.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed or currently porting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Removed"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove a number",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v2.2/support/tickets/{id}": {
+      "put": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsPut",
+        "description": "Updates the status of a ticket. Customers can only update their own tickets.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketUpdateResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update ticket status",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ticketUpdateRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsGet",
+        "description": "Returns a ticket including its threads. Customers can only view their own tickets.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — not your ticket",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a ticket",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsDelete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — admin only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a ticket (admin only)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/account/registration": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountRegistration",
+        "description": "Returns the current SIP URI and user agent for the registered device.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRegistrationResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get SIP registration"
+      }
+    },
+    "/v2.2/support/tickets/{id}/reply": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsReply",
+        "description": "Adds a customer reply to an existing ticket. Customers can only reply to their own tickets.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Reply added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketReplyResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a reply to a ticket",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ticketReplyRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/{number}/move": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersMove",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid route for destination account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Moved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberMoveResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Move number to another account",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberMoveRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/support/tickets": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsCreate",
+        "description": "Creates a new support ticket. The customer email is automatically populated from the authenticated account. Administrators may optionally specify a different email.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ticket created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a support ticket",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ticketCreateRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsList",
+        "description": "Returns support tickets. Customers see only their own tickets. Administrators see all tickets.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketsListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List support tickets"
+      }
+    },
+    "/v2.2/account/credits/paid": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountCreditsPaid",
+        "description": "Returns credits where the customer has fulfilled the invoice (paid=true). These are credits that were applied to the account and have since been settled by the customer.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCreditsPaidResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paid credits"
+      }
+    },
+    "/v2.2/account/mrc": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountMrc",
+        "description": "Returns current MRC broken down by service plus a total. Rate limited: 6 requests per hour per IP.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountMrcResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Monthly recurring charges"
+      }
+    },
+    "/v2.2/account/credits/unpaid": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountCreditsUnpaid",
+        "description": "Returns credits that have been applied to the account but whose invoice has not yet been fulfilled by the customer (paid=false). These represent the outstanding balance the customer is expected to pay.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCreditsUnpaidResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Unpaid credits"
+      }
+    },
+    "/v2.2/numbers/{number}/forward": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersForwardSet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Forward set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberForwardResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set call forward",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberForwardRequest"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersForwardRemove",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Forward removed"
+          }
+        },
+        "summary": "Remove call forward",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/account/cdr": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountCdr",
+        "description": "Returns call detail records for a time range specified in the request body as Unix timestamps. Rate limited: 6 requests per hour per IP.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCdrResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Call detail records",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountCdrRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/{number}/sms": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersSmsSet",
+        "description": "Sets or updates SMS routing for the number.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Routing set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberSmsResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set SMS routing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberSmsRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersSmsGet",
+        "description": "Returns the SMS routing configuration for the number. Type is one of: email, webhook, sip.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No SMS routing configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberSmsResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get SMS routing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersSmsDelete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          },
+          "404": {
+            "description": "No SMS routing configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove SMS routing",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/auth": {
+      "put": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "authPut",
+        "description": "Updates the account authentication type and/or password.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more updates failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/authPutConflictResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Updates applied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/authPutResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update authentication settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/authPutRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "authGet",
+        "description": "Returns the current authentication type, its description, and all IP ACL entries for the account.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/authGetResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get authentication settings"
+      }
+    },
+    "/v2.2/numbers": {
+      "post": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersAdd",
+        "description": "Assigns a telephone number to the account. Account balance must cover the monthly DID rate.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed to add",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Number added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberAddResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Insufficient funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a number",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberAddRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersList",
+        "description": "Returns all telephone numbers on the account with full detail including route, gateway, forwarding, CNAM, SMS, and fax configuration.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No numbers found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List numbers"
+      }
+    },
+    "/v2.2/gateways": {
+      "post": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysAdd",
+        "description": "Adds a SIP gateway. Must resolve to a routable public IPv4 address. Optional port as host:port. Optionally set a dial prefix and concurrent call limit.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed to add",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Gateway created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewayResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a gateway",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewayAddRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysList",
+        "description": "Returns all system route types and user-defined SIP gateways. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List gateways"
+      }
+    },
+    "/v2.2/numbers/{number}/cnam": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersCnam",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberCnamResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Enable or disable inbound CNAM lookup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberCnamRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/account": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountAdd",
+        "description": "Creates a new sub-account. Requires administrator credentials. The new account password is auto-generated and returned.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Creation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountAddResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — admin only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create account (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountAddRequest"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountPut",
+        "description": "Updates account settings. Customers may update: timezone, notify, notify_threshold, caller_id. Administrators may additionally update: ccs, service flags, and rate fields.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountPutResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update account settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountPutRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountGet",
+        "description": "Returns full account details including balance, services, and rates. Rates are read-only. Rate limited: 6 requests per hour per IP.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountGetResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get account info"
+      }
+    },
+    "/v2.2/gateways/{id}/numbers": {
+      "get": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysNumbers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewayNumbersResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List numbers on a gateway",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/numbers/{number}/release": {
+      "delete": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersRelease",
+        "description": "Removes the number from the account and returns it to the available pool. Numbers currently porting cannot be released.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed or currently porting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Released"
+          }
+        },
+        "summary": "Release a number back to the pool",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v2.2/e911": {
+      "get": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911QueryAll",
+        "description": "Returns all e911 records provisioned for telephone numbers on the account.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No records found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/e911AllResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all e911 records"
+      }
+    },
+    "/v2.2/acl": {
+      "post": {
+        "tags": [
+          "ACL"
+        ],
+        "operationId": "aclAdd",
+        "description": "Adds one or more IPv4 CIDR blocks. Only routable public addresses accepted. Mask must be /8, /16, /24, or /32.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more entries could not be added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclConflictResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All entries added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclAddResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add IP ACL entries",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "ACL"
+        ],
+        "operationId": "aclList",
+        "description": "Returns all IP CIDR blocks on the account IP authentication ACL.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No entries found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List IP ACL entries"
+      },
+      "delete": {
+        "tags": [
+          "ACL"
+        ],
+        "operationId": "aclRemove",
+        "description": "Removes one or more IPv4 CIDR blocks from the ACL.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more entries could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclConflictResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All entries removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclRemoveResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove IP ACL entries",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/e911/{dn}": {
+      "post": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911ValidateAndProvision",
+        "description": "Validates the address and immediately provisions it to the telephone number in a single call.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/e911RecordResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validate and provision e911",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/e911ProvisionRequest"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911ProvisionAddress",
+        "description": "Provisions an e911 address using a pre-validated addressId from POST /e911/validate.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/e911RecordResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Provision e911 with known addressId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/e911ProvisionByIdRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911QueryRecord",
+        "description": "Returns the e911 record for a specific telephone number on the account.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Query failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Record found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/e911RecordResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get e911 record",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dn",
+            "required": true,
+            "description": "10-digit telephone number.",
+            "schema": {
+              "type": "string",
+              "example": "2015551234"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911RemoveRecord",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Removed"
+          }
+        },
+        "summary": "Remove e911 record",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/numbers/{number}/route": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersRoute",
+        "description": "Sets the gateway route for a number.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Route set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberRouteResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set number route",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberRouteRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/support/tickets/{id}/threads": {
+      "get": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "ticketsThreads",
+        "description": "Returns all message threads for a ticket. Customers can only view their own tickets.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticketThreadsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get ticket threads",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/v2.2/account/recover": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountRecover",
+        "description": "Sends a password recovery link to the email address on file. No authentication required.",
+        "responses": {
+          "400": {
+            "description": "Invalid email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverBadRequest"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Recovery email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request password recovery",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountRecoverRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/{number}/translation": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersTranslation",
+        "description": "Sets the inbound DNIS translation for the number.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Translation set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberTranslationResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set DNIS translation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberTranslationRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/{number}/lidb": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersLibd",
+        "description": "Sets the outbound Caller ID Name for the number. Updates local database and submits to carrier. Max 15 alphanumeric characters.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberLibdResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set outbound Caller ID Name (LIDB)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberLibdRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/lrn/{number}/{ani}": {
+      "get": {
+        "tags": [
+          "Lookups"
+        ],
+        "operationId": "lrnLookup",
+        "description": "Returns the Location Routing Number (LRN) and carrier details for the destination number. Billed per lookup.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lrnResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "LRN lookup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "description": "Destination number in NPANXXXXXX format.",
+            "schema": {
+              "type": "string",
+              "example": "2125551234"
+            }
+          },
+          {
+            "in": "path",
+            "name": "ani",
+            "required": true,
+            "description": "Calling party (ANI) in NPANXXXXXX format.",
+            "schema": {
+              "type": "string",
+              "example": "2015551234"
+            }
+          }
+        ]
+      }
+    },
+    "/v2.2/e911/validate": {
+      "post": {
+        "tags": [
+          "e911"
+        ],
+        "operationId": "e911Validate",
+        "description": "Validates a street address for e911 provisioning. Returns the validated address including an addressid for use with PUT /e911/{dn}.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Address validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Address validated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/e911ValidateResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validate e911 address",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/e911AddressRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/gateways/{id}": {
+      "put": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysPut",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewayResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a gateway",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewayUpdateRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysGet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewayResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a gateway",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Gateways"
+        ],
+        "operationId": "gatewaysDelete",
+        "description": "Removes a gateway. Will fail if DIDs are currently routed to it.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Cannot remove — DIDs still routed to it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Removed"
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove a gateway",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/v2.2/account/credits": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountCredits",
+        "description": "Returns the complete credit history for the account — all credits regardless of invoice status. Each entry includes a paid flag: true means the customer has fulfilled the invoice; false means the invoice is still outstanding. Use /v2.2/account/credits/paid or /v2.2/account/credits/unpaid to retrieve a filtered subset.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCreditsResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Credit history"
+      }
+    },
+    "/v2.2/numbers/{number}/fax": {
+      "put": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersFaxSet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Routing set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberFaxResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set fax-to-email",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numberFaxRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersFaxGet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No fax routing configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberFaxResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get fax-to-email routing",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Numbers"
+        ],
+        "operationId": "numbersFaxDelete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          },
+          "404": {
+            "description": "No fax routing configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove fax routing",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v2.2/account/payments": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "accountPayments",
+        "description": "Returns all PayPal payments received on the account, newest first. Each entry includes the amount, date, PayPal transaction ID, payment status, and the payer email address. Payments represent real cash received; for credit adjustments see GET /v2.2/account/credits.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountPaymentsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Payment history"
+      }
+    },
+    "/v2.2/cnam/{number}": {
+      "get": {
+        "tags": [
+          "Lookups"
+        ],
+        "operationId": "cnamLookup",
+        "description": "Returns the Caller ID Name registered for the given 10-digit telephone number. Billed per lookup. Requires CNAM service to be enabled.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/cnamResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Service not enabled or insufficient balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "CNAM lookup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "description": "10-digit telephone number in NPANXXXXXX format.",
+            "schema": {
+              "type": "string",
+              "example": "2015551234"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "VoiceTel API v2.2",
+    "version": "v2.2.0",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate with your API key as a Bearer token. Rate-limited endpoints: account/info, account/mrc, account/cdr — 6 requests per hour per IP.",
+    "contact": {
+      "email": "support@voicetel.com"
+    }
+  }
+}

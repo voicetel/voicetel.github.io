@@ -1,69 +1,5 @@
 {
   "paths": {
-    "/v2.1/e911/queryRecord/": {
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/dnRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "operationId": "e911QueryRecord",
-        "description": "Returns the e911 record provisioned for a specific telephone number on the account.",
-        "responses": {
-          "200": {
-            "description": "Record found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/queryRecordResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized or number not on account",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Query failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/faultResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Query e911 Record",
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
     "/v2.1/e911/provisionAddress/": {
       "post": {
         "requestBody": {
@@ -121,6 +57,134 @@
           }
         },
         "summary": "Provision e911 Address",
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/queryAll/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911QueryAll",
+        "description": "Returns all e911 records provisioned for telephone numbers on the account.",
+        "responses": {
+          "200": {
+            "description": "Records found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queryAllResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No e911 records found for account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Query All e911 Records",
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/queryRecord/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/dnRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911QueryRecord",
+        "description": "Returns the e911 record provisioned for a specific telephone number on the account.",
+        "responses": {
+          "200": {
+            "description": "Record found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queryRecordResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Query failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Query e911 Record",
         "security": [
           {
             "apikey": []
@@ -192,70 +256,6 @@
         ]
       }
     },
-    "/v2.1/e911/validateAndProvision/": {
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/validateAndProvisionRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "operationId": "e911ValidateAndProvision",
-        "description": "Combines validateAddress and provisionAddress in a single call. The dn must be a number owned by the account.",
-        "responses": {
-          "200": {
-            "description": "Address validated and provisioned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/provisionAddressResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized or number not on account",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Validation or provisioning failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/faultResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Validate and Provision e911 Address",
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
     "/v2.1/e911/validateAddress/": {
       "post": {
         "requestBody": {
@@ -320,47 +320,47 @@
         ]
       }
     },
-    "/v2.1/e911/queryAll/": {
+    "/v2.1/e911/validateAndProvision/": {
       "post": {
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/apikeyRequest"
+                "$ref": "#/components/schemas/validateAndProvisionRequest"
               }
             }
           },
           "required": true
         },
-        "operationId": "e911QueryAll",
-        "description": "Returns all e911 records provisioned for telephone numbers on the account.",
+        "operationId": "e911ValidateAndProvision",
+        "description": "Combines validateAddress and provisionAddress in a single call. The dn must be a number owned by the account.",
         "responses": {
           "200": {
-            "description": "Records found",
+            "description": "Address validated and provisioned",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/queryAllResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No e911 records found for account",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
+                  "$ref": "#/components/schemas/provisionAddressResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized or number not on account",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Validation or provisioning failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
                 }
               }
             }
@@ -376,7 +376,7 @@
             }
           }
         },
-        "summary": "Query All e911 Records",
+        "summary": "Validate and Provision e911 Address",
         "security": [
           {
             "apikey": []

@@ -1,60 +1,6 @@
 {
   "openapi": "3.0.1",
   "paths": {
-    "/v2.1/info/lrn/": {
-      "post": {
-        "summary": "Location Routing Number Lookup",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "operationId": "infoLrn",
-        "description": "Returns the Location Routing Number (LRN) and carrier information for a destination number. Both dst and cid must be 10-digit NPANXXXXXX format.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/lrnRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/lrnResponse"
-                }
-              }
-            },
-            "description": "Success"
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
     "/v2.1/info/cnam/": {
       "post": {
         "summary": "Caller ID Name Lookup",
@@ -91,6 +37,60 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/cnamResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/v2.1/info/lrn/": {
+      "post": {
+        "summary": "Location Routing Number Lookup",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "infoLrn",
+        "description": "Returns the Location Routing Number (LRN) and carrier information for a destination number. Both dst and cid must be 10-digit NPANXXXXXX format.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/lrnRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lrnResponse"
                 }
               }
             },

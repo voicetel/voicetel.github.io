@@ -384,87 +384,6 @@
         }
       }
     },
-    "/v2/iNumbering/portOutPinUpdate/": {
-      "post": {
-        "description": "Update port-out PINs for phone numbers. If portOutPin is omitted for any tnItem, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
-        "responses": {
-          "409": {
-            "description": "Conflict"
-          },
-          "400": {
-            "description": "Bad input / missing tn."
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "200": {
-            "description": "Success. The portOutPin object is echoed back with auto-generated PINs filled in for any tnItem that did not include one. Only TNs belonging to the authenticated account are included.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "portOutPin": {
-                      "description": "Echo of the submitted portOutPin object with auto-generated PINs filled in",
-                      "type": "object",
-                      "properties": {
-                        "tnList": {
-                          "type": "object",
-                          "properties": {
-                            "tnItem": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "portOutPin": {
-                                    "description": "Auto-generated 4-digit PIN if not provided in request",
-                                    "type": "string",
-                                    "example": "4291"
-                                  },
-                                  "tn": {
-                                    "type": "integer",
-                                    "example": 2015551234
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update Pin Numbers",
-        "operationId": "portOutPinUpdate",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "/v2/iNumbering/portOutPinUpdate/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portOutPin"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v2/iNumbering/portInAvailability/": {
       "post": {
         "description": "Check number portability. All TNs must be verified here before submitting a portInOrder \u2014 returns 412 if any TN was not pre-verified.",
@@ -644,6 +563,87 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/portInOrder"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/portOutPinUpdate/": {
+      "post": {
+        "description": "Update port-out PINs for phone numbers. If portOutPin is omitted for any tnItem, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
+        "responses": {
+          "409": {
+            "description": "Conflict"
+          },
+          "400": {
+            "description": "Bad input / missing tn."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success. The portOutPin object is echoed back with auto-generated PINs filled in for any tnItem that did not include one. Only TNs belonging to the authenticated account are included.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "portOutPin": {
+                      "description": "Echo of the submitted portOutPin object with auto-generated PINs filled in",
+                      "type": "object",
+                      "properties": {
+                        "tnList": {
+                          "type": "object",
+                          "properties": {
+                            "tnItem": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "portOutPin": {
+                                    "description": "Auto-generated 4-digit PIN if not provided in request",
+                                    "type": "string",
+                                    "example": "4291"
+                                  },
+                                  "tn": {
+                                    "type": "integer",
+                                    "example": 2015551234
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update Pin Numbers",
+        "operationId": "portOutPinUpdate",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "/v2/iNumbering/portOutPinUpdate/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portOutPin"
               }
             }
           }

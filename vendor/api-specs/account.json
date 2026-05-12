@@ -468,6 +468,311 @@
     }
   },
   "paths": {
+    "/v2.1/account/add/": {
+      "post": {
+        "summary": "Add Account",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "description": "Creates a new sub-account. Requires administrator API key. The new account password is auto-generated and returned in the response.",
+        "operationId": "accountAdd",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountAddRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized \u2014 administrator access required"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Account creation failed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountAddResponse"
+                }
+              }
+            },
+            "description": "Account created"
+          }
+        }
+      }
+    },
+    "/v2.1/account/cdr/": {
+      "post": {
+        "summary": "Call Detail Records",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "description": "Returns call detail records for the account within a time range. start and end are Unix timestamps. Defaults: start=now, end=24 hours ago. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountCdr",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountCdrRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCdrResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v2.1/account/info/": {
+      "post": {
+        "summary": "Account Info",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "description": "Returns account details including balance, rate, and configuration. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountInfo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountInfoResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v2.1/account/mrc/": {
+      "post": {
+        "summary": "Monthly Recurring Charges",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "description": "Returns the current monthly recurring charges broken down by service plus a total. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountMrc",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountMrcResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v2.1/account/recover/": {
+      "post": {
+        "summary": "Account Recovery",
+        "operationId": "accountRecover",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountRecoverRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Email address not found"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverBadRequest"
+                }
+              }
+            },
+            "description": "Invalid email address"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverResponse"
+                }
+              }
+            },
+            "description": "Recovery email sent"
+          }
+        },
+        "description": "Sends a password recovery link to the email address associated with the account. No authentication required."
+      }
+    },
     "/v2.1/account/registration/": {
       "post": {
         "summary": "SIP Registration",
@@ -579,311 +884,6 @@
           }
         },
         "description": "Creates a new account. No authentication required. Returns account credentials. A verification email is sent to the provided address."
-      }
-    },
-    "/v2.1/account/cdr/": {
-      "post": {
-        "summary": "Call Detail Records",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "description": "Returns call detail records for the account within a time range. start and end are Unix timestamps. Defaults: start=now, end=24 hours ago. Rate limited to 6 requests per hour per IP address.",
-        "operationId": "accountCdr",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/accountCdrRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Unauthorized"
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Too Many Requests"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountCdrResponse"
-                }
-              }
-            },
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/v2.1/account/add/": {
-      "post": {
-        "summary": "Add Account",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "description": "Creates a new sub-account. Requires administrator API key. The new account password is auto-generated and returned in the response.",
-        "operationId": "accountAdd",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/accountAddRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Unauthorized — administrator access required"
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Account creation failed"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountAddResponse"
-                }
-              }
-            },
-            "description": "Account created"
-          }
-        }
-      }
-    },
-    "/v2.1/account/mrc/": {
-      "post": {
-        "summary": "Monthly Recurring Charges",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "description": "Returns the current monthly recurring charges broken down by service plus a total. Rate limited to 6 requests per hour per IP address.",
-        "operationId": "accountMrc",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/apikeyRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Unauthorized"
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Too Many Requests"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountMrcResponse"
-                }
-              }
-            },
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/v2.1/account/info/": {
-      "post": {
-        "summary": "Account Info",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "description": "Returns account details including balance, rate, and configuration. Rate limited to 6 requests per hour per IP address.",
-        "operationId": "accountInfo",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/apikeyRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Unauthorized"
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Too Many Requests"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Bad Request"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountInfoResponse"
-                }
-              }
-            },
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/v2.1/account/recover/": {
-      "post": {
-        "summary": "Account Recovery",
-        "operationId": "accountRecover",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/accountRecoverRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            },
-            "description": "Email address not found"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountRecoverBadRequest"
-                }
-              }
-            },
-            "description": "Invalid email address"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/accountRecoverResponse"
-                }
-              }
-            },
-            "description": "Recovery email sent"
-          }
-        },
-        "description": "Sends a password recovery link to the email address associated with the account. No authentication required."
       }
     }
   },

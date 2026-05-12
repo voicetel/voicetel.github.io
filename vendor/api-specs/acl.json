@@ -308,70 +308,6 @@
         }
       }
     },
-    "/v2.1/acl/remove/": {
-      "post": {
-        "summary": "Remove ACL Entries",
-        "description": "Removes one or more IPv4 CIDR blocks from the account IP authentication ACL.",
-        "operationId": "aclRemove",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/aclModifyRequest"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "One or more entries could not be removed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/aclConflictResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "All entries removed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/aclRemoveResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v2.1/acl/list/": {
       "post": {
         "summary": "List ACL Entries",
@@ -429,6 +365,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/aclListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.1/acl/remove/": {
+      "post": {
+        "summary": "Remove ACL Entries",
+        "description": "Removes one or more IPv4 CIDR blocks from the account IP authentication ACL.",
+        "operationId": "aclRemove",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more entries could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclConflictResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All entries removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclRemoveResponse"
                 }
               }
             }

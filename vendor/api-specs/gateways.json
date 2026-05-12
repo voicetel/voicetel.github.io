@@ -479,21 +479,21 @@
     }
   ],
   "paths": {
-    "/v2.1/gateways/remove/": {
+    "/v2.1/gateways/add/": {
       "post": {
-        "operationId": "gatewaysRemove",
+        "operationId": "gatewaysAdd",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/gatewaysRemoveRequest"
+                "$ref": "#/components/schemas/gatewaysAddRequest"
               }
             }
           }
         },
-        "summary": "Remove Gateways",
-        "description": "Removes one or more gateways by route ID. A gateway cannot be removed if DIDs are currently routed to it.",
+        "summary": "Add Gateways",
+        "description": "Adds one or more SIP gateways to the account. Each gateway must resolve to a routable public IPv4 address. Optional port specified as host:port.",
         "security": [
           {
             "apikey": []
@@ -501,11 +501,11 @@
         ],
         "responses": {
           "409": {
-            "description": "One or more gateways could not be removed",
+            "description": "One or more gateways could not be added",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/gatewaysRemoveConflictResponse"
+                  "$ref": "#/components/schemas/gatewaysAddConflictResponse"
                 }
               }
             }
@@ -521,11 +521,11 @@
             }
           },
           "200": {
-            "description": "All gateways removed",
+            "description": "All gateways added",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/gatewaysRemoveResponse"
+                  "$ref": "#/components/schemas/gatewaysAddResponse"
                 }
               }
             }
@@ -597,6 +597,70 @@
         }
       }
     },
+    "/v2.1/gateways/remove/": {
+      "post": {
+        "operationId": "gatewaysRemove",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewaysRemoveRequest"
+              }
+            }
+          }
+        },
+        "summary": "Remove Gateways",
+        "description": "Removes one or more gateways by route ID. A gateway cannot be removed if DIDs are currently routed to it.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more gateways could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysRemoveConflictResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All gateways removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysRemoveResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2.1/gateways/update/": {
       "post": {
         "operationId": "gatewaysUpdate",
@@ -644,70 +708,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/gatewaysUpdateResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v2.1/gateways/add/": {
-      "post": {
-        "operationId": "gatewaysAdd",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/gatewaysAddRequest"
-              }
-            }
-          }
-        },
-        "summary": "Add Gateways",
-        "description": "Adds one or more SIP gateways to the account. Each gateway must resolve to a routable public IPv4 address. Optional port specified as host:port.",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "One or more gateways could not be added",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/gatewaysAddConflictResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "All gateways added",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/gatewaysAddResponse"
                 }
               }
             }

@@ -2397,6 +2397,250 @@
           "subject",
           "message"
         ]
+      },
+      "msg_enable": {
+        "properties": {
+          "numbers": {
+            "items": {
+              "$ref": "#/components/schemas/msg_enablement"
+            },
+            "type": "array",
+            "required": [
+              "number"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "numbers"
+        ]
+      },
+      "msg_sms": {
+        "properties": {
+          "source": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "messageText": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "integer",
+            "example": 2125551234
+          }
+        },
+        "type": "object",
+        "required": [
+          "destination",
+          "messageText",
+          "source"
+        ]
+      },
+      "msg_campaignIDs": {
+        "properties": {
+          "campaignIDs": {
+            "items": {
+              "$ref": "#/components/schemas/msg_campaignID"
+            },
+            "type": "array",
+            "required": [
+              "campaignID"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "campaigns"
+        ]
+      },
+      "msg_mdr-sms": {
+        "properties": {
+          "start": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "end": {
+            "type": "integer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number"
+        ]
+      },
+      "msg_campaignID": {
+        "properties": {
+          "campaignID": {
+            "type": "string",
+            "example": "A 10DLC campaignID to be associated with a registered ten-digit number. eg: CONVOLUTED"
+          }
+        },
+        "type": "object",
+        "required": [
+          "campaignID"
+        ]
+      },
+      "msg_dlr": {
+        "properties": {
+          "start": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "end": {
+            "type": "integer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number"
+        ]
+      },
+      "msg_enablement": {
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "campaignID": {
+            "type": "string",
+            "example": "An approved 10DLC campaignID assigned by The Campaign Registry. eg: CORROSIVE"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number"
+        ]
+      },
+      "msg_mms": {
+        "properties": {
+          "mmsURL": {
+            "type": "string"
+          },
+          "messageText": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "integer",
+            "example": 2125551234
+          },
+          "source": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "mmsSubject": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "required": [
+          "destination",
+          "messageText",
+          "source"
+        ]
+      },
+      "msg_routes": {
+        "properties": {
+          "numbers": {
+            "items": {
+              "$ref": "#/components/schemas/msg_route"
+            },
+            "type": "array",
+            "required": [
+              "number"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "numbers"
+        ]
+      },
+      "msg_mdr-mms": {
+        "properties": {
+          "start": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "end": {
+            "type": "integer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number"
+        ]
+      },
+      "msg_number": {
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number"
+        ]
+      },
+      "msg_disable": {
+        "properties": {
+          "numbers": {
+            "items": {
+              "$ref": "#/components/schemas/msg_number"
+            },
+            "type": "array",
+            "required": [
+              "number"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "numbers"
+        ]
+      },
+      "msg_status": {
+        "properties": {
+          "numbers": {
+            "items": {
+              "$ref": "#/components/schemas/msg_number"
+            },
+            "type": "array",
+            "required": [
+              "number"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "numbers"
+        ]
+      },
+      "msg_route": {
+        "properties": {
+          "number": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "route": {
+            "type": "string",
+            "example": "1"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number",
+          "route"
+        ]
       }
     },
     "securitySchemes": {
@@ -4665,6 +4909,1599 @@
         "operationId": "lrnLookup"
       }
     },
+    "/v2.2/messaging/campaigns": {
+      "post": {
+        "operationId": "campaigns",
+        "requestBody": {
+          "description": "/v2.1/messaging/status/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_campaignIDs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign status returned for all submitted IDs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Campaign results"
+                    },
+                    "campaign_numbers": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "campaign_event_status": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "example": "CAMPAIGN_DCA_COMPLETE"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Query 10DLC CampaignID(s) assigned by The Campaign Registry.",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Campaigns",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/disable": {
+      "post": {
+        "operationId": "disable",
+        "requestBody": {
+          "description": "/v2.1/messaging/disable/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_disable"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Messaging disabled on all submitted numbers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number results"
+                    },
+                    "numbers_enabled": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object"
+                      },
+                      "description": "Numbers successfully disabled, keyed by TN"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partial failure \u2014 one or more numbers not found on account or already disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number results"
+                    },
+                    "numbers_enabled": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object"
+                      }
+                    },
+                    "numbers_failed": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Disable SMS and MMS for numbers",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Number Disable",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/dlr": {
+      "post": {
+        "operationId": "dlr",
+        "requestBody": {
+          "description": "/v2.1/messaging/dlr/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_dlr"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Records returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "dlr": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Get delivery reports",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "DLR",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/enable": {
+      "post": {
+        "operationId": "enable",
+        "requestBody": {
+          "description": "/v2.1/messaging/status/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_enable"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Messaging enabled on all submitted numbers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number results"
+                    },
+                    "numbers_enabled": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partial failure \u2014 one or more numbers could not be enabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number results"
+                    },
+                    "numbers_enabled": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object"
+                      }
+                    },
+                    "numbers_failed": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Enable SMS and MMS for numbers. An approved 10DLC campaignID will soon be required for enablement.",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Number Enable",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/mdr-mms": {
+      "post": {
+        "operationId": "mdr-mms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mdr-mms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_mdr-mms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Records returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "mdr": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Number not found on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "404"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Get MMS Message Detail Report",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "MMS MDR",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/mdr-sms": {
+      "post": {
+        "operationId": "mdr-sms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mdr-sms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_mdr-sms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Records returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "mdr": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Number not found on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "404"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Get SMS Message Detail Report",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "SMS MDR",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/mms": {
+      "post": {
+        "operationId": "mms",
+        "requestBody": {
+          "description": "/v2.1/messaging/mms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_mms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message queued for delivery",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "transaction": {
+                          "type": "object",
+                          "properties": {
+                            "transactionGUID": {
+                              "type": "string",
+                              "example": "d88231b5-13b3-4fb2-8528-bc7164309389"
+                            },
+                            "destination": {
+                              "type": "string",
+                              "example": "12015551234"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Message rejected \u2014 Inteliquent returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "reason": {
+                          "type": "string",
+                          "example": "FAILURE"
+                        },
+                        "detail": {
+                          "type": "string"
+                        },
+                        "result": {
+                          "type": "object",
+                          "properties": {
+                            "transactionGUID": {
+                              "type": "string"
+                            },
+                            "resultResponses": {
+                              "type": "array",
+                              "items": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 source number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Insufficient Funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "402"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "MMS not enabled on account or number",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "405"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "STOP Blocked \u2014 destination has opted out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "406"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Send MMS (Multimedia Messaging Service)",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "MMS",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/routein": {
+      "post": {
+        "operationId": "routein",
+        "requestBody": {
+          "description": "Route incoming messages",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_routes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Inbound SMS routes updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Route results"
+                    },
+                    "numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "example": "2015551234"
+                          },
+                          "route": {
+                            "type": "integer",
+                            "example": 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partial failure \u2014 one or more numbers could not be updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Route result"
+                    },
+                    "numbers_success": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "numbers_failed": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Set routing for incoming messages",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Route In",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/routeout": {
+      "post": {
+        "operationId": "routeout",
+        "requestBody": {
+          "description": "Route outgoing messages",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_routes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Outbound SMS carrier routes updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Route results"
+                    },
+                    "numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "example": "2015551234"
+                          },
+                          "route": {
+                            "type": "integer",
+                            "example": 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Partial failure \u2014 one or more numbers could not be updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Route result"
+                    },
+                    "numbers_success": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "numbers_failed": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Set routing for outgoing messages",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Route Out",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/sms": {
+      "post": {
+        "operationId": "sms",
+        "requestBody": {
+          "description": "/v2.1/messaging/sms/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_sms"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message queued for delivery",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "object",
+                      "properties": {
+                        "transaction": {
+                          "type": "object",
+                          "properties": {
+                            "transactionGUID": {
+                              "type": "string",
+                              "example": "d88231b5-13b3-4fb2-8528-bc7164309389"
+                            },
+                            "destination": {
+                              "type": "string",
+                              "example": "12015551234"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input \u2014 missing required field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \u2014 source number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Insufficient Funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "402"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "SMS not enabled on account or number",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "405"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "STOP Blocked \u2014 destination has opted out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "406"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Message rejected by gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "422"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Queue is full"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Send SMS (Short Message Service)",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "SMS",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
+    "/v2.2/messaging/status": {
+      "post": {
+        "operationId": "status",
+        "requestBody": {
+          "description": "/v2.1/messaging/enable/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/msg_status"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Number messaging status returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number status"
+                    },
+                    "numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "example": "2015551234"
+                          },
+                          "status": {
+                            "type": "string",
+                            "example": "Enabled",
+                            "enum": [
+                              "Enabled",
+                              "Not Enabled"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "401"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers not found on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number status"
+                    },
+                    "numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "numbers_fail": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Get SMS and MMS status for numbers",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "summary": "Number Status",
+        "tags": [
+          "Messaging"
+        ]
+      }
+    },
     "/v2.2/numbers": {
       "get": {
         "summary": "List numbers",
@@ -5839,6 +7676,10 @@
     {
       "description": "Per-lookup billed services. CNAM returns the registered Caller ID Name. LRN returns Location Routing Number and carrier details. Requires the service to be enabled on the account.",
       "name": "Lookups"
+    },
+    {
+      "name": "Messaging",
+      "description": "SMS/MMS sending, routing, messaging campaigns, and delivery records."
     },
     {
       "description": "Manage telephone numbers: routing, forwarding, DNIS translation, inbound CNAM lookup, outbound Caller ID Name (LIDB), SMS routing, and fax-to-email.",

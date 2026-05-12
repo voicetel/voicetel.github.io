@@ -263,113 +263,6 @@
     }
   },
   "paths": {
-    "/v2/iNumbering/tnInventoryCoverage/": {
-      "post": {
-        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState). Results are filtered to items matching the submitted filter field.",
-        "responses": {
-          "409": {
-            "description": "Conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "<IQ error text>"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "Error"
-                    },
-                    "statusCode": {
-                      "type": "string",
-                      "example": "409"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "200": {
-            "description": "Success. tnInventoryCoverageList is filtered to items matching the submitted filter field (npa, lata, rcAbbre, or locState).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "tnInventoryCoverageList": {
-                      "description": "Filtered by whichever of npa, lata, rcAbbre, or locState was provided in the request",
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "npa": {
-                            "type": "string",
-                            "example": "201"
-                          },
-                          "lata": {
-                            "type": "string",
-                            "example": "224"
-                          },
-                          "nxx": {
-                            "type": "string",
-                            "example": "389"
-                          },
-                          "locState": {
-                            "type": "string",
-                            "example": "NJ"
-                          },
-                          "rcAbbre": {
-                            "type": "string",
-                            "example": "HACKENSACK"
-                          },
-                          "count": {
-                            "type": "integer",
-                            "example": 973
-                          }
-                        }
-                      }
-                    },
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Search Number Coverage",
-        "operationId": "tnInventoryCoverage",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "/v2/iNumbering/tnInventoryCoverage/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnInventoryCoverage"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v2/iNumbering/addMessagingBrand/": {
       "post": {
         "description": "Adds a new brand for number provisioning messaging.",
@@ -432,6 +325,74 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/messagingBrand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/addMessagingCampaign/": {
+      "post": {
+        "description": "Adds a new campaign for a specific messaging brand. campaignClassName and campaignStartDate are set automatically; callers do not need to provide those fields.",
+        "responses": {
+          "400": {
+            "description": "Bad input / missing required fields."
+          },
+          "409": {
+            "description": "Invalid Input Parameters | Invalid messagingBrandId format | Invalid externalCampaignId format | externalCampaignId is not ACTIVE | externalCampaignId is not registered"
+          },
+          "410": {
+            "description": "DB Error | Error specific to order_id or customerOrderReference"
+          },
+          "200": {
+            "description": "Messaging campaign added successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "430": {
+            "description": "No Result Found"
+          },
+          "414": {
+            "description": "Fields Are Required: (field name)"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "431": {
+            "description": "Unable to complete the request at the moment"
+          },
+          "411": {
+            "description": "Unknown Error"
+          }
+        },
+        "summary": "Add Messaging Campaign",
+        "operationId": "addMessagingCampaign",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "Messaging Campaign Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/messagingCampaign"
               }
             }
           }
@@ -534,6 +495,113 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/tnInventory"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/tnInventoryCoverage/": {
+      "post": {
+        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState). Results are filtered to items matching the submitted filter field.",
+        "responses": {
+          "409": {
+            "description": "Conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "<IQ error text>"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success. tnInventoryCoverageList is filtered to items matching the submitted filter field (npa, lata, rcAbbre, or locState).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "tnInventoryCoverageList": {
+                      "description": "Filtered by whichever of npa, lata, rcAbbre, or locState was provided in the request",
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "npa": {
+                            "type": "string",
+                            "example": "201"
+                          },
+                          "lata": {
+                            "type": "string",
+                            "example": "224"
+                          },
+                          "nxx": {
+                            "type": "string",
+                            "example": "389"
+                          },
+                          "locState": {
+                            "type": "string",
+                            "example": "NJ"
+                          },
+                          "rcAbbre": {
+                            "type": "string",
+                            "example": "HACKENSACK"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "example": 973
+                          }
+                        }
+                      }
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Search Number Coverage",
+        "operationId": "tnInventoryCoverage",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "/v2/iNumbering/tnInventoryCoverage/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnInventoryCoverage"
               }
             }
           }
@@ -706,74 +774,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/tnOrder"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v2/iNumbering/addMessagingCampaign/": {
-      "post": {
-        "description": "Adds a new campaign for a specific messaging brand. campaignClassName and campaignStartDate are set automatically; callers do not need to provide those fields.",
-        "responses": {
-          "400": {
-            "description": "Bad input / missing required fields."
-          },
-          "409": {
-            "description": "Invalid Input Parameters | Invalid messagingBrandId format | Invalid externalCampaignId format | externalCampaignId is not ACTIVE | externalCampaignId is not registered"
-          },
-          "410": {
-            "description": "DB Error | Error specific to order_id or customerOrderReference"
-          },
-          "200": {
-            "description": "Messaging campaign added successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "430": {
-            "description": "No Result Found"
-          },
-          "414": {
-            "description": "Fields Are Required: (field name)"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "431": {
-            "description": "Unable to complete the request at the moment"
-          },
-          "411": {
-            "description": "Unknown Error"
-          }
-        },
-        "summary": "Add Messaging Campaign",
-        "operationId": "addMessagingCampaign",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "Messaging Campaign Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/messagingCampaign"
               }
             }
           }

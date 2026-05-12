@@ -1,133 +1,5 @@
 {
   "paths": {
-    "/v2.1/numbers/lidb/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Set LIDB / Outbound Caller ID Name",
-        "responses": {
-          "200": {
-            "description": "LIDB updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersLidbResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "One or more LIDB updates could not be completed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersLidbConflictResponse"
-                }
-              }
-            }
-          }
-        },
-        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for one or more numbers. Updates both the local database and submits to the carrier. The number must be on the account.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersLidbRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersLidb"
-      }
-    },
-    "/v2.1/numbers/translations/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Set Number Translations",
-        "responses": {
-          "200": {
-            "description": "Translations set",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersTranslationsResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "One or more translations could not be set",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersTranslationsConflictResponse"
-                }
-              }
-            }
-          }
-        },
-        "description": "Sets the inbound DNIS translation for one or more numbers.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersTranslationsRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersTranslations"
-      }
-    },
     "/v2.1/numbers/add/": {
       "post": {
         "security": [
@@ -202,262 +74,6 @@
         "operationId": "numbersAdd"
       }
     },
-    "/v2.1/numbers/remove/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Remove Numbers",
-        "responses": {
-          "200": {
-            "description": "All numbers removed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersRemovedResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "One or more numbers could not be removed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
-                }
-              }
-            }
-          }
-        },
-        "description": "Deletes numbers from the account entirely. Numbers currently porting cannot be removed.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersArrayRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersRemove"
-      }
-    },
-    "/v2.1/numbers/disconnect/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Disconnect Numbers",
-        "responses": {
-          "200": {
-            "description": "All numbers disconnected",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersRemovedResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "One or more numbers could not be disconnected",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
-                }
-              }
-            }
-          }
-        },
-        "description": "Removes numbers from the account and returns them to the available pool. Numbers currently porting cannot be disconnected.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersArrayRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersDisconnect"
-      }
-    },
-    "/v2.1/numbers/move/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Move Numbers",
-        "responses": {
-          "200": {
-            "description": "Numbers moved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersMoveResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "One or more numbers could not be moved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersMoveConflictResponse"
-                }
-              }
-            }
-          }
-        },
-        "description": "Moves one or more numbers to a different account with a specified route.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersMoveRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersMove"
-      }
-    },
-    "/v2.1/numbers/list/": {
-      "post": {
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "List Numbers",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersListResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No numbers found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/numbersListNotFound"
-                }
-              }
-            }
-          }
-        },
-        "description": "Returns telephone numbers on the account with their route and gateway IP. Optionally filter by route ID or number.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/numbersListRequest"
-              }
-            }
-          }
-        },
-        "operationId": "numbersList"
-      }
-    },
     "/v2.1/numbers/cnam/": {
       "post": {
         "security": [
@@ -522,21 +138,21 @@
         "operationId": "numbersCnam"
       }
     },
-    "/v2.1/numbers/route/": {
+    "/v2.1/numbers/disconnect/": {
       "post": {
         "security": [
           {
             "apikey": []
           }
         ],
-        "summary": "Route Numbers",
+        "summary": "Disconnect Numbers",
         "responses": {
           "200": {
-            "description": "Routes set",
+            "description": "All numbers disconnected",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/numbersRouteResponse"
+                  "$ref": "#/components/schemas/numbersRemovedResponse"
                 }
               }
             }
@@ -562,28 +178,28 @@
             }
           },
           "409": {
-            "description": "One or more routes could not be set",
+            "description": "One or more numbers could not be disconnected",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/numbersRouteConflictResponse"
+                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
                 }
               }
             }
           }
         },
-        "description": "Sets the gateway route for one or more numbers.",
+        "description": "Removes numbers from the account and returns them to the available pool. Numbers currently porting cannot be disconnected.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/numbersRouteRequest"
+                "$ref": "#/components/schemas/numbersArrayRequest"
               }
             }
           }
         },
-        "operationId": "numbersRoute"
+        "operationId": "numbersDisconnect"
       }
     },
     "/v2.1/numbers/forward/": {
@@ -710,6 +326,390 @@
           }
         },
         "operationId": "numbersForwardSet"
+      }
+    },
+    "/v2.1/numbers/lidb/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Set LIDB / Outbound Caller ID Name",
+        "responses": {
+          "200": {
+            "description": "LIDB updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersLidbResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more LIDB updates could not be completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersLidbConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for one or more numbers. Updates both the local database and submits to the carrier. The number must be on the account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersLidbRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersLidb"
+      }
+    },
+    "/v2.1/numbers/list/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "List Numbers",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No numbers found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersListNotFound"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns telephone numbers on the account with their route and gateway IP. Optionally filter by route ID or number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersListRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersList"
+      }
+    },
+    "/v2.1/numbers/move/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Move Numbers",
+        "responses": {
+          "200": {
+            "description": "Numbers moved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersMoveResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be moved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersMoveConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Moves one or more numbers to a different account with a specified route.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersMoveRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersMove"
+      }
+    },
+    "/v2.1/numbers/remove/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Remove Numbers",
+        "responses": {
+          "200": {
+            "description": "All numbers removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemovedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes numbers from the account entirely. Numbers currently porting cannot be removed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersArrayRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersRemove"
+      }
+    },
+    "/v2.1/numbers/route/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Route Numbers",
+        "responses": {
+          "200": {
+            "description": "Routes set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRouteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more routes could not be set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRouteConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sets the gateway route for one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersRouteRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersRoute"
+      }
+    },
+    "/v2.1/numbers/translations/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Set Number Translations",
+        "responses": {
+          "200": {
+            "description": "Translations set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersTranslationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more translations could not be set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersTranslationsConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sets the inbound DNIS translation for one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersTranslationsRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersTranslations"
       }
     }
   },
@@ -1320,7 +1320,7 @@
         }
       },
       "numbersForwardConflictResponse": {
-        "description": "Note: response keys are 'foward_success' and 'foward_failed' — these are the key names as returned by the API.",
+        "description": "Note: response keys are 'foward_success' and 'foward_failed' \u2014 these are the key names as returned by the API.",
         "required": [
           "statusCode",
           "status",
@@ -1626,7 +1626,7 @@
         }
       },
       "numbersForwardResponse": {
-        "description": "Note: response key is 'foward' (not 'forward') — this is the key name as returned by the API.",
+        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API.",
         "required": [
           "statusCode",
           "status",
@@ -1799,7 +1799,7 @@
         }
       },
       "numbersForwardDeleteResponse": {
-        "description": "Note: response key is 'foward' (not 'forward') — this is the key name as returned by the API.",
+        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API.",
         "required": [
           "statusCode",
           "status",

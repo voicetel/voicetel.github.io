@@ -1,4 +1,22 @@
 {
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "title": "iNumbering Provisioning API",
+    "version": "v2.1.5",
+    "description": "iNumbering Provisioning"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
   "components": {
     "schemas": {
       "tnMessagingCampaign": {
@@ -101,6 +119,11 @@
         "properties": {
           "tnList": {
             "$ref": "#/components/schemas/tnList"
+          },
+          "customerOrderReference": {
+            "type": "string",
+            "description": "Optional. If omitted, the proxy auto-generates a reference as {username}-{timestamp}.",
+            "example": "myaccount-1717171717"
           }
         }
       },
@@ -239,71 +262,17 @@
       }
     }
   },
-  "servers": [
-    {
-      "url": "https://api.voicetel.com"
-    }
-  ],
   "paths": {
-    "/v2/iNumbering/tnOrder/": {
-      "post": {
-        "responses": {
-          "409": {
-            "description": "Conflict"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Order Numbers",
-        "operationId": "tnOrder",
-        "requestBody": {
-          "description": "/v2/iNumbering/tnOrder/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnOrder"
-              }
-            }
-          }
-        },
-        "description": "Order numbers and optionally route numbers. Route can obtained from Gateways list API."
-      }
-    },
     "/v2/iNumbering/tnInventory/": {
       "post": {
-        "responses": {
-          "409": {
-            "description": "Conflict"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
+        "summary": "Search Numbers",
+        "operationId": "tnInventory",
+        "description": "Optional Filters: Select one or several of (lata,rateCenter,province). The proxy post-hook strips page, totalPages, and searchId from the IQ response and reduces each result to 5 fields.",
         "security": [
           {
             "apikey": []
           }
         ],
-        "summary": "Search Numbers",
-        "operationId": "tnInventory",
         "requestBody": {
           "description": "/v2/iNumbering/tnInventory/",
           "content": {
@@ -314,65 +283,98 @@
             }
           }
         },
-        "description": "Optional Filters: Select one or several of (lata,rateCenter,province)."
-      }
-    },
-    "/v2/iNumbering/addMessagingCampaign/": {
-      "post": {
         "responses": {
-          "400": {
-            "description": "Invalid Input"
-          },
           "200": {
-            "description": "Messaging Campaign Added Successfully"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "summary": "Add Messaging Campaign",
-        "operationId": "addMessagingCampaign",
-        "requestBody": {
-          "description": "Messaging Campaign Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/messagingCampaign"
+            "description": "Success. page, totalPages, and searchId are stripped by the proxy post-hook; only the 5-field tnResult array is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "tnResult": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "telephoneNumber": {
+                            "type": "string",
+                            "example": "2015551234"
+                          },
+                          "rateCenter": {
+                            "type": "string",
+                            "example": "HACKENSACK"
+                          },
+                          "lata": {
+                            "type": "integer",
+                            "example": 224
+                          },
+                          "province": {
+                            "type": "string",
+                            "example": "NJ"
+                          },
+                          "city": {
+                            "type": "string",
+                            "example": "HACKENSACK"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
-          }
-        },
-        "description": "Adds a new campaign for a specific messaging brand."
-      }
-    },
-    "/v2/iNumbering/tnInventoryCoverage/": {
-      "post": {
-        "responses": {
-          "409": {
-            "description": "Conflict"
           },
           "400": {
             "description": "Bad input"
           },
-          "200": {
-            "description": "Success"
-          },
           "401": {
             "description": "Unauthorized"
+          },
+          "409": {
+            "description": "IQ returned a non-success status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "<IQ error text>"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
+        }
+      }
+    },
+    "/v2/iNumbering/tnInventoryCoverage/": {
+      "post": {
+        "summary": "Search Number Coverage",
+        "operationId": "tnInventoryCoverage",
+        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState). The proxy post-hook filters the returned list to only items matching the filter field sent in the request.",
         "security": [
           {
             "apikey": []
           }
         ],
-        "summary": "Search Number Coverage",
-        "operationId": "tnInventoryCoverage",
         "requestBody": {
           "description": "/v2/iNumbering/tnInventoryCoverage/",
           "content": {
@@ -383,29 +385,203 @@
             }
           }
         },
-        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState)."
-      }
-    },
-    "/v2/iNumbering/addMessagingBrand/": {
-      "post": {
         "responses": {
-          "400": {
-            "description": "Invalid Input"
-          },
           "200": {
-            "description": "Messaging Brand Added Successfully"
+            "description": "Success. The proxy filters tnInventoryCoverageList to only items matching the filter field (npa, lata, rcAbbre, or locState) provided in the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "tnInventoryCoverageList": {
+                      "type": "array",
+                      "description": "Filtered by whichever of npa, lata, rcAbbre, or locState was provided in the request",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "npa": {
+                            "type": "string",
+                            "example": "201"
+                          },
+                          "nxx": {
+                            "type": "string",
+                            "example": "389"
+                          },
+                          "lata": {
+                            "type": "string",
+                            "example": "224"
+                          },
+                          "rcAbbre": {
+                            "type": "string",
+                            "example": "HACKENSACK"
+                          },
+                          "locState": {
+                            "type": "string",
+                            "example": "NJ"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "example": 973
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input"
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "409": {
+            "description": "IQ returned a non-success status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "<IQ error text>"
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
+        }
+      }
+    },
+    "/v2/iNumbering/tnOrder/": {
+      "post": {
+        "summary": "Order Numbers",
+        "operationId": "tnOrder",
+        "description": "Order numbers and optionally route numbers. Route can be obtained from Gateways list API. The proxy pre-hook injects trunkGroup (\"orig\"), accountPin (last 4 digits of timestamp), and cnamDip (\"N\") automatically; directoryListing, e911, and messaging tnFeatures are stripped before forwarding to IQ. orderId in the response is replaced by the proxy with a Unix timestamp string, not the real IQ order ID.",
         "security": [
           {
             "apikey": []
           }
         ],
+        "requestBody": {
+          "description": "/v2/iNumbering/tnOrder/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order placed successfully. The proxy post-hook replaces the IQ-issued orderId with a Unix timestamp string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "orderId": {
+                      "type": "string",
+                      "description": "Timestamp-based order reference (not the upstream IQ order ID)",
+                      "example": "1717171717"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input — returned by proxy validation if tn is not an array of tnItem.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "400"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "tn should be an array of tnItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Upstream IQ error reformatted by the proxy post-hook.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "409"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "<upstream error text>"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/addMessagingBrand/": {
+      "post": {
         "summary": "Add Messaging Brand",
         "operationId": "addMessagingBrand",
+        "description": "Adds a new brand for number provisioning messaging. The proxy pre-hook validates messagingBrandId, messagingBrandName, and messagingBrandDescription before forwarding to IQ.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
         "requestBody": {
           "description": "Messaging Brand Details",
           "content": {
@@ -416,29 +592,132 @@
             }
           }
         },
-        "description": "Adds a new brand for number provisioning messaging."
-      }
-    },
-    "/v2/iNumbering/tnMessagingCampaign/": {
-      "post": {
         "responses": {
-          "400": {
-            "description": "Invalid Input"
-          },
           "200": {
-            "description": "TN Messaging Campaign Added Successfully"
+            "description": "Messaging brand added successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input / missing required fields."
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Invalid Input Parameters | Invalid messagingBrandId format, should start with B and contain alphanumeric characters only"
+          },
+          "410": {
+            "description": "DB Error | Error specific to order_id or customerOrderReference"
+          },
+          "411": {
+            "description": "Unknown Error"
+          },
+          "414": {
+            "description": "Fields Are Required: (field name)"
+          },
+          "431": {
+            "description": "Unable to complete the request at the moment"
+          },
+          "470": {
+            "description": "Brand Name already exists"
           }
-        },
+        }
+      }
+    },
+    "/v2/iNumbering/addMessagingCampaign/": {
+      "post": {
+        "summary": "Add Messaging Campaign",
+        "operationId": "addMessagingCampaign",
+        "description": "Adds a new campaign for a specific messaging brand. The proxy pre-hook validates messagingBrandId, externalCampaignId, and campaignDescription, then automatically injects campaignClassName (\"T\") and campaignStartDate (today at 00:00:00.000Z) before forwarding to IQ. Callers do not need to provide those fields.",
         "security": [
           {
             "apikey": []
           }
         ],
+        "requestBody": {
+          "description": "Messaging Campaign Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/messagingCampaign"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Messaging campaign added successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input / missing required fields."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Invalid Input Parameters | Invalid messagingBrandId format | Invalid externalCampaignId format | externalCampaignId is not ACTIVE | externalCampaignId is not registered"
+          },
+          "410": {
+            "description": "DB Error | Error specific to order_id or customerOrderReference"
+          },
+          "411": {
+            "description": "Unknown Error"
+          },
+          "414": {
+            "description": "Fields Are Required: (field name)"
+          },
+          "430": {
+            "description": "No Result Found"
+          },
+          "431": {
+            "description": "Unable to complete the request at the moment"
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/tnMessagingCampaign/": {
+      "post": {
         "summary": "Add Messaging Campaign to TNs",
         "operationId": "tnMessagingCampaign",
+        "description": "Adds a campaign to a list of telephone numbers for messaging. The proxy pre-hook validates the full tnCampaign structure: each tn must be 10 digits and each tnFeature.messaging.tnCampaign must be a 7-character string starting with \"C\". customerOrderReference is auto-set if omitted. On success, the proxy post-hook sets carrier=19 for matched numbers and disables Aerialink codes in the DB.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
         "requestBody": {
           "description": "TN Messaging Campaign Details",
           "content": {
@@ -449,21 +728,57 @@
             }
           }
         },
-        "description": "Adds a campaign to a list of telephone numbers for messaging."
+        "responses": {
+          "200": {
+            "description": "TN messaging campaign assigned successfully. The proxy post-hook sets carrier=19 for matched numbers and disables Aerialink codes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "orderId": {
+                      "type": "integer",
+                      "example": 12345678
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input / invalid request structure."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Invalid TN Submitted | Invalid Input Parameters"
+          },
+          "410": {
+            "description": "DB Error"
+          },
+          "414": {
+            "description": "Fields Are Required"
+          },
+          "422": {
+            "description": "Order quantity limit is 100,000 numbers"
+          },
+          "431": {
+            "description": "Unable to complete the request at the moment"
+          },
+          "432": {
+            "description": "TN Excluded"
+          }
+        }
       }
     }
-  },
-  "openapi": "3.0.0",
-  "info": {
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "title": "iNumbering Provisioning API",
-    "version": "v2.1.5",
-    "description": "iNumbering Provisioning"
   }
 }

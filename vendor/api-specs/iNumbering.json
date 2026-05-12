@@ -1,370 +1,6 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "iNumbering Provisioning API",
-    "description": "iNumbering Provisioning",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v2.0.5"
-  },
-  "servers": [
-    {
-      "url": "https://api.voicetel.com"
-    }
-  ],
-  "paths": {
-    "/v2/iNumbering/tnInventoryCoverage/": {
-      "post": {
-        "summary": "Search Number Coverage",
-        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState).",
-        "operationId": "tnInventoryCoverage",
-        "requestBody": {
-          "description": "/v2/iNumbering/tnInventoryCoverage/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnInventoryCoverage"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/tnInventory/": {
-      "post": {
-        "summary": "Search Numbers",
-        "description": "Optional Filters: Select one or several of (lata,rateCenter,province).",
-        "operationId": "tnInventory",
-        "requestBody": {
-          "description": "/v2/iNumbering/tnInventory/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnInventory"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/tnOrder/": {
-      "post": {
-        "summary": "Order Numbers",
-        "description": "Order numbers and optionally route numbers. Route can obtained from Gateways list API.",
-        "operationId": "tnOrder",
-        "requestBody": {
-          "description": "/v2/iNumbering/tnOrder/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnOrder"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/addMessagingBrand/": {
-      "post": {
-        "summary": "Add Messaging Brand",
-        "description": "Adds a new brand for number provisioning messaging.",
-        "operationId": "addMessagingBrand",
-        "requestBody": {
-          "description": "Messaging Brand Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/messagingBrand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Messaging Brand Added Successfully"
-          },
-          "400": {
-            "description": "Invalid Input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/addMessagingCampaign/": {
-      "post": {
-        "summary": "Add Messaging Campaign",
-        "description": "Adds a new campaign for a specific messaging brand.",
-        "operationId": "addMessagingCampaign",
-        "requestBody": {
-          "description": "Messaging Campaign Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/messagingCampaign"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Messaging Campaign Added Successfully"
-          },
-          "400": {
-            "description": "Invalid Input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/tnMessagingCampaign/": {
-      "post": {
-        "summary": "Add Messaging Campaign to TNs",
-        "description": "Adds a campaign to a list of telephone numbers for messaging.",
-        "operationId": "tnMessagingCampaign",
-        "requestBody": {
-          "description": "TN Messaging Campaign Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/tnMessagingCampaign"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "TN Messaging Campaign Added Successfully"
-          },
-          "400": {
-            "description": "Invalid Input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    }
-  },
   "components": {
     "schemas": {
-      "tnInventoryCoverage": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "npa": {
-            "type": "string",
-            "example": "201"
-          },
-          "lata": {
-            "type": "string",
-            "example": "224"
-          },
-          "rcAbbre": {
-            "type": "string",
-            "example": "HACKENSACK"
-          },
-          "locState": {
-            "type": "string",
-            "example": "NJ"
-          },
-          "countBy": {
-            "type": "string",
-            "example": "npaNxx"
-          }
-        }
-      },
-      "tnInventory": {
-        "required": [
-          "apikey",
-          "quantity",
-          "tnMask"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "tnMask": {
-            "type": "string",
-            "example": "201xxxxxxx"
-          },
-          "lata": {
-            "type": "integer",
-            "example": 224
-          },
-          "rateCenter": {
-            "type": "string",
-            "example": "HACKENSACK"
-          },
-          "province": {
-            "type": "string",
-            "example": "NJ"
-          },
-          "quantity": {
-            "type": "integer",
-            "example": 1000
-          }
-        },
-        "description": "Optional Filters: Select one or several of (lata,rateCenter,province)"
-      },
-      "tnOrder": {
-        "required": [
-          "apikey",
-          "tnOrder"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "tnOrder": {
-            "$ref": "#/components/schemas/tnOrder_tnOrder"
-          }
-        }
-      },
-      "messagingBrand": {
-        "required": [
-          "apikey",
-          "messagingBrandId",
-          "messagingBrandName",
-          "messagingBrandDescription"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "messagingBrandId": {
-            "type": "string",
-            "example": "B12345"
-          },
-          "messagingBrandName": {
-            "type": "string",
-            "example": "Brand Name"
-          },
-          "messagingBrandDescription": {
-            "type": "string",
-            "example": "Brand Description"
-          }
-        }
-      },
-      "messagingCampaign": {
-        "required": [
-          "apikey",
-          "messagingBrandId",
-          "externalCampaignId",
-          "campaignDescription"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "messagingBrandId": {
-            "type": "string",
-            "example": "B123456"
-          },
-          "externalCampaignId": {
-            "type": "string",
-            "example": "C123456"
-          },
-          "campaignDescription": {
-            "type": "string",
-            "example": "Campaign Description"
-          }
-        }
-      },
       "tnMessagingCampaign": {
         "required": [
           "apikey",
@@ -383,14 +19,9 @@
                 "type": "object",
                 "properties": {
                   "tnItem": {
-                    "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "tn": {
-                          "type": "string",
-                          "example": "2015551234"
-                        },
                         "tnFeature": {
                           "type": "object",
                           "properties": {
@@ -404,29 +35,17 @@
                               }
                             }
                           }
+                        },
+                        "tn": {
+                          "type": "string",
+                          "example": "2015551234"
                         }
                       }
-                    }
+                    },
+                    "type": "array"
                   }
                 }
               }
-            }
-          }
-        }
-      },
-      "tnList": {
-        "required": [
-          "tnItem"
-        ],
-        "type": "object",
-        "properties": {
-          "tnItem": {
-            "required": [
-              "tn"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/tn"
             }
           }
         }
@@ -437,13 +56,40 @@
         ],
         "type": "object",
         "properties": {
-          "tn": {
-            "type": "integer",
-            "example": 2015551234
-          },
           "route": {
             "type": "integer",
             "example": 1000
+          },
+          "tn": {
+            "type": "integer",
+            "example": 2015551234
+          }
+        }
+      },
+      "messagingBrand": {
+        "required": [
+          "apikey",
+          "messagingBrandId",
+          "messagingBrandName",
+          "messagingBrandDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "messagingBrandId": {
+            "type": "string",
+            "example": "B12345"
+          },
+          "messagingBrandName": {
+            "type": "string",
+            "example": "Brand Name"
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "messagingBrandDescription": {
+            "type": "string",
+            "example": "Brand Description"
           }
         }
       },
@@ -457,13 +103,367 @@
             "$ref": "#/components/schemas/tnList"
           }
         }
+      },
+      "tnOrder": {
+        "required": [
+          "apikey",
+          "tnOrder"
+        ],
+        "type": "object",
+        "properties": {
+          "tnOrder": {
+            "$ref": "#/components/schemas/tnOrder_tnOrder"
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      },
+      "tnInventory": {
+        "required": [
+          "apikey",
+          "quantity",
+          "tnMask"
+        ],
+        "type": "object",
+        "description": "Optional Filters: Select one or several of (lata,rateCenter,province)",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "example": 1000
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "lata": {
+            "type": "integer",
+            "example": 224
+          },
+          "tnMask": {
+            "type": "string",
+            "example": "201xxxxxxx"
+          },
+          "province": {
+            "type": "string",
+            "example": "NJ"
+          },
+          "rateCenter": {
+            "type": "string",
+            "example": "HACKENSACK"
+          }
+        }
+      },
+      "tnList": {
+        "required": [
+          "tnItem"
+        ],
+        "type": "object",
+        "properties": {
+          "tnItem": {
+            "required": [
+              "tn"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/tn"
+            },
+            "type": "array"
+          }
+        }
+      },
+      "tnInventoryCoverage": {
+        "required": [
+          "apikey"
+        ],
+        "type": "object",
+        "properties": {
+          "rcAbbre": {
+            "type": "string",
+            "example": "HACKENSACK"
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "npa": {
+            "type": "string",
+            "example": "201"
+          },
+          "lata": {
+            "type": "string",
+            "example": "224"
+          },
+          "countBy": {
+            "type": "string",
+            "example": "npaNxx"
+          },
+          "locState": {
+            "type": "string",
+            "example": "NJ"
+          }
+        }
+      },
+      "messagingCampaign": {
+        "required": [
+          "apikey",
+          "messagingBrandId",
+          "externalCampaignId",
+          "campaignDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "messagingBrandId": {
+            "type": "string",
+            "example": "B123456"
+          },
+          "campaignDescription": {
+            "type": "string",
+            "example": "Campaign Description"
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "externalCampaignId": {
+            "type": "string",
+            "example": "C123456"
+          }
+        }
       }
     },
     "securitySchemes": {
       "apikey": {
-        "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "type": "http"
       }
     }
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "paths": {
+    "/v2/iNumbering/tnOrder/": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflict"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Order Numbers",
+        "operationId": "tnOrder",
+        "requestBody": {
+          "description": "/v2/iNumbering/tnOrder/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnOrder"
+              }
+            }
+          }
+        },
+        "description": "Order numbers and optionally route numbers. Route can obtained from Gateways list API."
+      }
+    },
+    "/v2/iNumbering/tnInventory/": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflict"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Search Numbers",
+        "operationId": "tnInventory",
+        "requestBody": {
+          "description": "/v2/iNumbering/tnInventory/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnInventory"
+              }
+            }
+          }
+        },
+        "description": "Optional Filters: Select one or several of (lata,rateCenter,province)."
+      }
+    },
+    "/v2/iNumbering/addMessagingCampaign/": {
+      "post": {
+        "responses": {
+          "400": {
+            "description": "Invalid Input"
+          },
+          "200": {
+            "description": "Messaging Campaign Added Successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Add Messaging Campaign",
+        "operationId": "addMessagingCampaign",
+        "requestBody": {
+          "description": "Messaging Campaign Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/messagingCampaign"
+              }
+            }
+          }
+        },
+        "description": "Adds a new campaign for a specific messaging brand."
+      }
+    },
+    "/v2/iNumbering/tnInventoryCoverage/": {
+      "post": {
+        "responses": {
+          "409": {
+            "description": "Conflict"
+          },
+          "400": {
+            "description": "Bad input"
+          },
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Search Number Coverage",
+        "operationId": "tnInventoryCoverage",
+        "requestBody": {
+          "description": "/v2/iNumbering/tnInventoryCoverage/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnInventoryCoverage"
+              }
+            }
+          }
+        },
+        "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState)."
+      }
+    },
+    "/v2/iNumbering/addMessagingBrand/": {
+      "post": {
+        "responses": {
+          "400": {
+            "description": "Invalid Input"
+          },
+          "200": {
+            "description": "Messaging Brand Added Successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Add Messaging Brand",
+        "operationId": "addMessagingBrand",
+        "requestBody": {
+          "description": "Messaging Brand Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/messagingBrand"
+              }
+            }
+          }
+        },
+        "description": "Adds a new brand for number provisioning messaging."
+      }
+    },
+    "/v2/iNumbering/tnMessagingCampaign/": {
+      "post": {
+        "responses": {
+          "400": {
+            "description": "Invalid Input"
+          },
+          "200": {
+            "description": "TN Messaging Campaign Added Successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Add Messaging Campaign to TNs",
+        "operationId": "tnMessagingCampaign",
+        "requestBody": {
+          "description": "TN Messaging Campaign Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tnMessagingCampaign"
+              }
+            }
+          }
+        },
+        "description": "Adds a campaign to a list of telephone numbers for messaging."
+      }
+    }
+  },
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "title": "iNumbering Provisioning API",
+    "version": "v2.1.5",
+    "description": "iNumbering Provisioning"
   }
 }

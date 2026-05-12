@@ -1,180 +1,382 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Info Services",
-    "description": "Info Services",
-    "contact": {
-      "email": "support@voicetel.com"
+  "openapi": "3.0.1",
+  "paths": {
+    "/v2.1/info/lrn/": {
+      "post": {
+        "summary": "Location Routing Number Lookup",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "infoLrn",
+        "description": "Returns the Location Routing Number (LRN) and carrier information for a destination number. Both dst and cid must be 10-digit NPANXXXXXX format.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/lrnRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lrnResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        }
+      }
     },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "/v2.1/info/cnam/": {
+      "post": {
+        "summary": "Caller ID Name Lookup",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "infoCnam",
+        "description": "Returns the Caller ID Name (CNAM) for a 10-digit telephone number. Requires CNAM service to be enabled on the account.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cnamRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request or service not enabled"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/cnamResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        }
+      }
     },
-    "version": "v2.1.1"
+    "/v2.1/info/resporg/": {
+      "post": {
+        "summary": "Toll-Free RespOrg Lookup",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "infoRespOrg",
+        "description": "Returns the Responsible Organization (RespOrg) ID for a toll-free telephone number. Requires LRN service to be enabled on the account.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resporgRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request or service not enabled"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/resporgResponse"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
   },
   "servers": [
     {
       "url": "https://api.voicetel.com"
     }
   ],
-  "paths": {
-    "/v2.1/info/lrn/": {
-      "post": {
-        "summary": "Location Routing Number",
-        "description": "Get location routing number",
-        "operationId": "lrn",
-        "requestBody": {
-          "description": "/v2.1/info/lrn/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/lrn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/info/cnam/": {
-      "post": {
-        "summary": "Caller ID Name",
-        "description": "Get caller ID name",
-        "operationId": "cnam",
-        "requestBody": {
-          "description": "/v2.1/info/cnam/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/cnam"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/info/resporg/": {
-      "post": {
-        "summary": "TollFree RespOrg",
-        "description": "Get RespOrg for given TollFree number.",
-        "operationId": "tfresporg",
-        "requestBody": {
-          "description": "/v2.1/info/cnam/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/resporg"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    }
-  },
   "components": {
     "schemas": {
-      "lrn": {
-        "required": [
-          "apikey",
-          "cid",
-          "dst"
-        ],
-        "type": "object",
+      "lrnRequest": {
         "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
           "cid": {
+            "description": "Calling party number in NPANXXXXXX format.",
             "type": "integer",
             "example": 2015551234
           },
           "dst": {
+            "description": "Destination number in NPANXXXXXX format.",
             "type": "integer",
             "example": 2125551234
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "apikey",
+          "cid",
+          "dst"
+        ]
       },
-      "cnam": {
+      "lrnData": {
+        "properties": {
+          "LOCAL": {
+            "description": "Y or N.",
+            "type": "string",
+            "example": "N"
+          },
+          "LRN": {
+            "description": "Location Routing Number in 11-digit format.",
+            "type": "string",
+            "example": "12125550000"
+          },
+          "CITY": {
+            "type": "string",
+            "example": "NEW YORK"
+          },
+          "LATA": {
+            "description": "Local Access and Transport Area.",
+            "type": "string",
+            "example": "132"
+          },
+          "STATE": {
+            "type": "string",
+            "example": "NY"
+          },
+          "JURISDICTION": {
+            "type": "string",
+            "example": "INTERSTATE"
+          },
+          "LECTYPE": {
+            "description": "Local Exchange Carrier type.",
+            "type": "string",
+            "example": "CLEC"
+          },
+          "LEC": {
+            "description": "Local Exchange Carrier name.",
+            "type": "string",
+            "example": "LEVEL 3"
+          },
+          "RC": {
+            "description": "Rate Center.",
+            "type": "string",
+            "example": "NWYRCYZN01"
+          },
+          "OCN": {
+            "description": "Operating Company Number.",
+            "type": "string",
+            "example": "9101"
+          }
+        },
+        "type": "object",
+        "description": "LRN result. All fields are strings and may be empty. Field names derived from the XML response structure in lrn2::query()."
+      },
+      "resporgResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "RespOrg": {
+            "example": {
+              "8005551234": "WSOX"
+            },
+            "type": "object",
+            "description": "Object where the key is the 10-digit toll-free number and the value is the RespOrg ID string.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statusCode",
+          "status",
+          "RespOrg"
+        ]
+      },
+      "cnamResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "cnam": {
+            "description": "Registered Caller ID Name for the telephone number.",
+            "type": "string",
+            "example": "VOICETEL"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statusCode",
+          "status",
+          "cnam"
+        ]
+      },
+      "cnamRequest": {
+        "properties": {
+          "cid": {
+            "description": "10-digit telephone number in NPANXXXXXX format.",
+            "type": "integer",
+            "example": 2015551234
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        },
+        "type": "object",
         "required": [
           "apikey",
           "cid"
-        ],
-        "type": "object",
+        ]
+      },
+      "lrnResponse": {
         "properties": {
+          "lrn": {
+            "$ref": "#/components/schemas/lrnData"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statusCode",
+          "status",
+          "lrn"
+        ]
+      },
+      "errorResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Field Required: cid"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "400"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "resporgRequest": {
+        "properties": {
+          "tn": {
+            "description": "10-digit toll-free number in NPANXXXXXX format.",
+            "type": "integer",
+            "example": 8005551234
+          },
           "apikey": {
             "type": "string",
             "example": "Your API Key"
-          },
-          "cid": {
-            "type": "integer",
-            "example": 2015551234
           }
-        }
-      },
-      "resporg": {
+        },
+        "type": "object",
         "required": [
           "apikey",
           "tn"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "tn": {
-            "type": "integer",
-            "example": 8005551234
-          }
-        }
+        ]
       }
     },
     "securitySchemes": {
@@ -183,5 +385,17 @@
         "scheme": "bearer"
       }
     }
+  },
+  "info": {
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "Info Services",
+    "title": "Info Services",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "version": "v2.1.5"
   }
 }

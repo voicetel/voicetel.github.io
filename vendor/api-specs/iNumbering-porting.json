@@ -1,100 +1,22 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "iNumbering Porting API",
-    "description": "iNumbering Porting",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v2-porting"
-  },
-  "servers": [
-    {
-      "url": "https://api.voicetel.com"
-    }
-  ],
   "paths": {
-    "/v2/iNumbering/portInAvailability/": {
-      "post": {
-        "summary": "Portability Check",
-        "description": "Check portability on tandem.",
-        "operationId": "portInAvailability",
-        "requestBody": {
-          "description": "/v2/iNumbering/portInAvailability/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portInAvailability"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2/iNumbering/portInOrder/": {
-      "post": {
-        "summary": "Submit Port",
-        "description": "Submit port order to tandem.",
-        "operationId": "portInOrder",
-        "requestBody": {
-          "description": "/v2/iNumbering/portInOrder/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portInOrder"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
     "/v2/iNumbering/portOutPinUpdate/": {
       "post": {
+        "responses": {
+          "400": {
+            "description": "Bad input"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success"
+          }
+        },
         "summary": "Update Pin Numbers",
-        "description": "Update Pin Numbers for phone numbers.",
-        "operationId": "portOutPinUpdate",
         "requestBody": {
           "description": "/v2/iNumbering/portOutPinUpdate/",
           "content": {
@@ -105,32 +27,65 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
+        "description": "Update Pin Numbers for phone numbers.",
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "operationId": "portOutPinUpdate"
+      }
+    },
+    "/v2/iNumbering/portInAvailability/": {
+      "post": {
+        "responses": {
+          "400": {
+            "description": "Bad input"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Portability Check",
+        "requestBody": {
+          "description": "/v2/iNumbering/portInAvailability/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portInAvailability"
+              }
+            }
+          }
+        },
+        "description": "Check portability on tandem.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "portInAvailability"
       }
     },
     "/v2.1/iNumbering/portStatus/": {
       "post": {
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success"
+          }
+        },
         "summary": "Port Status",
-        "description": "Get port status summary",
-        "operationId": "portStatus",
         "requestBody": {
           "description": "/v2.1/iNumbering/portStatus/",
           "content": {
@@ -141,123 +96,98 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
+        "description": "Get port status summary",
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "operationId": "portStatus"
+      }
+    },
+    "/v2/iNumbering/portInOrder/": {
+      "post": {
+        "responses": {
+          "400": {
+            "description": "Bad input"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Submit Port",
+        "requestBody": {
+          "description": "/v2/iNumbering/portInOrder/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portInOrder"
+              }
+            }
+          }
+        },
+        "description": "Submit port order to tandem.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "operationId": "portInOrder"
       }
     }
   },
+  "info": {
+    "description": "iNumbering Porting",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "title": "iNumbering Porting API",
+    "version": "v2.1.5",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "openapi": "3.0.0",
   "components": {
+    "securitySchemes": {
+      "apikey": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
     "schemas": {
       "portInOrder": {
-        "required": [
-          "apikey",
-          "portInOrder"
-        ],
-        "type": "object",
         "properties": {
           "apikey": {
-            "type": "string",
-            "example": "Your API Key"
+            "example": "Your API Key",
+            "type": "string"
           },
           "portInOrder": {
             "$ref": "#/components/schemas/portInOrder_portInOrder"
           }
-        }
-      },
-      "portInOrder_tnItem": {
-        "required": [
-          "accountNum",
-          "atn",
-          "authDate",
-          "authName",
-          "endUser",
-          "tn"
-        ],
-        "type": "object",
-        "properties": {
-          "tn": {
-            "type": "string",
-            "example": "Ten-digit telephone number"
-          },
-          "accountNum": {
-            "type": "string",
-            "example": "Account number"
-          },
-          "atn": {
-            "type": "string",
-            "example": "Account telephone number"
-          },
-          "accountPin": {
-            "type": "string",
-            "example": "Alphanumeric account PIN or password"
-          },
-          "authName": {
-            "type": "string",
-            "example": "Name of port-in authorizer"
-          },
-          "authDate": {
-            "format": "date",
-            "example": "1970-01-01"
-          },
-          "endUser": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_endUser"
-          },
-          "tnFeature": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature"
-          }
-        }
-      },
-      "portInAvailability": {
+        },
         "required": [
           "apikey",
-          "tnList"
+          "portInOrder"
         ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "tnList": {
-            "$ref": "#/components/schemas/tnList"
-          }
-        }
+        "type": "object"
       },
-      "portOutPin": {
-        "required": [
-          "apikey",
-          "portOutPin"
-        ],
-        "type": "object",
+      "portInOrder_tnItem_tnFeature": {
         "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "portOutPin": {
-            "$ref": "#/components/schemas/portOutPin_portOutPin"
+          "callerId": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature_callerId"
           }
-        }
+        },
+        "type": "object"
       },
       "tnList": {
-        "required": [
-          "tnItem"
-        ],
-        "type": "object",
         "properties": {
           "tnItem": {
             "required": [
@@ -268,64 +198,150 @@
               "$ref": "#/components/schemas/tn"
             }
           }
-        }
-      },
-      "tn": {
-        "required": [
-          "tn"
-        ],
-        "type": "object",
-        "properties": {
-          "tn": {
-            "type": "integer",
-            "example": 2015551234
-          }
-        }
-      },
-      "portStatus": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          }
-        }
-      },
-      "portInOrder_portInOrder_tnList": {
+        },
         "required": [
           "tnItem"
         ],
-        "type": "object",
-        "properties": {
-          "tnItem": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/portInOrder_tnItem"
-            }
-          }
-        }
+        "type": "object"
       },
-      "portInOrder_portInOrder": {
-        "required": [
-          "desiredDueDate",
-          "tnList"
-        ],
-        "type": "object",
+      "portOutPin": {
         "properties": {
-          "desiredDueDate": {
-            "type": "string",
-            "format": "date",
-            "example": "1970-01-01"
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
           },
-          "tnList": {
-            "$ref": "#/components/schemas/portInOrder_portInOrder_tnList"
+          "portOutPin": {
+            "$ref": "#/components/schemas/portOutPin_portOutPin"
           }
-        }
+        },
+        "required": [
+          "apikey",
+          "portOutPin"
+        ],
+        "type": "object"
+      },
+      "portStatus": {
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "apikey"
+        ],
+        "type": "object"
+      },
+      "portInOrder_tnItem": {
+        "properties": {
+          "tnFeature": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature"
+          },
+          "accountNum": {
+            "example": "Account number",
+            "type": "string"
+          },
+          "endUser": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_endUser"
+          },
+          "atn": {
+            "example": "Account telephone number",
+            "type": "string"
+          },
+          "tn": {
+            "example": "Ten-digit telephone number",
+            "type": "string"
+          },
+          "accountPin": {
+            "example": "Alphanumeric account PIN or password",
+            "type": "string"
+          },
+          "authDate": {
+            "example": "1970-01-01",
+            "format": "date"
+          },
+          "authName": {
+            "example": "Name of port-in authorizer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountNum",
+          "atn",
+          "authDate",
+          "authName",
+          "endUser",
+          "tn"
+        ],
+        "type": "object"
       },
       "portInOrder_tnItem_endUser": {
+        "properties": {
+          "streetName": {
+            "example": "End user address street name",
+            "type": "string"
+          },
+          "city": {
+            "example": "End user address city",
+            "type": "string"
+          },
+          "name": {
+            "example": "End user name",
+            "type": "string"
+          },
+          "locationValue1": {
+            "example": "End user address location value 1 (e.g. 1, 2B)",
+            "type": "string"
+          },
+          "locationType1": {
+            "example": "End user address location type 1 (e.g. Bld, Apt)",
+            "type": "string"
+          },
+          "typeOfService": {
+            "example": "Acceptable values are B and R (business and residence)",
+            "type": "string"
+          },
+          "state": {
+            "example": "End user address state",
+            "type": "string"
+          },
+          "streetNum": {
+            "example": "End user address street number (e.g. 100, 550)",
+            "type": "string"
+          },
+          "locationValue3": {
+            "example": "End user address location value 3 (e.g. 1, 900)",
+            "type": "string"
+          },
+          "postalCode": {
+            "example": "End user address zip code",
+            "type": "string"
+          },
+          "locationValue2": {
+            "example": "End user address location value 2 (e.g. 1, 900)",
+            "type": "string"
+          },
+          "streetPreDir": {
+            "example": "End user address street direction prefix (e.g. N)",
+            "type": "string"
+          },
+          "streetType": {
+            "example": "End user address street type (e.g. St, Ave)",
+            "type": "string"
+          },
+          "locationType2": {
+            "example": "End user address location type 2 (e.g. Flr, Ste)",
+            "type": "string"
+          },
+          "streetPostDir": {
+            "example": "End user address street direction ending (e.g. SW)",
+            "type": "string"
+          },
+          "locationType3": {
+            "example": "End user address location type 3 (e.g. Flr, Ste)",
+            "type": "string"
+          }
+        },
         "required": [
           "city",
           "name",
@@ -336,108 +352,92 @@
           "streetType",
           "typeOfService"
         ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "End user name"
-          },
-          "streetNum": {
-            "type": "string",
-            "example": "End user address street number (e.g. 100, 550)"
-          },
-          "streetPreDir": {
-            "type": "string",
-            "example": "End user address street direction prefix (e.g. N)"
-          },
-          "streetName": {
-            "type": "string",
-            "example": "End user address street name"
-          },
-          "streetType": {
-            "type": "string",
-            "example": "End user address street type (e.g. St, Ave)"
-          },
-          "streetPostDir": {
-            "type": "string",
-            "example": "End user address street direction ending (e.g. SW)"
-          },
-          "locationType1": {
-            "type": "string",
-            "example": "End user address location type 1 (e.g. Bld, Apt)"
-          },
-          "locationValue1": {
-            "type": "string",
-            "example": "End user address location value 1 (e.g. 1, 2B)"
-          },
-          "locationType2": {
-            "type": "string",
-            "example": "End user address location type 2 (e.g. Flr, Ste)"
-          },
-          "locationValue2": {
-            "type": "string",
-            "example": "End user address location value 2 (e.g. 1, 900)"
-          },
-          "locationType3": {
-            "type": "string",
-            "example": "End user address location type 3 (e.g. Flr, Ste)"
-          },
-          "locationValue3": {
-            "type": "string",
-            "example": "End user address location value 3 (e.g. 1, 900)"
-          },
-          "city": {
-            "type": "string",
-            "example": "End user address city"
-          },
-          "state": {
-            "type": "string",
-            "example": "End user address state"
-          },
-          "postalCode": {
-            "type": "string",
-            "example": "End user address zip code"
-          },
-          "typeOfService": {
-            "type": "string",
-            "example": "Acceptable values are B and R (business and residence)"
-          }
-        }
-      },
-      "portInOrder_tnItem_tnFeature_callerId": {
-        "type": "object",
-        "properties": {
-          "callingName": {
-            "type": "string",
-            "example": "Caller ID display name; 15 characters or fewer"
-          }
-        }
-      },
-      "portInOrder_tnItem_tnFeature": {
-        "type": "object",
-        "properties": {
-          "callerId": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature_callerId"
-          }
-        }
+        "type": "object"
       },
       "portOutPin_portOutPin": {
-        "required": [
-          "tnList"
-        ],
-        "type": "object",
         "properties": {
           "tnList": {
             "$ref": "#/components/schemas/tnList"
           }
-        }
-      }
-    },
-    "securitySchemes": {
-      "apikey": {
-        "type": "http",
-        "scheme": "bearer"
+        },
+        "required": [
+          "tnList"
+        ],
+        "type": "object"
+      },
+      "portInOrder_portInOrder_tnList": {
+        "properties": {
+          "tnItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/portInOrder_tnItem"
+            }
+          }
+        },
+        "required": [
+          "tnItem"
+        ],
+        "type": "object"
+      },
+      "portInAvailability": {
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "tnList": {
+            "$ref": "#/components/schemas/tnList"
+          }
+        },
+        "required": [
+          "apikey",
+          "tnList"
+        ],
+        "type": "object"
+      },
+      "portInOrder_tnItem_tnFeature_callerId": {
+        "properties": {
+          "callingName": {
+            "example": "Caller ID display name; 15 characters or fewer",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "portInOrder_portInOrder": {
+        "properties": {
+          "tnList": {
+            "$ref": "#/components/schemas/portInOrder_portInOrder_tnList"
+          },
+          "desiredDueDate": {
+            "example": "1970-01-01",
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "desiredDueDate",
+          "tnList"
+        ],
+        "type": "object"
+      },
+      "tn": {
+        "properties": {
+          "tn": {
+            "example": 2015551234,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tn"
+        ],
+        "type": "object"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ]
 }

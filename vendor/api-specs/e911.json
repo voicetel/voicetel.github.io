@@ -1,124 +1,62 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "e911 API",
-    "description": "e911",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v2.1"
-  },
-  "servers": [
-    {
-      "url": "https://api.voicetel.com"
-    }
-  ],
   "paths": {
     "/v2.1/e911/queryRecord/": {
       "post": {
-        "summary": "Query Record",
-        "description": "Query e911 details",
-        "operationId": "queryRecord",
         "requestBody": {
-          "description": "/v2.1/e911/queryRecord/",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/record"
+                "$ref": "#/components/schemas/dnRequest"
               }
             }
-          }
+          },
+          "required": true
         },
+        "operationId": "e911QueryRecord",
+        "description": "Returns the e911 record provisioned for a specific telephone number on the account.",
         "responses": {
           "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
+            "description": "Record found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queryRecordResponse"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized or number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/e911/queryAll/": {
-      "post": {
-        "summary": "Query All Records",
-        "description": "List all e911 records",
-        "operationId": "queryAll",
-        "requestBody": {
-          "description": "/v2.1/e911/queryAll/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/apikey"
+            "description": "Query failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/e911/validateAddress/": {
-      "post": {
-        "summary": "Validate address",
-        "description": "Validate e911 address prior to e911 provisionAddress API",
-        "operationId": "validateAddress",
-        "requestBody": {
-          "description": "/v2.1/e911/validateAddress/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/validateAddress"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
+        "summary": "Query e911 Record",
         "security": [
           {
             "apikey": []
@@ -128,69 +66,61 @@
     },
     "/v2.1/e911/provisionAddress/": {
       "post": {
-        "summary": "Provision address",
-        "description": "Provision e911 address",
-        "operationId": "provisionAddress",
         "requestBody": {
-          "description": "/v2.1/e911/provisionAddress/",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/provisionAddress"
+                "$ref": "#/components/schemas/provisionAddressRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911ProvisionAddress",
+        "description": "Provisions an e911 address to a telephone number using a pre-validated addressid. The dn must be a number owned by the account.",
+        "responses": {
+          "200": {
+            "description": "Address provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provisionAddressResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Provisioning failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/e911/validateAndProvision/": {
-      "post": {
-        "summary": "Validate and Provision",
-        "description": "Validate add Provision e911 address",
-        "operationId": "validateAndProvisionAddress",
-        "requestBody": {
-          "description": "/v2.1/e911/validateAndProvision/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/validateAndProvision"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
+        "summary": "Provision e911 Address",
         "security": [
           {
             "apikey": []
@@ -200,33 +130,253 @@
     },
     "/v2.1/e911/removeRecord/": {
       "post": {
-        "summary": "Remove Record",
-        "description": "Remove e911 record",
-        "operationId": "removeRecord",
         "requestBody": {
-          "description": "/v2.1/e911/removeRecord/",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/record"
+                "$ref": "#/components/schemas/dnRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911RemoveRecord",
+        "description": "Removes the e911 record provisioned for a specific telephone number on the account.",
+        "responses": {
+          "200": {
+            "description": "Record removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/removeRecordResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Removal failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
             }
           }
         },
+        "summary": "Remove e911 Record",
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/validateAndProvision/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/validateAndProvisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911ValidateAndProvision",
+        "description": "Combines validateAddress and provisionAddress in a single call. The dn must be a number owned by the account.",
         "responses": {
           "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad input"
+            "description": "Address validated and provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provisionAddressResponse"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized or number not on account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Conflict"
+            "description": "Validation or provisioning failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         },
+        "summary": "Validate and Provision e911 Address",
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/validateAddress/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/validateAddressRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911ValidateAddress",
+        "description": "Validates a street address for e911 provisioning. Returns a validated address entry including an addressid for use with provisionAddress.",
+        "responses": {
+          "200": {
+            "description": "Address validated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/validateAddressResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Address validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validate e911 Address",
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/v2.1/e911/queryAll/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "operationId": "e911QueryAll",
+        "description": "Returns all e911 records provisioned for telephone numbers on the account.",
+        "responses": {
+          "200": {
+            "description": "Records found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queryAllResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No e911 records found for account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Query All e911 Records",
         "security": [
           {
             "apikey": []
@@ -237,108 +387,172 @@
   },
   "components": {
     "schemas": {
-      "record": {
-        "required": [
-          "apikey",
-          "dn"
-        ],
+      "e911Entry": {
+        "description": "e911 provisioning record. The sms field is always removed before returning. Known fields shown; additional fields may be present depending on the operation.",
         "type": "object",
         "properties": {
-          "apikey": {
+          "city": {
             "type": "string",
-            "example": "Your API Key"
-          },
-          "dn": {
-            "type": "string",
-            "example": "2015551234"
-          }
-        }
-      },
-      "apikey": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          }
-        }
-      },
-      "validateAddress": {
-        "required": [
-          "address1",
-          "apikey",
-          "city",
-          "state",
-          "zip"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "address1": {
-            "type": "string",
-            "example": "411 HACKENSACK AVENUE"
+            "example": "HACKENSACK"
           },
           "address2": {
             "type": "string",
             "example": "STE 200"
           },
-          "city": {
+          "dn": {
+            "description": "Telephone number in 11-digit format (1+NPANXXXXXX).",
             "type": "string",
-            "example": "HACKENSACK"
+            "example": "12015551234"
+          },
+          "zip": {
+            "type": "string",
+            "example": "07601"
           },
           "state": {
             "type": "string",
             "example": "NJ"
           },
-          "zip": {
+          "address1": {
             "type": "string",
-            "example": "07601"
-          }
-        }
-      },
-      "provisionAddress": {
-        "required": [
-          "addressid",
-          "apikey",
-          "callername",
-          "dn"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "dn": {
-            "type": "string",
-            "example": "2015551234"
-          },
-          "callername": {
-            "type": "string",
-            "example": "Caller Name"
+            "example": "411 HACKENSACK AVENUE"
           },
           "addressid": {
+            "description": "Validated address identifier from the provisioning service.",
+            "type": "integer",
+            "example": 123456
+          },
+          "callername": {
             "type": "string",
-            "example": "addressid from validateAddress"
+            "example": "JOHN DOE"
           }
-        }
+        },
+        "additionalProperties": true
       },
-      "validateAndProvision": {
+      "removeRecordResponse": {
+        "type": "object",
+        "properties": {
+          "entry_removed": {
+            "$ref": "#/components/schemas/e911Entry"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
         "required": [
-          "address1",
+          "statusCode",
+          "status",
+          "entry_removed"
+        ]
+      },
+      "errorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Field Required: dn"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "400"
+          },
+          "status": {
+            "type": "string",
+            "example": "Error"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "faultResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "Fault string returned by the e911 provisioning service.",
+            "type": "string",
+            "example": "Address not found"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "409"
+          },
+          "status": {
+            "type": "string",
+            "example": "Error"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "validateAndProvisionRequest": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "HACKENSACK"
+          },
+          "address2": {
+            "type": "string",
+            "example": "STE 200"
+          },
+          "dn": {
+            "type": "string",
+            "example": "2015551234"
+          },
+          "zip": {
+            "type": "string",
+            "example": "07601"
+          },
+          "state": {
+            "type": "string",
+            "example": "NJ"
+          },
+          "callername": {
+            "type": "string",
+            "example": "JOHN DOE"
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "address1": {
+            "type": "string",
+            "example": "411 HACKENSACK AVENUE"
+          }
+        },
+        "required": [
           "apikey",
-          "callername",
-          "city",
           "dn",
+          "callername",
+          "address1",
+          "city",
           "state",
           "zip"
-        ],
+        ]
+      },
+      "apikeyRequest": {
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        },
+        "required": [
+          "apikey"
+        ]
+      },
+      "dnRequest": {
         "type": "object",
         "properties": {
           "apikey": {
@@ -346,41 +560,191 @@
             "example": "Your API Key"
           },
           "dn": {
+            "description": "10-digit telephone number in NPANXXXXXX format.",
+            "type": "string",
+            "example": "2015551234"
+          }
+        },
+        "required": [
+          "apikey",
+          "dn"
+        ]
+      },
+      "validateAddressResponse": {
+        "type": "object",
+        "properties": {
+          "entry_valid": {
+            "$ref": "#/components/schemas/e911Entry"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "entry_valid"
+        ]
+      },
+      "queryAllResponse": {
+        "type": "object",
+        "properties": {
+          "entry_all": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/e911Entry"
+            }
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "entry_all"
+        ]
+      },
+      "queryRecordResponse": {
+        "type": "object",
+        "properties": {
+          "entry_query": {
+            "$ref": "#/components/schemas/e911Entry"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "entry_query"
+        ]
+      },
+      "provisionAddressRequest": {
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "addressid": {
+            "description": "Address ID from a prior validateAddress call.",
+            "type": "integer",
+            "example": 123456
+          },
+          "dn": {
             "type": "string",
             "example": "2015551234"
           },
           "callername": {
             "type": "string",
-            "example": "Caller Name"
+            "example": "JOHN DOE"
+          }
+        },
+        "required": [
+          "apikey",
+          "dn",
+          "callername",
+          "addressid"
+        ]
+      },
+      "provisionAddressResponse": {
+        "type": "object",
+        "properties": {
+          "entry_added": {
+            "$ref": "#/components/schemas/e911Entry"
           },
-          "address1": {
+          "statusCode": {
             "type": "string",
-            "example": "411 HACKENSACK AVENUE"
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "entry_added"
+        ]
+      },
+      "validateAddressRequest": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "HACKENSACK"
           },
           "address2": {
             "type": "string",
             "example": "STE 200"
           },
-          "city": {
+          "zip": {
             "type": "string",
-            "example": "HACKENSACK"
+            "example": "07601"
           },
           "state": {
             "type": "string",
             "example": "NJ"
           },
-          "zip": {
+          "apikey": {
             "type": "string",
-            "example": "07601"
+            "example": "Your API Key"
+          },
+          "address1": {
+            "type": "string",
+            "example": "411 HACKENSACK AVENUE"
           }
-        }
+        },
+        "required": [
+          "apikey",
+          "address1",
+          "city",
+          "state",
+          "zip"
+        ]
       }
     },
     "securitySchemes": {
       "apikey": {
-        "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "type": "http"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "info": {
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "description": "e911 emergency services provisioning",
+    "title": "e911 API",
+    "version": "v2.1.5",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "openapi": "3.0.1"
 }

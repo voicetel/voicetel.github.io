@@ -1,255 +1,726 @@
 {
-  "openapi" : "3.0.0",
-  "info" : {
-    "description" : "Gateways",
-    "version" : "v2.1",
-    "title" : "Gateways API",
-    "contact" : {
-      "email" : "support@voicetel.com"
+  "info": {
+    "description": "Gateways",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "license" : {
-      "name" : "Apache 2.0",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "title": "Gateways API",
+    "version": "v2.1.5"
+  },
+  "components": {
+    "schemas": {
+      "gatewaysRemoveConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "removed_success",
+          "removed_failed"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "At least one one route could not be removed. Please make sure no DID are routed to gateway."
+            ]
+          },
+          "removed_failed": {
+            "items": {
+              "$ref": "#/components/schemas/gatewayRemovedEntry"
+            },
+            "type": "array"
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "removed_success": {
+            "description": "Successfully removed route entries. Empty array if none succeeded.",
+            "items": {
+              "$ref": "#/components/schemas/gatewayRemovedEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewayListEntry": {
+        "required": [
+          "route",
+          "gateway"
+        ],
+        "properties": {
+          "gateway": {
+            "description": "Gateway IP:port, hostname, or system route name.",
+            "example": "203.0.113.10:5060",
+            "type": "string"
+          },
+          "route": {
+            "description": "Route ID. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+            "example": "1000",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewayUpdatedEntry": {
+        "required": [
+          "gateway",
+          "route"
+        ],
+        "properties": {
+          "gateway": {
+            "example": "203.0.113.20:5060",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "apikeyRequest": {
+        "required": [
+          "apikey"
+        ],
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysRemoveRequest": {
+        "required": [
+          "apikey",
+          "routes"
+        ],
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "routes": {
+            "items": {
+              "required": [
+                "route"
+              ],
+              "properties": {
+                "route": {
+                  "example": 1000,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysAddResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "gateways"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Gateways Entered"
+            ]
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "gateways": {
+            "description": "All account gateways after the add operation, using route and IP keys.",
+            "items": {
+              "$ref": "#/components/schemas/gatewayAddedEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysAddConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "added_success",
+          "added_failed"
+        ],
+        "properties": {
+          "added_failed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "At least one one gateway could not be added."
+            ]
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "added_success": {
+            "description": "Gateway strings successfully added. Empty array if none succeeded.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysUpdateConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "update_success",
+          "update_failed"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Update result"
+            ]
+          },
+          "update_failed": {
+            "items": {
+              "$ref": "#/components/schemas/gatewayUpdateFailEntry"
+            },
+            "type": "array"
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "update_success": {
+            "description": "Successfully updated entries. Empty array if none succeeded.",
+            "items": {
+              "$ref": "#/components/schemas/gatewayUpdatedEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "errorResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "example": "Field Required: apikey",
+            "type": "string"
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "statusCode": {
+            "example": "400",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysAddRequest": {
+        "required": [
+          "apikey",
+          "gateways"
+        ],
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "gateways": {
+            "items": {
+              "required": [
+                "gateway"
+              ],
+              "properties": {
+                "gateway": {
+                  "description": "IP or hostname with optional port (host:port). Must resolve to a routable public IPv4 address.",
+                  "example": "203.0.113.10:5060",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysRemoveResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "routes"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Gateways Removed"
+            ]
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "routes": {
+            "items": {
+              "$ref": "#/components/schemas/gatewayRemovedEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewayRemovedEntry": {
+        "required": [
+          "route"
+        ],
+        "properties": {
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysListResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "gateways"
+        ],
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "gateways": {
+            "description": "System routes followed by user-defined gateways.",
+            "items": {
+              "$ref": "#/components/schemas/gatewayListEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewayAddedEntry": {
+        "required": [
+          "route",
+          "IP"
+        ],
+        "properties": {
+          "IP": {
+            "example": "203.0.113.10:5060",
+            "type": "string"
+          },
+          "route": {
+            "description": "Assigned route ID.",
+            "example": "1000",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewayUpdateFailEntry": {
+        "required": [
+          "gateway",
+          "route",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Invalid number or route",
+              "Gateway should be a routable IP or Hostname and optional port"
+            ]
+          },
+          "gateway": {
+            "example": "203.0.113.20:5060",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysUpdateResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "gateways"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "enum": [
+              "Gateway updated"
+            ]
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "gateways": {
+            "items": {
+              "$ref": "#/components/schemas/gatewayUpdatedEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "gatewaysUpdateRequest": {
+        "required": [
+          "apikey",
+          "gateways"
+        ],
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "gateways": {
+            "items": {
+              "required": [
+                "route",
+                "gateway"
+              ],
+              "properties": {
+                "gateway": {
+                  "example": "203.0.113.20:5060",
+                  "type": "string"
+                },
+                "route": {
+                  "example": 1000,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "scheme": "bearer",
+        "type": "http"
+      }
     }
   },
-  "paths" : {
-    "/v2.1/gateways/list/" : {
-      "post" : {
-        "summary" : "Gateways List",
-        "operationId" : "list",
-        "description" : "Get list of gateways",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/list"
-              }
-            }
-          },
-          "description" : "/v2.1/gateways/list/"
-        }
-      }
-    },
-    "/v2.1/gateways/add/" : {
-      "post" : {
-        "summary" : "Gateways Add",
-        "operationId" : "add",
-        "description" : "Add gateways",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "409" : {
-            "description" : "Conflict"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/add"
-              }
-            }
-          },
-          "description" : "/v2.1/gateways/add/"
-        }
-      }
-    },
-    "/v2.1/gateways/update/" : {
-      "post" : {
-        "summary" : "Gateways Update",
-        "operationId" : "update",
-        "description" : "Update gateways",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "409" : {
-            "description" : "Conflict"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/update"
-              }
-            }
-          },
-          "description" : "/v2.1/gateways/update/"
-        }
-      }
-    },
-    "/v2.1/gateways/remove/" : {
-      "post" : {
-        "summary" : "Gateways Remove",
-        "operationId" : "remove",
-        "description" : "Remove gateways",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "409" : {
-            "description" : "Conflict"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/remove"
-              }
-            }
-          },
-          "description" : "/v2.1/gateways/remove/"
-        }
-      }
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
     }
-  },
-  "servers" : [ {
-    "url" : "https://api.voicetel.com"
-  } ],
-  "components" : {
-    "securitySchemes" : {
-      "apikey" : {
-        "type" : "http",
-        "scheme" : "bearer"
+  ],
+  "paths": {
+    "/v2.1/gateways/remove/": {
+      "post": {
+        "operationId": "gatewaysRemove",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewaysRemoveRequest"
+              }
+            }
+          }
+        },
+        "summary": "Remove Gateways",
+        "description": "Removes one or more gateways by route ID. A gateway cannot be removed if DIDs are currently routed to it.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more gateways could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysRemoveConflictResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All gateways removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysRemoveResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "schemas" : {
-      "list" : {
-        "type" : "object",
-        "required" : [ "apikey" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
+    "/v2.1/gateways/list/": {
+      "post": {
+        "operationId": "gatewaysList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
           }
-        }
-      },
-      "add" : {
-        "type" : "object",
-        "required" : [ "apikey", "gateways" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
+        },
+        "summary": "List Gateways",
+        "description": "Returns all system route types and user-defined SIP gateways for the account. System routes (IDs 1-8) are always included: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
-          "gateways" : {
-            "type" : "array",
-            "required" : [ "gateway" ],
-            "items" : {
-              "$ref" : "#/components/schemas/gatewaysAdd"
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
             }
           }
         }
-      },
-      "update" : {
-        "type" : "object",
-        "required" : [ "apikey", "gateways" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
+      }
+    },
+    "/v2.1/gateways/update/": {
+      "post": {
+        "operationId": "gatewaysUpdate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewaysUpdateRequest"
+              }
+            }
+          }
+        },
+        "summary": "Update Gateways",
+        "description": "Updates the IP or hostname of one or more existing gateways by route ID.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more gateways could not be updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysUpdateConflictResponse"
+                }
+              }
+            }
           },
-          "gateways" : {
-            "type" : "array",
-            "required" : [ "gateway", "route" ],
-            "items" : {
-              "$ref" : "#/components/schemas/gatewaysUpdate"
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All gateways updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysUpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
             }
           }
         }
-      },
-      "remove" : {
-        "type" : "object",
-        "required" : [ "apikey", "gateways" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
-          },
-          "routes" : {
-            "type" : "array",
-            "required" : [ "route" ],
-            "items" : {
-              "$ref" : "#/components/schemas/gatewaysRemove"
+      }
+    },
+    "/v2.1/gateways/add/": {
+      "post": {
+        "operationId": "gatewaysAdd",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/gatewaysAddRequest"
+              }
             }
           }
-        }
-      },
-      "gatewaysAdd" : {
-        "type" : "object",
-        "required" : [ "gateway" ],
-        "properties" : {
-          "gateway" : {
-            "type" : "string",
-            "example" : "127.0.0.1:5060"
+        },
+        "summary": "Add Gateways",
+        "description": "Adds one or more SIP gateways to the account. Each gateway must resolve to a routable public IPv4 address. Optional port specified as host:port.",
+        "security": [
+          {
+            "apikey": []
           }
-        }
-      },
-      "gatewaysUpdate" : {
-        "type" : "object",
-        "required" : [ "gateway", "route" ],
-        "properties" : {
-          "gateway" : {
-            "type" : "string",
-            "example" : "127.0.0.1:5060"
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more gateways could not be added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysAddConflictResponse"
+                }
+              }
+            }
           },
-          "route" : {
-            "type" : "integer",
-            "example" : 1000
-          }
-        }
-      },
-      "gatewaysRemove" : {
-        "type" : "object",
-        "required" : [ "route" ],
-        "properties" : {
-          "route" : {
-            "type" : "integer",
-            "example" : 1000
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All gateways added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewaysAddResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       }

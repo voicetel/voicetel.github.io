@@ -1,370 +1,902 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Account API",
-    "description": "Account",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v2.1"
-  },
   "servers": [
     {
       "url": "https://api.voicetel.com"
     }
   ],
-  "paths": {
-    "/v2.1/account/info/": {
-      "post": {
-        "summary": "Account Info",
-        "description": "Get account information",
-        "operationId": "info",
-        "requestBody": {
-          "description": "/v2.1/account/info/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/info"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
+  "openapi": "3.0.1",
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "scheme": "bearer",
+        "type": "http"
       }
     },
-    "/v2.1/account/add/": {
-      "post": {
-        "summary": "Account Add",
-        "description": "Add user account (adminstrators only)",
-        "operationId": "add",
-        "requestBody": {
-          "description": "/v2.1/account/add/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/add"
+    "schemas": {
+      "errorResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "string",
+            "example": "400"
+          },
+          "status": {
+            "type": "string",
+            "example": "Error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Field Required: apikey"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "accountAddRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Acme Corp"
+          },
+          "username": {
+            "type": "integer",
+            "description": "10-digit numeric account username.",
+            "example": 4592086960
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Administrator API Key"
+          },
+          "email": {
+            "type": "string",
+            "example": "billing@example.com"
+          },
+          "masterAccount": {
+            "type": "integer",
+            "description": "Billing account. Defaults to the new account username if omitted.",
+            "example": 4592086960
+          }
+        },
+        "required": [
+          "apikey",
+          "name",
+          "username",
+          "email"
+        ]
+      },
+      "accountRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "description": "Registered SIP URI.",
+                "example": "sip:4592086960@192.0.2.1:5060"
+              },
+              "agent": {
+                "type": "string",
+                "description": "User agent string of the registered device.",
+                "example": "Zoiper rv2.8.97/"
               }
+            },
+            "required": [
+              "uri",
+              "agent"
+            ]
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "account"
+        ]
+      },
+      "accountSignupRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "promo": {
+            "type": "string",
+            "description": "Optional promotional code.",
+            "example": "PROMO2024"
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
+      },
+      "accountAddResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/newAccountData"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "message": {
+            "enum": [
+              "Account Information"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "account"
+        ]
+      },
+      "accountCdrRequest": {
+        "type": "object",
+        "properties": {
+          "end": {
+            "type": "integer",
+            "description": "End time as Unix timestamp. Defaults to 24 hours before current time.",
+            "example": 1699913600
+          },
+          "start": {
+            "type": "integer",
+            "description": "Start time as Unix timestamp. Defaults to current time.",
+            "example": 1700000000
+          },
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        },
+        "required": [
+          "apikey"
+        ]
+      },
+      "accountRecoverResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Please check your email (john@example.com) for details"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "accountMrcResponse": {
+        "type": "object",
+        "properties": {
+          "mrc": {
+            "type": "array",
+            "description": "Mixed array of charge entries: per-service charge objects with description as key and numeric sum as value, a DID charges object {did: value}, and a total object {total: number}.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
             }
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
+        "required": [
+          "statusCode",
+          "status",
+          "mrc"
+        ]
+      },
+      "signupAccountData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
           },
-          "401": {
-            "description": "Unauthorized"
+          "masterAccount": {
+            "type": "integer",
+            "example": 4592086960
           },
-          "409": {
-            "description": "Conflict"
+          "apikey": {
+            "type": "string",
+            "description": "API key for the new account.",
+            "example": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
+          },
+          "username": {
+            "type": "integer",
+            "description": "Auto-generated 10-digit account username.",
+            "example": 4592086960
+          },
+          "password": {
+            "type": "string",
+            "description": "Auto-generated 10-character alphanumeric password.",
+            "example": "abc1234567"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          }
+        }
+      },
+      "accountRecord": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Acme Corp"
+          },
+          "rate": {
+            "type": "number",
+            "description": "Per-minute nibble rate.",
+            "example": 0.0075
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          },
+          "notify_threshold": {
+            "type": "integer",
+            "example": 5
+          },
+          "username": {
+            "type": "string",
+            "example": "4592086960"
+          },
+          "caller_id": {
+            "type": "string",
+            "description": "Default outbound caller ID.",
+            "example": "2015551234"
+          },
+          "notify": {
+            "type": "boolean",
+            "example": true
+          },
+          "email": {
+            "type": "string",
+            "example": "billing@example.com"
+          },
+          "created": {
+            "type": "string",
+            "example": "2020-01-15T12:00:00+00:00"
+          },
+          "cash": {
+            "type": "number",
+            "description": "Current account balance.",
+            "example": 25.5
+          }
+        }
+      },
+      "accountInfoResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "array",
+            "description": "Array containing the single account record.",
+            "items": {
+              "$ref": "#/components/schemas/accountRecord"
+            }
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
           }
         },
+        "required": [
+          "statusCode",
+          "status",
+          "account"
+        ]
+      },
+      "accountRecoverBadRequest": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "string",
+            "example": "400"
+          },
+          "status": {
+            "type": "string",
+            "example": "Error"
+          },
+          "message": {
+            "enum": [
+              "Field: email"
+            ],
+            "type": "string"
+          },
+          "requirement": {
+            "enum": [
+              "Must be valid"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "requirement"
+        ]
+      },
+      "accountSignupResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/signupAccountData"
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "message": {
+            "enum": [
+              "Account Information"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "account"
+        ]
+      },
+      "apikeyRequest": {
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        },
+        "required": [
+          "apikey"
+        ]
+      },
+      "accountCdrResponse": {
+        "type": "object",
+        "properties": {
+          "cdr": {
+            "type": "array",
+            "description": "Call detail records for the specified time range.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "cdr"
+        ]
+      },
+      "newAccountData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Acme Corp"
+          },
+          "username": {
+            "type": "integer",
+            "example": 4592086960
+          },
+          "password": {
+            "type": "string",
+            "description": "Auto-generated 10-character alphanumeric password.",
+            "example": "abc1234567"
+          },
+          "email": {
+            "type": "string",
+            "example": "billing@example.com"
+          },
+          "masterAccount": {
+            "type": "integer",
+            "example": 4592086960
+          }
+        }
+      },
+      "accountRecoverRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/v2.1/account/registration/": {
+      "post": {
+        "summary": "SIP Registration",
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "description": "Returns the current SIP registration details for the account including the registered SIP URI and user agent string.",
+        "operationId": "accountRegistration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Not registered"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRegistrationResponse"
+                }
+              }
+            },
+            "description": "Registered"
+          }
+        }
       }
     },
     "/v2.1/account/signup/": {
       "post": {
         "summary": "Account Signup",
-        "description": "Subscribe to service",
-        "operationId": "signup",
+        "operationId": "accountSignup",
         "requestBody": {
-          "description": "/v2.1/account/signup/",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/signup"
+                "$ref": "#/components/schemas/accountSignupRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
           "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/account/recover/": {
-      "post": {
-        "summary": "Account Recover",
-        "description": "Recover lost account information",
-        "operationId": "recover",
-        "requestBody": {
-          "description": "/v2.1/account/recover/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/recover"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
+            },
+            "description": "Account creation failed"
           },
-          "404": {
-            "description": "Not Found"
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request or invalid email"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountSignupResponse"
+                }
+              }
+            },
+            "description": "Account created"
           }
         },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
+        "description": "Creates a new account. No authentication required. Returns account credentials. A verification email is sent to the provided address."
       }
     },
     "/v2.1/account/cdr/": {
       "post": {
         "summary": "Call Detail Records",
-        "description": "Get account call detail records",
-        "operationId": "accountCDR",
-        "requestBody": {
-          "description": "/v2.1/account/cdr/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/cdr"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "description": "Returns call detail records for the account within a time range. start and end are Unix timestamps. Defaults: start=now, end=24 hours ago. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountCdr",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountCdrRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountCdrResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v2.1/account/add/": {
+      "post": {
+        "summary": "Add Account",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "description": "Creates a new sub-account. Requires administrator API key. The new account password is auto-generated and returned in the response.",
+        "operationId": "accountAdd",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountAddRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized — administrator access required"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Account creation failed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountAddResponse"
+                }
+              }
+            },
+            "description": "Account created"
+          }
+        }
       }
     },
     "/v2.1/account/mrc/": {
       "post": {
         "summary": "Monthly Recurring Charges",
-        "description": "Get current monthly recurring charges",
-        "operationId": "accountMRC",
-        "requestBody": {
-          "description": "/v2.1/account/mrc/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/mrc"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
         "security": [
           {
             "apikey": []
           }
-        ]
-      }
-    },
-    "/v2.1/account/registration/": {
-      "post": {
-        "summary": "Registration",
-        "description": "Get account registration information",
-        "operationId": "reg",
+        ],
+        "description": "Returns the current monthly recurring charges broken down by service plus a total. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountMrc",
         "requestBody": {
-          "description": "/v2.1/account/registration/",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/reg"
+                "$ref": "#/components/schemas/apikeyRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
           },
           "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
             "description": "Bad Request"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountMrcResponse"
+                }
+              }
+            },
+            "description": "Success"
           }
-        },
+        }
+      }
+    },
+    "/v2.1/account/info/": {
+      "post": {
+        "summary": "Account Info",
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "description": "Returns account details including balance, rate, and configuration. Rate limited to 6 requests per hour per IP address.",
+        "operationId": "accountInfo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountInfoResponse"
+                }
+              }
+            },
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v2.1/account/recover/": {
+      "post": {
+        "summary": "Account Recovery",
+        "operationId": "accountRecover",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accountRecoverRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            },
+            "description": "Email address not found"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverBadRequest"
+                }
+              }
+            },
+            "description": "Invalid email address"
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accountRecoverResponse"
+                }
+              }
+            },
+            "description": "Recovery email sent"
+          }
+        },
+        "description": "Sends a password recovery link to the email address associated with the account. No authentication required."
       }
     }
   },
-  "components": {
-    "schemas": {
-      "info": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          }
-        }
-      },
-      "add": {
-        "required": [
-          "apikey",
-          "email",
-          "name",
-          "username"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "name": {
-            "type": "string",
-            "example": "Account Nanme"
-          },
-          "username": {
-            "type": "string",
-            "example": "10 Digit Username"
-          },
-          "email": {
-            "type": "string",
-            "example": "Account Email"
-          },
-          "masterAccount": {
-            "type": "string",
-            "example": "Billing Account"
-          }
-        }
-      },
-      "signup": {
-        "required": [
-          "email",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Account Nanme"
-          },
-          "email": {
-            "type": "string",
-            "example": "Valid Email Address"
-          }
-        }
-      },
-      "recover": {
-        "required": [
-          "email"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "Valid Email Address"
-          }
-        }
-      },
-      "cdr": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "start": {
-            "type": "string",
-            "example": "Unix timestamp"
-          },
-          "end": {
-            "type": "string",
-            "example": "Unix timestamp"
-          }
-        }
-      },
-      "mrc": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          }
-        }
-      },
-      "reg": {
-        "required": [
-          "apikey"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          }
-        }
-      }
+  "info": {
+    "version": "v2.1.5",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "securitySchemes": {
-      "apikey": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+    "title": "Account API",
+    "description": "Account management",
+    "contact": {
+      "email": "support@voicetel.com"
     }
   }
 }

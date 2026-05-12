@@ -1,444 +1,1203 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Numbers API",
-    "description": "Numbers",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v2.1.3"
-  },
-  "servers": [
-    {
-      "url": "https://api.voicetel.com"
-    }
-  ],
-  "security": [
-    {
-      "apikey": []
-    }
-  ],
   "paths": {
-    "/v2.1/numbers/list/": {
-      "post": {
-        "summary": "Numbers List",
-        "description": "Get current in service numbers",
-        "operationId": "list",
-        "requestBody": {
-          "description": "/v2.1/numbers/list/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/list"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/numbers/add/": {
-      "post": {
-        "summary": "Numbers Add",
-        "description": "Add numbers",
-        "operationId": "add",
-        "requestBody": {
-          "description": "/v2.1/numbers/add/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/add"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "402": {
-            "description": "Insufficient funds"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/numbers/route/": {
-      "post": {
-        "summary": "Numbers Route",
-        "description": "Route numbers",
-        "operationId": "route",
-        "requestBody": {
-          "description": "/v2.1/numbers/route/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/route"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/numbers/cnam/": {
-      "post": {
-        "summary": "Numbers CNAM",
-        "description": "CNAM override for numbers",
-        "operationId": "cnam",
-        "requestBody": {
-          "description": "/v2.1/numbers/cnam/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/cnam"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
     "/v2.1/numbers/lidb/": {
       "post": {
-        "summary": "Numbers LIDB",
-        "description": "CNAM lidb for numbers",
-        "operationId": "lidb",
-        "requestBody": {
-          "description": "/v2.1/numbers/lidb/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/lidb"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
         "security": [
           {
             "apikey": []
           }
-        ]
-      }
-    },
-    "/v2.1/numbers/move/": {
-      "post": {
-        "summary": "Numbers Move",
-        "description": "Move numbers to another account",
-        "operationId": "move",
-        "requestBody": {
-          "description": "/v2.1/numbers/move/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/move"
+        ],
+        "summary": "Set LIDB / Outbound Caller ID Name",
+        "responses": {
+          "200": {
+            "description": "LIDB updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersLidbResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more LIDB updates could not be completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersLidbConflictResponse"
+                }
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      }
-    },
-    "/v2.1/numbers/forward/": {
-      "post": {
-        "summary": "Numbers Forward",
-        "description": "Forward Numbers",
-        "operationId": "forward",
+        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for one or more numbers. Updates both the local database and submits to the carrier. The number must be on the account.",
         "requestBody": {
-          "description": "/v2.1/numbers/forward/",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/forward"
+                "$ref": "#/components/schemas/numbersLidbRequest"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
-      },
-      "delete": {
-        "summary": "Remove Numbers Forward",
-        "description": "Remove Forward Numbers",
-        "operationId": "rmforward",
-        "requestBody": {
-          "description": "/v2.1/numbers/forward/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/remove"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
-        "security": [
-          {
-            "apikey": []
-          }
-        ]
+        "operationId": "numbersLidb"
       }
     },
     "/v2.1/numbers/translations/": {
       "post": {
-        "summary": "Numbers Translations",
-        "description": "Numbers Translations",
-        "operationId": "translations",
-        "requestBody": {
-          "description": "/v2.1/numbers/translations/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/translation"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "summary": "Set Number Translations",
+        "responses": {
+          "200": {
+            "description": "Translations set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersTranslationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more translations could not be set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersTranslationsConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sets the inbound DNIS translation for one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersTranslationsRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersTranslations"
+      }
+    },
+    "/v2.1/numbers/add/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Add Numbers",
+        "responses": {
+          "200": {
+            "description": "All numbers added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersAddResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Insufficient funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersAddConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Assigns telephone numbers to the account. Account balance must cover the monthly DID rate multiplied by the number of DIDs being added.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersAddRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersAdd"
       }
     },
     "/v2.1/numbers/remove/": {
       "post": {
-        "summary": "Numbers Remove",
-        "description": "Remove numbers from routing",
-        "operationId": "remove",
-        "requestBody": {
-          "description": "/v2.1/numbers/remove/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/remove"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        }
-      }
-    },
-    "/v2.1/numbers/disconnect/": {
-      "post": {
-        "summary": "Numbers Disconnect",
-        "description": "Disconnect numbers from service",
-        "operationId": "disconnect",
-        "requestBody": {
-          "description": "/v2.1/numbers/disconnect/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/remove"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          }
-        },
         "security": [
           {
             "apikey": []
           }
-        ]
+        ],
+        "summary": "Remove Numbers",
+        "responses": {
+          "200": {
+            "description": "All numbers removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemovedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes numbers from the account entirely. Numbers currently porting cannot be removed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersArrayRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersRemove"
+      }
+    },
+    "/v2.1/numbers/disconnect/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Disconnect Numbers",
+        "responses": {
+          "200": {
+            "description": "All numbers disconnected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemovedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be disconnected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRemoveConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Removes numbers from the account and returns them to the available pool. Numbers currently porting cannot be disconnected.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersArrayRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersDisconnect"
+      }
+    },
+    "/v2.1/numbers/move/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Move Numbers",
+        "responses": {
+          "200": {
+            "description": "Numbers moved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersMoveResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more numbers could not be moved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersMoveConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Moves one or more numbers to a different account with a specified route.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersMoveRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersMove"
+      }
+    },
+    "/v2.1/numbers/list/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "List Numbers",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No numbers found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersListNotFound"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns telephone numbers on the account with their route and gateway IP. Optionally filter by route ID or number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersListRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersList"
+      }
+    },
+    "/v2.1/numbers/cnam/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Enable or Disable Inbound CNAM",
+        "responses": {
+          "200": {
+            "description": "CNAM setting updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersCnamResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more CNAM settings could not be updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersCnamConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Enables or disables inbound Caller ID Name (CNAM) lookup for one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersCnamRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersCnam"
+      }
+    },
+    "/v2.1/numbers/route/": {
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Route Numbers",
+        "responses": {
+          "200": {
+            "description": "Routes set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRouteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more routes could not be set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersRouteConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sets the gateway route for one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersRouteRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersRoute"
+      }
+    },
+    "/v2.1/numbers/forward/": {
+      "delete": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Remove Call Forward",
+        "responses": {
+          "200": {
+            "description": "Forward removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersForwardDeleteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more forwards could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersForwardConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Removes call forwarding from one or more numbers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersForwardDeleteRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersForwardRemove"
+      },
+      "post": {
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Set Call Forward",
+        "responses": {
+          "200": {
+            "description": "Forward set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersForwardResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "One or more forwards could not be set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numbersForwardConflictResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Enables call forwarding on one or more numbers to a destination number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/numbersForwardRequest"
+              }
+            }
+          }
+        },
+        "operationId": "numbersForwardSet"
       }
     }
   },
   "components": {
     "schemas": {
-      "list": {
+      "numberListEntry": {
+        "required": [
+          "number",
+          "route",
+          "ip"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "route": {
+            "example": "1000",
+            "type": "string"
+          },
+          "ip": {
+            "example": "203.0.113.10:5060",
+            "type": "string",
+            "description": "Gateway IP:port or system route name (T30, VOICE_BRIDGE, T38, RTC_BRIDGE)."
+          }
+        }
+      },
+      "numbersAddResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Numbers added"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberAddedEntry"
+            }
+          }
+        }
+      },
+      "numbersForwardDeleteRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "numberTranslationFailEntry": {
+        "required": [
+          "number",
+          "translation",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "translation": {
+            "example": "2015559999",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Failed"
+            ]
+          }
+        }
+      },
+      "numbersRouteConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_failed"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRouteEntry"
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Route result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "numbers_failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRouteFailEntry"
+            }
+          }
+        }
+      },
+      "numbersCnamResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "CNAM results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberCnamEntry"
+            }
+          }
+        }
+      },
+      "numberCnamEntry": {
+        "required": [
+          "number",
+          "cnam"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "cnam": {
+            "description": "Inbound CNAM lookup status as uppercase string.",
+            "type": "string",
+            "enum": [
+              "TRUE",
+              "FALSE"
+            ]
+          }
+        }
+      },
+      "numbersRouteRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number",
+                "route"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "route": {
+                  "example": 1000,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "numbersAddConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_fail"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberAddedEntry"
+            }
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Numbers not added"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "numbers_fail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberAddFailEntry"
+            }
+          }
+        }
+      },
+      "numberAddFailEntry": {
+        "required": [
+          "number",
+          "route",
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": 2015551234,
+            "type": "integer"
+          },
+          "route": {
+            "example": 4,
+            "type": "integer"
+          },
+          "error": {
+            "example": "DB Insert fail",
+            "type": "string"
+          }
+        }
+      },
+      "numberMoveFailEntry": {
+        "required": [
+          "number",
+          "account",
+          "route",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Failed",
+              "Invalid Route"
+            ]
+          },
+          "account": {
+            "example": 4592086960,
+            "type": "integer"
+          }
+        }
+      },
+      "numberAddedEntry": {
+        "required": [
+          "number",
+          "route"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": 2015551234,
+            "type": "integer"
+          },
+          "route": {
+            "example": 4,
+            "type": "integer"
+          }
+        }
+      },
+      "numbersArrayRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "numberForwardEntry": {
+        "required": [
+          "number",
+          "destination"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "destination": {
+            "example": "2125551234",
+            "type": "string"
+          }
+        }
+      },
+      "numbersLidbRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number",
+                "cnam"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "cnam": {
+                  "example": "ACME CORP",
+                  "type": "string",
+                  "description": "Outbound caller name. Max 15 characters, alphanumeric and spaces only."
+                },
+                "customerOrderReference": {
+                  "example": "ORDER-001",
+                  "type": "string",
+                  "description": "Optional order reference. Auto-generated if omitted."
+                }
+              }
+            }
+          }
+        }
+      },
+      "numbersCnamConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_failed"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberCnamEntry"
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "CNAM result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "numbers_failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberCnamFailEntry"
+            }
+          }
+        }
+      },
+      "numbersListRequest": {
         "required": [
           "apikey"
         ],
         "type": "object",
         "properties": {
           "apikey": {
-            "type": "string",
-            "example": "Your API Key"
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "number": {
+            "example": 2015551234,
+            "type": "integer",
+            "description": "Filter by number (partial match)."
           },
           "route": {
-            "type": "string",
-            "example": "1000"
-          },
-          "number": {
-            "type": "string",
-            "example": "2015550123"
+            "example": 1000,
+            "type": "integer",
+            "description": "Filter by gateway route ID."
           }
         }
       },
-      "add": {
+      "numbersTranslationsRequest": {
         "required": [
           "apikey",
           "numbers"
@@ -446,305 +1205,884 @@
         "type": "object",
         "properties": {
           "apikey": {
-            "type": "string",
-            "example": "Your API Key"
+            "example": "Your API Key",
+            "type": "string"
           },
           "numbers": {
-            "required": [
-              "number"
-            ],
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/numberAdd"
+              "required": [
+                "number",
+                "translation"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "translation": {
+                  "example": "2015559999",
+                  "type": "string",
+                  "description": "DNIS translation value. Digits and # only."
+                }
+              }
             }
           }
         }
       },
-      "route": {
+      "numberLidbEntry": {
         "required": [
-          "apikey",
-          "numbers"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberRoute"
-            }
-          }
-        }
-      },
-      "cnam": {
-        "required": [
-          "apikey",
+          "number",
           "cnam",
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "cnam",
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberCnam"
-            }
-          }
-        }
-      },
-      "lidb": {
-        "required": [
-          "apikey",
-          "cnam",
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "cnam",
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberLidb"
-            }
-          }
-        }
-      },
-      "move": {
-        "required": [
-          "apikey",
-          "numbers"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberMove"
-            }
-          }
-        }
-      },
-      "forward": {
-        "required": [
-          "apikey",
-          "numbers"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberforward"
-            }
-          }
-        }
-      },
-      "translation": {
-        "required": [
-          "apikey",
-          "numbers"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberTranslate"
-            }
-          }
-        }
-      },
-      "remove": {
-        "required": [
-          "apikey",
-          "numbers"
-        ],
-        "type": "object",
-        "properties": {
-          "apikey": {
-            "type": "string",
-            "example": "Your API Key"
-          },
-          "numbers": {
-            "required": [
-              "number"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/numberRemove"
-            }
-          }
-        }
-      },
-      "numberAdd": {
-        "required": [
-          "number"
+          "success"
         ],
         "type": "object",
         "properties": {
           "number": {
-            "type": "string",
-            "example": "2015551234"
-          },
-          "route": {
-            "type": "string",
-            "example": "1000"
-          }
-        }
-      },
-      "numberRoute": {
-        "required": [
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "number": {
-            "type": "string",
-            "example": "2015551234"
-          },
-          "route": {
-            "type": "string",
-            "example": "1000"
-          }
-        }
-      },
-      "numberCnam": {
-        "required": [
-          "cnam",
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "number": {
-            "type": "string",
-            "example": "2015551234"
+            "example": 2015551234,
+            "type": "integer"
           },
           "cnam": {
-            "type": "string",
-            "example": "TRUE"
-          }
-        }
-      },
-      "numberLidb": {
-        "required": [
-          "cnam",
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "number": {
-            "type": "string",
-            "example": "2015551234"
+            "example": "ACME CORP",
+            "type": "string"
           },
-          "cnam": {
+          "success": {
+            "description": "'Remote database updated' when carrier submission succeeded; 'Local database updated' when only the local cache was updated.",
             "type": "string",
-            "example": "VoiceTel Cust Name"
+            "enum": [
+              "Local database updated",
+              "Remote database updated"
+            ]
           }
         }
       },
-      "numberMove": {
+      "numbersRemovedResponse": {
         "required": [
-          "number"
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Numbers removed"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRemovedEntry"
+            }
+          }
+        }
+      },
+      "numbersMoveResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Move results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberMoveEntry"
+            }
+          }
+        }
+      },
+      "numbersForwardConflictResponse": {
+        "description": "Note: response keys are 'foward_success' and 'foward_failed' — these are the key names as returned by the API.",
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "foward_success",
+          "foward_failed"
+        ],
+        "type": "object",
+        "properties": {
+          "foward_failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberForwardFailEntry"
+            }
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Foward result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "foward_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberForwardEntry"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "numberMoveEntry": {
+        "required": [
+          "number",
+          "account",
+          "route"
         ],
         "type": "object",
         "properties": {
           "number": {
-            "type": "string",
-            "example": "2015551234"
+            "example": "2015551234",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
           },
           "account": {
-            "type": "string",
-            "example": "1234567890"
-          },
-          "route": {
-            "type": "string",
-            "example": "1000"
+            "example": 4592086960,
+            "type": "integer"
           }
         }
       },
-      "numberforward": {
+      "numbersMoveRequest": {
         "required": [
-          "number"
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number",
+                "account",
+                "route"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "route": {
+                  "example": 1000,
+                  "type": "integer",
+                  "description": "Gateway route ID on the destination account."
+                },
+                "account": {
+                  "example": 4592086960,
+                  "type": "integer",
+                  "description": "Destination account username."
+                }
+              }
+            }
+          }
+        }
+      },
+      "numberTranslationEntry": {
+        "required": [
+          "number",
+          "translation"
         ],
         "type": "object",
         "properties": {
           "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "translation": {
+            "example": "2015559999",
+            "type": "string"
+          }
+        }
+      },
+      "numberRouteFailEntry": {
+        "required": [
+          "number",
+          "route",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          },
+          "message": {
             "type": "string",
-            "example": "2015551234"
+            "enum": [
+              "Failed",
+              "Invalid Route"
+            ]
+          }
+        }
+      },
+      "numberRouteEntry": {
+        "required": [
+          "number",
+          "route"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "route": {
+            "example": 1000,
+            "type": "integer"
+          }
+        }
+      },
+      "numberCnamFailEntry": {
+        "required": [
+          "number",
+          "cnam",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "cnam": {
+            "type": "string",
+            "enum": [
+              "TRUE",
+              "FALSE"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Failed"
+            ]
+          }
+        }
+      },
+      "numberForwardFailEntry": {
+        "required": [
+          "number",
+          "destination",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Failed"
+            ]
+          },
+          "destination": {
+            "example": "2125551234",
+            "type": "string"
+          }
+        }
+      },
+      "numbersRouteResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Route results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRouteEntry"
+            }
+          }
+        }
+      },
+      "numbersListResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberListEntry"
+            }
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        }
+      },
+      "numbersMoveConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_failed"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberMoveEntry"
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Move result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "numbers_failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberMoveFailEntry"
+            }
+          }
+        }
+      },
+      "numbersForwardResponse": {
+        "description": "Note: response key is 'foward' (not 'forward') — this is the key name as returned by the API.",
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "foward"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "foward": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberForwardEntry"
+            }
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Foward results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        }
+      },
+      "numbersLidbConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_fail"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberLidbEntry"
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Numbers not modified"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "numbers_fail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberLidbFailEntry"
+            }
+          }
+        }
+      },
+      "numbersListNotFound": {
+        "required": [
+          "statusCode",
+          "status",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers": {
+            "description": "Note: 404 uses 'numbers' key (not 'message') for the error value.",
+            "type": "string",
+            "enum": [
+              "Not Found"
+            ]
+          },
+          "statusCode": {
+            "example": "404",
+            "type": "string"
+          }
+        }
+      },
+      "numbersAddRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "route": {
+                  "example": 4,
+                  "type": "integer",
+                  "description": "Gateway route ID. Defaults to 4 (DID) if omitted or invalid."
+                }
+              }
+            }
+          }
+        }
+      },
+      "numberLidbFailEntry": {
+        "required": [
+          "number",
+          "cnam",
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": 2015551234,
+            "type": "integer"
+          },
+          "cnam": {
+            "example": "ACME CORP",
+            "type": "string"
+          },
+          "error": {
+            "example": "Number not associated with account",
+            "type": "string"
+          }
+        }
+      },
+      "errorResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "message": {
+            "example": "Field Required: apikey",
+            "type": "string"
+          },
+          "statusCode": {
+            "example": "400",
+            "type": "string"
+          }
+        }
+      },
+      "numbersForwardDeleteResponse": {
+        "description": "Note: response key is 'foward' (not 'forward') — this is the key name as returned by the API.",
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "foward"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "foward": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberForwardRemovedEntry"
+            }
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Foward results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        }
+      },
+      "numbersLidbResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Numbers modified"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberLidbEntry"
+            }
+          }
+        }
+      },
+      "numbersRemoveConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "numbers_success",
+          "numbers_error"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "numbers_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRemovedEntry"
+            },
+            "nullable": true
+          },
+          "numbers_error": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberRemoveErrorEntry"
+            }
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Remove result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          }
+        }
+      },
+      "numbersTranslationsResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "translation"
+        ],
+        "type": "object",
+        "properties": {
+          "translation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberTranslationEntry"
+            }
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Translation results"
+            ]
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          }
+        }
+      },
+      "numbersCnamRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number",
+                "cnam"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "cnam": {
+                  "example": true,
+                  "type": "boolean",
+                  "description": "true to enable inbound CNAM lookup, false to disable."
+                }
+              }
+            }
+          }
+        }
+      },
+      "numberForwardRemovedEntry": {
+        "required": [
+          "number",
+          "destination"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "example": "2015551234",
+            "type": "string"
           },
           "destination": {
             "type": "string",
-            "example": "2125551234"
+            "enum": [
+              "removed"
+            ]
           }
         }
       },
-      "numberTranslate": {
+      "numberRemoveErrorEntry": {
         "required": [
           "number"
         ],
         "type": "object",
         "properties": {
           "number": {
-            "type": "string",
-            "example": "2015551234"
+            "example": "2015551234",
+            "type": "string"
           },
-          "translation": {
+          "reason": {
+            "example": "Special Status: The number is currently porting.",
             "type": "string",
-            "example": "2125551234"
+            "description": "Present when the number could not be removed due to an active port."
           }
         }
       },
-      "numberRemove": {
+      "numbersTranslationsConflictResponse": {
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "translation_success",
+          "translation_failed"
+        ],
+        "type": "object",
+        "properties": {
+          "translation_success": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberTranslationEntry"
+            },
+            "nullable": true
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "translation_failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/numberTranslationFailEntry"
+            }
+          },
+          "message": {
+            "type": "string",
+            "enum": [
+              "Translation result"
+            ]
+          },
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          }
+        }
+      },
+      "numberRemovedEntry": {
         "required": [
           "number"
         ],
         "type": "object",
         "properties": {
           "number": {
-            "type": "string",
-            "example": "2015551234"
+            "example": "2015551234",
+            "type": "string"
+          }
+        }
+      },
+      "numbersForwardRequest": {
+        "required": [
+          "apikey",
+          "numbers"
+        ],
+        "type": "object",
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "required": [
+                "number",
+                "destination"
+              ],
+              "type": "object",
+              "properties": {
+                "number": {
+                  "example": 2015551234,
+                  "type": "integer"
+                },
+                "destination": {
+                  "example": 2125551234,
+                  "type": "integer",
+                  "description": "10-digit destination number."
+                }
+              }
+            }
           }
         }
       }
@@ -755,5 +2093,23 @@
         "scheme": "bearer"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "info": {
+    "description": "Telephone number management",
+    "title": "Numbers API",
+    "contact": {
+      "email": "support@voicetel.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1.5"
+  },
+  "openapi": "3.0.1"
 }

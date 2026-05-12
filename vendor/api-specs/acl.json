@@ -1,183 +1,437 @@
 {
-  "openapi" : "3.0.0",
-  "info" : {
-    "description" : "Access Control List",
-    "version" : "v2.1",
-    "title" : "ACL",
-    "contact" : {
-      "email" : "support@voicetel.com"
+  "info": {
+    "version": "v2.1.5",
+    "title": "ACL",
+    "contact": {
+      "email": "support@voicetel.com"
     },
-    "license" : {
-      "name" : "Apache 2.0",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "license": {
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html",
+      "name": "Apache 2.0"
+    },
+    "description": "Access Control List"
+  },
+  "servers": [
+    {
+      "url": "https://api.voicetel.com"
+    }
+  ],
+  "openapi": "3.0.1",
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "aclRemoveResponse": {
+        "properties": {
+          "acl": {
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            },
+            "type": "array",
+            "description": "Successfully removed entries."
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "enum": [
+              "ACLs removed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "acl"
+        ],
+        "type": "object"
+      },
+      "errorResponse": {
+        "properties": {
+          "statusCode": {
+            "example": "400",
+            "type": "string"
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "message": {
+            "example": "Field Required: apikey",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ],
+        "type": "object"
+      },
+      "aclConflictResponse": {
+        "properties": {
+          "statusCode": {
+            "example": "409",
+            "type": "string"
+          },
+          "status": {
+            "example": "Error",
+            "type": "string"
+          },
+          "message": {
+            "enum": [
+              "At least one ACL could not be added.",
+              "At least one ACL could not be removed."
+            ],
+            "type": "string"
+          },
+          "acl_failed": {
+            "items": {
+              "$ref": "#/components/schemas/cidrErrorEntry"
+            },
+            "type": "array"
+          },
+          "acl_success": {
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            },
+            "type": "array",
+            "description": "Successfully processed entries. Empty array if none succeeded."
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "acl_success",
+          "acl_failed"
+        ],
+        "type": "object"
+      },
+      "cidrEntry": {
+        "properties": {
+          "cidr": {
+            "example": "203.0.113.0/24",
+            "type": "string",
+            "description": "IPv4 CIDR block. Must be a routable public address. Mask must be divisible by 8 (/8, /16, /24, /32)."
+          }
+        },
+        "required": [
+          "cidr"
+        ],
+        "type": "object"
+      },
+      "aclAddResponse": {
+        "properties": {
+          "acl": {
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            },
+            "type": "array",
+            "description": "Successfully added entries."
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          },
+          "message": {
+            "enum": [
+              "ACLs added"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message",
+          "acl"
+        ],
+        "type": "object"
+      },
+      "aclListResponse": {
+        "properties": {
+          "acl": {
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            },
+            "type": "array"
+          },
+          "statusCode": {
+            "example": "200",
+            "type": "string"
+          },
+          "status": {
+            "example": "Success",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "acl"
+        ],
+        "type": "object"
+      },
+      "apikeyRequest": {
+        "properties": {
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "apikey"
+        ],
+        "type": "object"
+      },
+      "cidrErrorEntry": {
+        "properties": {
+          "error": {
+            "enum": [
+              "DB Insert failed",
+              "DB delete failed",
+              "Invalid mask",
+              "CIDR range must be routable"
+            ],
+            "type": "string"
+          },
+          "cidr": {
+            "example": "203.0.113.0/24",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cidr",
+          "error"
+        ],
+        "type": "object"
+      },
+      "aclModifyRequest": {
+        "properties": {
+          "acl": {
+            "items": {
+              "$ref": "#/components/schemas/cidrEntry"
+            },
+            "type": "array"
+          },
+          "apikey": {
+            "example": "Your API Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "apikey",
+          "acl"
+        ],
+        "type": "object"
+      }
     }
   },
-  "paths" : {
-    "/v2.1/acl/list/" : {
-      "post" : {
-        "summary" : "List",
-        "operationId" : "list",
-        "description" : "List ACL",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "404" : {
-            "description" : "Not Found"
+  "paths": {
+    "/v2.1/acl/add/": {
+      "post": {
+        "summary": "Add ACL Entries",
+        "description": "Adds one or more IPv4 CIDR blocks to the account IP authentication ACL. Only routable public addresses are accepted. Mask must be divisible by 8 (/8, /16, /24, /32).",
+        "operationId": "aclAdd",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
+              }
+            }
           }
         },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/list"
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more entries could not be added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclConflictResponse"
+                }
               }
             }
           },
-          "description" : "/v2.1/acl/list/"
-        }
-      }
-    },
-    "/v2.1/acl/add/" : {
-      "post" : {
-        "summary" : "Add",
-        "operationId" : "add",
-        "description" : "Add ACL",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "409" : {
-            "description" : "Conflict"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/add"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
             }
           },
-          "description" : "/v2.1/acl/add/"
-        }
-      }
-    },
-    "/v2.1/acl/remove/" : {
-      "post" : {
-        "summary" : "Remove",
-        "operationId" : "remove",
-        "description" : "Remove ACL",
-        "security" : [ {
-          "apikey" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success"
-          },
-          "400" : {
-            "description" : "Bad Request"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "409" : {
-            "description" : "Conflict"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/remove"
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
               }
             }
           },
-          "description" : "/v2.1/acl/remove/"
+          "200": {
+            "description": "All entries added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclAddResponse"
+                }
+              }
+            }
+          }
         }
-      }
-    }
-  },
-  "servers" : [ {
-    "url" : "https://api.voicetel.com"
-  } ],
-  "components" : {
-    "securitySchemes" : {
-      "apikey" : {
-        "type" : "http",
-        "scheme" : "bearer"
       }
     },
-    "schemas" : {
-      "list" : {
-        "type" : "object",
-        "required" : [ "apikey" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
+    "/v2.1/acl/remove/": {
+      "post": {
+        "summary": "Remove ACL Entries",
+        "description": "Removes one or more IPv4 CIDR blocks from the account IP authentication ACL.",
+        "operationId": "aclRemove",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
+              }
+            }
           }
-        }
-      },
-      "add" : {
-        "type" : "object",
-        "required" : [ "apikey", "acl" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "One or more entries could not be removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclConflictResponse"
+                }
+              }
+            }
           },
-          "acl" : {
-            "type" : "array",
-            "required" : [ "cidr" ],
-            "items" : {
-              "$ref" : "#/components/schemas/cidr"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "All entries removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclRemoveResponse"
+                }
+              }
             }
           }
         }
-      },
-      "remove" : {
-        "type" : "object",
-        "required" : [ "apikey", "acl" ],
-        "properties" : {
-          "apikey" : {
-            "type" : "string",
-            "example" : "Your API Key"
-          },
-          "acl" : {
-            "type" : "array",
-            "required" : [ "cidr" ],
-            "items" : {
-              "$ref" : "#/components/schemas/cidr"
+      }
+    },
+    "/v2.1/acl/list/": {
+      "post": {
+        "summary": "List ACL Entries",
+        "description": "Returns all IP ACL entries for the authenticated account.",
+        "operationId": "aclList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apikeyRequest"
+              }
             }
           }
-        }
-      },
-      "cidr" : {
-        "type" : "object",
-        "required" : [ "cidr" ],
-        "properties" : {
-          "cidr" : {
-            "type" : "string",
-            "example" : "127.0.0.1/8"
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No ACL entries found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclListResponse"
+                }
+              }
+            }
           }
         }
       }

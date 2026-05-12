@@ -1,22 +1,22 @@
 {
   "openapi": "3.0.0",
-  "info": {
-    "description": "iNumbering Porting",
-    "contact": {
-      "email": "support@voicetel.com"
-    },
-    "title": "iNumbering Porting API",
-    "version": "v2.1.5",
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    }
-  },
   "servers": [
     {
       "url": "https://api.voicetel.com"
     }
   ],
+  "info": {
+    "description": "iNumbering Porting",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "v2.1.5",
+    "title": "iNumbering Porting API",
+    "contact": {
+      "email": "support@voicetel.com"
+    }
+  },
   "components": {
     "securitySchemes": {
       "apikey": {
@@ -25,185 +25,8 @@
       }
     },
     "schemas": {
-      "portInOrder": {
-        "properties": {
-          "apikey": {
-            "example": "Your API Key",
-            "type": "string"
-          },
-          "portInOrder": {
-            "$ref": "#/components/schemas/portInOrder_portInOrder"
-          }
-        },
-        "required": [
-          "apikey",
-          "portInOrder"
-        ],
-        "type": "object"
-      },
-      "portInOrder_tnItem_tnFeature": {
-        "properties": {
-          "callerId": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature_callerId"
-          }
-        },
-        "type": "object"
-      },
-      "tnList": {
-        "properties": {
-          "tnItem": {
-            "required": [
-              "tn"
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/tn"
-            }
-          }
-        },
-        "required": [
-          "tnItem"
-        ],
-        "type": "object"
-      },
-      "portOutPin": {
-        "properties": {
-          "apikey": {
-            "example": "Your API Key",
-            "type": "string"
-          },
-          "portOutPin": {
-            "$ref": "#/components/schemas/portOutPin_portOutPin"
-          }
-        },
-        "required": [
-          "apikey",
-          "portOutPin"
-        ],
-        "type": "object"
-      },
-      "portStatus": {
-        "properties": {
-          "apikey": {
-            "example": "Your API Key",
-            "type": "string"
-          }
-        },
-        "required": [
-          "apikey"
-        ],
-        "type": "object"
-      },
-      "portInOrder_tnItem": {
-        "properties": {
-          "tnFeature": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature"
-          },
-          "accountNum": {
-            "example": "Account number",
-            "type": "string"
-          },
-          "endUser": {
-            "$ref": "#/components/schemas/portInOrder_tnItem_endUser"
-          },
-          "atn": {
-            "example": "Account telephone number",
-            "type": "string"
-          },
-          "tn": {
-            "example": "Ten-digit telephone number",
-            "type": "string"
-          },
-          "accountPin": {
-            "example": "Alphanumeric account PIN or password",
-            "type": "string"
-          },
-          "authDate": {
-            "example": "1970-01-01",
-            "format": "date",
-            "description": "Auto-set by the proxy to 2 days ago; callers do not need to provide this field."
-          },
-          "authName": {
-            "example": "Name of port-in authorizer",
-            "type": "string"
-          }
-        },
-        "required": [
-          "accountNum",
-          "atn",
-          "authName",
-          "endUser",
-          "tn"
-        ],
-        "type": "object"
-      },
       "portInOrder_tnItem_endUser": {
-        "properties": {
-          "streetName": {
-            "example": "End user address street name",
-            "type": "string"
-          },
-          "city": {
-            "example": "End user address city",
-            "type": "string"
-          },
-          "name": {
-            "example": "End user name",
-            "type": "string"
-          },
-          "locationValue1": {
-            "example": "End user address location value 1 (e.g. 1, 2B)",
-            "type": "string"
-          },
-          "locationType1": {
-            "example": "End user address location type 1 (e.g. Bld, Apt)",
-            "type": "string"
-          },
-          "typeOfService": {
-            "example": "Acceptable values are B and R (business and residence)",
-            "type": "string"
-          },
-          "state": {
-            "example": "End user address state",
-            "type": "string"
-          },
-          "streetNum": {
-            "example": "End user address street number (e.g. 100, 550)",
-            "type": "string"
-          },
-          "locationValue3": {
-            "example": "End user address location value 3 (e.g. 1, 900)",
-            "type": "string"
-          },
-          "postalCode": {
-            "example": "End user address zip code",
-            "type": "string"
-          },
-          "locationValue2": {
-            "example": "End user address location value 2 (e.g. 1, 900)",
-            "type": "string"
-          },
-          "streetPreDir": {
-            "example": "End user address street direction prefix (e.g. N)",
-            "type": "string"
-          },
-          "streetType": {
-            "example": "End user address street type (e.g. St, Ave)",
-            "type": "string"
-          },
-          "locationType2": {
-            "example": "End user address location type 2 (e.g. Flr, Ste)",
-            "type": "string"
-          },
-          "streetPostDir": {
-            "example": "End user address street direction ending (e.g. SW)",
-            "type": "string"
-          },
-          "locationType3": {
-            "example": "End user address location type 3 (e.g. Flr, Ste)",
-            "type": "string"
-          }
-        },
+        "type": "object",
         "required": [
           "city",
           "name",
@@ -214,20 +37,260 @@
           "streetType",
           "typeOfService"
         ],
-        "type": "object"
+        "properties": {
+          "state": {
+            "type": "string",
+            "example": "End user address state"
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "End user address zip code"
+          },
+          "locationType2": {
+            "type": "string",
+            "example": "End user address location type 2 (e.g. Flr, Ste)"
+          },
+          "streetPostDir": {
+            "type": "string",
+            "example": "End user address street direction ending (e.g. SW)"
+          },
+          "typeOfService": {
+            "type": "string",
+            "example": "Acceptable values are B and R (business and residence)"
+          },
+          "city": {
+            "type": "string",
+            "example": "End user address city"
+          },
+          "streetName": {
+            "type": "string",
+            "example": "End user address street name"
+          },
+          "streetPreDir": {
+            "type": "string",
+            "example": "End user address street direction prefix (e.g. N)"
+          },
+          "name": {
+            "type": "string",
+            "example": "End user name"
+          },
+          "locationValue1": {
+            "type": "string",
+            "example": "End user address location value 1 (e.g. 1, 2B)"
+          },
+          "locationType3": {
+            "type": "string",
+            "example": "End user address location type 3 (e.g. Flr, Ste)"
+          },
+          "locationValue2": {
+            "type": "string",
+            "example": "End user address location value 2 (e.g. 1, 900)"
+          },
+          "locationType1": {
+            "type": "string",
+            "example": "End user address location type 1 (e.g. Bld, Apt)"
+          },
+          "streetNum": {
+            "type": "string",
+            "example": "End user address street number (e.g. 100, 550)"
+          },
+          "streetType": {
+            "type": "string",
+            "example": "End user address street type (e.g. St, Ave)"
+          },
+          "locationValue3": {
+            "type": "string",
+            "example": "End user address location value 3 (e.g. 1, 900)"
+          }
+        }
+      },
+      "portInAvailability": {
+        "type": "object",
+        "required": [
+          "apikey",
+          "tnList"
+        ],
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "tnList": {
+            "$ref": "#/components/schemas/tnList"
+          }
+        }
+      },
+      "portStatus": {
+        "type": "object",
+        "required": [
+          "apikey"
+        ],
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          }
+        }
+      },
+      "portInOrder": {
+        "type": "object",
+        "required": [
+          "apikey",
+          "portInOrder"
+        ],
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "portInOrder": {
+            "$ref": "#/components/schemas/portInOrder_portInOrder"
+          }
+        }
+      },
+      "tn": {
+        "type": "object",
+        "required": [
+          "tn"
+        ],
+        "properties": {
+          "tn": {
+            "type": "integer",
+            "example": 2015551234
+          }
+        }
+      },
+      "portInOrder_tnItem_tnFeature_callerId": {
+        "type": "object",
+        "properties": {
+          "callingName": {
+            "type": "string",
+            "example": "Caller ID display name; 15 characters or fewer"
+          }
+        }
       },
       "portOutPin_portOutPin": {
+        "type": "object",
+        "required": [
+          "tnList"
+        ],
         "properties": {
           "tnList": {
             "$ref": "#/components/schemas/tnList"
           }
-        },
+        }
+      },
+      "portOutPin": {
+        "type": "object",
         "required": [
+          "apikey",
+          "portOutPin"
+        ],
+        "properties": {
+          "apikey": {
+            "type": "string",
+            "example": "Your API Key"
+          },
+          "portOutPin": {
+            "$ref": "#/components/schemas/portOutPin_portOutPin"
+          }
+        }
+      },
+      "portInOrder_portInOrder": {
+        "type": "object",
+        "required": [
+          "desiredDueDate",
           "tnList"
         ],
-        "type": "object"
+        "properties": {
+          "desiredDueDate": {
+            "format": "date",
+            "type": "string",
+            "example": "1970-01-01"
+          },
+          "tnList": {
+            "$ref": "#/components/schemas/portInOrder_portInOrder_tnList"
+          },
+          "resubmit": {
+            "description": "Optional. Set to 0 to flag this as a resubmission and skip the $5.00/TN charge. Any other value (or omitting this field) treats the order as new and deducts $5.00 per TN from the account balance.",
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "portInOrder_tnItem": {
+        "type": "object",
+        "required": [
+          "accountNum",
+          "atn",
+          "authName",
+          "endUser",
+          "tn"
+        ],
+        "properties": {
+          "tnFeature": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature"
+          },
+          "tn": {
+            "type": "string",
+            "example": "Ten-digit telephone number"
+          },
+          "authName": {
+            "type": "string",
+            "example": "Name of port-in authorizer"
+          },
+          "authDate": {
+            "format": "date",
+            "description": "Auto-set to 2 days ago; callers do not need to provide this field.",
+            "example": "1970-01-01"
+          },
+          "accountPin": {
+            "type": "string",
+            "example": "Alphanumeric account PIN or password"
+          },
+          "accountNum": {
+            "type": "string",
+            "example": "Account number"
+          },
+          "endUser": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_endUser"
+          },
+          "atn": {
+            "type": "string",
+            "example": "Account telephone number"
+          }
+        }
+      },
+      "portInOrder_tnItem_tnFeature": {
+        "type": "object",
+        "properties": {
+          "callerId": {
+            "$ref": "#/components/schemas/portInOrder_tnItem_tnFeature_callerId"
+          }
+        }
+      },
+      "tnList": {
+        "type": "object",
+        "required": [
+          "tnItem"
+        ],
+        "properties": {
+          "tnItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/tn"
+            },
+            "required": [
+              "tn"
+            ]
+          }
+        }
       },
       "portInOrder_portInOrder_tnList": {
+        "type": "object",
+        "required": [
+          "tnItem"
+        ],
         "properties": {
           "tnItem": {
             "type": "array",
@@ -235,322 +298,33 @@
               "$ref": "#/components/schemas/portInOrder_tnItem"
             }
           }
-        },
-        "required": [
-          "tnItem"
-        ],
-        "type": "object"
-      },
-      "portInAvailability": {
-        "properties": {
-          "apikey": {
-            "example": "Your API Key",
-            "type": "string"
-          },
-          "tnList": {
-            "$ref": "#/components/schemas/tnList"
-          }
-        },
-        "required": [
-          "apikey",
-          "tnList"
-        ],
-        "type": "object"
-      },
-      "portInOrder_tnItem_tnFeature_callerId": {
-        "properties": {
-          "callingName": {
-            "example": "Caller ID display name; 15 characters or fewer",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "portInOrder_portInOrder": {
-        "properties": {
-          "tnList": {
-            "$ref": "#/components/schemas/portInOrder_portInOrder_tnList"
-          },
-          "desiredDueDate": {
-            "example": "1970-01-01",
-            "format": "date",
-            "type": "string"
-          },
-          "resubmit": {
-            "type": "integer",
-            "description": "Optional. Set to 0 to flag this as a resubmission and skip the $5.00/TN charge. Any other value (or omitting this field) treats the order as new and deducts $5.00 per TN from the account balance.",
-            "example": 0
-          }
-        },
-        "required": [
-          "desiredDueDate",
-          "tnList"
-        ],
-        "type": "object"
-      },
-      "tn": {
-        "properties": {
-          "tn": {
-            "example": 2015551234,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "tn"
-        ],
-        "type": "object"
+        }
       }
     }
   },
   "paths": {
-    "/v2/iNumbering/portInAvailability/": {
+    "/v2.1/iNumbering/portStatus/": {
       "post": {
-        "summary": "Portability Check",
-        "operationId": "portInAvailability",
-        "description": "Check portability on tandem. Results are cached in Redis for 1 hour (keyed as lnp_{tn}). All TNs must be verified here before submitting a portInOrder — the portInOrder endpoint returns 412 if any TN was not pre-verified. The proxy post-hook strips localRoutingNumber and rateCenterTier from each serviceAvailable item and removes notPortableReason when isPortable is true.",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "/v2/iNumbering/portInAvailability/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portInAvailability"
-              }
-            }
-          }
-        },
+        "description": "Get port status summary for the authenticated account, ordered by timestamp descending.",
         "responses": {
-          "200": {
-            "description": "Portability check successful. localRoutingNumber and rateCenterTier are stripped by the proxy post-hook. notPortableReason is omitted when isPortable is true.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "serviceAvailable": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "telephoneNumber": {
-                            "type": "string",
-                            "example": "3129578428"
-                          },
-                          "isPortable": {
-                            "type": "string",
-                            "example": "true"
-                          },
-                          "serviceProviderName": {
-                            "type": "string",
-                            "example": "Level 3- SVR:8824/1"
-                          },
-                          "notPortableReason": {
-                            "type": "string",
-                            "description": "Only present when isPortable is false"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
           "409": {
-            "description": "Invalid TN submitted | Invalid Input Parameters"
-          },
-          "410": {
-            "description": "DB Error"
-          },
-          "411": {
-            "description": "Unknown Error"
-          },
-          "414": {
-            "description": "Fields Are Required | Wireless not allowed for Customer"
-          },
-          "430": {
-            "description": "No Result Found"
-          },
-          "431": {
-            "description": "Unable to complete the request"
-          }
-        }
-      }
-    },
-    "/v2/iNumbering/portInOrder/": {
-      "post": {
-        "summary": "Submit Port",
-        "operationId": "portInOrder",
-        "description": "Submit port order to tandem. All TNs must first be verified via portInAvailability — the proxy returns 412 if any TN was not pre-verified. The proxy pre-hook auto-sets authDate to 2 days ago, portOutPin to the last 4 digits of the current timestamp, trunkGroup to \"orig\", and cnamDip to \"N\"; directoryListing and e911 tnFeatures are stripped before forwarding to IQ. On success, the proxy deducts $5.00 per TN from the account balance unless resubmit is set to 0.",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "/v2/iNumbering/portInOrder/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portInOrder"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Port order submitted successfully. The proxy post-hook deducts $5.00 per TN from the account balance unless resubmit is 0.",
+            "description": "CouchDB error.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "orderId": {
-                      "type": "integer",
-                      "example": 102644
-                    },
-                    "statusCode": {
+                    "exception": {
                       "type": "string",
-                      "example": "200"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad input"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "410": {
-            "description": "DB Error"
-          },
-          "412": {
-            "description": "Pre-verification required — at least one submitted TN was not verified via portInAvailability first.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "statusCode": {
-                      "type": "string",
-                      "example": "412"
+                      "example": "<CouchDB error message>"
                     },
                     "status": {
                       "type": "string",
                       "example": "Error"
                     },
-                    "message": {
-                      "type": "string",
-                      "example": "Please verify portability with portInAvailability API on all submitted tnItem(s)"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "414": {
-            "description": "Fields Are Required"
-          },
-          "430": {
-            "description": "No Result Found"
-          },
-          "431": {
-            "description": "Unable to complete the request"
-          }
-        }
-      }
-    },
-    "/v2/iNumbering/portOutPinUpdate/": {
-      "post": {
-        "summary": "Update Pin Numbers",
-        "operationId": "portOutPinUpdate",
-        "description": "Update port-out PINs for phone numbers. If portOutPin is omitted for any tnItem, the proxy auto-generates a random 4-digit PIN (1000-9999). Only TNs belonging to the authenticated account are processed; TNs not found on the account are silently skipped.",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "description": "/v2/iNumbering/portOutPinUpdate/",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/portOutPin"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success. The proxy echoes back the portOutPin object from the request with auto-generated PINs filled in for any tnItem that did not include one. Only TNs belonging to the authenticated account are included in the response.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
                     "statusCode": {
                       "type": "string",
-                      "example": "200"
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "portOutPin": {
-                      "type": "object",
-                      "description": "Echo of the submitted portOutPin object with auto-generated PINs filled in",
-                      "properties": {
-                        "tnList": {
-                          "type": "object",
-                          "properties": {
-                            "tnItem": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "tn": {
-                                    "type": "integer",
-                                    "example": 2015551234
-                                  },
-                                  "portOutPin": {
-                                    "type": "string",
-                                    "example": "4291",
-                                    "description": "Auto-generated 4-digit PIN if not provided in request"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "example": "409"
                     }
                   }
                 }
@@ -558,22 +332,41 @@
             }
           },
           "400": {
-            "description": "Bad input / missing tn."
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
           },
-          "409": {
-            "description": "Conflict"
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "portStatusSummary": {
+                      "description": "Port status records from CouchDB, ordered by timestamp descending",
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
-      }
-    },
-    "/v2.1/iNumbering/portStatus/": {
-      "post": {
+        },
         "summary": "Port Status",
         "operationId": "portStatus",
-        "description": "Get port status summary. This endpoint does not proxy to IQ; it queries CouchDB directly and returns port status records for the authenticated account, ordered by timestamp descending.",
         "security": [
           {
             "apikey": []
@@ -588,62 +381,269 @@
               }
             }
           }
-        },
+        }
+      }
+    },
+    "/v2/iNumbering/portOutPinUpdate/": {
+      "post": {
+        "description": "Update port-out PINs for phone numbers. If portOutPin is omitted for any tnItem, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
         "responses": {
+          "409": {
+            "description": "Conflict"
+          },
+          "400": {
+            "description": "Bad input / missing tn."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "200": {
-            "description": "Success. Records are sourced from CouchDB (not IQ) and ordered by timestamp descending.",
+            "description": "Success. The portOutPin object is echoed back with auto-generated PINs filled in for any tnItem that did not include one. Only TNs belonging to the authenticated account are included.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
+                    "portOutPin": {
+                      "description": "Echo of the submitted portOutPin object with auto-generated PINs filled in",
+                      "type": "object",
+                      "properties": {
+                        "tnList": {
+                          "type": "object",
+                          "properties": {
+                            "tnItem": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "portOutPin": {
+                                    "description": "Auto-generated 4-digit PIN if not provided in request",
+                                    "type": "string",
+                                    "example": "4291"
+                                  },
+                                  "tn": {
+                                    "type": "integer",
+                                    "example": 2015551234
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     },
                     "status": {
                       "type": "string",
                       "example": "Success"
                     },
-                    "portStatusSummary": {
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update Pin Numbers",
+        "operationId": "portOutPinUpdate",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "/v2/iNumbering/portOutPinUpdate/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portOutPin"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/portInAvailability/": {
+      "post": {
+        "description": "Check number portability. All TNs must be verified here before submitting a portInOrder \u2014 returns 412 if any TN was not pre-verified.",
+        "responses": {
+          "400": {
+            "description": "Bad input"
+          },
+          "409": {
+            "description": "Invalid TN submitted | Invalid Input Parameters"
+          },
+          "410": {
+            "description": "DB Error"
+          },
+          "200": {
+            "description": "Portability check successful. notPortableReason is omitted when isPortable is true.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "serviceAvailable": {
                       "type": "array",
-                      "description": "Port status records from CouchDB, ordered by timestamp descending",
                       "items": {
-                        "type": "object"
+                        "type": "object",
+                        "properties": {
+                          "serviceProviderName": {
+                            "type": "string",
+                            "example": "Level 3- SVR:8824/1"
+                          },
+                          "telephoneNumber": {
+                            "type": "string",
+                            "example": "3129578428"
+                          },
+                          "isPortable": {
+                            "type": "string",
+                            "example": "true"
+                          },
+                          "notPortableReason": {
+                            "description": "Only present when isPortable is false",
+                            "type": "string"
+                          }
+                        }
                       }
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
                     }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
+          "430": {
+            "description": "No Result Found"
+          },
+          "414": {
+            "description": "Fields Are Required | Wireless not allowed for Customer"
           },
           "401": {
             "description": "Unauthorized"
           },
+          "431": {
+            "description": "Unable to complete the request"
+          },
+          "411": {
+            "description": "Unknown Error"
+          }
+        },
+        "summary": "Portability Check",
+        "operationId": "portInAvailability",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "/v2/iNumbering/portInAvailability/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portInAvailability"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/iNumbering/portInOrder/": {
+      "post": {
+        "description": "Submit a port-in order. All TNs must first be verified via portInAvailability \u2014 returns 412 if any TN was not pre-verified. authDate is auto-set. On success, $5.00 per TN is deducted from the account balance unless resubmit is set to 0.",
+        "responses": {
+          "400": {
+            "description": "Bad input"
+          },
           "409": {
-            "description": "CouchDB error.",
+            "description": "Conflict"
+          },
+          "410": {
+            "description": "DB Error"
+          },
+          "412": {
+            "description": "Pre-verification required \u2014 at least one submitted TN was not verified via portInAvailability first.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "statusCode": {
+                    "message": {
                       "type": "string",
-                      "example": "409"
+                      "example": "Please verify portability with portInAvailability API on all submitted tnItem(s)"
                     },
                     "status": {
                       "type": "string",
                       "example": "Error"
                     },
-                    "exception": {
+                    "statusCode": {
                       "type": "string",
-                      "example": "<CouchDB error message>"
+                      "example": "412"
                     }
                   }
                 }
+              }
+            }
+          },
+          "200": {
+            "description": "Port order submitted successfully. $5.00 per TN is deducted from the account balance unless resubmit is 0.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "orderId": {
+                      "type": "integer",
+                      "example": 102644
+                    },
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "414": {
+            "description": "Fields Are Required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "431": {
+            "description": "Unable to complete the request"
+          },
+          "430": {
+            "description": "No Result Found"
+          }
+        },
+        "summary": "Submit Port",
+        "operationId": "portInOrder",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "/v2/iNumbering/portInOrder/",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portInOrder"
               }
             }
           }

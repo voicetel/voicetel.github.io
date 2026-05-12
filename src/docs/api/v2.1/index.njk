@@ -1,0 +1,77 @@
+---
+layout: layouts/page.njk
+permalink: /docs/api/v2.1/
+title: "API v2.1 reference (historical)"
+description: "Per-resource OpenAPI specs for VoiceTel API v2.1. Most endpoints are now consolidated into v2.2 — see the current release for up-to-date documentation."
+---
+
+<p class="eyebrow"><a href="/docs/api/">API reference</a> / v2.1</p>
+<h1>API v2.1 reference.</h1>
+<p class="lede">Per-resource OpenAPI specs for VoiceTel API v2.1. Most of these endpoints have been consolidated into the <a href="{{ apiSpecs['v2.2'].urlPath }}">v2.2 reference</a>; the per-resource specs are kept here for historical comparison and for endpoints not yet folded into v2.2.</p>
+
+<div class="alert alert-info" role="note">
+	<p>Building against the current API? Start with <a href="{{ apiSpecs['v2.2'].urlPath }}">VoiceTel API {{ apiSpecs['v2.2'].version }}</a>. The pages below remain valid but are no longer the primary reference.</p>
+</div>
+
+<section class="section-block">
+	<h2>Numbers</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3><a href="{{ apiSpecs.iNumbering.urlPath }}">iNumbering</a></h3>
+			<p>Number provisioning: search, order, configure, and release DIDs.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3><a href="{{ apiSpecs['iNumbering-porting'].urlPath }}">iNumbering Porting</a></h3>
+			<p>LNP workflows: submit ports, track status, and coordinate cutover.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
+			<h3><a href="{{ apiSpecs.numbers.urlPath }}">Numbers Lookup</a></h3>
+			<p>Carrier-of-record, LRN, CNAM, and caller-ID lookups for routing and screening.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Account &amp; security</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-plus" %}</span>
+			<h3><a href="{{ apiSpecs.account.urlPath }}">Account</a></h3>
+			<p>Account information, balance, billing data, and sub-account management.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "box-arrow-in-right" %}</span>
+			<h3><a href="{{ apiSpecs.auth.urlPath }}">Authentication</a></h3>
+			<p>Bearer-token and API-key flows for programmatic access.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="{{ apiSpecs.acl.urlPath }}">Access Control Lists</a></h3>
+			<p>Source-IP allow lists, credentials, and per-resource permission rules.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Network services</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
+			<h3><a href="{{ apiSpecs.gateways.urlPath }}">SIP Gateways</a></h3>
+			<p>Manage SIP trunk endpoints, authentication, and routing per-account.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="{{ apiSpecs.e911.urlPath }}">E911</a></h3>
+			<p>Emergency-service registration, address validation, and dispatch records.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "info-circle" %}</span>
+			<h3><a href="{{ apiSpecs.info.urlPath }}">Info</a></h3>
+			<p>Service-level information, network endpoints, and platform metadata.</p>
+		</li>
+	</ul>
+</section>

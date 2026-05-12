@@ -10,6 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
+	eleventyConfig.addPassthroughCopy({ "vendor/api-specs": "api-specs" });
 	eleventyConfig.addPassthroughCopy("src/CNAME");
 	eleventyConfig.addPassthroughCopy("src/robots.txt");
 

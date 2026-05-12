@@ -1,0 +1,84 @@
+---
+layout: layouts/page.njk
+permalink: /docs/api/v2.2/playground/
+title: "API playground"
+description: "Browser-based playground for the VoiceTel API v2.2. Set your API key once — encrypted to this device — and run live GET requests against api.voicetel.com without leaving the page."
+---
+
+<p class="eyebrow"><a href="/docs/api/">API reference</a> / <a href="{{ apiSpecs['v2.2'].urlPath }}">v2.2</a> / Playground</p>
+<h1>API playground.</h1>
+<p class="lede">Set your VoiceTel API key once. It's encrypted to this device and this browser, never sent to a VoiceTel server, and never readable from this page — only usable. Phase 1 covers GET operations from VoiceTel API v2.2.</p>
+
+<div class="alert alert-info" role="note">
+	<p><strong>Your API key never leaves your browser.</strong> The key is encrypted under a non-extractable device key in IndexedDB. Once set, it cannot be viewed here — only used to authorize a request, replaced, or removed.</p>
+</div>
+
+<section class="section-block playground" data-api-playground data-spec-url="/api-specs/v2.2.json">
+	<header class="playground-header">
+		<div class="playground-key">
+			<h2>API key</h2>
+			<p data-key-status></p>
+			<div class="playground-key-actions" data-key-actions></div>
+			<form class="playground-key-form" data-key-form hidden autocomplete="off">
+				<h3 data-key-form-title>Set API key</h3>
+				<p class="form-note">Pasted here, encrypted immediately, then this field is cleared. The plaintext key is never echoed back.</p>
+				<div class="form-row form-row--full">
+					<label for="playground-key-input">VoiceTel API key</label>
+					<input id="playground-key-input" type="password" data-key-input autocomplete="off" spellcheck="false" required>
+				</div>
+				<p class="form-error" data-key-error></p>
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="button" class="btn btn-secondary" data-key-cancel>Cancel</button>
+				</div>
+				<p class="form-note">Don't have one? Retrieve your key at <a href="https://api.voicetel.com/apikey/" rel="external">api.voicetel.com/apikey</a>.</p>
+			</form>
+		</div>
+	</header>
+
+	<div class="playground-layout">
+		<aside class="playground-sidebar" aria-label="Operations">
+			<h2>Operations</h2>
+			<div class="playground-op-picker" data-op-picker></div>
+		</aside>
+
+		<div class="playground-main">
+			<section class="playground-op" aria-labelledby="playground-op-title">
+				<header class="playground-op-header">
+					<h2 id="playground-op-title" data-op-title>Choose an operation</h2>
+					<p class="playground-op-meta" data-op-meta></p>
+					<p class="playground-op-summary" data-op-summary></p>
+				</header>
+
+				<form class="playground-op-form" data-op-form onsubmit="return false;"></form>
+
+				<div class="playground-actions">
+					<button type="button" class="btn btn-primary" data-op-send>Send</button>
+				</div>
+
+				<section class="playground-response" aria-label="Response">
+					<h3>Response</h3>
+					<div data-op-response></div>
+				</section>
+
+				<section class="playground-curl" aria-label="curl">
+					<div class="playground-curl-header">
+						<h3>curl</h3>
+						<button type="button" class="btn btn-secondary btn-sm" data-op-copy>Copy</button>
+					</div>
+					<pre class="code-block" data-lang="bash"><code data-op-curl></code></pre>
+					<p class="form-note">The copied command uses the literal string <code>YOUR_API_KEY</code>. Your stored key is never substituted into this preview.</p>
+				</section>
+			</section>
+		</div>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="playground-cta-heading">
+	<h2 id="playground-cta-heading">Need to register or rotate a key?</h2>
+	<p>API keys are issued at signup and rotated from the portal. The playground only uses keys you already have.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/docs/api/v2.2/credentials/">API credentials</a>
+	</p>
+</aside>

@@ -1,7 +1,11 @@
 // Operation form generator. Renders one labeled input per OpenAPI
 // parameter (path / query / header), plus a JSON body editor for
 // operations that declare a requestBody. The body is pre-filled with
-// the spec example when one exists and otherwise starts empty.
+// the spec example when one exists; otherwise it falls back to a
+// schema-walked sample (resolving $refs) so the customer sees a stub
+// matching the shape of the request body, the way Redoc does.
+
+import { sampleForRequestBody } from "./schema-sample.js";
 
 function paramId(op, param) {
 	return `pg-${op.operationId}-${param.in}-${param.name}`;
@@ -66,19 +70,6 @@ function renderField(op, param) {
 	`.trim();
 }
 
-function pickBodyExample(requestBody) {
-	if (!requestBody || !requestBody.content) return null;
-	const json = requestBody.content["application/json"];
-	if (!json) return null;
-	if (json.example !== undefined) return json.example;
-	if (json.examples) {
-		const first = Object.values(json.examples)[0];
-		if (first && first.value !== undefined) return first.value;
-	}
-	if (json.schema && json.schema.example !== undefined) return json.schema.example;
-	return null;
-}
-
 function bodyContentType(requestBody) {
 	if (!requestBody || !requestBody.content) return null;
 	const types = Object.keys(requestBody.content);
@@ -86,33 +77,34 @@ function bodyContentType(requestBody) {
 	return types[0] || null;
 }
 
-function renderBody(op) {
+function renderBody(op, spec) {
 	if (!op.requestBody) return "";
 	const contentType = bodyContentType(op.requestBody);
-	const example = pickBodyExample(op.requestBody);
-	const prefill = example === null ? "" : JSON.stringify(example, null, 2);
+	const sample = sampleForRequestBody(op.requestBody, spec);
+	const prefill = sample === null ? "" : JSON.stringify(sample, null, 2);
 	const required = op.requestBody.required ? " (required)" : "";
 	const id = `pg-body-${op.operationId}`;
 	const isJson = contentType === "application/json";
 	const note = isJson
 		? `Content-Type: <code>application/json</code>`
 		: `Content-Type: <code>${escapeText(contentType || "application/octet-stream")}</code>`;
+	const rows = Math.min(24, Math.max(6, prefill.split("\n").length + 1));
 	return `
 		<div class="playground-body">
 			<label for="${id}">Request body${required}</label>
 			<p class="form-note">${note}</p>
-			<textarea id="${id}" data-param-in="body" rows="10" spellcheck="false" autocomplete="off">${escapeText(prefill)}</textarea>
+			<textarea id="${id}" data-param-in="body" rows="${rows}" spellcheck="false" autocomplete="off">${escapeText(prefill)}</textarea>
 		</div>
 	`.trim();
 }
 
-export function renderOperationForm(op) {
+export function renderOperationForm(op, spec) {
 	const params = op.parameters || [];
 	const paramsHtml =
 		params.length === 0
 			? ""
 			: `<div class="form-grid playground-form-grid">${params.map((p) => renderField(op, p)).join("")}</div>`;
-	const bodyHtml = renderBody(op);
+	const bodyHtml = renderBody(op, spec);
 	if (!paramsHtml && !bodyHtml) {
 		return `<p class="playground-empty">This operation takes no parameters. Press Send to run it.</p>`;
 	}

@@ -162,7 +162,7 @@ function selectOp(state, op) {
 	state.els.opTitle.textContent = op.summary || op.operationId;
 	state.els.opMeta.innerHTML = `<code>${op.method.toUpperCase()}</code> <code>${escapeText(op.path)}</code>`;
 	state.els.opSummary.textContent = op.description || "";
-	state.els.form.innerHTML = renderOperationForm(op);
+	state.els.form.innerHTML = renderOperationForm(op, state.spec);
 	state.els.send.textContent = `Send ${op.method.toUpperCase()}`;
 	renderEmpty(state.els.response, "Press Send to run this request.");
 	updateCurl(state);

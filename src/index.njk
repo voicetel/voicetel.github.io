@@ -5,54 +5,56 @@ description: "Run your Twilio app on VoiceTel. Same voice markup. Same webhook s
 ---
 {% include "partials/menu-carousel.njk" %}
 
-<section id="audiences" class="features-section">
-	<div class="container">
-		<ul class="features-grid">
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-				<h3>For developers</h3>
-				<p>Run your Twilio voice application on VoiceTel without rewriting call logic. Line-item pricing. Test call in five minutes.</p>
-				<p><a href="/developers/">Start building &rarr;</a></p>
-			</li>
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-				<h3>For integrators and resellers</h3>
-				<p>Wholesale carrier access that doesn't compete with you for your customer. Multi-tenant billing and the SDN appliance for plug-and-play SIP traversal.</p>
-				<p><a href="/integrators/">Partner with VoiceTel &rarr;</a></p>
-			</li>
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "buildings" %}</span>
-				<h3>For larger organizations</h3>
-				<p>Twenty-seven years of carrier operations. CLEC + FCC + Robocall Mitigation Database licensed. Migration playbook for cutover from your current provider.</p>
-				<p><a href="/enterprise/">Talk to VoiceTel &rarr;</a></p>
-			</li>
-		</ul>
-	</div>
-</section>
+<div class="features-rotator" data-features-rotator>
+	<section id="audiences" class="features-section features-rotator__panel is-active" data-rotator-panel aria-label="Audience">
+		<div class="container">
+			<ul class="features-grid">
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+					<h3>For developers</h3>
+					<p>Run your Twilio voice application on VoiceTel without rewriting call logic. Line-item pricing. Test call in five minutes.</p>
+					<p><a href="/developers/">Start building &rarr;</a></p>
+				</li>
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+					<h3>For integrators and resellers</h3>
+					<p>Wholesale carrier access that doesn't compete with you for your customer. Multi-tenant billing and the SDN appliance for plug-and-play SIP traversal.</p>
+					<p><a href="/integrators/">Partner with VoiceTel &rarr;</a></p>
+				</li>
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "buildings" %}</span>
+					<h3>For larger organizations</h3>
+					<p>Twenty-seven years of carrier operations. CLEC + FCC + Robocall Mitigation Database licensed. Migration playbook for cutover from your current provider.</p>
+					<p><a href="/enterprise/">Talk to VoiceTel &rarr;</a></p>
+				</li>
+			</ul>
+		</div>
+	</section>
 
-<section id="features" class="features-section">
-	<div class="container">
-		<ul class="features-grid">
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-				<h3>Verified Calling</h3>
-				<p>STIR/SHAKEN attestation on every call, backed by real-time threat detection and fraud mitigation.</p>
-			</li>
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
-				<h3>Wholesale Economics</h3>
-				<p>Published rates, scalable volume discounts, and direct access without contact-sales gates or hidden markups.</p>
-			</li>
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-				<h3>Resilient Network</h3>
-				<p>Geographically diverse POPs with redundant Tier-1 carrier interconnects for dependable performance.</p>
-			</li>
-			<li class="feature">
-				<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
-				<h3>Operator Support</h3>
-				<p>US-based NOC support from engineers who understand carrier-grade voice, messaging, and IP services.</p>
-			</li>
-		</ul>
-	</div>
-</section>
+	<section id="features" class="features-section features-rotator__panel" data-rotator-panel aria-label="Platform features">
+		<div class="container">
+			<ul class="features-grid">
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+					<h3>Verified Calling</h3>
+					<p>STIR/SHAKEN attestation on every call, backed by real-time threat detection and fraud mitigation.</p>
+				</li>
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
+					<h3>Wholesale Economics</h3>
+					<p>Published rates, scalable volume discounts, and direct access without contact-sales gates or hidden markups.</p>
+				</li>
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
+					<h3>Resilient Network</h3>
+					<p>Geographically diverse POPs with redundant Tier-1 carrier interconnects for dependable performance.</p>
+				</li>
+				<li class="feature">
+					<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
+					<h3>Operator Support</h3>
+					<p>US-based NOC support from engineers who understand carrier-grade voice, messaging, and IP services.</p>
+				</li>
+			</ul>
+		</div>
+	</section>
+</div>

@@ -1278,6 +1278,59 @@ textarea {
 	gap: var(--space-2);
 }
 
+/* Homepage features rotator — slow cross-fade between audience cards
+   and platform features. JS positions panels absolutely and sets the
+   container height to match the active panel, so we don't carry the
+   taller panel's whitespace under the shorter one. */
+
+.features-rotator {
+	position: relative;
+	transition: height 0.6s ease;
+}
+
+/* Tighter padding inside the rotator panels than the default
+   .features-section (var(--space-7) on top + bottom = 96px) — at the
+   homepage's one-row card grid, the default reads as a heavy empty
+   band above and below the cards. */
+.features-rotator .features-section {
+	padding-top: var(--space-5);
+	padding-bottom: var(--space-5);
+}
+
+/* No-JS fallback: only the active panel renders, container auto-sizes. */
+.features-rotator__panel:not(.is-active) {
+	display: none;
+}
+
+/* JS state: panels stack absolutely, container height is managed by JS. */
+.features-rotator[data-rotator-ready] .features-rotator__panel {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 0.6s ease,
+		visibility 0s linear 0.6s;
+}
+
+.features-rotator[data-rotator-ready] .features-rotator__panel.is-active {
+	opacity: 1;
+	visibility: visible;
+	transition:
+		opacity 0.6s ease,
+		visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.features-rotator,
+	.features-rotator[data-rotator-ready] .features-rotator__panel {
+		transition: none;
+	}
+}
+
 .trusted-by--footer {
 	margin: 0;
 	padding: 0 0 var(--space-4);
@@ -2369,7 +2422,7 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 	background: var(--light-bg);
 	color: var(--text-muted);
 	padding: var(--space-7) 0 var(--space-4);
-	margin-top: var(--space-8);
+	margin-top: 0;
 	border-top: 1px solid var(--border-color);
 }
 

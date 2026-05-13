@@ -1,8 +1,7 @@
-// Operation form generator. Phase 1 is GET-only across the v2.2 surface
-// and every parameter in the current v2.2 GET set is a path parameter, so
-// the form is a simple labeled-input list. The renderer is still written
-// against the general OpenAPI parameter object so query/header params
-// will pick up the same affordances when Phase 2 adds non-GET ops.
+// Operation form generator. Renders one labeled input per OpenAPI
+// parameter (path / query / header), plus a JSON body editor for
+// operations that declare a requestBody. The body is pre-filled with
+// the spec example when one exists and otherwise starts empty.
 
 function paramId(op, param) {
 	return `pg-${op.operationId}-${param.in}-${param.name}`;
@@ -67,21 +66,70 @@ function renderField(op, param) {
 	`.trim();
 }
 
+function pickBodyExample(requestBody) {
+	if (!requestBody || !requestBody.content) return null;
+	const json = requestBody.content["application/json"];
+	if (!json) return null;
+	if (json.example !== undefined) return json.example;
+	if (json.examples) {
+		const first = Object.values(json.examples)[0];
+		if (first && first.value !== undefined) return first.value;
+	}
+	if (json.schema && json.schema.example !== undefined) return json.schema.example;
+	return null;
+}
+
+function bodyContentType(requestBody) {
+	if (!requestBody || !requestBody.content) return null;
+	const types = Object.keys(requestBody.content);
+	if (types.includes("application/json")) return "application/json";
+	return types[0] || null;
+}
+
+function renderBody(op) {
+	if (!op.requestBody) return "";
+	const contentType = bodyContentType(op.requestBody);
+	const example = pickBodyExample(op.requestBody);
+	const prefill = example === null ? "" : JSON.stringify(example, null, 2);
+	const required = op.requestBody.required ? " (required)" : "";
+	const id = `pg-body-${op.operationId}`;
+	const isJson = contentType === "application/json";
+	const note = isJson
+		? `Content-Type: <code>application/json</code>`
+		: `Content-Type: <code>${escapeText(contentType || "application/octet-stream")}</code>`;
+	return `
+		<div class="playground-body">
+			<label for="${id}">Request body${required}</label>
+			<p class="form-note">${note}</p>
+			<textarea id="${id}" data-param-in="body" rows="10" spellcheck="false" autocomplete="off">${escapeText(prefill)}</textarea>
+		</div>
+	`.trim();
+}
+
 export function renderOperationForm(op) {
 	const params = op.parameters || [];
-	if (params.length === 0) {
+	const paramsHtml =
+		params.length === 0
+			? ""
+			: `<div class="form-grid playground-form-grid">${params.map((p) => renderField(op, p)).join("")}</div>`;
+	const bodyHtml = renderBody(op);
+	if (!paramsHtml && !bodyHtml) {
 		return `<p class="playground-empty">This operation takes no parameters. Press Send to run it.</p>`;
 	}
-	return `<div class="form-grid playground-form-grid">${params.map((p) => renderField(op, p)).join("")}</div>`;
+	return `${paramsHtml}${bodyHtml}`;
 }
 
 export function readFormValues(formEl) {
-	const values = { path: {}, query: {}, header: {} };
-	const fields = formEl.querySelectorAll("[data-param-name]");
+	const values = { path: {}, query: {}, header: {}, body: "" };
+	const fields = formEl.querySelectorAll("[data-param-name], [data-param-in='body']");
 	fields.forEach((field) => {
 		const where = field.dataset.paramIn;
-		const name = field.dataset.paramName;
 		const value = field.value;
+		if (where === "body") {
+			values.body = value || "";
+			return;
+		}
+		const name = field.dataset.paramName;
 		if (value === undefined || value === null || value === "") return;
 		if (!values[where]) values[where] = {};
 		values[where][name] = value;

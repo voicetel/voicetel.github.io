@@ -1,9 +1,8 @@
-// v2.2 API playground bootstrap.
-//
-// Phase 1: GET-only, single page at /docs/api/v2.2/playground/. Loads the
-// v2.2 spec at runtime, lets the customer pick an operation, fills in
-// path parameters, sets/replaces/removes their encrypted API key, and
-// sends real requests against api.voicetel.com.
+// API playground bootstrap. Drives both the v2.2 and CSP playgrounds via
+// data-spec-url. Loads the OpenAPI spec at runtime, lets the customer
+// pick any operation (GET / POST / PUT / PATCH / DELETE), fills in
+// parameters and a JSON body when the op has a requestBody, manages the
+// encrypted API key, and sends real requests against the live API.
 
 import * as keyStore from "./key-store.js";
 import { renderOperationForm, readFormValues } from "./render.js";
@@ -40,7 +39,7 @@ async function boot(rootEl) {
 		spec,
 		serverUrl:
 			(spec.servers && spec.servers[0] && spec.servers[0].url) || "https://api.voicetel.com",
-		operations: extractOperations(spec, { method: "get" }),
+		operations: extractOperations(spec),
 		currentOp: null,
 		els: {
 			keyStatus: rootEl.querySelector("[data-key-status]"),
@@ -86,11 +85,13 @@ function renderUnsupported(rootEl, reason) {
 	`;
 }
 
-function extractOperations(spec, { method } = {}) {
+const HTTP_METHODS = new Set(["get", "post", "put", "patch", "delete", "head", "options"]);
+
+function extractOperations(spec) {
 	const ops = [];
 	for (const [path, methods] of Object.entries(spec.paths || {})) {
 		for (const [m, op] of Object.entries(methods)) {
-			if (method && m !== method) continue;
+			if (!HTTP_METHODS.has(m)) continue;
 			ops.push({
 				method: m,
 				path,
@@ -99,6 +100,7 @@ function extractOperations(spec, { method } = {}) {
 				description: op.description || "",
 				tags: op.tags || ["Other"],
 				parameters: op.parameters || [],
+				requestBody: op.requestBody || null,
 			});
 		}
 	}
@@ -122,7 +124,7 @@ function renderOpPicker(state) {
 			const items = ops
 				.map(
 					(op) =>
-						`<li><button type="button" class="playground-op-btn" data-op-id="${escapeAttr(op.operationId)}"><span class="playground-op-method">${op.method.toUpperCase()}</span> <span class="playground-op-summary">${escapeText(op.summary || op.operationId)}</span></button></li>`
+						`<li><button type="button" class="playground-op-btn" data-op-id="${escapeAttr(op.operationId)}"><span class="playground-op-method playground-op-method--${op.method}">${op.method.toUpperCase()}</span> <span class="playground-op-summary">${escapeText(op.summary || op.operationId)}</span></button></li>`
 				)
 				.join("");
 			return `
@@ -161,6 +163,7 @@ function selectOp(state, op) {
 	state.els.opMeta.innerHTML = `<code>${op.method.toUpperCase()}</code> <code>${escapeText(op.path)}</code>`;
 	state.els.opSummary.textContent = op.description || "";
 	state.els.form.innerHTML = renderOperationForm(op);
+	state.els.send.textContent = `Send ${op.method.toUpperCase()}`;
 	renderEmpty(state.els.response, "Press Send to run this request.");
 	updateCurl(state);
 

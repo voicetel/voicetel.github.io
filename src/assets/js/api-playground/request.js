@@ -34,8 +34,13 @@ export async function sendRequest(serverUrl, op, values) {
 	for (const [name, value] of Object.entries(values.header || {})) {
 		if (value !== undefined && value !== null && value !== "") baseHeaders.set(name, value);
 	}
+	const hasBody = typeof values.body === "string" && values.body.trim() !== "";
+	if (hasBody && !baseHeaders.has("Content-Type")) {
+		baseHeaders.set("Content-Type", "application/json");
+	}
 
 	const init = await authorize({ method: op.method.toUpperCase(), headers: baseHeaders });
+	if (hasBody) init.body = values.body;
 	const t0 = performance.now();
 	let response;
 	let error = null;

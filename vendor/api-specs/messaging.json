@@ -770,7 +770,7 @@
             }
           },
           "400": {
-            "description": "Message rejected \u2014 Inteliquent returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
+            "description": "Message rejected \u2014 upstream messaging carrier returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
             "content": {
               "application/json": {
                 "schema": {

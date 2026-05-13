@@ -210,11 +210,6 @@
           },
           "tnList": {
             "$ref": "#/components/schemas/portInOrder_portInOrder_tnList"
-          },
-          "resubmit": {
-            "description": "Optional. Set to 0 to flag this as a resubmission and skip the $5.00/TN charge. Any other value (or omitting this field) treats the order as new and deducts $5.00 per TN from the account balance.",
-            "type": "integer",
-            "example": 0
           }
         }
       },
@@ -308,7 +303,7 @@
         "description": "Get port status summary for the authenticated account, ordered by timestamp descending.",
         "responses": {
           "409": {
-            "description": "CouchDB error.",
+            "description": "Internal storage error.",
             "content": {
               "application/json": {
                 "schema": {
@@ -316,7 +311,7 @@
                   "properties": {
                     "exception": {
                       "type": "string",
-                      "example": "<CouchDB error message>"
+                      "example": "<storage error message>"
                     },
                     "status": {
                       "type": "string",
@@ -344,20 +339,90 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "portStatusSummary": {
-                      "description": "Port status records from CouchDB, ordered by timestamp descending",
-                      "type": "array",
-                      "items": {
-                        "type": "object"
-                      }
+                    "statusCode": {
+                      "type": "string",
+                      "example": "200"
                     },
                     "status": {
                       "type": "string",
                       "example": "Success"
                     },
-                    "statusCode": {
-                      "type": "string",
-                      "example": "200"
+                    "portStatusSummary": {
+                      "type": "array",
+                      "description": "One entry per port order for the authenticated account, ordered by timestamp descending.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Port record document ID.",
+                            "example": "4ab6986446d30b866abf91ecb4e7f5ac633587ad"
+                          },
+                          "key": {
+                            "type": "array",
+                            "description": "[username, unix_timestamp]",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": [
+                              "3569689953",
+                              "1746000000"
+                            ]
+                          },
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "pid": {
+                                "type": "string",
+                                "description": "5-character port order ID.",
+                                "example": "a3a2a"
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Port order status. Casing may vary between old and new records.",
+                                "enum": [
+                                  "submitted",
+                                  "Validating",
+                                  "Pending",
+                                  "complete",
+                                  "Complete",
+                                  "Completed"
+                                ],
+                                "example": "Complete"
+                              },
+                              "message": {
+                                "type": "string",
+                                "description": "Human-readable status including FOC date/time and any rejection reason from the losing carrier.",
+                                "example": "Your numbers will be porting on May/06/2026 at 10:00 AM Central."
+                              },
+                              "foc": {
+                                "type": "string",
+                                "description": "Firm Order Commitment date in YYYYMMDD format. 19750715 is the sentinel value meaning no FOC has been assigned yet.",
+                                "example": "20260506"
+                              },
+                              "notify": {
+                                "type": "string",
+                                "description": "Customer notification flag. \"1\" = enabled, \"0\" = disabled.",
+                                "enum": [
+                                  "0",
+                                  "1"
+                                ],
+                                "example": "1"
+                              },
+                              "url": {
+                                "type": "string",
+                                "description": "Support ticket URL for this port order.",
+                                "example": "https://desk.support.voicetel.com/conversation/2114"
+                              },
+                              "pin": {
+                                "type": "string",
+                                "description": "Port-out PIN for this order. Auto-generated at submission. Required by the losing carrier to authorize the transfer.",
+                                "example": "2722"
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -386,7 +451,7 @@
     },
     "/v2/iNumbering/portInAvailability/": {
       "post": {
-        "description": "Check number portability. All TNs must be verified here before submitting a portInOrder \u2014 returns 412 if any TN was not pre-verified.",
+        "description": "Check number portability. All TNs must be verified here before submitting a portInOrder \u2014 returns 412 if any TN was not pre-verified. The portability result is cached for one hour; re-checking within that window returns the cached result.",
         "responses": {
           "400": {
             "description": "Bad input"
@@ -478,7 +543,7 @@
     },
     "/v2/iNumbering/portInOrder/": {
       "post": {
-        "description": "Submit a port-in order. All TNs must first be verified via portInAvailability \u2014 returns 412 if any TN was not pre-verified. authDate is auto-set. On success, $5.00 per TN is deducted from the account balance unless resubmit is set to 0.",
+        "description": "Submit a port-in order directly to the carrier. ADMIN ONLY \u2014 customer port submissions must use POST /v2.2/account/port which routes through the LNP review queue. All TNs must first be verified via portInAvailability (returns 412 if not). authDate is auto-set. The configured per-TN port fee is deducted from the account balance.",
         "responses": {
           "400": {
             "description": "Bad input"
@@ -514,7 +579,7 @@
             }
           },
           "200": {
-            "description": "Port order submitted successfully. $5.00 per TN is deducted from the account balance unless resubmit is 0.",
+            "description": "Port order submitted successfully. The configured per-TN port fee is deducted from the account balance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -548,6 +613,9 @@
           },
           "430": {
             "description": "No Result Found"
+          },
+          "403": {
+            "description": "Forbidden - administrator access required. Customers must use POST /v2.2/account/port instead."
           }
         },
         "summary": "Submit Port",
@@ -571,7 +639,7 @@
     },
     "/v2/iNumbering/portOutPinUpdate/": {
       "post": {
-        "description": "Update port-out PINs for phone numbers. If portOutPin is omitted for any tnItem, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
+        "description": "Update port-out PINs for phone numbers. portOutPin is optional for each tnItem \u2014 if omitted, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
         "responses": {
           "409": {
             "description": "Conflict"

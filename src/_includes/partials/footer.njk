@@ -31,6 +31,11 @@
 				</div>
 			{%- endfor %}
 		</div>
+		<ul class="trusted-by trusted-by--footer">
+			{%- for c in customers %}
+			<li class="trusted-by__item"><img class="trusted-by__logo" src="/assets/logos/{{ c.logo }}" alt="{{ c.name }}" loading="lazy"></li>
+			{%- endfor %}
+		</ul>
 		<div class="footer-meta">
 			<small>&copy; 1999&ndash;{% year %} <a class="footer-legal-link" href="/about/">{{ site.legalName }}</a>. All rights reserved.</small>
 			<small><a class="footer-pops-link" href="/status/">POPs: {{ site.pops | join(" · ") }}</a></small>

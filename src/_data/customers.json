@@ -1,0 +1,11 @@
+[
+	{ "name": "Ace Hardware", "logo": "ace-hardware.svg" },
+	{ "name": "Ashley Furniture", "logo": "ashley-furniture.png" },
+	{ "name": "Coldwell Banker", "logo": "coldwell-banker.svg" },
+	{ "name": "Farmers Insurance", "logo": "farmers-insurance.svg" },
+	{ "name": "Ford", "logo": "ford.svg" },
+	{ "name": "Habitat for Humanity", "logo": "habitat-for-humanity.svg" },
+	{ "name": "H&R Block", "logo": "hr-block.png" },
+	{ "name": "Marriott", "logo": "marriott.svg" },
+	{ "name": "Match Group", "logo": "match-group.svg" }
+]

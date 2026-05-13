@@ -2519,7 +2519,72 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 }
 
 .playground-op-method {
-	display: none;
+	display: inline-block;
+	min-width: 48px;
+	margin-right: var(--space-1);
+	padding: 1px 5px;
+	font-family: var(--font-mono);
+	font-size: 10px;
+	font-weight: var(--weight-bold);
+	letter-spacing: 0.5px;
+	text-align: center;
+	vertical-align: middle;
+	background: var(--alert-info-bg);
+	color: var(--alert-info-fg);
+	border: 1px solid var(--alert-info-rule);
+}
+
+.playground-op-method--get {
+	background: var(--alert-success-bg);
+	color: var(--alert-success-fg);
+	border-color: var(--alert-success-rule);
+}
+
+.playground-op-method--post {
+	background: var(--alert-info-bg);
+	color: var(--alert-info-fg);
+	border-color: var(--alert-info-rule);
+}
+
+.playground-op-method--put,
+.playground-op-method--patch {
+	background: var(--alert-warning-bg);
+	color: var(--alert-warning-fg);
+	border-color: var(--alert-warning-rule);
+}
+
+.playground-op-method--delete {
+	background: var(--alert-error-bg);
+	color: var(--alert-error-fg);
+	border-color: var(--alert-error-rule);
+}
+
+.playground-body {
+	display: grid;
+	gap: var(--space-1);
+	margin-top: var(--space-3);
+}
+
+.playground-body label {
+	font-weight: var(--weight-semibold);
+	font-size: var(--text-sm);
+}
+
+.playground-body textarea {
+	width: 100%;
+	padding: var(--space-2) var(--space-3);
+	border: 1px solid var(--border-color);
+	background: var(--paper);
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	line-height: var(--leading-snug);
+	resize: vertical;
+	min-height: 8em;
+}
+
+.playground-body textarea:focus-visible {
+	outline: 2px solid var(--primary-light);
+	outline-offset: 1px;
 }
 
 .playground-main {

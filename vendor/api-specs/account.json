@@ -464,6 +464,43 @@
         "required": [
           "email"
         ]
+      },
+      "apiKeyRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "integer",
+            "description": "Account username.",
+            "example": 1234567890
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password.",
+            "example": "abc1234567"
+          }
+        }
+      },
+      "apiKeyResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "string",
+            "example": "200"
+          },
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "apikey": {
+            "type": "string",
+            "description": "Bearer token for API authentication.",
+            "example": "dec759ed81963fd9a4b8a9c8f3e22b1a"
+          }
+        }
       }
     }
   },
@@ -528,6 +565,49 @@
               }
             },
             "description": "Account created"
+          }
+        }
+      }
+    },
+    "/v2.1/account/apikey/": {
+      "post": {
+        "summary": "Get API Key",
+        "operationId": "accountApiKey",
+        "description": "Returns the API key (Bearer token) for the account identified by username and password. No Bearer token is required or accepted. Rate limited to 6 requests per hour per IP.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "description": "Account credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/apiKeyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "API key returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/apiKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Field Required: username or password"
+          },
+          "401": {
+            "description": "Invalid username or password"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
           }
         }
       }

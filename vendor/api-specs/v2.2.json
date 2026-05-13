@@ -443,18 +443,21 @@
           "data": {
             "type": "object",
             "properties": {
-              "cnam": {
-                "type": "string"
-              },
-              "status": {
-                "type": "string",
-                "enum": [
-                  "Local database updated",
-                  "Remote database updated"
-                ]
-              },
               "number": {
-                "type": "integer"
+                "type": "integer",
+                "description": "The number whose LIDB was updated."
+              },
+              "cnam": {
+                "type": "string",
+                "description": "The sanitised caller name written to local cache and submitted to the carrier (max 15 alphanumeric)."
+              },
+              "customerOrderReference": {
+                "type": "string",
+                "description": "Order reference used when posting to the carrier. Echoed from the request if supplied; auto-generated as '<username>-<unix-timestamp>' otherwise."
+              },
+              "carrierStatus": {
+                "type": "string",
+                "description": "Status string returned by the upstream LIDB carrier. 'Success' indicates the carrier accepted the request; other values describe the carrier-side failure. Local cache is updated regardless of this field."
               }
             }
           },
@@ -658,11 +661,6 @@
             "example": "1970-01-01",
             "format": "date",
             "type": "string"
-          },
-          "resubmit": {
-            "example": 0,
-            "type": "integer",
-            "description": "Optional. Set to 0 to flag this as a resubmission and skip the $5.00/TN charge. Any other value (or omitting this field) treats the order as new and deducts $5.00 per TN from the account balance."
           }
         },
         "required": [
@@ -2641,6 +2639,245 @@
           "number",
           "route"
         ]
+      },
+      "portFeature": {
+        "type": "object",
+        "description": "Per-TN feature configuration applied after the port completes.",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": "10-digit TN.",
+            "example": "2015551234"
+          },
+          "routing": {
+            "type": "object",
+            "properties": {
+              "gateway_id": {
+                "type": "integer",
+                "description": "Gateway ID to route this TN after porting.",
+                "example": 4
+              }
+            }
+          },
+          "lidb": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Outbound caller ID name (max 15 characters).",
+                "maxLength": 15,
+                "example": "Acme Corp"
+              }
+            }
+          },
+          "sms": {
+            "type": "object",
+            "properties": {
+              "campaign_id": {
+                "type": "string",
+                "description": "10DLC campaign ID (e.g. C123456).",
+                "example": "C123456"
+              }
+            }
+          }
+        }
+      },
+      "portSubmitRequest": {
+        "type": "object",
+        "required": [
+          "did",
+          "name",
+          "name_type",
+          "lc_btn",
+          "lc_account_number",
+          "StreetNumber",
+          "Street",
+          "StreetType",
+          "City",
+          "State",
+          "zip",
+          "Country",
+          "auth_person"
+        ],
+        "properties": {
+          "did": {
+            "type": "array",
+            "description": "One or more 10-digit phone numbers to port. Toll-free (8xx) numbers are separated from geographic numbers automatically.",
+            "items": {
+              "type": "string",
+              "example": "2015551234"
+            },
+            "minItems": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Subscriber name exactly as it appears on the bill from the losing carrier.",
+            "example": "Acme Corp"
+          },
+          "name_type": {
+            "type": "string",
+            "enum": [
+              "business",
+              "residential"
+            ],
+            "example": "business"
+          },
+          "lc_btn": {
+            "type": "string",
+            "description": "Billing telephone number from the losing carrier bill.",
+            "example": "2015551000"
+          },
+          "lc_account_number": {
+            "type": "string",
+            "description": "Account number from the losing carrier bill.",
+            "example": "123456789"
+          },
+          "pin": {
+            "type": "string",
+            "description": "Port-out PIN. Required by many carriers especially mobile. Contact the losing carrier to obtain.",
+            "example": "1234"
+          },
+          "StreetNumber": {
+            "type": "string",
+            "description": "Street number as it appears on the service address.",
+            "example": "550"
+          },
+          "StreetPrefix": {
+            "type": "string",
+            "description": "Optional street direction prefix.",
+            "enum": [
+              "",
+              "N",
+              "NE",
+              "E",
+              "SE",
+              "S",
+              "SW",
+              "W",
+              "NW"
+            ],
+            "example": "N"
+          },
+          "Street": {
+            "type": "string",
+            "description": "Street name.",
+            "example": "Main"
+          },
+          "StreetType": {
+            "type": "string",
+            "description": "USPS street type abbreviation (e.g. ST, AVE, BLVD).",
+            "example": "ST"
+          },
+          "StreetSuffix": {
+            "type": "string",
+            "description": "Optional street direction suffix.",
+            "enum": [
+              "",
+              "N",
+              "NE",
+              "E",
+              "SE",
+              "S",
+              "SW",
+              "W",
+              "NW"
+            ],
+            "example": ""
+          },
+          "Building": {
+            "type": "string",
+            "description": "Optional building identifier.",
+            "example": ""
+          },
+          "Floor": {
+            "type": "string",
+            "description": "Optional floor.",
+            "example": ""
+          },
+          "Room": {
+            "type": "string",
+            "description": "Optional room.",
+            "example": ""
+          },
+          "UnitValue": {
+            "type": "string",
+            "description": "Optional unit designator (e.g. APT, STE) and number.",
+            "example": ""
+          },
+          "City": {
+            "type": "string",
+            "example": "Chicago"
+          },
+          "State": {
+            "type": "string",
+            "description": "2-character state abbreviation.",
+            "example": "IL"
+          },
+          "zip": {
+            "type": "string",
+            "example": "60601"
+          },
+          "Country": {
+            "type": "string",
+            "description": "Country code.",
+            "example": "US"
+          },
+          "auth_person": {
+            "type": "string",
+            "description": "Full name of the person authorized to sign the LOA.",
+            "example": "Jane Smith"
+          },
+          "desired_due_date": {
+            "type": "string",
+            "description": "Optional desired port date (YYYY-MM-DD). Leave blank for standard processing time.",
+            "example": "2026-06-15"
+          },
+          "features": {
+            "type": "array",
+            "description": "Optional per-TN routing, LIDB, and SMS configuration applied after the port completes.",
+            "items": {
+              "$ref": "#/components/schemas/portFeature"
+            }
+          }
+        }
+      },
+      "portSubmitResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "pid": {
+                "type": "string",
+                "description": "5-character port order ID.",
+                "example": "a3a2a"
+              },
+              "ticket": {
+                "type": "integer",
+                "description": "Support ticket ID.",
+                "example": 2114
+              },
+              "loa_url": {
+                "type": "string",
+                "description": "URL to download and sign the Letter of Authorization.",
+                "example": "https://api.voicetel.com/a/loa/a3a2a/"
+              },
+              "port_url": {
+                "type": "string",
+                "description": "URL to track port order status.",
+                "example": "https://api.voicetel.com/a/port/a3a2a/"
+              },
+              "message": {
+                "type": "string",
+                "example": "Port request a3a2a submitted. Please complete the LOA to proceed."
+              }
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -2787,6 +3024,80 @@
           }
         },
         "operationId": "accountAdd"
+      }
+    },
+    "/v2.2/account/apikey": {
+      "post": {
+        "summary": "Get API Key",
+        "operationId": "getApiKey",
+        "tags": [
+          "Account"
+        ],
+        "description": "Returns the current API key for the account identified by username and password. No Bearer token is required or accepted \u2014 credentials must be provided in the request body. Rate limited to 6 requests per hour per IP.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "integer",
+                    "description": "Your account username.",
+                    "example": 1234567890
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Your account password.",
+                    "example": "abc1234567"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "API key returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "apikey": {
+                          "type": "string",
+                          "description": "Bearer token for API authentication.",
+                          "example": "dec759ed81963fd9a4b8a9c8f3e22b1a"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fields Required: username, password."
+          },
+          "401": {
+            "description": "Invalid username or password."
+          },
+          "429": {
+            "description": "Rate limit exceeded."
+          }
+        }
       }
     },
     "/v2.2/account/cdr": {
@@ -2989,6 +3300,78 @@
           }
         },
         "operationId": "accountPayments"
+      }
+    },
+    "/v2.2/account/port": {
+      "post": {
+        "summary": "Submit Port Request",
+        "operationId": "submitPort",
+        "tags": [
+          "Account"
+        ],
+        "description": "Submit a number port-in request. Replicates the LNP web form exactly: creates a port record, opens a support ticket, notifies the LNP team, and deducts the configured per-TN review fee from the account balance. The LNP team reviews the request and submits to the carrier - this endpoint does NOT contact the carrier directly. A signed Letter of Authorization (LOA) must be uploaded after submission. Returns 402 if the account balance is insufficient.",
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/portSubmitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Port request submitted successfully. Sign the LOA at loa_url and upload proof of ownership to proceed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/portSubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad input - missing required field or invalid phone number."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "402": {
+            "description": "Insufficient account balance. The configured per-TN review fee is required for each TN in the submission.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer",
+                          "example": 402
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Insufficient balance"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v2.2/account/recover": {
@@ -4162,7 +4545,7 @@
             "bearerAuth": {}
           }
         ],
-        "description": "Submit a port-in order. All TNs must first be verified via portInAvailability \u2014 returns 412 if any TN was not pre-verified. authDate is auto-set. On success, $5.00 per TN is deducted from the account balance unless resubmit is set to 0.",
+        "description": "Submit a port-in order. All TNs must first be verified via portInAvailability \u2014 returns 412 if any TN was not pre-verified. authDate is auto-set. On success, the configured per-TN port fee is deducted from the account balance.",
         "tags": [
           "iNumbering"
         ],
@@ -4207,7 +4590,7 @@
             "description": "Unauthorized"
           },
           "200": {
-            "description": "Port order submitted successfully. $5.00 per TN is deducted from the account balance unless resubmit is 0.",
+            "description": "Port order submitted successfully. The configured per-TN port fee is deducted from the account balance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4360,7 +4743,7 @@
                     },
                     "portStatusSummary": {
                       "type": "array",
-                      "description": "Port status records from CouchDB, ordered by timestamp descending",
+                      "description": "Port status records, ordered by timestamp descending",
                       "items": {
                         "type": "object"
                       }
@@ -4378,14 +4761,14 @@
             "description": "Bad Request"
           },
           "409": {
-            "description": "CouchDB error.",
+            "description": "Internal storage error.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "exception": {
-                      "example": "<CouchDB error message>",
+                      "example": "<storage error message>",
                       "type": "string"
                     },
                     "statusCode": {
@@ -5697,7 +6080,7 @@
             }
           },
           "400": {
-            "description": "Message rejected \u2014 Inteliquent returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
+            "description": "Message rejected \u2014 upstream messaging carrier returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6944,7 +7327,7 @@
             "bearerAuth": []
           }
         ],
-        "description": "Sets the outbound Caller ID Name for the number. Updates local database and submits to carrier. Max 15 alphanumeric characters.",
+        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for the number. Writes the name to the local cache (used by the softswitch for outbound caller-id) and then submits the update to the upstream LIDB carrier. The local cache update is durable; a carrier-side failure is reported via the response's carrierStatus field but does not fail the request. Max 15 alphanumeric characters.",
         "parameters": [
           {
             "in": "path",
@@ -7701,7 +8084,7 @@
       "email": "support@voicetel.com"
     },
     "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate with your API key as a Bearer token. Rate-limited endpoints: account/info, account/mrc, account/cdr \u2014 6 requests per hour per IP.",
-    "version": "v2.2.0",
+    "version": "v2.2.2",
     "title": "VoiceTel API v2.2",
     "license": {
       "name": "Apache 2.0",

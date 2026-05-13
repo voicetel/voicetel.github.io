@@ -42,6 +42,15 @@ description: "VoiceTel is a wholesale telecommunications and CPaaS provider focu
 	</ul>
 </section>
 
+<section class="section-block">
+	<h2>Trusted by</h2>
+	<ul class="trusted-by trusted-by--grid">
+		{%- for c in customers %}
+		<li class="trusted-by__item"><img class="trusted-by__logo" src="/assets/logos/{{ c.logo }}" alt="{{ c.name }}" loading="lazy"></li>
+		{%- endfor %}
+	</ul>
+</section>
+
 <aside class="cta-block">
 	<h2>Connect with a Telecom Expert.</h2>
 	<p>VoiceTel's experienced team is ready to help you navigate complex questions across voice, messaging, porting, service configuration, support, and carrier services.</p>

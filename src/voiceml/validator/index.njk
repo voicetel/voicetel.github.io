@@ -1,0 +1,42 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/validator/
+title: "VoiceML validator"
+description: "Paste your VoiceML markup and validate it against the verb / noun schema. The validator runs entirely in your browser — nothing is uploaded."
+---
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Validator</p>
+<h1>VoiceML validator.</h1>
+<p class="lede">Paste your VoiceML response markup and we'll confirm it's well-formed XML, every element is a known verb or noun, and every child belongs to its parent. You'll also get a summary of which verbs and nouns the document uses.</p>
+
+<div class="alert alert-info" role="note">
+	<p><strong>Runs entirely in your browser.</strong> Markup is parsed with the browser's DOMParser and checked against an embedded schema. Nothing is uploaded to VoiceTel or any third party.</p>
+</div>
+
+<section class="section-block validator" data-voiceml-validator>
+	<h2>Markup</h2>
+	<p class="form-note">Press <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Enter</kbd> in the textarea to validate.</p>
+	<textarea class="validator-input" data-validator-input rows="14" spellcheck="false" autocomplete="off" placeholder="&lt;Response&gt;
+	&lt;Say&gt;Hello&lt;/Say&gt;
+&lt;/Response&gt;"></textarea>
+	<div class="validator-actions">
+		<button type="button" class="btn btn-primary" data-validator-validate>Validate</button>
+		<button type="button" class="btn btn-secondary" data-validator-sample>Load sample</button>
+		<button type="button" class="btn btn-secondary" data-validator-clear>Clear</button>
+	</div>
+
+	<section class="validator-result" aria-live="polite">
+		<h2>Result</h2>
+		<div data-validator-status></div>
+		<div data-validator-summary class="validator-summary"></div>
+	</section>
+</section>
+
+<aside class="cta-block" aria-labelledby="validator-cta-heading">
+	<h2 id="validator-cta-heading">Building a voice app?</h2>
+	<p>Reach VoiceML at <code>voiceml.voicetel.com</code> with the same verbs you used at Twilio. Same wire shape, same webhook signing, same pagination.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/voiceml/">VoiceML overview</a>
+	</p>
+</aside>

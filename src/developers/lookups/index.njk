@@ -1,0 +1,116 @@
+---
+layout: layouts/page.njk
+permalink: /developers/lookups/
+title: "Caller and Carrier Lookup for developers"
+description: "CNAM, caller-ID, LRN, and carrier-of-record intelligence — make smarter routing, screening, and rating decisions before a call is answered."
+---
+
+<p class="eyebrow"><a href="/developers/">For developers</a> / Lookups</p>
+<h1>Enrich your application with caller and carrier intelligence.</h1>
+<p class="lede">VoiceTel's lookup services help developers make smarter decisions before a call is answered, routed, rated, or risk-scored. Combine caller identity and carrier routing data into screen pops, fraud checks, and rating workflows.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Start building</a>
+	<a class="btn btn-secondary" href="/docs/api/">API documentation</a>
+</p>
+
+<section class="section-block">
+	<h2><a href="/caller-lookup/">Caller Lookup</a></h2>
+	<p>Caller Lookup enriches phone numbers with CNAM and caller-ID information so applications can display caller names, inform routing decisions, screen inbound traffic, or prepare CRM screen pops before a conversation begins. Returns the Caller ID Name registered for the given 10-digit number. Billed per lookup; requires CNAM service to be enabled.</p>
+
+	<h3>Use cases</h3>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person" %}</span>
+			<h3>Agent screen pops</h3>
+			<p>Display caller identity before the conversation starts.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Inbound screening</h3>
+			<p>Use caller identity as one signal in spam, fraud, and escalation decisions.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+			<h3>Routing context</h3>
+			<p>Route known business callers, customers, anonymous callers, or high-priority contacts into different workflows.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>Batch hygiene</h3>
+			<p>Clean lists before campaigns, migrations, or CRM updates.</p>
+		</li>
+	</ul>
+
+	<h3>Request</h3>
+	<pre class="code-block"><code>curl -X GET 'https://api.voicetel.com/v2.2/cnam/2025551234' \
+  -H 'Authorization: Bearer YOUR_API_KEY'</code></pre>
+
+	<h3>Response</h3>
+	<pre class="code-block"><code>{
+  "status": "success",
+  "data": {
+    "number": "2025551234",
+    "cnam": "VOICETEL"
+  }
+}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2><a href="/carrier-lookup/">Carrier Lookup</a></h2>
+	<p>Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context. Use that data during signup, fraud checks, call setup, support workflows, or routing decisions. The path takes the destination number followed by the calling ANI; both are required to compute jurisdiction and LATA correctly.</p>
+
+	<h3>Use cases</h3>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3>Real-time call setup</h3>
+			<p>Query numbers before routing traffic.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Fraud and risk checks</h3>
+			<p>Compare carrier and portability signals against user behavior.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
+			<h3>Support troubleshooting</h3>
+			<p>Give operations teams a portal-based lookup path for manual investigation.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
+			<h3>Routing and rating decisions</h3>
+			<p>Use carrier-of-record and portability signals as inputs to telecom workflows.</p>
+		</li>
+	</ul>
+
+	<h3>Request</h3>
+	<pre class="code-block"><code>curl -X GET 'https://api.voicetel.com/v2.2/lrn/2025551234/4155550100' \
+  -H 'Authorization: Bearer YOUR_API_KEY'</code></pre>
+
+	<h3>Response</h3>
+	<pre class="code-block"><code>{
+  "status": "success",
+  "data": {
+    "destination": "2025551234",
+    "ani": "4155550100",
+    "lrn": {
+      "LRN": "12125550000",
+      "STATE": "NY",
+      "JURISDICTION": "INTERSTATE",
+      "LOCAL": "N",
+      "LATA": "132",
+      "OCN": "9101",
+      "CITY": "NEW YORK"
+    }
+  }
+}</code></pre>
+</section>
+
+<aside class="cta-block" aria-labelledby="dev-lookup-cta">
+	<h2 id="dev-lookup-cta">Make smarter decisions before the call connects.</h2>
+	<p>Caller identity plus carrier-of-record context, queried in real time or in batch. Once you have an API key, run <code>cnamLookup</code> and <code>lrnLookup</code> live from the browser in the <a href="/docs/api/v2.2/playground/">API playground</a> — the key stays encrypted to your device, never readable from the page.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Try for free</a>
+		<a class="btn btn-secondary" href="/docs/api/v2.2/playground/">Open the playground</a>
+	</p>
+</aside>

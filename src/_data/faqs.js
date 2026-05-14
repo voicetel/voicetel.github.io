@@ -27,7 +27,8 @@ const categories = [
 			},
 			{
 				q: "Is VoiceTel a carrier, CPaaS provider, SIP trunk provider, or PBX provider?",
-				a: "All of those, layered together. VoiceTel operates carrier services and exposes them through wholesale voice, programmable voice (VoiceML), SIP trunks, messaging, numbers, lookups, Hosted PBX, and phone applications under one account.",
+				a: 'All of those, layered together. VoiceTel operates carrier services and exposes them through <a href="/voice/">wholesale voice</a>, programmable voice (<a href="/voiceml/">VoiceML</a>), <a href="/sip-trunking/">SIP trunks</a>, <a href="/messaging/">messaging</a>, <a href="/numbers/">numbers</a>, lookups (<a href="/caller-lookup/">Caller</a> and <a href="/carrier-lookup/">Carrier</a>), <a href="/pbx/">Hosted PBX</a>, and <a href="/phone/">phone applications</a> under one account.',
+				plain: "All of those, layered together. VoiceTel operates carrier services and exposes them through wholesale voice, programmable voice (VoiceML), SIP trunks, messaging, numbers, lookups, Hosted PBX, and phone applications under one account.",
 			},
 			{
 				q: "What is the difference between VoiceML, SIP Trunking, and Hosted PBX?",
@@ -47,19 +48,23 @@ const categories = [
 			},
 			{
 				q: "How do volume discounts and custom contract rates work?",
-				a: "Volume pricing is based on real usage, service mix, capacity requirements, destination profile, minimum commitments, and contract terms. Public calculators and examples are useful for modeling. Final rates are confirmed after VoiceTel reviews the workload and account requirements.",
+				a: 'Volume pricing is based on real usage, service mix, capacity requirements, destination profile, minimum commitments, and contract terms. The <a href="/pricing/">public calculator</a> and posted line items are useful for modeling. Final rates are confirmed after VoiceTel reviews the workload and account requirements.',
+				plain: "Volume pricing is based on real usage, service mix, capacity requirements, destination profile, minimum commitments, and contract terms. The public calculator and posted line items are useful for modeling. Final rates are confirmed after VoiceTel reviews the workload and account requirements.",
 			},
 			{
 				q: "What fees are outside the pricing calculator?",
-				a: "The calculator may not include taxes, regulatory charges, carrier pass-through fees, registry fees, 10DLC campaign fees, payment processor fees, third-party speech providers, third-party storage providers, or account-specific contract terms. For production workloads, use the calculator as a model and confirm final pricing with VoiceTel.",
+				a: 'The calculator may not include taxes, regulatory charges, carrier pass-through fees, registry fees, <a href="/support/messaging/10dlc/">10DLC</a> campaign fees, payment processor fees, third-party speech providers, third-party storage providers, or account-specific contract terms. For production workloads, use the calculator as a model and confirm final pricing with VoiceTel.',
+				plain: "The calculator may not include taxes, regulatory charges, carrier pass-through fees, registry fees, 10DLC campaign fees, payment processor fees, third-party speech providers, third-party storage providers, or account-specific contract terms. For production workloads, use the calculator as a model and confirm final pricing with VoiceTel.",
 			},
 			{
 				q: "Do calculator inputs leave the browser?",
-				a: "No. The calculator states that usage inputs remain client-side.",
+				a: 'No. The <a href="/pricing/">pricing calculator</a> states that usage inputs remain client-side.',
+				plain: "No. The pricing calculator states that usage inputs remain client-side.",
 			},
 			{
 				q: "Are A2P 10DLC fees included in message pricing?",
-				a: "No. Carrier, registry, and pass-through fees for A2P 10DLC are listed separately from the base messaging segment rate. Plan for them as a distinct line item.",
+				a: 'No. Carrier, registry, and pass-through fees for <a href="/support/messaging/10dlc/">A2P 10DLC</a> are listed separately from the base <a href="/messaging/">messaging</a> segment rate. Plan for them as a distinct line item.',
+				plain: "No. Carrier, registry, and pass-through fees for A2P 10DLC are listed separately from the base messaging segment rate. Plan for them as a distinct line item.",
 			},
 			{
 				q: "Does VoiceTel mark up STT, TTS, or storage vendors?",
@@ -125,7 +130,7 @@ const categories = [
 	},
 	{
 		id: "voice",
-		label: "Voice wholesale",
+		label: "Wholesale Voice",
 		items: [
 			{
 				q: "What is voice origination?",
@@ -146,7 +151,8 @@ const categories = [
 			},
 			{
 				q: "Can VoiceTel help with calls marked spam or scam likely?",
-				a: "VoiceTel can help review caller identity, STIR/SHAKEN signing, CNAM records, number usage patterns, and carrier response data. No carrier can guarantee that every analytics provider or mobile carrier will remove a spam or scam label immediately. Remediation depends on traffic history, caller behavior, analytics vendors, and downstream carrier policies.",
+				a: 'VoiceTel can help review caller identity, STIR/SHAKEN signing, <a href="/caller-lookup/">CNAM</a> records, number usage patterns, and carrier response data. No carrier can guarantee that every analytics provider or mobile carrier will remove a spam or scam label immediately. Remediation depends on traffic history, caller behavior, analytics vendors, and downstream <a href="/support/voice/compliance/">carrier policies</a>.',
+				plain: "VoiceTel can help review caller identity, STIR/SHAKEN signing, CNAM records, number usage patterns, and carrier response data. No carrier can guarantee that every analytics provider or mobile carrier will remove a spam or scam label immediately. Remediation depends on traffic history, caller behavior, analytics vendors, and downstream carrier policies.",
 			},
 		],
 	},
@@ -156,15 +162,18 @@ const categories = [
 		items: [
 			{
 				q: "Do you support registration and IP authentication?",
-				a: "Yes. VoiceTel can support SIP registration and IP authentication depending on the account, trunk type, and network design. SIP registration is useful when a PBX or device registers to VoiceTel with credentials. IP authentication is better for controlled PBX, SBC, carrier, and contact-center environments where traffic comes from known static IP addresses.",
+				a: 'Yes. VoiceTel can support SIP registration and IP authentication depending on the account, trunk type, and network design. SIP registration is useful when a PBX or device registers to VoiceTel with credentials. IP authentication is better for controlled <a href="/pbx/">PBX</a>, SBC, carrier, and contact-center environments where traffic comes from known static IP addresses. See the <a href="/sip-trunking/">SIP trunking</a> product page for the wholesale trunk options.',
+				plain: "Yes. VoiceTel can support SIP registration and IP authentication depending on the account, trunk type, and network design. SIP registration is useful when a PBX or device registers to VoiceTel with credentials. IP authentication is better for controlled PBX, SBC, carrier, and contact-center environments where traffic comes from known static IP addresses. See the SIP trunking product page for the wholesale trunk options.",
 			},
 			{
 				q: "Why do I have one-way audio?",
-				a: "One-way audio is usually caused by NAT, firewall policy, SIP ALG, RTP pinholes, codec negotiation, or direct-media behavior. Send support the call timestamp, calling number, called number, SIP Call-ID, SIP trace, and any RTP capture available from your PBX or SBC.",
+				a: 'One-way audio is usually caused by NAT, firewall policy, SIP ALG, RTP pinholes, codec negotiation, or direct-media behavior. Send <a href="/contact/">support</a> the call timestamp, calling number, called number, SIP Call-ID, SIP trace, and any RTP capture available from your PBX or SBC. The <a href="/support/voice/firewall/">router and firewall guides</a> cover the common SIP ALG and NAT fixes.',
+				plain: "One-way audio is usually caused by NAT, firewall policy, SIP ALG, RTP pinholes, codec negotiation, or direct-media behavior. Send support the call timestamp, calling number, called number, SIP Call-ID, SIP trace, and any RTP capture available from your PBX or SBC. The router and firewall guides cover the common SIP ALG and NAT fixes.",
 			},
 			{
 				q: "What should I send support when a SIP call fails?",
-				a: "For the fastest review, send the call direction, timestamp with timezone, calling number, called number, SIP Call-ID, response code, SIP trace, and a short description of the expected behavior. For audio issues, include RTP details or a packet capture if available.",
+				a: 'For the fastest review, send the call direction, timestamp with timezone, calling number, called number, SIP Call-ID, response code, SIP trace, and a short description of the expected behavior. For audio issues, include RTP details or a packet capture if available. Reach the team at <a href="/contact/">contact</a>.',
+				plain: "For the fastest review, send the call direction, timestamp with timezone, calling number, called number, SIP Call-ID, response code, SIP trace, and a short description of the expected behavior. For audio issues, include RTP details or a packet capture if available. Reach the team at contact.",
 			},
 		],
 	},
@@ -174,7 +183,8 @@ const categories = [
 		items: [
 			{
 				q: "What is VoiceML?",
-				a: "VoiceML is VoiceTel's XML-based programmable voice runtime. It lets your application control calls with markup, webhooks, recordings, conferences, queues, prompts, and call-control instructions. It is designed for teams that want programmable voice without giving up carrier-grade routing, SIP visibility, and operational support.",
+				a: '<a href="/voiceml/">VoiceML</a> is VoiceTel\'s XML-based programmable voice runtime. It lets your application control calls with markup, webhooks, recordings, conferences, queues, prompts, and call-control instructions. It is designed for teams that want programmable voice without giving up carrier-grade routing, SIP visibility, and operational support.',
+				plain: "VoiceML is VoiceTel's XML-based programmable voice runtime. It lets your application control calls with markup, webhooks, recordings, conferences, queues, prompts, and call-control instructions. It is designed for teams that want programmable voice without giving up carrier-grade routing, SIP visibility, and operational support.",
 			},
 			{
 				q: "Can existing Twilio voice applications migrate?",
@@ -199,11 +209,13 @@ const categories = [
 		items: [
 			{
 				q: "Does VoiceTel support A2P 10DLC?",
-				a: "Yes. VoiceTel supports A2P 10DLC workflows for business SMS and MMS traffic. Customers are responsible for accurate brand and campaign information, required disclosures, opt-in records, carrier or registry fees, and ongoing compliance. VoiceTel can help review the filing before submission, but approval is controlled by the registry, carriers, and downstream reviewers.",
+				a: 'Yes. <a href="/messaging/">VoiceTel Messaging</a> supports <a href="/support/messaging/10dlc/">A2P 10DLC</a> workflows for business SMS and MMS traffic. Customers are responsible for accurate brand and campaign information, required disclosures, opt-in records, carrier or registry fees, and ongoing <a href="/support/messaging/compliance/">compliance</a>. VoiceTel can help review the filing before submission, but approval is controlled by the registry, carriers, and downstream reviewers.',
+				plain: "Yes. VoiceTel Messaging supports A2P 10DLC workflows for business SMS and MMS traffic. Customers are responsible for accurate brand and campaign information, required disclosures, opt-in records, carrier or registry fees, and ongoing compliance. VoiceTel can help review the filing before submission, but approval is controlled by the registry, carriers, and downstream reviewers.",
 			},
 			{
 				q: "Can VoiceTel guarantee 10DLC approval?",
-				a: "No. VoiceTel can help identify common rejection risks and prepare cleaner 10DLC submissions, but final approval is controlled by the registry, carriers, and downstream reviewers. Campaigns may be rejected for unverifiable business information, weak opt-in evidence, missing disclosures, prohibited content, public URL shorteners, mismatched sample messages, or use cases that do not match the sender's website or business model.",
+				a: 'No. VoiceTel can help identify common rejection risks and prepare cleaner <a href="/support/messaging/10dlc/">10DLC</a> submissions, but final approval is controlled by the registry, carriers, and downstream reviewers. Campaigns may be rejected for unverifiable business information, weak opt-in evidence, missing disclosures, prohibited content, public URL shorteners, mismatched sample messages, or use cases that do not match the sender\'s website or business model. The <a href="/support/messaging/checklist/">readiness checklist</a> covers the common pre-flight fixes.',
+				plain: "No. VoiceTel can help identify common rejection risks and prepare cleaner 10DLC submissions, but final approval is controlled by the registry, carriers, and downstream reviewers. Campaigns may be rejected for unverifiable business information, weak opt-in evidence, missing disclosures, prohibited content, public URL shorteners, mismatched sample messages, or use cases that do not match the sender's website or business model. The readiness checklist covers the common pre-flight fixes.",
 			},
 			{
 				q: "Who is responsible for 10DLC registration, fees, and compliance?",
@@ -212,19 +224,23 @@ const categories = [
 			},
 			{
 				q: "Why are my messages filtered?",
-				a: "Message filtering can happen even after registration. Common causes include content that does not match the approved campaign, missing consent, complaint activity, suspicious links, URL shorteners, prohibited content, high opt-out rates, or carrier-specific enforcement. Send support the message body, timestamp, destination number, originating number, campaign ID, delivery receipt, and any carrier error code.",
+				a: 'Message filtering can happen even after registration. Common causes include content that does not match the approved campaign, missing consent, complaint activity, suspicious links, URL shorteners, prohibited content, high opt-out rates, or carrier-specific enforcement. See the <a href="/support/messaging/operating-rules/">operating rules</a> for the day-to-day expectations. Send <a href="/contact/">support</a> the message body, timestamp, destination number, originating number, campaign ID, delivery receipt, and any carrier error code.',
+				plain: "Message filtering can happen even after registration. Common causes include content that does not match the approved campaign, missing consent, complaint activity, suspicious links, URL shorteners, prohibited content, high opt-out rates, or carrier-specific enforcement. See the operating rules for the day-to-day expectations. Send support the message body, timestamp, destination number, originating number, campaign ID, delivery receipt, and any carrier error code.",
 			},
 			{
 				q: "Can high-volume senders get dedicated SMPP binds for increased capacity?",
-				a: "Yes — direct SMPP is available for high-volume traffic after compliance and use-case review.",
+				a: 'Yes &mdash; direct SMPP is available for high-volume traffic after compliance and use-case review. See <a href="/messaging/">Messaging</a> for product details.',
+				plain: "Yes — direct SMPP is available for high-volume traffic after compliance and use-case review. See Messaging for product details.",
 			},
 			{
 				q: "Can VoiceTel SMS-enable a number it does not carry for voice?",
-				a: "Yes. Hosted SMS allows you to keep voice with another carrier while VoiceTel handles messaging, subject to authorization and number eligibility.",
+				a: 'Yes. Hosted SMS allows you to keep voice with another carrier while VoiceTel handles <a href="/messaging/">messaging</a>, subject to authorization and number eligibility.',
+				plain: "Yes. Hosted SMS allows you to keep voice with another carrier while VoiceTel handles messaging, subject to authorization and number eligibility.",
 			},
 			{
 				q: "Are carrier fees included?",
-				a: "Carrier pass-through fees are listed separately from base messaging rates so charges remain transparent.",
+				a: 'Carrier pass-through fees are listed separately from base <a href="/pricing/">messaging rates</a> so charges remain transparent.',
+				plain: "Carrier pass-through fees are listed separately from base messaging rates so charges remain transparent.",
 			},
 		],
 	},
@@ -234,7 +250,8 @@ const categories = [
 		items: [
 			{
 				q: "Can I port numbers into VoiceTel?",
-				a: "Yes, when the numbers are portable and the losing carrier accepts the port request. Most porting delays are caused by mismatched account information, incorrect service address, missing PIN, pending orders, frozen accounts, or documents that do not match the losing carrier's records.",
+				a: 'Yes, when the numbers are portable and the losing carrier accepts the port request. Most porting delays are caused by mismatched account information, incorrect service address, missing PIN, pending orders, frozen accounts, or documents that do not match the losing carrier\'s records. The <a href="/support/voice/porting/procedure/">porting procedure</a> walks through what we need from you.',
+				plain: "Yes, when the numbers are portable and the losing carrier accepts the port request. Most porting delays are caused by mismatched account information, incorrect service address, missing PIN, pending orders, frozen accounts, or documents that do not match the losing carrier's records. The porting procedure walks through what we need from you.",
 			},
 			{
 				q: "Should I cancel service with my current carrier before porting?",
@@ -242,11 +259,13 @@ const categories = [
 			},
 			{
 				q: "Can I SMS-enable a number without porting voice?",
-				a: "Yes, in many cases. VoiceTel may be able to enable messaging for a number while voice service remains with the existing carrier. SMS enablement usually requires authorization, number eligibility, and proof that you control the number.",
+				a: 'Yes, in many cases. VoiceTel may be able to enable <a href="/messaging/">messaging</a> for a number while voice service remains with the existing carrier. SMS enablement usually requires authorization, number eligibility, and proof that you control the number.',
+				plain: "Yes, in many cases. VoiceTel may be able to enable messaging for a number while voice service remains with the existing carrier. SMS enablement usually requires authorization, number eligibility, and proof that you control the number.",
 			},
 			{
 				q: "Why was my port rejected?",
-				a: "Common rejection reasons: name or address mismatch with the losing carrier's records, wrong account number, missing or incorrect PIN, a frozen account, a pending order on the number, or documentation that does not match the CSR. Fix the underlying mismatch and resubmit the port request.",
+				a: "Common rejection reasons: name or address mismatch with the losing carrier's records, wrong account number, missing or incorrect PIN, a frozen account, a pending order on the number, or documentation that does not match the CSR. Fix the underlying mismatch and resubmit the port request. See <a href=\"/support/voice/porting/retrieving-pins/\">retrieving porting PINs</a> if that's the blocker.",
+				plain: "Common rejection reasons: name or address mismatch with the losing carrier's records, wrong account number, missing or incorrect PIN, a frozen account, a pending order on the number, or documentation that does not match the CSR. Fix the underlying mismatch and resubmit the port request. See retrieving porting PINs if that's the blocker.",
 			},
 		],
 	},
@@ -275,11 +294,13 @@ const categories = [
 			},
 			{
 				q: "Can we keep existing desk phones?",
-				a: "Often, yes, if the phones are SIP-compatible and can be provisioned for the VoiceTel environment. Support depends on the device model, firmware, provisioning method, network conditions, and whether the device is managed by VoiceTel or brought by the customer.",
+				a: 'Often, yes, if the phones are SIP-compatible and can be provisioned for the VoiceTel environment. Support depends on the device model, firmware, provisioning method, network conditions, and whether the device is managed by VoiceTel or brought by the customer. See the per-vendor <a href="/support/voice/phone/">desk-phone setup guides</a>.',
+				plain: "Often, yes, if the phones are SIP-compatible and can be provisioned for the VoiceTel environment. Support depends on the device model, firmware, provisioning method, network conditions, and whether the device is managed by VoiceTel or brought by the customer. See the per-vendor desk-phone setup guides.",
 			},
 			{
 				q: "Can hosted PBX use VoiceTel numbers?",
-				a: "Yes. Hosted PBX uses VoiceTel-managed inbound and outbound calling and assigned phone numbers natively.",
+				a: 'Yes. Hosted PBX uses VoiceTel-managed inbound and outbound calling and assigned <a href="/numbers/">phone numbers</a> natively.',
+				plain: "Yes. Hosted PBX uses VoiceTel-managed inbound and outbound calling and assigned phone numbers natively.",
 			},
 		],
 	},
@@ -341,7 +362,8 @@ const categories = [
 			},
 			{
 				q: "How are API keys stored in the playground?",
-				a: "API keys saved in the playground are stored locally in the browser on that device. Once saved, the key is not displayed in page output or generated examples. The key is used to authorize requests you choose to send. Replace or remove it if you no longer want that browser to use it.",
+				a: 'API keys saved in the playground are stored locally in the browser on that device. Once saved, the key is not displayed in page output or generated examples. The key is used to authorize requests you choose to send. Replace or remove it if you no longer want that browser to use it. See <a href="/docs/api/v2.2/credentials/">credentials</a> for how to retrieve or rotate the key.',
+				plain: "API keys saved in the playground are stored locally in the browser on that device. Once saved, the key is not displayed in page output or generated examples. The key is used to authorize requests you choose to send. Replace or remove it if you no longer want that browser to use it. See credentials for how to retrieve or rotate the key.",
 			},
 		],
 	},
@@ -351,7 +373,8 @@ const categories = [
 		items: [
 			{
 				q: "What information should I include in an incident report?",
-				a: "Include the affected service, account, timestamp with timezone, examples, numbers involved, API request IDs, SIP Call-IDs, message IDs, recent configuration changes, and any traces or logs available. For voice issues, include SIP traces where possible. For messaging issues, include message IDs, campaign IDs, destination numbers, timestamps, and delivery receipts.",
+				a: 'Include the affected service, account, timestamp with timezone, examples, numbers involved, API request IDs, SIP Call-IDs, message IDs, recent configuration changes, and any traces or logs available. For voice issues, include SIP traces where possible. For messaging issues, include message IDs, campaign IDs, destination numbers, timestamps, and delivery receipts. Reach the team at <a href="/contact/">contact</a>.',
+				plain: "Include the affected service, account, timestamp with timezone, examples, numbers involved, API request IDs, SIP Call-IDs, message IDs, recent configuration changes, and any traces or logs available. For voice issues, include SIP traces where possible. For messaging issues, include message IDs, campaign IDs, destination numbers, timestamps, and delivery receipts. Reach the team at contact.",
 			},
 		],
 	},
@@ -361,7 +384,8 @@ const categories = [
 		items: [
 			{
 				q: "My SIP trunk will not register. What should I check?",
-				a: "Check the SIP username, password, domain or realm, registration server, source IP, firewall policy, NAT behavior, TLS settings if used, and registration interval. Also confirm that the account and trunk are active and that your PBX is not being blocked by a local firewall, SIP ALG, or failed authentication lockout.",
+				a: 'Check the SIP username, password, domain or realm, registration server, source IP, firewall policy, NAT behavior, TLS settings if used, and registration interval. Also confirm that the account and trunk are active and that your PBX is not being blocked by a local firewall, SIP ALG, or failed authentication lockout. The <a href="/support/voice/firewall/">router and firewall guides</a> cover SIP ALG and NAT-traversal fixes; the <a href="/support/voice/pbx/">PBX guides</a> cover trunk-side configuration.',
+				plain: "Check the SIP username, password, domain or realm, registration server, source IP, firewall policy, NAT behavior, TLS settings if used, and registration interval. Also confirm that the account and trunk are active and that your PBX is not being blocked by a local firewall, SIP ALG, or failed authentication lockout. The router and firewall guides cover SIP ALG and NAT-traversal fixes; the PBX guides cover trunk-side configuration.",
 			},
 			{
 				q: "My webhook is timing out. What should I check?",
@@ -375,11 +399,13 @@ const categories = [
 		items: [
 			{
 				q: "Who owns compliance for downstream customers?",
-				a: "Resellers and integrators are responsible for knowing and verifying their downstream customers, collecting accurate compliance information, and ensuring that customer traffic follows VoiceTel policies, carrier rules, and applicable law. VoiceTel may request additional documentation or restrict traffic if downstream use creates compliance, fraud, or network risk.",
+				a: 'Resellers and integrators are responsible for knowing and verifying their downstream customers, collecting accurate compliance information, and ensuring that customer traffic follows VoiceTel policies, carrier rules, and applicable law. VoiceTel may request additional documentation or restrict traffic if downstream use creates compliance, fraud, or network risk. The <a href="/support/voice/compliance/">voice compliance</a> and <a href="/support/messaging/compliance/">messaging compliance</a> guides explain the operational baseline; the binding policy lives in <a href="/legal/">Legal</a>.',
+				plain: "Resellers and integrators are responsible for knowing and verifying their downstream customers, collecting accurate compliance information, and ensuring that customer traffic follows VoiceTel policies, carrier rules, and applicable law. VoiceTel may request additional documentation or restrict traffic if downstream use creates compliance, fraud, or network risk. The voice compliance and messaging compliance guides explain the operational baseline; the binding policy lives in Legal.",
 			},
 			{
 				q: "How does 10DLC work for resellers?",
-				a: "Each real sender generally needs accurate brand and campaign information. A reseller should not use one generic brand or campaign as a proxy for unrelated downstream businesses. Collect each customer's legal business information, website, opt-in flow, message samples, privacy policy, terms, and use case before submitting 10DLC registration.",
+				a: 'Each real sender generally needs accurate brand and campaign information. A reseller should not use one generic brand or campaign as a proxy for unrelated downstream businesses. Collect each customer\'s legal business information, website, opt-in flow, message samples, privacy policy, terms, and use case before submitting <a href="/support/messaging/10dlc/">10DLC registration</a>. See the <a href="/integrators/">integrators landing page</a> for the multi-tenant workflow.',
+				plain: "Each real sender generally needs accurate brand and campaign information. A reseller should not use one generic brand or campaign as a proxy for unrelated downstream businesses. Collect each customer's legal business information, website, opt-in flow, message samples, privacy policy, terms, and use case before submitting 10DLC registration. See the integrators landing page for the multi-tenant workflow.",
 			},
 		],
 	},
@@ -389,7 +415,8 @@ const categories = [
 		items: [
 			{
 				q: "Who is responsible for consent?",
-				a: "The customer or sender is responsible for collecting, storing, and honoring valid consent for calls and messages. VoiceTel can provide platform tools and compliance guidance, but it does not replace the customer's obligation to follow applicable laws, carrier rules, registry requirements, and industry policies.",
+				a: 'The customer or sender is responsible for collecting, storing, and honoring valid consent for calls and messages. VoiceTel can provide platform tools and compliance guidance, but it does not replace the customer\'s obligation to follow applicable laws, carrier rules, registry requirements, and industry policies. The binding policy lives in <a href="/legal/">Legal</a>; operational guides are at <a href="/support/voice/compliance/">voice compliance</a> and <a href="/support/messaging/compliance/">messaging compliance</a>.',
+				plain: "The customer or sender is responsible for collecting, storing, and honoring valid consent for calls and messages. VoiceTel can provide platform tools and compliance guidance, but it does not replace the customer's obligation to follow applicable laws, carrier rules, registry requirements, and industry policies. The binding policy lives in Legal; operational guides are at voice compliance and messaging compliance.",
 			},
 		],
 	},

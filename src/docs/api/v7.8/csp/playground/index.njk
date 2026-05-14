@@ -7,10 +7,10 @@ description: "Browser-based playground for the 10DLC Campaign Registry (TCR / CS
 
 <p class="eyebrow"><a href="/docs/api/">API reference</a> / <a href="{{ apiSpecs.csp.urlPath }}">10DLC Campaign Registry</a> / Playground</p>
 <h1>10DLC Campaign Registry playground.</h1>
-<p class="lede">Set your VoiceTel API key once. It's encrypted to this device and this browser, never sent to a VoiceTel server, and never readable from this page — only usable. Phase 1 covers GET operations on the Campaign Service Provider proxy at <code>api.voicetel.com/v2/csp</code>.</p>
+<p class="lede">Set your VoiceTel API key once. It's encrypted to this device and this browser, never sent to a VoiceTel server, and never readable from this page. The Campaign Service Provider proxy is at <code>api.voicetel.com/v2/csp</code>.</p>
 
 <div class="alert alert-info" role="note">
-	<p><strong>Your API key never leaves your browser.</strong> The key is encrypted under a non-extractable device key in IndexedDB. Once set, it cannot be viewed here — only used to authorize a request, replaced, or removed. The same key authorizes every VoiceTel API, including v2.2; setting it here is the same key store used by the <a href="/docs/api/v2.2/playground/">v2.2 playground</a>.</p>
+	<p>Your API key is encrypted on this device and stored in this browser. Once saved, it cannot be viewed here &mdash; only used to authorize requests you send, replaced, or removed. The same key authorizes every VoiceTel API, including v2.2; setting it here is the same key store used by the <a href="/docs/api/v2.2/playground/">v2.2 playground</a>.</p>
 </div>
 
 <section class="section-block playground" data-api-playground data-spec-url="/api-specs/csp.json">

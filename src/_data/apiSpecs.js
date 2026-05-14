@@ -3,7 +3,7 @@
 // spec. Both the Redoc build script (tools/build-api-docs.mjs) and the
 // Eleventy templates read the same shape, so URL changes happen here only.
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,7 +23,8 @@ const files = readdirSync(SPECS_DIR)
 const specs = {};
 for (const file of files) {
 	const name = basename(file, ".json");
-	const spec = JSON.parse(readFileSync(resolve(SPECS_DIR, file), "utf8"));
+	const specPath = resolve(SPECS_DIR, file);
+	const spec = JSON.parse(readFileSync(specPath, "utf8"));
 	const version = spec.info?.version || "";
 	const mm = majorMinor(version);
 	if (!mm) {
@@ -33,13 +34,17 @@ for (const file of files) {
 	// the consolidated reference for that release and renders at /docs/api/{mm}/
 	// directly. Per-resource specs keep the /docs/api/{mm}/{name}/ shape.
 	const isConsolidated = name === mm;
+	const lastmod = statSync(specPath).mtime.toISOString().slice(0, 10);
+	const description = (spec.info?.description || "").replace(/\s+/g, " ").trim().slice(0, 280);
 	specs[name] = {
 		name,
 		version,
 		majorMinor: mm,
 		urlPath: isConsolidated ? `/docs/api/${mm}/` : `/docs/api/${mm}/${name}/`,
 		title: spec.info?.title || name,
+		description,
 		consolidated: isConsolidated,
+		lastmod,
 	};
 }
 

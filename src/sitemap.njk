@@ -23,6 +23,7 @@ eleventyExcludeFromCollections: true
 {%- for name, spec in apiSpecs %}
 	<url>
 		<loc>{{ site.url }}{{ spec.urlPath }}</loc>
+		<lastmod>{{ spec.lastmod }}</lastmod>
 		<changefreq>monthly</changefreq>
 		<priority>0.6</priority>
 	</url>

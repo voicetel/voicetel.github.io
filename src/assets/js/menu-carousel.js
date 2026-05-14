@@ -19,7 +19,11 @@ if (ROOT) {
 	function show(index) {
 		current = (index + slides.length) % slides.length;
 		slides.forEach((slide, i) => {
-			slide.inert = i !== current;
+			if (i === current) {
+				slide.removeAttribute("inert");
+			} else {
+				slide.setAttribute("inert", "");
+			}
 		});
 		dots.forEach((dot, i) => {
 			if (i === current) {

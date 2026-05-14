@@ -246,8 +246,8 @@
 			"description": "Programmable Voice that runs your existing Twilio voice application without rewriting it. Wholesale origination and termination with line-item rates. Messaging with no platform tax. Twenty-seven years moving carrier traffic, one phone number for support.",
 			"href": "/pricing/",
 			"cta": "See the rates",
-			"secondaryHref": "/voiceml/migrate/",
-			"secondaryCta": "Run your Twilio app"
+			"secondaryHref": "/voiceml/compatibility/",
+			"secondaryCta": "Check compatibility"
 		},
 		{
 			"key": "voiceml",
@@ -255,7 +255,9 @@
 			"tagline": "Drop-in compatible voice markup runtime",
 			"description": "Run your Twilio app on VoiceTel without rewriting code. Same <Say>, <Gather>, <Dial>, and <Record>. Same webhook signatures. Up to 30% less on list rates.",
 			"href": "/voiceml/",
-			"cta": "Explore VoiceML"
+			"cta": "Explore VoiceML",
+			"secondaryHref": "/voiceml/validator/",
+			"secondaryCta": "Validate VoiceML"
 		},
 		{
 			"key": "voice",

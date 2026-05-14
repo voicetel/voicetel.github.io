@@ -1,5 +1,17 @@
+{%- set carouselIcons = {
+	"voiceml": "code-slash",
+	"voice": "telephone",
+	"messaging": "chat-text",
+	"numbers": "hash",
+	"sdn": "plug",
+	"phone": "phone-vibrate",
+	"applications": "download",
+	"pricing": "tag",
+	"docs": "book"
+} %}
+
 <section
-	class="menu-carousel"
+	class="menu-carousel menu-carousel--figured"
 	aria-roledescription="carousel"
 	aria-label="Product overview"
 	data-menu-carousel
@@ -14,19 +26,196 @@
 			{%- if loop.index0 !== 0 %} inert{% endif %}
 		>
 			<div class="container">
-				<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
-				{%- if item.isHero %}
-				<h1 class="menu-carousel-title menu-carousel-title--hero">{{ item.title }}</h1>
-				{%- else %}
-				<h2 class="menu-carousel-title">{{ item.title }}</h2>
-				{%- endif %}
-				<p class="menu-carousel-description">{{ item.description }}</p>
-				<p class="menu-carousel-actions">
-					<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}{% if not item.isHero %} &rarr;{% endif %}</a>
-					{%- if item.secondaryHref %}
-					<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
-					{%- endif %}
-				</p>
+				<div class="menu-carousel-layout{% if item.isHero %} menu-carousel-layout--hero{% endif %}">
+					<div class="menu-carousel-text">
+						<p class="menu-carousel-eyebrow">{{ item.tagline }}</p>
+						{%- if item.isHero %}
+						<h1 class="menu-carousel-title menu-carousel-title--hero">{{ item.title }}</h1>
+						{%- else %}
+						<h2 class="menu-carousel-title">{{ item.title }}</h2>
+						{%- endif %}
+						<p class="menu-carousel-description">{{ item.description }}</p>
+						<p class="menu-carousel-actions">
+							<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}{% if not item.isHero %} &rarr;{% endif %}</a>
+							{%- if item.secondaryHref %}
+							<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
+							{%- endif %}
+						</p>
+					</div>
+					<div class="menu-carousel-figure-col">
+						{%- if item.key === "intro" %}
+						<ul class="vt-proof-grid">
+							<li>
+								<span class="vt-proof-label">Operating since</span>
+								<div class="vt-proof-value">1999<span class="sub">· 27 yrs</span></div>
+								<div class="vt-proof-note">FCC + RMD licensed</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">POPs</span>
+								<div class="vt-proof-value">7<span class="sub">· 2 continents</span></div>
+								<div class="vt-proof-note">NYC · CLT · ORD · DEN · DFW · SJC · AMS</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">Twilio compat</span>
+								<div class="vt-proof-value">98<span class="sub">%</span></div>
+								<div class="vt-proof-note">Drop-in VoiceML runtime</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">List rate savings</span>
+								<div class="vt-proof-value">&minus;30<span class="sub">%</span></div>
+								<div class="vt-proof-note">Volume tiers scale automatically</div>
+							</li>
+						</ul>
+						{%- elif item.key === "voiceml" %}
+						<div class="vt-code">
+							<span class="vt-code-lang">VoiceML</span>
+							<div><span class="c-tag">&lt;Response&gt;</span></div>
+							<div>&nbsp;&nbsp;<span class="c-tag">&lt;Say</span> <span class="c-attr">voice</span>=<span class="c-str">"Polly.Joanna"</span><span class="c-tag">&gt;</span></div>
+							<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-text">Press 1 to be connected.</span></div>
+							<div>&nbsp;&nbsp;<span class="c-tag">&lt;/Say&gt;</span></div>
+							<div>&nbsp;&nbsp;<span class="c-tag">&lt;Gather</span> <span class="c-attr">numDigits</span>=<span class="c-str">"1"</span> <span class="c-attr">action</span>=<span class="c-str">"/dispatch"</span><span class="c-tag">/&gt;</span></div>
+							<div><span class="c-tag">&lt;/Response&gt;</span></div>
+						</div>
+						<div class="vt-compat">
+							<span class="vt-compat-badge">&lt;Say&gt;</span>
+							<span class="vt-compat-badge">&lt;Gather&gt;</span>
+							<span class="vt-compat-badge">&lt;Dial&gt;</span>
+							<span class="vt-compat-badge">&lt;Record&gt;</span>
+							<span class="vt-compat-badge">+ 24 more</span>
+						</div>
+						{%- elif item.key === "voice" %}
+						<div class="vt-figure">
+							<ul class="vt-status-list">
+								<li>
+									<span class="vt-status-name">STIR/SHAKEN attestation<span class="meta">on every call</span></span>
+									<span class="vt-status-indicator">Signed</span>
+								</li>
+								<li>
+									<span class="vt-status-name">Global POPs<span class="meta">7 regions</span></span>
+									<span class="vt-status-indicator">Operational</span>
+								</li>
+								<li>
+									<span class="vt-status-name">US-based NOC<span class="meta">24/7</span></span>
+									<span class="vt-status-indicator">Online</span>
+								</li>
+								<li>
+									<span class="vt-status-name">BYO STT · TTS · storage<span class="meta">no markup</span></span>
+									<span class="vt-status-indicator">Passthrough</span>
+								</li>
+							</ul>
+						</div>
+						{%- elif item.key === "messaging" %}
+						<ul class="vt-proof-grid">
+							<li>
+								<span class="vt-proof-label">A2P 10DLC</span>
+								<div class="vt-proof-value">Ready</div>
+								<div class="vt-proof-note">High-volume application messaging</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">Inbound</span>
+								<div class="vt-proof-value">Included</div>
+								<div class="vt-proof-note">No per-message charge</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">Webhook delivery</span>
+								<div class="vt-proof-value">200 OK<span class="sub">avg 12 ms</span></div>
+								<div class="vt-proof-note">Direct to your endpoint</div>
+							</li>
+							<li>
+								<span class="vt-proof-label">Platform tax</span>
+								<div class="vt-proof-value">$0.00</div>
+								<div class="vt-proof-note">Just the segment rate</div>
+							</li>
+						</ul>
+						{%- elif item.key === "numbers" %}
+						<div class="vt-figure">
+							<div class="vt-chips">
+								<span class="vt-chip vt-chip--active">Local</span>
+								<span class="vt-chip">Toll-free</span>
+								<span class="vt-chip">Mobile</span>
+								<span class="vt-chip">Area 704</span>
+								<span class="vt-chip">+ port-in</span>
+							</div>
+							<ul class="vt-num-list">
+								<li><span class="n">+1 704 555 0148</span><span class="pop">CLT</span><span class="pr">$0.4885<span class="vt-rates-mark">*</span></span></li>
+								<li><span class="n">+1 704 555 0220</span><span class="pop">CLT</span><span class="pr">$0.4885<span class="vt-rates-mark">*</span></span></li>
+								<li><span class="n">+1 704 555 0391</span><span class="pop">CLT</span><span class="pr">$0.4885<span class="vt-rates-mark">*</span></span></li>
+								<li><span class="n">+1 800 555 3201</span><span class="pop">TF</span><span class="pr">$0.6306<span class="vt-rates-mark">*</span></span></li>
+							</ul>
+							<p class="vt-rates-note"><span class="vt-rates-mark">*</span> Volume tier: 2K DIDs.</p>
+						</div>
+						{%- elif item.key === "sdn" %}
+						<div class="vt-tunnel">
+							<div class="vt-tunnel-row">
+								<div class="vt-tunnel-node">
+									<span class="k">Your LAN</span>
+									<span class="v">PBX · 10.0.0.0/24</span>
+								</div>
+								<span class="vt-tunnel-arrow">&rarr;</span>
+								<div class="vt-tunnel-node vt-tunnel-node--accent">
+									<span class="k">SDN appliance</span>
+									<span class="v">RPi · sdn-08c4</span>
+								</div>
+								<span class="vt-tunnel-arrow">&rArr;</span>
+								<div class="vt-tunnel-node">
+									<span class="k">VoiceTel core</span>
+									<span class="v">NYC POP</span>
+								</div>
+							</div>
+							<div class="vt-tunnel-legend">
+								<span>Uplink :443 / TLS 1.3</span>
+								<span>No routing changes</span>
+							</div>
+						</div>
+						{%- elif item.key === "phone" %}
+						<div class="vt-feature-grid">
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "code-slash" %}</span><span class="vt-feature-name">Web</span><span class="vt-feature-meta">WebRTC</span></div>
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">macOS</span><span class="vt-feature-meta">42 MB · .dmg</span></div>
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Windows</span><span class="vt-feature-meta">38 MB · .msi</span></div>
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Linux</span><span class="vt-feature-meta">deb · rpm</span></div>
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">iOS</span><span class="vt-feature-meta">App Store</span></div>
+							<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">Android</span><span class="vt-feature-meta">Play Store</span></div>
+						</div>
+						{%- elif item.key === "applications" %}
+						<div class="vt-code">
+							<span class="vt-code-lang">Install</span>
+							<div><span class="c-cmt"># macOS</span></div>
+							<div><span class="c-attr">brew</span> install voicetel/tap/phone</div>
+							<div>&nbsp;</div>
+							<div><span class="c-cmt"># Windows</span></div>
+							<div><span class="c-attr">winget</span> install <span class="c-str">VoiceTel.Phone</span></div>
+							<div>&nbsp;</div>
+							<div><span class="c-cmt"># Debian / Ubuntu</span></div>
+							<div><span class="c-attr">apt</span> install voicetel-phone</div>
+							<div>&nbsp;</div>
+							<div><span class="c-cmt"># Or open the web client &mdash; no install</span></div>
+							<div><span class="c-str">phone.voicetel.com</span></div>
+						</div>
+						{%- elif item.key === "pricing" %}
+						<table class="vt-rates">
+							<thead>
+								<tr><th>Line item</th><th class="r">Rate</th></tr>
+							</thead>
+							<tbody>
+								<tr><td class="label">Outbound voice <span class="sub">US local · /min</span></td><td class="r">$0.0078<span class="vt-rates-mark">*</span></td></tr>
+								<tr><td class="label">Inbound voice <span class="sub">US local · /min</span></td><td class="r">$0.0078<span class="vt-rates-mark">*</span></td></tr>
+								<tr><td class="label">Local DID <span class="sub">/ month</span></td><td class="r">$0.8378<span class="vt-rates-mark">*</span></td></tr>
+								<tr><td class="label">A2P SMS <span class="sub">/ segment</span></td><td class="r">$0.0078<span class="vt-rates-mark">*</span></td></tr>
+								<tr><td class="label">STT · TTS · recording storage</td><td class="r">passthrough</td></tr>
+							</tbody>
+						</table>
+						<p class="vt-rates-note"><span class="vt-rates-mark">*</span> Volume tier: 200K minutes, 200K messages, and 100 DIDs / month.</p>
+						{%- elif item.key === "docs" %}
+						<ul class="vt-toc">
+							<li><span class="icon">{% icon "code-slash" %}</span><span class="label">VoiceML reference</span><span class="meta">28 verbs</span></li>
+							<li><span class="icon">{% icon "book" %}</span><span class="label">REST API</span><span class="meta">142 endpoints</span></li>
+							<li><span class="icon">{% icon "shield-check" %}</span><span class="label">Webhook signatures</span><span class="meta">12 events</span></li>
+							<li><span class="icon">{% icon "tag" %}</span><span class="label">Migrate from Twilio</span><span class="meta">5 min</span></li>
+							<li><span class="icon">{% icon "plug" %}</span><span class="label">PBX &amp; SDN setup</span><span class="meta">9 vendors</span></li>
+						</ul>
+						{%- endif %}
+					</div>
+				</div>
 			</div>
 		</article>
 		{%- endfor %}

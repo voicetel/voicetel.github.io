@@ -13,6 +13,7 @@ export default function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({ "vendor/api-specs": "api-specs" });
 	eleventyConfig.addPassthroughCopy("src/CNAME");
 	eleventyConfig.addPassthroughCopy("src/robots.txt");
+	eleventyConfig.addPassthroughCopy({ "src/.well-known": ".well-known" });
 
 	eleventyConfig.addPlugin(syntaxHighlight, {
 		preAttributes: { tabindex: 0 },
@@ -67,6 +68,37 @@ export default function (eleventyConfig) {
 			day: "numeric",
 		}).format(new Date())
 	);
+
+	eleventyConfig.addShortcode("breadcrumbsJsonLd", function (pageUrl, allPages, siteUrl) {
+		if (!pageUrl || pageUrl === "/") return "";
+		const segments = pageUrl.split("/").filter(Boolean);
+		if (segments.length === 0) return "";
+		const items = [{ name: "Home", url: `${siteUrl}/` }];
+		let cursor = "";
+		for (const seg of segments) {
+			cursor += `/${seg}`;
+			const url = `${cursor}/`;
+			const match = (allPages || []).find((p) => p && p.url === url);
+			if (!match && url !== pageUrl) continue;
+			const title =
+				match?.data?.title ||
+				seg.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+			items.push({ name: title, url: `${siteUrl}${url}` });
+		}
+		if (items.length < 2) return "";
+		const itemListElement = items.map((it, i) => ({
+			"@type": "ListItem",
+			position: i + 1,
+			name: it.name,
+			item: it.url,
+		}));
+		const payload = {
+			"@context": "https://schema.org",
+			"@type": "BreadcrumbList",
+			itemListElement,
+		};
+		return `<script type="application/ld+json">${JSON.stringify(payload)}</script>`;
+	});
 
 	// Wrap every standalone "Twilio" mention in an <abbr> carrying the
 	// trademark disclosure as its title. The transform runs after

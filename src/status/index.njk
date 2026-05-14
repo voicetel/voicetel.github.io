@@ -6,36 +6,52 @@ description: "Current VoiceTel service status for voice, messaging, API, portal,
 
 <p class="eyebrow">Status</p>
 <h1>Current service health and incident history.</h1>
-<p class="lede">Component-level status across voice, messaging, numbers, API, portal, phone apps, and SDN appliance authorization. Active incident details include timestamps, affected components, and update logs.</p>
+<p class="lede">Service-level status across voice, messaging, numbers, API, portal, phone apps, and SDN appliance authorization. Active incident details include timestamps, affected services, and update logs.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/signup/">Sign up</a>
 	<a class="btn btn-secondary" href="/infrastructure/">Infrastructure overview</a>
 </p>
 
 <section class="section-block">
-	<h2>Network Status</h2>
+	<h2>Service status</h2>
 	<ul class="status-list">
-		<li><span class="status-name">Europe</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">US East</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">US West</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">NYC</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">CLT</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">ORD</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">DEN</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">DFW</span><span class="status-indicator status-indicator--operational">Operational</span></li>
-		<li><span class="status-name">SJC</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Voice origination</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Voice termination</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">VoiceML call control</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Voice callbacks</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">STIR/SHAKEN signing</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">SIP trunking</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">SMS</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">MMS</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Delivery receipts</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Inbound messaging webhooks</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Number provisioning</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Number porting</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Emergency-service records</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Caller Lookup</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Carrier Lookup</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">REST API</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Webhook delivery</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Portal login</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Account signup</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Billing</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Account provisioning</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Support forms</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Hosted PBX</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Web phone</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Desktop apps</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">Mobile apps</span><span class="status-indicator status-indicator--operational">Operational</span></li>
+		<li><span class="status-name">SDN tunnel</span><span class="status-indicator status-indicator--operational">Operational</span></li>
 	</ul>
+	<p class="status-updated">Updated <time data-status-updated datetime="{% todayISO %}">{% todayLong %}</time>.</p>
 </section>
 
-<section class="section-block" data-section-type="components">
-	<h2>Components</h2>
-	<ul>
-		<li><strong>Voice</strong> — Origination, termination, VoiceML call control, and callbacks.</li>
-		<li><strong>Messaging</strong> — SMS, MMS, delivery receipts, and inbound webhooks.</li>
-		<li><strong>Numbers</strong> — Provisioning, porting, emergency-service records, and lookup workflows.</li>
-		<li><strong>API</strong> — REST API availability and webhook delivery.</li>
-		<li><strong>Portal</strong> — Account login, signup, billing, provisioning, and support forms.</li>
-		<li><strong>Phone apps and SDN</strong> — Web phone, desktop/mobile app connectivity, and SDN tunnel status.</li>
-	</ul>
-</section>
+<aside class="cta-block" aria-labelledby="status-continuity-heading">
+	<h2 id="status-continuity-heading">Need a continuity plan?</h2>
+	<p>Customers running business-critical voice and messaging traffic can request a continuity review covering redundant routing, failover SIP trunks, geographic diversity across VoiceTel's colocation and cloud footprint, and operational escalation paths.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Request a continuity review</a>
+		<a class="btn btn-secondary" href="/infrastructure/">Infrastructure overview</a>
+	</p>
+</aside>
 

@@ -17,7 +17,7 @@
 		"compliance": "compliance+ws@voicetel.com",
 		"sales": "sales+ws@voicetel.com"
 	},
-	"pops": ["NYC", "CLT", "ORD", "DEN", "DFW", "SJC", "AMS"],
+	"pops": ["NYC", "ORD", "DEN", "DFW", "SJC", "AMS"],
 	"cloudRegions": ["US East 1", "US East 2", "US West 1"],
 	"offices": [
 		{

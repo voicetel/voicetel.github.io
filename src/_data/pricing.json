@@ -116,7 +116,7 @@
 		},
 		{
 			"label": "Speech (BYO)",
-			"description": "Speech-to-text and recording transcription. VoiceTel does not bill for transcription; bring your own STT vendor (Deepgram, Google, AWS, Azure, etc.) and pay the vendor directly.",
+			"description": "Speech-to-text and recording transcription. VoiceTel does not bill for transcription; bring your own speech-to-text vendor (Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, or Azure AI Speech) and pay the vendor directly.",
 			"services": [
 				{
 					"id": "stt-realtime",

@@ -6,32 +6,55 @@ description: "VoiceTel network infrastructure: colocation facilities, cloud regi
 
 <p class="eyebrow">Infrastructure</p>
 <h1>Network facts without inflated claims.</h1>
-<p class="lede">Seven colocation POPs across North America and Europe, plus three cloud regions. Anycast and Geocast routing options. STIR/SHAKEN signing at the edge. 99.99% availability target measured monthly, with the SLA written in plain English.</p>
+<p class="lede">Six colocation POPs across North America and Europe, plus three cloud regions. Anycast and Geocast routing options. STIR/SHAKEN signing at the edge. 99.99% availability target measured monthly, with the SLA written in plain English.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/status/">View status</a>
 	<a class="btn btn-secondary" href="/signup/">Free trial</a>
 </p>
 
 <section class="section-block">
-	<h2>Colocation Facilities</h2>
-	<ul>
-		<li><strong>NYC</strong> — New York metro</li>
-		<li><strong>CLT</strong> — Charlotte</li>
-		<li><strong>ORD</strong> — Chicago</li>
-		<li><strong>DEN</strong> — Denver</li>
-		<li><strong>DFW</strong> — Dallas</li>
-		<li><strong>SJC</strong> — San Jose</li>
-		<li><strong>AMS</strong> — Amsterdam</li>
-	</ul>
+	<h2>Colocation facilities</h2>
+	<div class="oss-cards">
+		{%- for c in colocations %}
+		<article class="oss-card oss-card--colo">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "buildings" %}</span>
+				<h3 class="oss-card__title">{{ c.code }} &mdash; {{ c.city }}{% if c.region %}, {{ c.region }}{% endif %}</h3>
+			</header>
+			<p class="oss-card__description">
+				{%- if c.street %}{{ c.street }} &middot; {% endif -%}
+				{{ c.city }}{% if c.region %}, {{ c.region }}{% endif %}{% if c.country %}, {{ c.country }}{% endif %}
+			</p>
+			{%- if c.compliance and c.compliance.length %}
+			<p class="oss-card__meta"><strong>Compliance:</strong> {{ c.compliance | join(", ") }}</p>
+			{%- endif %}
+			{%- if c.statuscakeTrack %}
+			<p class="oss-card__uptime"><img src="https://app.statuscake.com/button/index.php?Track={{ c.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ c.code }} 1000-day uptime"></p>
+			{%- endif %}
+		</article>
+		{%- endfor %}
+	</div>
 </section>
 
 <section class="section-block">
-	<h2>Cloud Infrastructure</h2>
-	<ul>
-		{%- for region in site.cloudRegions %}
-		<li><strong>{{ region }}</strong></li>
+	<h2>Cloud regions</h2>
+	<div class="oss-cards">
+		{%- for r in cloudRegions %}
+		<article class="oss-card oss-card--cloud">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "cloud-fill" %}</span>
+				<div class="oss-card__heading">
+					<h3 class="oss-card__title">{{ r.label }}</h3>
+					<p class="oss-card__subtitle"><code>{{ r.awsCode }}</code> &middot; {{ r.geo }}</p>
+				</div>
+			</header>
+			<p class="oss-card__description">{{ r.description }}</p>
+			{%- if r.statuscakeTrack %}
+			<p class="oss-card__uptime"><img src="https://app.statuscake.com/button/index.php?Track={{ r.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ r.code }} 1000-day uptime"></p>
+			{%- endif %}
+		</article>
 		{%- endfor %}
-	</ul>
+	</div>
 </section>
 
 <aside class="cta-block">
@@ -41,3 +64,5 @@ description: "VoiceTel network infrastructure: colocation facilities, cloud regi
 		<a class="btn btn-primary" href="/signup/">Try for free</a>
 	</p>
 </aside>
+
+<p class="uptime-source">Uptime percentages are calculated and displayed by <a href="https://www.statuscake.com/" rel="external">StatusCake</a>.</p>

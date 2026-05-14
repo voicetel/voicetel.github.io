@@ -58,6 +58,16 @@ export default function (eleventyConfig) {
 		String(new Date().getFullYear() - Number(startYear))
 	);
 
+	eleventyConfig.addShortcode("todayISO", () => new Date().toISOString().slice(0, 10));
+
+	eleventyConfig.addShortcode("todayLong", () =>
+		new Intl.DateTimeFormat("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		}).format(new Date())
+	);
+
 	// Wrap every standalone "Twilio" mention in an <abbr> carrying the
 	// trademark disclosure as its title. The transform runs after
 	// rendering and skips <pre>, <code>, <title>, <script>, <style>, and

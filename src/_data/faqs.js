@@ -201,6 +201,16 @@ const categories = [
 				a: 'Paste your response markup into the <a href="/voiceml/validator/">VoiceML validator</a>. It runs entirely in your browser, confirms the document is well-formed XML, and flags any element that is not a known verb or noun.',
 				plain: "Paste your response markup into the VoiceML validator. It runs entirely in your browser, confirms the document is well-formed XML, and flags any element that is not a known verb or noun.",
 			},
+			{
+				q: "Which text-to-speech providers does VoiceTel support?",
+				a: 'Supported text-to-speech integrations. Open-source engines run on VoiceTel infrastructure; cloud vendors are billed by you directly. <a href="https://github.com/rhasspy/piper" rel="external">Piper</a> and <a href="https://github.com/coqui-ai/TTS" rel="external">Coqui TTS</a> are open-source and self-hosted. <a href="https://platform.openai.com/signup" rel="external">OpenAI TTS</a>, <a href="https://aws.amazon.com/polly/" rel="external">Amazon Polly</a>, and <a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a> are cloud vendors you sign up for and pay directly.',
+				plain: "Supported text-to-speech integrations. Open-source engines run on VoiceTel infrastructure; cloud vendors are billed by you directly. Piper and Coqui TTS are open-source and self-hosted. OpenAI TTS, Amazon Polly, and Azure AI Speech are cloud vendors you sign up for and pay directly.",
+			},
+			{
+				q: "Which speech-to-text providers does VoiceTel support?",
+				a: 'Bring your own speech-to-text provider and pay the vendor directly. Supported integrations: <a href="https://console.deepgram.com/signup" rel="external">Deepgram</a>, <a href="https://cloud.google.com/speech-to-text" rel="external">Google Cloud Speech-to-Text</a>, <a href="https://aws.amazon.com/transcribe/" rel="external">AWS Transcribe</a>, and <a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a>.',
+				plain: "Bring your own speech-to-text provider and pay the vendor directly. Supported integrations: Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, and Azure AI Speech.",
+			},
 		],
 	},
 	{

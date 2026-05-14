@@ -1,0 +1,26 @@
+[
+	{
+		"code": "US East 1",
+		"label": "US East 1",
+		"awsCode": "us-east-1",
+		"geo": "N. Virginia",
+		"description": "Primary East Coast cloud region. Lowest latency to NYC and Eastern carriers.",
+		"statuscakeTrack": "0pmuHd9wJ1"
+	},
+	{
+		"code": "US East 2",
+		"label": "US East 2",
+		"awsCode": "us-east-2",
+		"geo": "Ohio",
+		"description": "Secondary East Coast region for redundancy and Midwest backhaul.",
+		"statuscakeTrack": "0pmuHd9wJ1"
+	},
+	{
+		"code": "US West 1",
+		"label": "US West 1",
+		"awsCode": "us-west-1",
+		"geo": "N. California",
+		"description": "West Coast region adjacent to SJC. Pacific-time disaster-recovery anchor.",
+		"statuscakeTrack": "Pi2K4gwd6V"
+	}
+]

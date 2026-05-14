@@ -93,16 +93,25 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover.</p>
 	</details>
 	<details class="faq-item">
-		<summary>Does VoiceTel provide speech services directly?</summary>
-		<p>Bring your own speech provider. Supported integrations include:</p>
+		<summary>Which text-to-speech providers does VoiceTel support?</summary>
+		<p>Supported text-to-speech integrations. Open-source engines run on VoiceTel infrastructure; cloud vendors are billed by you directly.</p>
 		<ul>
-			<li>OpenAI TTS</li>
-			<li>Amazon Polly</li>
-			<li>Google Cloud TTS</li>
-			<li>ElevenLabs</li>
-			<li>Azure Cognitive Services</li>
+			<li><a href="https://github.com/rhasspy/piper" rel="external">Piper</a> (open-source, self-hosted)</li>
+			<li><a href="https://github.com/coqui-ai/TTS" rel="external">Coqui TTS</a> (open-source, self-hosted)</li>
+			<li><a href="https://platform.openai.com/signup" rel="external">OpenAI TTS</a></li>
+			<li><a href="https://aws.amazon.com/polly/" rel="external">Amazon Polly</a></li>
+			<li><a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a></li>
 		</ul>
-		<p>VoiceTel also provides mod_flite (FreeSWITCH bundled) as the system default at no charge.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Which speech-to-text providers does VoiceTel support?</summary>
+		<p>Bring your own speech-to-text provider and pay the vendor directly. Supported integrations:</p>
+		<ul>
+			<li><a href="https://console.deepgram.com/signup" rel="external">Deepgram</a></li>
+			<li><a href="https://cloud.google.com/speech-to-text" rel="external">Google Cloud Speech-to-Text</a></li>
+			<li><a href="https://aws.amazon.com/transcribe/" rel="external">AWS Transcribe</a></li>
+			<li><a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a></li>
+		</ul>
 	</details>
 	<details class="faq-item">
 		<summary>How are rates displayed?</summary>

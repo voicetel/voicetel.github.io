@@ -61,9 +61,6 @@
               "password": {
                 "type": "string"
               },
-              "apikey": {
-                "type": "string"
-              },
               "name": {
                 "type": "string"
               },

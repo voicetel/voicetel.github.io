@@ -54,6 +54,24 @@ export default function (eleventyConfig) {
 
 	eleventyConfig.addShortcode("year", () => String(new Date().getFullYear()));
 
+	eleventyConfig.addShortcode("yearsSince", (startYear) =>
+		String(new Date().getFullYear() - Number(startYear))
+	);
+
+	// Wrap every standalone "Twilio" mention in an <abbr> carrying the
+	// trademark disclosure as its title. The transform runs after
+	// rendering and skips <pre>, <code>, <title>, <script>, <style>, and
+	// <meta> blocks, plus any "Twilio" already inside an HTML tag or
+	// attribute. Single source of truth, applied site-wide.
+	const TM_TWILIO =
+		'<abbr class="tm" title="Twilio is a trademark of Twilio Inc. VoiceTel is not affiliated with or endorsed by Twilio.">Twilio</abbr>';
+	const TM_SKIP =
+		/<(pre|code|title|script|style)\b[\s\S]*?<\/\1>|<meta\b[^>]*>|\bTwilio\b(?![^<>]*>)/g;
+	eleventyConfig.addTransform("tmTwilio", function (content, outputPath) {
+		if (!outputPath || !outputPath.endsWith(".html")) return content;
+		return content.replace(TM_SKIP, (match) => (match[0] === "<" ? match : TM_TWILIO));
+	});
+
 	return {
 		dir: {
 			input: "src",

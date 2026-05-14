@@ -1090,6 +1090,16 @@ textarea {
 	font-weight: 500;
 }
 
+/* Trademark callout on every "Twilio" mention — dotted underline +
+   help cursor signals there's a tooltip; the native browser title
+   attribute carries the disclosure text. */
+abbr.tm {
+	text-decoration: underline dotted;
+	text-decoration-color: var(--border-color);
+	text-underline-offset: 2px;
+	cursor: help;
+}
+
 /* Trusted by — quiet customer roll on /about/ */
 
 .trusted-by {

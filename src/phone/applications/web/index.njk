@@ -16,15 +16,6 @@ eleventyExcludeFromCollections: true
 	<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
 </p>
 
-<aside class="cta-block" aria-labelledby="web-cta-heading">
-	<h2 id="web-cta-heading">Get credentials and start calling right now from this page.</h2>
-	<p>Sign up to provision an account. As soon as your SIP credentials are issued you can paste them into the panel below and place a real call straight from this browser tab &mdash; no install, no extension.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up &amp; get credentials</a>
-		<a class="btn btn-secondary" href="{{ site.loginUrl }}" rel="external">Already a customer? Sign in</a>
-	</p>
-</aside>
-
 <div class="phone-app">
 	<div class="container">
 		<div class="header">
@@ -206,6 +197,15 @@ eleventyExcludeFromCollections: true
 		</div>
 	</div>
 </div>
+
+<aside class="cta-block" aria-labelledby="web-cta-heading">
+	<h2 id="web-cta-heading">Get credentials and start calling right now from this page.</h2>
+	<p>Sign up to provision an account. As soon as your SIP credentials are issued you can paste them into the panel above and place a real call straight from this browser tab &mdash; no install, no extension.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign up &amp; get credentials</a>
+		<a class="btn btn-secondary" href="{{ site.loginUrl }}" rel="external">Already a customer? Sign in</a>
+	</p>
+</aside>
 
 <script src="https://cdn.jsdelivr.net/npm/sip.js@0.15.11/dist/sip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>

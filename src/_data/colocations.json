@@ -19,7 +19,7 @@
 		"city": "Chicago",
 		"region": "IL",
 		"country": "USA",
-		"street": null,
+		"street": "350 East Cermak Road",
 		"compliance": [
 			"NIST 800-53/FISMA",
 			"SOC 1 Type II",
@@ -36,7 +36,7 @@
 		"city": "Denver",
 		"region": "CO",
 		"country": "USA",
-		"street": null,
+		"street": "910 15th Street",
 		"compliance": ["SOC 2 Type II", "ISO 27001", "PCI-DSS"],
 		"statuscakeTrack": "pqJL8rfTAt"
 	},
@@ -54,7 +54,7 @@
 		"city": "San Jose",
 		"region": "CA",
 		"country": "USA",
-		"street": null,
+		"street": "11 Great Oaks Boulevard",
 		"compliance": ["SOC 2 Type II"],
 		"statuscakeTrack": "c6IEGRqbJ4"
 	},

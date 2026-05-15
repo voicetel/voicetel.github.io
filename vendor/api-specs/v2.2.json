@@ -405,11 +405,42 @@
         "type": "object",
         "properties": {
           "tnList": {
-            "$ref": "#/components/schemas/iN_tnList"
+            "$ref": "#/components/schemas/iN_portOutPin_tnList"
           }
         },
         "required": [
           "tnList"
+        ]
+      },
+      "iN_portOutPin_tnItem": {
+        "type": "object",
+        "properties": {
+          "tn": {
+            "example": 2015551234,
+            "type": "integer"
+          },
+          "portOutPin": {
+            "description": "Optional 4-digit PIN. If omitted, the server auto-generates a random PIN in the range 1000-9999 and returns it in the response.",
+            "example": "4291",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tn"
+        ]
+      },
+      "iN_portOutPin_tnList": {
+        "type": "object",
+        "properties": {
+          "tnItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/iN_portOutPin_tnItem"
+            }
+          }
+        },
+        "required": [
+          "tnItem"
         ]
       },
       "numberRouteResponse": {
@@ -1410,11 +1441,37 @@
         "type": "object",
         "properties": {
           "tnList": {
-            "$ref": "#/components/schemas/iN_tnList"
+            "$ref": "#/components/schemas/iN_portInAvailability_tnList"
           }
         },
         "required": [
           "tnList"
+        ]
+      },
+      "iN_portInAvailability_tnItem": {
+        "type": "object",
+        "properties": {
+          "tn": {
+            "example": 2015551234,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tn"
+        ]
+      },
+      "iN_portInAvailability_tnList": {
+        "type": "object",
+        "properties": {
+          "tnItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/iN_portInAvailability_tnItem"
+            }
+          }
+        },
+        "required": [
+          "tnItem"
         ]
       },
       "creditFilteredEntry": {
@@ -2881,7 +2938,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "VoiceTel API Key"
+        "bearerFormat": "VoiceTel API Key",
+        "description": "32-character hexadecimal API key obtained by POSTing your username and password to /v2.2/account/apikey. Pass it as the Bearer token on every request. Re-fetch after any password change."
       }
     }
   },
@@ -4297,7 +4355,7 @@
         "operationId": "gatewaysNumbers"
       }
     },
-    "/v2.2/iNumbering/addMessagingBrand": {
+    "/v2/iNumbering/addMessagingBrand/": {
       "post": {
         "summary": "Add Messaging Brand",
         "security": [
@@ -4368,7 +4426,7 @@
         "operationId": "addMessagingBrand"
       }
     },
-    "/v2.2/iNumbering/addMessagingCampaign": {
+    "/v2/iNumbering/addMessagingCampaign/": {
       "post": {
         "summary": "Add Messaging Campaign",
         "security": [
@@ -4439,7 +4497,7 @@
         "operationId": "addMessagingCampaign"
       }
     },
-    "/v2.2/iNumbering/portInAvailability": {
+    "/v2/iNumbering/portInAvailability/": {
       "post": {
         "summary": "Portability Check",
         "security": [
@@ -4499,7 +4557,8 @@
                             "type": "string"
                           },
                           "serviceProviderName": {
-                            "example": "Level 3- SVR:8824/1",
+                            "example": "Service Provider Name",
+                            "description": "Current service provider for the TN.",
                             "type": "string"
                           }
                         }
@@ -4534,7 +4593,7 @@
         "operationId": "portInAvailability"
       }
     },
-    "/v2.2/iNumbering/portInOrder": {
+    "/v2/iNumbering/portInOrder/": {
       "post": {
         "summary": "Submit Port",
         "security": [
@@ -4630,7 +4689,7 @@
         "operationId": "portInOrder"
       }
     },
-    "/v2.2/iNumbering/portOutPinUpdate": {
+    "/v2/iNumbering/portOutPinUpdate/": {
       "post": {
         "summary": "Update Pin Numbers",
         "security": [
@@ -4714,7 +4773,7 @@
         "operationId": "portOutPinUpdate"
       }
     },
-    "/v2.2/iNumbering/portStatus": {
+    "/v2.1/iNumbering/portStatus/": {
       "post": {
         "summary": "Port Status",
         "security": [
@@ -4798,7 +4857,7 @@
         "operationId": "portStatus"
       }
     },
-    "/v2.2/iNumbering/tnInventory": {
+    "/v2/iNumbering/tnInventory/": {
       "post": {
         "summary": "Search Numbers",
         "security": [
@@ -4903,7 +4962,7 @@
         "operationId": "tnInventory"
       }
     },
-    "/v2.2/iNumbering/tnInventoryCoverage": {
+    "/v2/iNumbering/tnInventoryCoverage/": {
       "post": {
         "summary": "Search Number Coverage",
         "security": [
@@ -5013,7 +5072,7 @@
         "operationId": "tnInventoryCoverage"
       }
     },
-    "/v2.2/iNumbering/tnMessagingCampaign": {
+    "/v2/iNumbering/tnMessagingCampaign/": {
       "post": {
         "summary": "Add Messaging Campaign to TNs",
         "security": [
@@ -5088,7 +5147,7 @@
         "operationId": "tnMessagingCampaign"
       }
     },
-    "/v2.2/iNumbering/tnOrder": {
+    "/v2/iNumbering/tnOrder/": {
       "post": {
         "summary": "Order Numbers",
         "security": [
@@ -5289,7 +5348,7 @@
         "operationId": "lrnLookup"
       }
     },
-    "/v2.2/messaging/campaigns": {
+    "/v2.1/messaging/campaigns/": {
       "post": {
         "operationId": "campaigns",
         "requestBody": {
@@ -5402,7 +5461,7 @@
         ]
       }
     },
-    "/v2.2/messaging/disable": {
+    "/v2.1/messaging/disable/": {
       "post": {
         "operationId": "disable",
         "requestBody": {
@@ -5542,7 +5601,7 @@
         ]
       }
     },
-    "/v2.2/messaging/dlr": {
+    "/v2.1/messaging/dlr/": {
       "post": {
         "operationId": "dlr",
         "requestBody": {
@@ -5641,7 +5700,7 @@
         ]
       }
     },
-    "/v2.2/messaging/enable": {
+    "/v2.1/messaging/enable/": {
       "post": {
         "operationId": "enable",
         "requestBody": {
@@ -5780,7 +5839,7 @@
         ]
       }
     },
-    "/v2.2/messaging/mdr-mms": {
+    "/v2.1/messaging/mdr-mms/": {
       "post": {
         "operationId": "mdr-mms",
         "requestBody": {
@@ -5902,7 +5961,7 @@
         ]
       }
     },
-    "/v2.2/messaging/mdr-sms": {
+    "/v2.1/messaging/mdr-sms/": {
       "post": {
         "operationId": "mdr-sms",
         "requestBody": {
@@ -6024,7 +6083,7 @@
         ]
       }
     },
-    "/v2.2/messaging/mms": {
+    "/v2.1/messaging/mms/": {
       "post": {
         "operationId": "mms",
         "requestBody": {
@@ -6227,7 +6286,7 @@
         ]
       }
     },
-    "/v2.2/messaging/routein": {
+    "/v2.1/messaging/routein/": {
       "post": {
         "operationId": "routein",
         "requestBody": {
@@ -6376,7 +6435,7 @@
         ]
       }
     },
-    "/v2.2/messaging/routeout": {
+    "/v2.1/messaging/routeout/": {
       "post": {
         "operationId": "routeout",
         "requestBody": {
@@ -6525,7 +6584,7 @@
         ]
       }
     },
-    "/v2.2/messaging/sms": {
+    "/v2.1/messaging/sms/": {
       "post": {
         "operationId": "sms",
         "requestBody": {
@@ -6729,7 +6788,7 @@
         ]
       }
     },
-    "/v2.2/messaging/status": {
+    "/v2.1/messaging/status/": {
       "post": {
         "operationId": "status",
         "requestBody": {
@@ -8080,8 +8139,8 @@
     "contact": {
       "email": "support@voicetel.com"
     },
-    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate with your API key as a Bearer token. Rate-limited endpoints: account/info, account/mrc, account/cdr \u2014 6 requests per hour per IP.",
-    "version": "v2.2.2",
+    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/apikey \u2014 this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account/info, account/mrc, account/cdr, account/apikey \u2014 6 requests per hour per IP.",
+    "version": "v2.2.3",
     "title": "VoiceTel API v2.2",
     "license": {
       "name": "Apache 2.0",

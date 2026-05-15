@@ -1,9 +1,9 @@
-// Animate the "Real Volume" savings counter on the intro carousel
+// Animate the "Real Volume Discount" counter on the intro carousel
 // slide. The cycle is synced to the menu carousel's slide duration
 // (10s, matching ADVANCE_MS in menu-carousel.js): the counter ramps
 // from 0 → 90 → 30 across the slide's visible window and resets to 0
 // each time the intro slide becomes active again. Respects
-// prefers-reduced-motion (renders a static −30).
+// prefers-reduced-motion (renders a static 30).
 
 const el = document.querySelector("[data-savings-counter]");
 if (el) {
@@ -25,7 +25,7 @@ if (el) {
 	let running = false;
 
 	function render(v) {
-		el.textContent = `−${Math.round(v)}`;
+		el.textContent = String(Math.round(v));
 	}
 
 	function tick() {

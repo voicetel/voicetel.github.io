@@ -48,7 +48,11 @@ function exampleForFormat(format) {
 		case "password":
 			return "";
 		default:
-			return "";
+			// Match Redoc's sample fallback for a typeless string field: emit
+			// the literal "string" so request bodies are well-formed when sent
+			// unedited. An empty string can read as null/malformed to some
+			// handlers and propagates as a required-field error upstream.
+			return "string";
 	}
 }
 
@@ -59,7 +63,7 @@ function sampleScalar(schema) {
 		if (typeof schema.maximum === "number" && schema.maximum < 0) return schema.maximum;
 		return 0;
 	}
-	if (schema.type === "boolean") return false;
+	if (schema.type === "boolean") return true;
 	if (schema.type === "null") return null;
 	return null;
 }

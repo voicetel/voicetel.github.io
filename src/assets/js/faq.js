@@ -80,6 +80,9 @@ if (navLinks.length && "IntersectionObserver" in window) {
 // sees the answer immediately.
 function openHashTarget() {
 	if (!location.hash) return;
+	// Only handle FAQ permalinks (#q-…); other hashes (e.g. the playground's
+	// #op=…) aren't valid CSS selectors and throw on querySelector.
+	if (!/^#q-[A-Za-z0-9_-]+$/.test(location.hash)) return;
 	const target = document.querySelector(location.hash);
 	if (target && target.matches(".faq-item")) {
 		target.open = true;

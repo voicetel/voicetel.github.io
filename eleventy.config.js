@@ -85,7 +85,7 @@ export default function (eleventyConfig) {
 				seg.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 			items.push({ name: title, url: `${siteUrl}${url}` });
 		}
-		if (items.length < 2) return "";
+		if (items.length < 3) return "";
 		const itemListElement = items.map((it, i) => ({
 			"@type": "ListItem",
 			position: i + 1,

@@ -4,6 +4,19 @@ title: "Carrier Lookup"
 description: "LRN, MNP, and carrier-of-record lookup services for routing decisions, fraud controls, and rate-deck classification."
 ---
 
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "Service",
+	"serviceType": "LRN and carrier-of-record lookup",
+	"name": "VoiceTel Carrier Lookup",
+	"provider": { "@type": "Organization", "name": "{{ site.brand }}", "url": "{{ site.url }}" },
+	"areaServed": ["US", "CA"],
+	"url": "{{ site.url }}/carrier-lookup/",
+	"description": "LRN, mobile-portability, and carrier-of-record lookups for routing decisions, fraud controls, and rate-deck classification. REST API, batch CSV, and portal queries."
+}
+</script>
+
 <p class="eyebrow">Carrier intelligence</p>
 <h1>Know where a number routes before you rate, route, or risk-score it.</h1>
 <p class="lede">Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions.</p>

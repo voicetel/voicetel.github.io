@@ -60,6 +60,7 @@ async function boot(rootEl) {
 	renderOpPicker(state);
 	await renderKeyPanel(state);
 	wireKeyActions(state);
+	state.els.form.addEventListener("input", () => updateCurl(state));
 	selectFromHash(state);
 	window.addEventListener("hashchange", () => selectFromHash(state));
 }
@@ -148,7 +149,8 @@ function selectFromHash(state) {
 	const targetId = match
 		? decodeURIComponent(match[1])
 		: state.operations[0] && state.operations[0].operationId;
-	const op = state.operations.find((o) => o.operationId === targetId);
+	const op =
+		state.operations.find((o) => o.operationId === targetId) || state.operations[0] || null;
 	if (op) selectOp(state, op);
 }
 
@@ -166,8 +168,6 @@ function selectOp(state, op) {
 	state.els.send.textContent = `Send ${op.method.toUpperCase()}`;
 	renderEmpty(state.els.response, "Press Send to run this request.");
 	updateCurl(state);
-
-	state.els.form.addEventListener("input", () => updateCurl(state));
 }
 
 function updateCurl(state) {

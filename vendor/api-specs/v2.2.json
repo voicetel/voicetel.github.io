@@ -3243,7 +3243,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "VoiceTel API Key",
-        "description": "32-character hexadecimal API key obtained by POSTing your username and password to /v2.2/account/apikey. Pass it as the Bearer token on every request. Re-fetch after any password change."
+        "description": "32-character hexadecimal API key obtained by POSTing your username and password to /v2.2/account/api-key. Pass it as the Bearer token on every request. Re-fetch after any password change."
       }
     }
   },
@@ -7926,7 +7926,7 @@
     "contact": {
       "email": "support@voicetel.com"
     },
-    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/apikey \u2014 this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account/info, account/mrc, account/cdr, account/apikey \u2014 6 requests per hour per IP.",
+    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key \u2014 this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account, account/recurring-charges, account/cdr, account/api-key \u2014 6 requests per hour per IP.",
     "version": "v2.2.5",
     "title": "VoiceTel API",
     "license": {

@@ -4,16 +4,18 @@
       "url": "https://api.voicetel.com"
     }
   ],
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "components": {
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "scheme": "bearer",
         "type": "http"
       }
     },
     "schemas": {
       "errorResponse": {
+        "description": "Response wrapper for the error operation.",
         "type": "object",
         "properties": {
           "statusCode": {
@@ -36,6 +38,7 @@
         ]
       },
       "accountAddRequest": {
+        "description": "Request body for the account add operation.",
         "type": "object",
         "properties": {
           "name": {
@@ -69,6 +72,7 @@
         ]
       },
       "accountRegistrationResponse": {
+        "description": "Response wrapper for the account registration operation.",
         "type": "object",
         "properties": {
           "account": {
@@ -106,6 +110,7 @@
         ]
       },
       "accountSignupRequest": {
+        "description": "Request body for the account signup operation.",
         "type": "object",
         "properties": {
           "name": {
@@ -128,6 +133,7 @@
         ]
       },
       "accountAddResponse": {
+        "description": "Response wrapper for the account add operation.",
         "type": "object",
         "properties": {
           "account": {
@@ -145,7 +151,8 @@
             "enum": [
               "Account Information"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "Account Information"
           }
         },
         "required": [
@@ -156,6 +163,7 @@
         ]
       },
       "accountCdrRequest": {
+        "description": "Request body for the account cdr operation.",
         "type": "object",
         "properties": {
           "end": {
@@ -178,6 +186,7 @@
         ]
       },
       "accountRecoverResponse": {
+        "description": "Response wrapper for the account recover operation.",
         "type": "object",
         "properties": {
           "statusCode": {
@@ -200,6 +209,7 @@
         ]
       },
       "accountMrcResponse": {
+        "description": "Response wrapper for the account mrc operation.",
         "type": "object",
         "properties": {
           "mrc": {
@@ -208,7 +218,8 @@
             "items": {
               "additionalProperties": true,
               "type": "object"
-            }
+            },
+            "example": []
           },
           "statusCode": {
             "type": "string",
@@ -226,6 +237,7 @@
         ]
       },
       "signupAccountData": {
+        "description": "Signup account data shape.",
         "type": "object",
         "properties": {
           "name": {
@@ -243,7 +255,7 @@
           },
           "password": {
             "type": "string",
-            "description": "Auto-generated 10-character alphanumeric password.",
+            "description": "Auto-generated 10-character alphanumeric password (schema signupAccountData).",
             "example": "abc1234567"
           },
           "email": {
@@ -253,6 +265,7 @@
         }
       },
       "accountRecord": {
+        "description": "Account record shape.",
         "type": "object",
         "properties": {
           "name": {
@@ -301,6 +314,7 @@
         }
       },
       "accountInfoResponse": {
+        "description": "Response wrapper for the account info operation.",
         "type": "object",
         "properties": {
           "account": {
@@ -308,7 +322,8 @@
             "description": "Array containing the single account record.",
             "items": {
               "$ref": "#/components/schemas/accountRecord"
-            }
+            },
+            "example": []
           },
           "statusCode": {
             "type": "string",
@@ -326,6 +341,7 @@
         ]
       },
       "accountRecoverBadRequest": {
+        "description": "Request body for the account recover bad operation.",
         "type": "object",
         "properties": {
           "statusCode": {
@@ -340,13 +356,15 @@
             "enum": [
               "Field: email"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "Field: email"
           },
           "requirement": {
             "enum": [
               "Must be valid"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "Must be valid"
           }
         },
         "required": [
@@ -357,6 +375,7 @@
         ]
       },
       "accountSignupResponse": {
+        "description": "Response wrapper for the account signup operation.",
         "type": "object",
         "properties": {
           "account": {
@@ -374,7 +393,8 @@
             "enum": [
               "Account Information"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "Account Information"
           }
         },
         "required": [
@@ -385,6 +405,7 @@
         ]
       },
       "apikeyRequest": {
+        "description": "Request body for the apikey operation.",
         "type": "object",
         "properties": {
           "apikey": {
@@ -397,6 +418,7 @@
         ]
       },
       "accountCdrResponse": {
+        "description": "Response wrapper for the account cdr operation.",
         "type": "object",
         "properties": {
           "cdr": {
@@ -405,7 +427,8 @@
             "items": {
               "additionalProperties": true,
               "type": "object"
-            }
+            },
+            "example": []
           },
           "statusCode": {
             "type": "string",
@@ -423,6 +446,7 @@
         ]
       },
       "newAccountData": {
+        "description": "New account data shape.",
         "type": "object",
         "properties": {
           "name": {
@@ -435,7 +459,7 @@
           },
           "password": {
             "type": "string",
-            "description": "Auto-generated 10-character alphanumeric password.",
+            "description": "Auto-generated 10-character alphanumeric password (schema newAccountData).",
             "example": "abc1234567"
           },
           "email": {
@@ -449,6 +473,7 @@
         }
       },
       "accountRecoverRequest": {
+        "description": "Request body for the account recover operation.",
         "type": "object",
         "properties": {
           "email": {
@@ -461,6 +486,7 @@
         ]
       },
       "apiKeyRequest": {
+        "description": "Request body for the api key operation.",
         "type": "object",
         "required": [
           "username",
@@ -480,6 +506,7 @@
         }
       },
       "apiKeyResponse": {
+        "description": "Response wrapper for the api key operation.",
         "type": "object",
         "properties": {
           "statusCode": {
@@ -511,6 +538,7 @@
         "description": "Creates a new sub-account. Requires administrator API key. The new account password is auto-generated and returned in the response.",
         "operationId": "accountAdd",
         "requestBody": {
+          "description": "Body for add account.",
           "content": {
             "application/json": {
               "schema": {
@@ -539,7 +567,7 @@
                 }
               }
             },
-            "description": "Account creation failed"
+            "description": "Account creation failed (POST /v2.1/account/add/)."
           },
           "400": {
             "content": {
@@ -549,7 +577,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from account add."
           },
           "200": {
             "content": {
@@ -559,9 +587,12 @@
                 }
               }
             },
-            "description": "Account created"
+            "description": "Account created (POST /v2.1/account/add/)."
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/apikey/": {
@@ -604,7 +635,10 @@
           "429": {
             "description": "Rate limit exceeded"
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/cdr/": {
@@ -618,6 +652,7 @@
         "description": "Returns call detail records for the account within a time range. start and end are Unix timestamps. Defaults: start=now, end=24 hours ago. Rate limited to 6 requests per hour per IP address.",
         "operationId": "accountCdr",
         "requestBody": {
+          "description": "Body for call detail records.",
           "content": {
             "application/json": {
               "schema": {
@@ -636,7 +671,7 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from account cdr."
           },
           "429": {
             "content": {
@@ -646,7 +681,7 @@
                 }
               }
             },
-            "description": "Too Many Requests"
+            "description": "Too Many Requests response from account cdr."
           },
           "400": {
             "content": {
@@ -656,7 +691,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from account cdr."
           },
           "200": {
             "content": {
@@ -666,9 +701,12 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from account cdr."
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/info/": {
@@ -682,6 +720,7 @@
         "description": "Returns account details including balance, rate, and configuration. Rate limited to 6 requests per hour per IP address.",
         "operationId": "accountInfo",
         "requestBody": {
+          "description": "Body for account info.",
           "content": {
             "application/json": {
               "schema": {
@@ -700,7 +739,7 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from account info."
           },
           "429": {
             "content": {
@@ -710,7 +749,7 @@
                 }
               }
             },
-            "description": "Too Many Requests"
+            "description": "Too Many Requests response from account info."
           },
           "400": {
             "content": {
@@ -720,7 +759,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from account info."
           },
           "200": {
             "content": {
@@ -730,9 +769,12 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from account info."
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/mrc/": {
@@ -746,6 +788,7 @@
         "description": "Returns the current monthly recurring charges broken down by service plus a total. Rate limited to 6 requests per hour per IP address.",
         "operationId": "accountMrc",
         "requestBody": {
+          "description": "Body for monthly recurring charges.",
           "content": {
             "application/json": {
               "schema": {
@@ -764,7 +807,7 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from account mrc."
           },
           "429": {
             "content": {
@@ -774,7 +817,7 @@
                 }
               }
             },
-            "description": "Too Many Requests"
+            "description": "Too Many Requests response from account mrc."
           },
           "400": {
             "content": {
@@ -784,7 +827,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from account mrc."
           },
           "200": {
             "content": {
@@ -794,9 +837,12 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from account mrc."
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/recover/": {
@@ -804,6 +850,7 @@
         "summary": "Account Recovery",
         "operationId": "accountRecover",
         "requestBody": {
+          "description": "Body for account recovery.",
           "content": {
             "application/json": {
               "schema": {
@@ -845,7 +892,10 @@
             "description": "Recovery email sent"
           }
         },
-        "description": "Sends a password recovery link to the email address associated with the account. No authentication required."
+        "description": "Sends a password recovery link to the email address associated with the account. No authentication required.",
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/registration/": {
@@ -859,6 +909,7 @@
         "description": "Returns the current SIP registration details for the account including the registered SIP URI and user agent string.",
         "operationId": "accountRegistration",
         "requestBody": {
+          "description": "Body for sip registration.",
           "content": {
             "application/json": {
               "schema": {
@@ -877,7 +928,7 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from account registration."
           },
           "404": {
             "content": {
@@ -897,7 +948,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from account registration."
           },
           "200": {
             "content": {
@@ -909,7 +960,10 @@
             },
             "description": "Registered"
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/v2.1/account/signup/": {
@@ -917,6 +971,7 @@
         "summary": "Account Signup",
         "operationId": "accountSignup",
         "requestBody": {
+          "description": "Body for account signup.",
           "content": {
             "application/json": {
               "schema": {
@@ -935,7 +990,7 @@
                 }
               }
             },
-            "description": "Account creation failed"
+            "description": "Account creation failed (POST /v2.1/account/signup/)."
           },
           "400": {
             "content": {
@@ -955,15 +1010,18 @@
                 }
               }
             },
-            "description": "Account created"
+            "description": "Account created (POST /v2.1/account/signup/)."
           }
         },
-        "description": "Creates a new account. No authentication required. Returns account credentials. A verification email is sent to the provided address."
+        "description": "Creates a new account. No authentication required. Returns account credentials. A verification email is sent to the provided address.",
+        "tags": [
+          "Account"
+        ]
       }
     }
   },
   "info": {
-    "version": "v2.1.5",
+    "version": "v2.1.6",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -973,5 +1031,11 @@
     "contact": {
       "email": "support@voicetel.com"
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Account, billing, and signup endpoints."
+    }
+  ]
 }

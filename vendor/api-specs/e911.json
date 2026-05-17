@@ -3,6 +3,7 @@
     "/v2.1/e911/provisionAddress/": {
       "post": {
         "requestBody": {
+          "description": "Body for provision e911 address.",
           "content": {
             "application/json": {
               "schema": {
@@ -26,7 +27,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized or number not on account",
+            "description": "Unauthorized or number not on account (POST /v2.1/e911/provisionAddress/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -46,7 +47,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 provision address.",
             "content": {
               "application/json": {
                 "schema": {
@@ -61,12 +62,16 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     },
     "/v2.1/e911/queryAll/": {
       "post": {
         "requestBody": {
+          "description": "Body for query all e911 records.",
           "content": {
             "application/json": {
               "schema": {
@@ -100,7 +105,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from e 911 query all.",
             "content": {
               "application/json": {
                 "schema": {
@@ -110,7 +115,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 query all.",
             "content": {
               "application/json": {
                 "schema": {
@@ -125,12 +130,16 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     },
     "/v2.1/e911/queryRecord/": {
       "post": {
         "requestBody": {
+          "description": "Body for query e911 record.",
           "content": {
             "application/json": {
               "schema": {
@@ -154,7 +163,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized or number not on account",
+            "description": "Unauthorized or number not on account (POST /v2.1/e911/queryRecord/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -174,7 +183,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 query record.",
             "content": {
               "application/json": {
                 "schema": {
@@ -189,12 +198,16 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     },
     "/v2.1/e911/removeRecord/": {
       "post": {
         "requestBody": {
+          "description": "Body for remove e911 record.",
           "content": {
             "application/json": {
               "schema": {
@@ -218,7 +231,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized or number not on account",
+            "description": "Unauthorized or number not on account (POST /v2.1/e911/removeRecord/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -238,7 +251,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 remove record.",
             "content": {
               "application/json": {
                 "schema": {
@@ -253,12 +266,16 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     },
     "/v2.1/e911/validateAddress/": {
       "post": {
         "requestBody": {
+          "description": "Body for validate e911 address.",
           "content": {
             "application/json": {
               "schema": {
@@ -282,7 +299,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from e 911 validate address.",
             "content": {
               "application/json": {
                 "schema": {
@@ -302,7 +319,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 validate address.",
             "content": {
               "application/json": {
                 "schema": {
@@ -317,12 +334,16 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     },
     "/v2.1/e911/validateAndProvision/": {
       "post": {
         "requestBody": {
+          "description": "Body for validate and provision e911 address.",
           "content": {
             "application/json": {
               "schema": {
@@ -346,7 +367,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized or number not on account",
+            "description": "Unauthorized or number not on account (POST /v2.1/e911/validateAndProvision/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -366,7 +387,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from e 911 validate and provision.",
             "content": {
               "application/json": {
                 "schema": {
@@ -381,6 +402,9 @@
           {
             "apikey": []
           }
+        ],
+        "tags": [
+          "e911"
         ]
       }
     }
@@ -429,6 +453,7 @@
         "additionalProperties": true
       },
       "removeRecordResponse": {
+        "description": "Response wrapper for the remove record operation.",
         "type": "object",
         "properties": {
           "entry_removed": {
@@ -450,6 +475,7 @@
         ]
       },
       "errorResponse": {
+        "description": "Response wrapper for the error operation.",
         "type": "object",
         "properties": {
           "message": {
@@ -472,6 +498,7 @@
         ]
       },
       "faultResponse": {
+        "description": "Response wrapper for the fault operation.",
         "type": "object",
         "properties": {
           "message": {
@@ -495,6 +522,7 @@
         ]
       },
       "validateAndProvisionRequest": {
+        "description": "Request body for the validate and provision operation.",
         "type": "object",
         "properties": {
           "city": {
@@ -541,6 +569,7 @@
         ]
       },
       "apikeyRequest": {
+        "description": "Request body for the apikey operation.",
         "type": "object",
         "properties": {
           "apikey": {
@@ -553,6 +582,7 @@
         ]
       },
       "dnRequest": {
+        "description": "Request body for the dn operation.",
         "type": "object",
         "properties": {
           "apikey": {
@@ -571,6 +601,7 @@
         ]
       },
       "validateAddressResponse": {
+        "description": "Response wrapper for the validate address operation.",
         "type": "object",
         "properties": {
           "entry_valid": {
@@ -592,13 +623,15 @@
         ]
       },
       "queryAllResponse": {
+        "description": "Response wrapper for the query all operation.",
         "type": "object",
         "properties": {
           "entry_all": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/e911Entry"
-            }
+            },
+            "example": []
           },
           "statusCode": {
             "type": "string",
@@ -616,6 +649,7 @@
         ]
       },
       "queryRecordResponse": {
+        "description": "Response wrapper for the query record operation.",
         "type": "object",
         "properties": {
           "entry_query": {
@@ -637,6 +671,7 @@
         ]
       },
       "provisionAddressRequest": {
+        "description": "Request body for the provision address operation.",
         "type": "object",
         "properties": {
           "apikey": {
@@ -665,6 +700,7 @@
         ]
       },
       "provisionAddressResponse": {
+        "description": "Response wrapper for the provision address operation.",
         "type": "object",
         "properties": {
           "entry_added": {
@@ -686,6 +722,7 @@
         ]
       },
       "validateAddressRequest": {
+        "description": "Request body for the validate address operation.",
         "type": "object",
         "properties": {
           "city": {
@@ -724,6 +761,7 @@
     },
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "scheme": "bearer",
         "type": "http"
       }
@@ -740,11 +778,17 @@
     },
     "description": "e911 emergency services provisioning",
     "title": "e911 API",
-    "version": "v2.1.5",
+    "version": "v2.1.6",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "openapi": "3.0.1"
+  "openapi": "3.1.1",
+  "tags": [
+    {
+      "name": "e911",
+      "description": "e911 emergency address provisioning."
+    }
+  ]
 }

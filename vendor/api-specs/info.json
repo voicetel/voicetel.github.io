@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "paths": {
     "/v2.1/info/cnam/": {
       "post": {
@@ -12,6 +12,7 @@
         "operationId": "infoCnam",
         "description": "Returns the Caller ID Name (CNAM) for a 10-digit telephone number. Requires CNAM service to be enabled on the account.",
         "requestBody": {
+          "description": "Body for caller id name lookup.",
           "content": {
             "application/json": {
               "schema": {
@@ -30,7 +31,7 @@
                 }
               }
             },
-            "description": "Bad Request or service not enabled"
+            "description": "Bad Request or service not enabled (POST /v2.1/info/cnam/)."
           },
           "200": {
             "content": {
@@ -40,7 +41,7 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from info cnam."
           },
           "401": {
             "content": {
@@ -50,9 +51,12 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from info cnam."
           }
-        }
+        },
+        "tags": [
+          "Info"
+        ]
       }
     },
     "/v2.1/info/lrn/": {
@@ -66,6 +70,7 @@
         "operationId": "infoLrn",
         "description": "Returns the Location Routing Number (LRN) and carrier information for a destination number. Both dst and cid must be 10-digit NPANXXXXXX format.",
         "requestBody": {
+          "description": "Body for location routing number lookup.",
           "content": {
             "application/json": {
               "schema": {
@@ -84,7 +89,7 @@
                 }
               }
             },
-            "description": "Bad Request"
+            "description": "Bad request response from info lrn."
           },
           "200": {
             "content": {
@@ -94,7 +99,7 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from info lrn."
           },
           "401": {
             "content": {
@@ -104,9 +109,12 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from info lrn."
           }
-        }
+        },
+        "tags": [
+          "Info"
+        ]
       }
     },
     "/v2.1/info/resporg/": {
@@ -120,6 +128,7 @@
         "operationId": "infoRespOrg",
         "description": "Returns the Responsible Organization (RespOrg) ID for a toll-free telephone number. Requires LRN service to be enabled on the account.",
         "requestBody": {
+          "description": "Body for toll-free resporg lookup.",
           "content": {
             "application/json": {
               "schema": {
@@ -138,7 +147,7 @@
                 }
               }
             },
-            "description": "Bad Request or service not enabled"
+            "description": "Bad Request or service not enabled (POST /v2.1/info/resporg/)."
           },
           "200": {
             "content": {
@@ -148,7 +157,7 @@
                 }
               }
             },
-            "description": "Success"
+            "description": "OK response from info resp org."
           },
           "401": {
             "content": {
@@ -158,9 +167,12 @@
                 }
               }
             },
-            "description": "Unauthorized"
+            "description": "Unauthorized response from info resp org."
           }
-        }
+        },
+        "tags": [
+          "Info"
+        ]
       }
     }
   },
@@ -172,6 +184,7 @@
   "components": {
     "schemas": {
       "lrnRequest": {
+        "description": "Request body for the lrn operation.",
         "properties": {
           "cid": {
             "description": "Calling party number in NPANXXXXXX format.",
@@ -249,6 +262,7 @@
         "description": "LRN result. All fields are strings and may be empty. Field names derived from the XML response structure in lrn2::query()."
       },
       "resporgResponse": {
+        "description": "Response wrapper for the resporg operation.",
         "properties": {
           "status": {
             "type": "string",
@@ -277,6 +291,7 @@
         ]
       },
       "cnamResponse": {
+        "description": "Response wrapper for the cnam operation.",
         "properties": {
           "status": {
             "type": "string",
@@ -300,6 +315,7 @@
         ]
       },
       "cnamRequest": {
+        "description": "Request body for the cnam operation.",
         "properties": {
           "cid": {
             "description": "10-digit telephone number in NPANXXXXXX format.",
@@ -318,6 +334,7 @@
         ]
       },
       "lrnResponse": {
+        "description": "Response wrapper for the lrn operation.",
         "properties": {
           "lrn": {
             "$ref": "#/components/schemas/lrnData"
@@ -339,6 +356,7 @@
         ]
       },
       "errorResponse": {
+        "description": "Response wrapper for the error operation.",
         "properties": {
           "status": {
             "type": "string",
@@ -361,6 +379,7 @@
         ]
       },
       "resporgRequest": {
+        "description": "Request body for the resporg operation.",
         "properties": {
           "tn": {
             "description": "10-digit toll-free number in NPANXXXXXX format.",
@@ -381,6 +400,7 @@
     },
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "type": "http",
         "scheme": "bearer"
       }
@@ -392,10 +412,16 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "description": "Info Services",
-    "title": "Info Services",
+    "title": "Info API",
     "contact": {
       "email": "support@voicetel.com"
     },
-    "version": "v2.1.5"
-  }
+    "version": "v2.1.6"
+  },
+  "tags": [
+    {
+      "name": "Info",
+      "description": "Lookups (CNAM, LRN, Resp Org)."
+    }
+  ]
 }

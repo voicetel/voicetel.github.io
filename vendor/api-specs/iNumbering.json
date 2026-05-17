@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.1.1",
   "servers": [
     {
       "url": "https://api.voicetel.com"
@@ -12,7 +12,7 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "v2.1.5",
+    "version": "v2.1.6",
     "contact": {
       "email": "support@voicetel.com"
     }
@@ -20,12 +20,14 @@
   "components": {
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "scheme": "bearer",
         "type": "http"
       }
     },
     "schemas": {
       "tnInventoryCoverage": {
+        "description": "Tn inventory coverage shape.",
         "type": "object",
         "required": [
           "apikey"
@@ -58,6 +60,7 @@
         }
       },
       "tnOrder": {
+        "description": "Tn order shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -74,6 +77,7 @@
         }
       },
       "tnList": {
+        "description": "Tn list shape.",
         "type": "object",
         "required": [
           "tnItem"
@@ -86,11 +90,13 @@
             },
             "required": [
               "tn"
-            ]
+            ],
+            "example": []
           }
         }
       },
       "tn": {
+        "description": "Tn shape.",
         "type": "object",
         "required": [
           "tn"
@@ -107,6 +113,7 @@
         }
       },
       "messagingCampaign": {
+        "description": "Messaging campaign shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -134,6 +141,7 @@
         }
       },
       "tnMessagingCampaign": {
+        "description": "Tn messaging campaign shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -174,7 +182,8 @@
                           "example": "2015551234"
                         }
                       }
-                    }
+                    },
+                    "example": []
                   }
                 }
               }
@@ -183,6 +192,7 @@
         }
       },
       "tnOrder_tnOrder": {
+        "description": "Tn order tn order shape.",
         "type": "object",
         "required": [
           "tnList"
@@ -199,6 +209,7 @@
         }
       },
       "messagingBrand": {
+        "description": "Messaging brand shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -271,13 +282,13 @@
             "description": "Brand Name already exists"
           },
           "400": {
-            "description": "Bad input / missing required fields."
+            "description": "Bad input / missing required fields (POST /v2/iNumbering/addMessagingBrand/)."
           },
           "409": {
             "description": "Invalid Input Parameters | Invalid messagingBrandId format, should start with B and contain alphanumeric characters only"
           },
           "410": {
-            "description": "DB Error | Error specific to order_id or customerOrderReference"
+            "description": "DB Error | Error specific to order_id or customerOrderReference (POST /v2/iNumbering/addMessagingBrand/)."
           },
           "200": {
             "description": "Messaging brand added successfully.",
@@ -300,16 +311,16 @@
             }
           },
           "414": {
-            "description": "Fields Are Required: (field name)"
+            "description": "Fields Are Required: (field name) response from add messaging brand."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from add messaging brand."
           },
           "431": {
-            "description": "Unable to complete the request at the moment"
+            "description": "Unable to complete the request at the moment response from add messaging brand."
           },
           "411": {
-            "description": "Unknown Error"
+            "description": "Unknown Error response from add messaging brand."
           }
         },
         "summary": "Add Messaging Brand",
@@ -328,7 +339,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/addMessagingCampaign/": {
@@ -336,13 +350,13 @@
         "description": "Adds a new campaign for a specific messaging brand. campaignClassName and campaignStartDate are set automatically; callers do not need to provide those fields.",
         "responses": {
           "400": {
-            "description": "Bad input / missing required fields."
+            "description": "Bad input / missing required fields (POST /v2/iNumbering/addMessagingCampaign/)."
           },
           "409": {
             "description": "Invalid Input Parameters | Invalid messagingBrandId format | Invalid externalCampaignId format | externalCampaignId is not ACTIVE | externalCampaignId is not registered"
           },
           "410": {
-            "description": "DB Error | Error specific to order_id or customerOrderReference"
+            "description": "DB Error | Error specific to order_id or customerOrderReference (POST /v2/iNumbering/addMessagingCampaign/)."
           },
           "200": {
             "description": "Messaging campaign added successfully.",
@@ -365,19 +379,19 @@
             }
           },
           "430": {
-            "description": "No Result Found"
+            "description": "No Result Found response from add messaging campaign."
           },
           "414": {
-            "description": "Fields Are Required: (field name)"
+            "description": "Fields Are Required: (field name) response from add messaging campaign."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from add messaging campaign."
           },
           "431": {
-            "description": "Unable to complete the request at the moment"
+            "description": "Unable to complete the request at the moment response from add messaging campaign."
           },
           "411": {
-            "description": "Unknown Error"
+            "description": "Unknown Error response from add messaging campaign."
           }
         },
         "summary": "Add Messaging Campaign",
@@ -396,7 +410,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/tnInventory/": {
@@ -404,7 +421,7 @@
         "description": "Optional Filters: Select one or several of (lata,rateCenter,province).",
         "responses": {
           "409": {
-            "description": "Conflict.",
+            "description": "Conflict response from tn inventory.",
             "content": {
               "application/json": {
                 "schema": {
@@ -428,13 +445,13 @@
             }
           },
           "400": {
-            "description": "Bad input"
+            "description": "Bad request response from tn inventory."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from tn inventory."
           },
           "200": {
-            "description": "Success.",
+            "description": "OK response from tn inventory.",
             "content": {
               "application/json": {
                 "schema": {
@@ -470,7 +487,8 @@
                             "example": "NJ"
                           }
                         }
-                      }
+                      },
+                      "example": []
                     },
                     "statusCode": {
                       "type": "string",
@@ -498,7 +516,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/tnInventoryCoverage/": {
@@ -506,7 +527,7 @@
         "description": "Optional countBy: Select one of (state,rateCenter,npaNxx,block) default is (npaNxx). Optional Filters: Select one of (npa,lata,rcAbbre,locState). Results are filtered to items matching the submitted filter field.",
         "responses": {
           "409": {
-            "description": "Conflict.",
+            "description": "Conflict response from tn inventory coverage.",
             "content": {
               "application/json": {
                 "schema": {
@@ -530,10 +551,10 @@
             }
           },
           "400": {
-            "description": "Bad input"
+            "description": "Bad request response from tn inventory coverage."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from tn inventory coverage."
           },
           "200": {
             "description": "Success. tnInventoryCoverageList is filtered to items matching the submitted filter field (npa, lata, rcAbbre, or locState).",
@@ -577,7 +598,8 @@
                             "example": 973
                           }
                         }
-                      }
+                      },
+                      "example": []
                     },
                     "statusCode": {
                       "type": "string",
@@ -605,7 +627,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/tnMessagingCampaign/": {
@@ -619,7 +644,7 @@
             "description": "Invalid TN Submitted | Invalid Input Parameters"
           },
           "410": {
-            "description": "DB Error"
+            "description": "DB Error response from tn messaging campaign."
           },
           "200": {
             "description": "TN messaging campaign assigned successfully.",
@@ -652,13 +677,13 @@
             "description": "Order quantity limit is 100,000 numbers"
           },
           "414": {
-            "description": "Fields Are Required"
+            "description": "Fields Are Required response from tn messaging campaign."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from tn messaging campaign."
           },
           "431": {
-            "description": "Unable to complete the request at the moment"
+            "description": "Unable to complete the request at the moment response from tn messaging campaign."
           }
         },
         "summary": "Add Messaging Campaign to TNs",
@@ -677,7 +702,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/tnOrder/": {
@@ -685,7 +713,7 @@
         "description": "Order numbers and optionally route numbers. Route can be obtained from Gateways list API.",
         "responses": {
           "409": {
-            "description": "Conflict.",
+            "description": "Conflict response from tn order.",
             "content": {
               "application/json": {
                 "schema": {
@@ -693,7 +721,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "<upstream error text>"
+                      "example": "<network error text>"
                     },
                     "status": {
                       "type": "string",
@@ -733,7 +761,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from tn order."
           },
           "200": {
             "description": "Order placed successfully.",
@@ -747,7 +775,7 @@
                       "example": "Success"
                     },
                     "orderId": {
-                      "description": "Timestamp-based order reference (not the upstream IQ order ID)",
+                      "description": "Timestamp-based order reference (not the network order ID)",
                       "type": "string",
                       "example": "1717171717"
                     },
@@ -777,8 +805,17 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "iNumbering",
+      "description": "Carrier number-inventory operations."
+    }
+  ]
 }

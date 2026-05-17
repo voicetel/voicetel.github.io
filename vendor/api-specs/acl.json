@@ -1,7 +1,7 @@
 {
   "info": {
-    "version": "v2.1.5",
-    "title": "ACL",
+    "version": "v2.1.6",
+    "title": "ACL API",
     "contact": {
       "email": "support@voicetel.com"
     },
@@ -16,23 +16,26 @@
       "url": "https://api.voicetel.com"
     }
   ],
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "components": {
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "scheme": "bearer",
         "type": "http"
       }
     },
     "schemas": {
       "aclRemoveResponse": {
+        "description": "Response wrapper for the acl remove operation.",
         "properties": {
           "acl": {
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
             "type": "array",
-            "description": "Successfully removed entries."
+            "description": "Successfully removed entries.",
+            "example": []
           },
           "statusCode": {
             "example": "200",
@@ -46,7 +49,8 @@
             "enum": [
               "ACLs removed"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "ACLs removed"
           }
         },
         "required": [
@@ -58,6 +62,7 @@
         "type": "object"
       },
       "errorResponse": {
+        "description": "Response wrapper for the error operation.",
         "properties": {
           "statusCode": {
             "example": "400",
@@ -80,6 +85,7 @@
         "type": "object"
       },
       "aclConflictResponse": {
+        "description": "Response wrapper for the acl conflict operation.",
         "properties": {
           "statusCode": {
             "example": "409",
@@ -94,20 +100,23 @@
               "At least one ACL could not be added.",
               "At least one ACL could not be removed."
             ],
-            "type": "string"
+            "type": "string",
+            "example": "At least one ACL could not be added."
           },
           "acl_failed": {
             "items": {
               "$ref": "#/components/schemas/cidrErrorEntry"
             },
-            "type": "array"
+            "type": "array",
+            "example": []
           },
           "acl_success": {
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
             "type": "array",
-            "description": "Successfully processed entries. Empty array if none succeeded."
+            "description": "Successfully processed entries. Empty array if none succeeded.",
+            "example": []
           }
         },
         "required": [
@@ -120,6 +129,7 @@
         "type": "object"
       },
       "cidrEntry": {
+        "description": "A single cidr row.",
         "properties": {
           "cidr": {
             "example": "203.0.113.0/24",
@@ -133,13 +143,15 @@
         "type": "object"
       },
       "aclAddResponse": {
+        "description": "Response wrapper for the acl add operation.",
         "properties": {
           "acl": {
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
             "type": "array",
-            "description": "Successfully added entries."
+            "description": "Successfully added entries.",
+            "example": []
           },
           "statusCode": {
             "example": "200",
@@ -153,7 +165,8 @@
             "enum": [
               "ACLs added"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "ACLs added"
           }
         },
         "required": [
@@ -165,12 +178,14 @@
         "type": "object"
       },
       "aclListResponse": {
+        "description": "Response wrapper for the acl list operation.",
         "properties": {
           "acl": {
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
-            "type": "array"
+            "type": "array",
+            "example": []
           },
           "statusCode": {
             "example": "200",
@@ -189,6 +204,7 @@
         "type": "object"
       },
       "apikeyRequest": {
+        "description": "Request body for the apikey operation.",
         "properties": {
           "apikey": {
             "example": "Your API Key",
@@ -201,6 +217,7 @@
         "type": "object"
       },
       "cidrErrorEntry": {
+        "description": "A single cidr error row.",
         "properties": {
           "error": {
             "enum": [
@@ -209,7 +226,8 @@
               "Invalid mask",
               "CIDR range must be routable"
             ],
-            "type": "string"
+            "type": "string",
+            "example": "DB Insert failed"
           },
           "cidr": {
             "example": "203.0.113.0/24",
@@ -223,12 +241,14 @@
         "type": "object"
       },
       "aclModifyRequest": {
+        "description": "Request body for the acl modify operation.",
         "properties": {
           "acl": {
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
-            "type": "array"
+            "type": "array",
+            "example": []
           },
           "apikey": {
             "example": "Your API Key",
@@ -250,6 +270,7 @@
         "description": "Adds one or more IPv4 CIDR blocks to the account IP authentication ACL. Only routable public addresses are accepted. Mask must be divisible by 8 (/8, /16, /24, /32).",
         "operationId": "aclAdd",
         "requestBody": {
+          "description": "Body for add acl entries.",
           "required": true,
           "content": {
             "application/json": {
@@ -276,7 +297,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from acl add.",
             "content": {
               "application/json": {
                 "schema": {
@@ -286,7 +307,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from acl add.",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,7 +326,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "ACL"
+        ]
       }
     },
     "/v2.1/acl/list/": {
@@ -314,6 +338,7 @@
         "description": "Returns all IP ACL entries for the authenticated account.",
         "operationId": "aclList",
         "requestBody": {
+          "description": "Body for list acl entries.",
           "required": true,
           "content": {
             "application/json": {
@@ -330,7 +355,7 @@
         ],
         "responses": {
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from acl list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -350,7 +375,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from acl list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -360,7 +385,7 @@
             }
           },
           "200": {
-            "description": "Success",
+            "description": "OK response from acl list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -369,7 +394,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "ACL"
+        ]
       }
     },
     "/v2.1/acl/remove/": {
@@ -378,6 +406,7 @@
         "description": "Removes one or more IPv4 CIDR blocks from the account IP authentication ACL.",
         "operationId": "aclRemove",
         "requestBody": {
+          "description": "Body for remove acl entries.",
           "required": true,
           "content": {
             "application/json": {
@@ -404,7 +433,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from acl remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -414,7 +443,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from acl remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -433,8 +462,17 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "ACL"
+        ]
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "ACL",
+      "description": "IP-based access-control endpoints."
+    }
+  ]
 }

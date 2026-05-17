@@ -1,8 +1,8 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "info": {
-    "title": "VoiceTel 10DLC Campaign Registry API",
-    "description": "VoiceTel proxy to the TCR Campaign Service Provider API. Authenticate with your VoiceTel API key as a Bearer token.",
+    "title": "The Campaign Registry CSP API",
+    "description": "The Campaign Registry (TCR) Campaign Service Provider API. TCR is the central 10DLC registry governing A2P messaging in North America. VoiceTel aggregates TCR access across its customer base, exposing the registry through a single, Bearer-authenticated endpoint so each customer can register brands, build campaigns, and manage 10DLC lifecycle operations without provisioning a direct TCR account. Authenticate with your VoiceTel API key.",
     "contact": {
       "email": "support@voicetel.com"
     },
@@ -11,7 +11,7 @@
   "servers": [
     {
       "url": "https://api.voicetel.com/v2/csp",
-      "description": "VoiceTel 10DLC Campaign Registry Proxy"
+      "description": "VoiceTel 10DLC Proxy"
     }
   ],
   "paths": {
@@ -1371,7 +1371,7 @@
           "Brand"
         ],
         "summary": "Submit a revet for a brand",
-        "description": "Revetting a brand is necessary if a CSP changes brand information following initial registration. The revet\nverifies the brand\u2019s identity through a third party external vetting provider. If successful, the brand\u2019s\nidentity status is changed to VERIFIED (or VETTED_VERIFIED in some instances). Revets should only be used\nto validate changes to brand information following a successful registration (or to correct information if,\nfor example, an incorrect EIN was entered). If a brand wants to verify attributes that don\u2019t appear after\nregistration (such as a missing tax exempt status or government entity flag), they should submit a brand\nappeal and submit additional documentation to support their claim.",
+        "description": "Revetting a brand is necessary if a CSP changes brand information following initial registration. The revet\nverifies the brand\u2019s identity through a external vetting provider. If successful, the brand\u2019s\nidentity status is changed to VERIFIED (or VETTED_VERIFIED in some instances). Revets should only be used\nto validate changes to brand information following a successful registration (or to correct information if,\nfor example, an incorrect EIN was entered). If a brand wants to verify attributes that don\u2019t appear after\nregistration (such as a missing tax exempt status or government entity flag), they should submit a brand\nappeal and submit additional documentation to support their claim.",
         "operationId": "revetBrand",
         "parameters": [
           {
@@ -3027,7 +3027,7 @@
           "Campaign"
         ],
         "summary": "Get a campaign\u2019s status on all submitted MNOs",
-        "description": "Returns a set of key-value pairs in the response body with an MNO ID and the campaign\u2019s operational status on the carrier\u2019s network. <b>Note:</b> MNOs are encouraged, but not required, to report a campaign\u2019s operational status to TCR.\nValid responses include:\n<ul>\n<li><b>REGISTERED:</b> The campaign was approved and is registered with the MNO.</li>\n<li><b>REVIEW:</b> The campaign is currently under review by the MNO.</li>\n<li><b>REJECTED:</b> The campaign was rejected by the MNO.</li>\n<li><b>SUSPENDED:</b> The campaign is suspended on the MNO\u2019s network.</li>\n</ul>",
+        "description": "Returns a set of key-value pairs in the response body with an MNO ID and the campaign\u2019s operational status on the network. <b>Note:</b> MNOs are encouraged, but not required, to report a campaign\u2019s operational status to TCR.\nValid responses include:\n<ul>\n<li><b>REGISTERED:</b> The campaign was approved and is registered with the MNO.</li>\n<li><b>REVIEW:</b> The campaign is currently under review by the MNO.</li>\n<li><b>REJECTED:</b> The campaign was rejected by the MNO.</li>\n<li><b>SUSPENDED:</b> The campaign is suspended on the MNO\u2019s network.</li>\n</ul>",
         "operationId": "getCampaignOperationStatus",
         "parameters": [
           {
@@ -4260,7 +4260,7 @@
           "Enum Type"
         ],
         "summary": "List all brand identity statuses",
-        "description": "Returns a list of all possible identity statuses for a brand. The identity status of a brand indicates\nwhether its information has been verified by TCR or an external vetting partner. Options include:\n<ul>\n<li><b>SELF_DECLARED</b>: Indicates that the brand\u2019s identity is self-reported and not verified by\nTCR or any external vetting partner. This status is typically reserved for sole proprietorships.</li>\n<li><b>UNVERIFIED</b>: Indicates that the brand\u2019s identity information has not been verified. This\ncould be the result of incorrect or incomplete information submitted during brand registration or if the brand changed its information after initial registration. Brands with an UNVERIFIED identity status cannot create new campaigns and must undergo the verification process again, either by resubmitting their information or requesting a standard, enhanced, or political vet from an external partner.</li>\n<li><b>VERIFIED</b>: Indicates that the brand\u2019s identity information has been verified.</li>\n<li><b>VETTED_VERIFIED</b>: Indicates that the brand\u2019s identity has been successfully verified by a\nthird-party vetting provider. A brand can acquire this status by either applying for a standard or\nenhanced vet or by importing a third-party vetting token. Having a VETTED_VERIFIED status may grant a\nbrand access to additional campaign use cases and/or better terms on some MNO networks.</li>\n</ul>\n",
+        "description": "Returns a list of all possible identity statuses for a brand. The identity status of a brand indicates\nwhether its information has been verified by TCR or an external vetting partner. Options include:\n<ul>\n<li><b>SELF_DECLARED</b>: Indicates that the brand\u2019s identity is self-reported and not verified by\nTCR or any external vetting partner. This status is typically reserved for sole proprietorships.</li>\n<li><b>UNVERIFIED</b>: Indicates that the brand\u2019s identity information has not been verified. This\ncould be the result of incorrect or incomplete information submitted during brand registration or if the brand changed its information after initial registration. Brands with an UNVERIFIED identity status cannot create new campaigns and must undergo the verification process again, either by resubmitting their information or requesting a standard, enhanced, or political vet from an external partner.</li>\n<li><b>VERIFIED</b>: Indicates that the brand\u2019s identity information has been verified.</li>\n<li><b>VETTED_VERIFIED</b>: Indicates that the brand\u2019s identity has been successfully verified by a\nexternal vetting provider. A brand can acquire this status by either applying for a standard or\nenhanced vet or by importing a external vetting token. Having a VETTED_VERIFIED status may grant a\nbrand access to additional campaign use cases and/or better terms on some MNO networks.</li>\n</ul>\n",
         "operationId": "getBrandIdentityStatus",
         "responses": {
           "200": {
@@ -4859,7 +4859,7 @@
           "Enum Type"
         ],
         "summary": "List all campaign sharing rejection categories",
-        "description": "<p>Returns a list of all rejection categories for use when rejecting a campaign in the CSP and DCA APIs.</p>\nPossible categories include:\n<ul>\n<li>BRAND_INCONSISTENCIES: Brands must provide accurate details, according to those required fields for that Brand type. Brand and campaign details must be consistent.</li>\n<li>CALL_TO_ACTION: The CTA must ensure consumers understand how to opt-in and consent to receive messages, and it must clearly display program name, message frequency, potential charges, STOP keyword, and links to terms and privacy policies.</li>\n<li>CAMPAIGN_DESCRIPTION_OR_ATTRIBUTES: Campaign descriptions and attributes must align with the declared use case. Clear and concise description of the intended purpose of the campaign for the end user.</li>\n<li>DISALLOWED_CONTENT: Content related to gambling, drugs, hate speech, illegal activities, or high-risk services is strictly prohibited in campaigns.</li>\n<li>MANDATORY_MESSAGE_TERMINOLOGY: Mandatory message terminology includes opt-in confirmation, opt-out confirmation, help response, and required disclosures.</li>\n<li>PRIVACY_POLICY: A clear privacy policy must be provided to the consumer, explaining how personal data is collected and used. No third-party sharing for marketing purposes is allowed. The privacy policy should match the brand information.</li>\n<li>SAMPLE_MESSAGE: Sample messages must align with the declared use case and must not include disallowed content or public URL shorteners.</li>\n<li>TERMS_AND_CONDITIONS: Clear terms and conditions must be included outlining message frequency, message campaign description, fees, opt-in/out instructions, customer care contact info and a reference to the privacy policy. T&C's must also be consistent with the brand information.</li>\n<li>OTHER: For use when a campaign is rejected for reasons that do not fit within the other rejection categories.</li>\n</ul>",
+        "description": "<p>Returns a list of all rejection categories for use when rejecting a campaign in the CSP and DCA APIs.</p>\nPossible categories include:\n<ul>\n<li>BRAND_INCONSISTENCIES: Brands must provide accurate details, according to those required fields for that Brand type. Brand and campaign details must be consistent.</li>\n<li>CALL_TO_ACTION: The CTA must ensure consumers understand how to opt-in and consent to receive messages, and it must clearly display program name, message frequency, potential charges, STOP keyword, and links to terms and privacy policies.</li>\n<li>CAMPAIGN_DESCRIPTION_OR_ATTRIBUTES: Campaign descriptions and attributes must align with the declared use case. Clear and concise description of the intended purpose of the campaign for the end user.</li>\n<li>DISALLOWED_CONTENT: Content related to gambling, drugs, hate speech, illegal activities, or high-risk services is strictly prohibited in campaigns.</li>\n<li>MANDATORY_MESSAGE_TERMINOLOGY: Mandatory message terminology includes opt-in confirmation, opt-out confirmation, help response, and required disclosures.</li>\n<li>PRIVACY_POLICY: A clear privacy policy must be provided to the consumer, explaining how personal data is collected and used. No external sharing for marketing purposes is allowed. The privacy policy should match the brand information.</li>\n<li>SAMPLE_MESSAGE: Sample messages must align with the declared use case and must not include disallowed content or public URL shorteners.</li>\n<li>TERMS_AND_CONDITIONS: Clear terms and conditions must be included outlining message frequency, message campaign description, fees, opt-in/out instructions, customer care contact info and a reference to the privacy policy. T&C's must also be consistent with the brand information.</li>\n<li>OTHER: For use when a campaign is rejected for reasons that do not fit within the other rejection categories.</li>\n</ul>",
         "operationId": "listRejectionCategory",
         "responses": {
           "200": {
@@ -6170,7 +6170,7 @@
           "Partner Campaign"
         ],
         "summary": "Get MNO metadata from a shared campaign",
-        "description": "Returns an array with metadata on each MNO where the campaign has been submitted. The response contains information on the carrier terms and requirements for the campaign.",
+        "description": "Returns an array with metadata on each MNO where the campaign has been submitted. The response contains information on the network terms and requirements for the campaign.",
         "operationId": "getPartnerCampaignMnoMetadata",
         "parameters": [
           {
@@ -7709,21 +7709,21 @@
           "id": {
             "maxLength": 7,
             "type": "string",
-            "description": "Unique identifier of the direct connect aggregator"
+            "description": "Unique identifier of the network"
           },
           "displayName": {
             "maxLength": 100,
             "type": "string",
-            "description": "Display name of the direct connect aggregator."
+            "description": "Display name of the network."
           },
           "escalateEmail": {
             "maxLength": 2048,
             "type": "string",
-            "description": "Escalate email of the direct connect aggregator."
+            "description": "Escalate email of the network."
           },
           "dpaSigned": {
             "type": "boolean",
-            "description": "Indicates whether the direct connect aggregator signed the DPA with TCR or not"
+            "description": "Indicates whether the network signed the DPA with TCR or not"
           },
           "soleProprietorEnabled": {
             "type": "boolean",
@@ -8660,14 +8660,18 @@
           },
           "tag": {
             "uniqueItems": true,
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Tags to be set on the Brand.",
-            "nullable": true,
             "example": [],
             "items": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Tags to be set on the Brand.",
-              "nullable": true,
               "example": "[]"
             }
           },
@@ -10191,9 +10195,11 @@
           },
           "vettingToken": {
             "maxLength": 65535,
-            "type": "string",
-            "description": "Required by some providers for vetting record confirmation.",
-            "nullable": true
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Required by some providers for vetting record confirmation."
           }
         },
         "description": "A brand's external vetting information."
@@ -11085,15 +11091,19 @@
           },
           "mnoIds": {
             "uniqueItems": true,
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Submit campaign to given list of MNOs by MNO's network ID. Default is all MNOs if no value provided.",
-            "nullable": true,
             "example": [],
             "items": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "null"
+              ],
               "description": "Submit campaign to given list of MNOs by MNO's network ID. Default is all MNOs if no value provided.",
-              "format": "int64",
-              "nullable": true
+              "format": "int64"
             }
           },
           "referenceId": {
@@ -11108,14 +11118,18 @@
           },
           "tag": {
             "uniqueItems": true,
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Tags to be set on the Campaign.",
-            "nullable": true,
             "example": [],
             "items": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Tags to be set on the Campaign.",
-              "nullable": true,
               "example": "[]"
             }
           },

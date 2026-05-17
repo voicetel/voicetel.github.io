@@ -4,7 +4,7 @@
       "post": {
         "operationId": "campaigns",
         "requestBody": {
-          "description": "/v2.1/messaging/status/",
+          "description": "/v2.1/messaging/status/ (POST /v2.1/messaging/campaigns/).",
           "content": {
             "application/json": {
               "schema": {
@@ -40,6 +40,12 @@
                         "items": {
                           "type": "string"
                         }
+                      },
+                      "example": {
+                        "ABC123": [
+                          "12012548000",
+                          "12012548001"
+                        ]
                       }
                     },
                     "campaign_event_status": {
@@ -47,15 +53,31 @@
                       "additionalProperties": {
                         "type": "string",
                         "example": "CAMPAIGN_DCA_COMPLETE"
+                      },
+                      "example": {
+                        "ABC123": "CAMPAIGN_DCA_COMPLETE"
                       }
                     }
+                  }
+                },
+                "example": {
+                  "statusCode": "200",
+                  "message": "Campaign results",
+                  "status": "Success",
+                  "campaign_numbers": {
+                    "ABC123": [
+                      "12012548000"
+                    ]
+                  },
+                  "campaign_event_status": {
+                    "ABC123": "CAMPAIGN_DCA_COMPLETE"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from campaigns.",
             "content": {
               "application/json": {
                 "schema": {
@@ -70,7 +92,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -78,7 +101,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from campaigns.",
             "content": {
               "application/json": {
                 "schema": {
@@ -93,7 +116,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -101,13 +125,16 @@
             }
           }
         },
-        "description": "Query 10DLC CampaignID(s) assigned by The Campaign Registry.",
+        "description": "Query 10DLC CampaignID(s) assigned by TCR.",
         "security": [
           {
             "apikey": []
           }
         ],
-        "summary": "Campaigns"
+        "summary": "Campaigns",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/disable/": {
@@ -146,17 +173,35 @@
                     "numbers_enabled": {
                       "type": "object",
                       "additionalProperties": {
-                        "type": "object"
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
                       },
-                      "description": "Numbers successfully disabled, keyed by TN"
+                      "description": "Numbers successfully disabled, keyed by TN",
+                      "example": {
+                        "12012548000": [
+                          12012548000
+                        ]
+                      }
                     }
                   }
+                },
+                "example": {
+                  "numbers_enabled": {
+                    "12012548000": [
+                      12012548000
+                    ]
+                  },
+                  "message": "Number results",
+                  "status": "Success",
+                  "statusCode": "200"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from disable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -171,7 +216,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -179,7 +225,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from disable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -194,7 +240,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -223,15 +270,35 @@
                     "numbers_enabled": {
                       "type": "object",
                       "additionalProperties": {
-                        "type": "object"
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      },
+                      "example": {
+                        "12012548000": [
+                          12012548000
+                        ]
                       }
                     },
                     "numbers_failed": {
                       "type": "object",
                       "additionalProperties": {
                         "type": "string"
+                      },
+                      "example": {
+                        "2012548000": "Number not found on account"
                       }
                     }
+                  }
+                },
+                "example": {
+                  "statusCode": "409",
+                  "numbers_enabled": {},
+                  "message": "Number results",
+                  "status": "Error",
+                  "numbers_failed": {
+                    "2012548000": "Number not found on account"
                   }
                 }
               }
@@ -244,7 +311,10 @@
             "apikey": []
           }
         ],
-        "summary": "Number Disable"
+        "summary": "Number Disable",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/dlr/": {
@@ -262,7 +332,7 @@
         },
         "responses": {
           "200": {
-            "description": "Records returned",
+            "description": "OK response from dlr.",
             "content": {
               "application/json": {
                 "schema": {
@@ -280,7 +350,8 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -288,7 +359,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from dlr.",
             "content": {
               "application/json": {
                 "schema": {
@@ -303,7 +374,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -311,7 +383,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from dlr.",
             "content": {
               "application/json": {
                 "schema": {
@@ -326,7 +398,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -340,14 +413,17 @@
             "apikey": []
           }
         ],
-        "summary": "DLR"
+        "summary": "DLR",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/enable/": {
       "post": {
         "operationId": "enable",
         "requestBody": {
-          "description": "/v2.1/messaging/status/",
+          "description": "/v2.1/messaging/status/ (POST /v2.1/messaging/enable/).",
           "content": {
             "application/json": {
               "schema": {
@@ -379,16 +455,34 @@
                     "numbers_enabled": {
                       "type": "object",
                       "additionalProperties": {
-                        "type": "object"
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      },
+                      "example": {
+                        "12012548000": [
+                          12012548000
+                        ]
                       }
                     }
                   }
+                },
+                "example": {
+                  "numbers_enabled": {
+                    "12012548000": [
+                      12012548000
+                    ]
+                  },
+                  "message": "Number results",
+                  "status": "Success",
+                  "statusCode": "200"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from enable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -403,7 +497,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -411,7 +506,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from enable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -426,7 +521,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -455,15 +551,35 @@
                     "numbers_enabled": {
                       "type": "object",
                       "additionalProperties": {
-                        "type": "object"
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      },
+                      "example": {
+                        "12012548000": [
+                          12012548000
+                        ]
                       }
                     },
                     "numbers_failed": {
                       "type": "object",
                       "additionalProperties": {
                         "type": "string"
+                      },
+                      "example": {
+                        "2012548000": "Number not found on account"
                       }
                     }
+                  }
+                },
+                "example": {
+                  "statusCode": "409",
+                  "numbers_enabled": {},
+                  "message": "Number results",
+                  "status": "Error",
+                  "numbers_failed": {
+                    "2012548000": "Campaign ID Status: CAMPAIGN_INVALID_ID"
                   }
                 }
               }
@@ -476,7 +592,10 @@
             "apikey": []
           }
         ],
-        "summary": "Number Enable"
+        "summary": "Number Enable",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/mdr-mms/": {
@@ -494,7 +613,7 @@
         },
         "responses": {
           "200": {
-            "description": "Records returned",
+            "description": "OK response from mdr mms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -512,7 +631,8 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -520,7 +640,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from mdr mms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -535,7 +655,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -543,7 +664,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from mdr mms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -558,7 +679,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -566,7 +688,7 @@
             }
           },
           "404": {
-            "description": "Number not found on account",
+            "description": "Number not found on account (POST /v2.1/messaging/mdr-mms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -581,7 +703,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -595,7 +718,10 @@
             "apikey": []
           }
         ],
-        "summary": "MMS MDR"
+        "summary": "MMS MDR",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/mdr-sms/": {
@@ -613,7 +739,7 @@
         },
         "responses": {
           "200": {
-            "description": "Records returned",
+            "description": "OK response from mdr sms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -631,7 +757,8 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -639,7 +766,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from mdr sms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -654,7 +781,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -662,7 +790,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from mdr sms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -677,7 +805,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -685,7 +814,7 @@
             }
           },
           "404": {
-            "description": "Number not found on account",
+            "description": "Number not found on account (POST /v2.1/messaging/mdr-sms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -700,7 +829,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -714,7 +844,10 @@
             "apikey": []
           }
         ],
-        "summary": "SMS MDR"
+        "summary": "SMS MDR",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/mms/": {
@@ -732,7 +865,7 @@
         },
         "responses": {
           "200": {
-            "description": "Message queued for delivery",
+            "description": "Message queued for delivery (POST /v2.1/messaging/mms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -770,7 +903,7 @@
             }
           },
           "400": {
-            "description": "Message rejected \u2014 upstream messaging carrier returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
+            "description": "Message rejected \u2014 messaging network returned success=false. success and result.referenceId are stripped; result.transactionGUID is added.",
             "content": {
               "application/json": {
                 "schema": {
@@ -816,7 +949,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized \u2014 source number not on account",
+            "description": "Unauthorized \u2014 source number not on account (POST /v2.1/messaging/mms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -831,7 +964,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -839,7 +973,7 @@
             }
           },
           "402": {
-            "description": "Insufficient Funds",
+            "description": "Payment Required response from mms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -854,7 +988,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -877,7 +1012,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -885,7 +1021,7 @@
             }
           },
           "406": {
-            "description": "STOP Blocked \u2014 destination has opted out",
+            "description": "STOP Blocked \u2014 destination has opted out (POST /v2.1/messaging/mms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -900,7 +1036,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -914,7 +1051,10 @@
             "apikey": []
           }
         ],
-        "summary": "MMS"
+        "summary": "MMS",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/routein/": {
@@ -964,7 +1104,8 @@
                             "example": 2
                           }
                         }
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -972,7 +1113,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from routein.",
             "content": {
               "application/json": {
                 "schema": {
@@ -987,7 +1128,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -995,7 +1137,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from routein.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1010,7 +1152,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1018,7 +1161,7 @@
             }
           },
           "409": {
-            "description": "Partial failure \u2014 one or more numbers could not be updated",
+            "description": "Partial failure \u2014 one or more numbers could not be updated (POST /v2.1/messaging/routein/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1040,13 +1183,15 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     },
                     "numbers_failed": {
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -1060,7 +1205,10 @@
             "apikey": []
           }
         ],
-        "summary": "Route In"
+        "summary": "Route In",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/routeout/": {
@@ -1110,7 +1258,8 @@
                             "example": 2
                           }
                         }
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -1118,7 +1267,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from routeout.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1133,7 +1282,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1141,7 +1291,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from routeout.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1156,7 +1306,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1164,7 +1315,7 @@
             }
           },
           "409": {
-            "description": "Partial failure \u2014 one or more numbers could not be updated",
+            "description": "Partial failure \u2014 one or more numbers could not be updated (POST /v2.1/messaging/routeout/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1186,13 +1337,15 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     },
                     "numbers_failed": {
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -1206,7 +1359,10 @@
             "apikey": []
           }
         ],
-        "summary": "Route Out"
+        "summary": "Route Out",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/sms/": {
@@ -1224,7 +1380,7 @@
         },
         "responses": {
           "200": {
-            "description": "Message queued for delivery",
+            "description": "Message queued for delivery (POST /v2.1/messaging/sms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1277,7 +1433,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1285,7 +1442,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized \u2014 source number not on account",
+            "description": "Unauthorized \u2014 source number not on account (POST /v2.1/messaging/sms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1300,7 +1457,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1308,7 +1466,7 @@
             }
           },
           "402": {
-            "description": "Insufficient Funds",
+            "description": "Payment Required response from sms.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1323,7 +1481,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1346,7 +1505,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1354,7 +1514,7 @@
             }
           },
           "406": {
-            "description": "STOP Blocked \u2014 destination has opted out",
+            "description": "STOP Blocked \u2014 destination has opted out (POST /v2.1/messaging/sms/).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1369,7 +1529,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1407,7 +1568,10 @@
             "apikey": []
           }
         ],
-        "summary": "SMS"
+        "summary": "SMS",
+        "tags": [
+          "Messaging"
+        ]
       }
     },
     "/v2.1/messaging/status/": {
@@ -1461,7 +1625,8 @@
                             ]
                           }
                         }
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -1469,7 +1634,7 @@
             }
           },
           "400": {
-            "description": "Bad input",
+            "description": "Bad request response from status.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1484,7 +1649,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1492,7 +1658,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from status.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1507,7 +1673,8 @@
                       "example": "Error"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Operation completed."
                     }
                   }
                 }
@@ -1537,13 +1704,15 @@
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     },
                     "numbers_fail": {
                       "type": "array",
                       "items": {
                         "type": "object"
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -1557,12 +1726,15 @@
             "apikey": []
           }
         ],
-        "summary": "Number Status"
+        "summary": "Number Status",
+        "tags": [
+          "Messaging"
+        ]
       }
     }
   },
   "info": {
-    "version": "v2.1.5",
+    "version": "v2.1.6",
     "title": "Messaging API",
     "contact": {
       "email": "support@voicetel.com"
@@ -1576,6 +1748,7 @@
   "components": {
     "schemas": {
       "enable": {
+        "description": "Enable shape.",
         "properties": {
           "numbers": {
             "items": {
@@ -1584,7 +1757,8 @@
             "type": "array",
             "required": [
               "number"
-            ]
+            ],
+            "example": []
           },
           "apikey": {
             "type": "string",
@@ -1598,6 +1772,7 @@
         ]
       },
       "sms": {
+        "description": "Sms shape.",
         "properties": {
           "source": {
             "type": "integer",
@@ -1608,7 +1783,8 @@
             "example": "Your API Key"
           },
           "messageText": {
-            "type": "string"
+            "type": "string",
+            "example": "Operation completed."
           },
           "destination": {
             "type": "integer",
@@ -1624,6 +1800,7 @@
         ]
       },
       "campaignIDs": {
+        "description": "Campaign i ds shape.",
         "properties": {
           "apikey": {
             "type": "string",
@@ -1636,7 +1813,8 @@
             "type": "array",
             "required": [
               "campaignID"
-            ]
+            ],
+            "example": []
           }
         },
         "type": "object",
@@ -1646,9 +1824,11 @@
         ]
       },
       "mdr-sms": {
+        "description": "Mdr sms shape.",
         "properties": {
           "start": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           },
           "number": {
             "type": "integer",
@@ -1659,7 +1839,8 @@
             "example": "Your API Key"
           },
           "end": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           }
         },
         "type": "object",
@@ -1669,6 +1850,7 @@
         ]
       },
       "campaignID": {
+        "description": "Campaign id shape.",
         "properties": {
           "campaignID": {
             "type": "string",
@@ -1681,9 +1863,11 @@
         ]
       },
       "dlr": {
+        "description": "Dlr shape.",
         "properties": {
           "start": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           },
           "number": {
             "type": "integer",
@@ -1694,7 +1878,8 @@
             "example": "Your API Key"
           },
           "end": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           }
         },
         "type": "object",
@@ -1704,6 +1889,7 @@
         ]
       },
       "enablement": {
+        "description": "Enablement shape.",
         "properties": {
           "number": {
             "type": "string",
@@ -1711,7 +1897,7 @@
           },
           "campaignID": {
             "type": "string",
-            "example": "An approved 10DLC campaignID assigned by The Campaign Registry. eg: CORROSIVE"
+            "example": "An approved 10DLC campaignID assigned by TCR. eg: CORROSIVE"
           }
         },
         "type": "object",
@@ -1720,16 +1906,19 @@
         ]
       },
       "mms": {
+        "description": "Mms shape.",
         "properties": {
           "mmsURL": {
-            "type": "string"
+            "type": "string",
+            "example": "https://example.com/path"
           },
           "apikey": {
             "type": "string",
             "example": "Your API Key"
           },
           "messageText": {
-            "type": "string"
+            "type": "string",
+            "example": "Operation completed."
           },
           "destination": {
             "type": "integer",
@@ -1740,7 +1929,8 @@
             "example": 2015551234
           },
           "mmsSubject": {
-            "type": "string"
+            "type": "string",
+            "example": "example"
           }
         },
         "type": "object",
@@ -1752,6 +1942,7 @@
         ]
       },
       "routes": {
+        "description": "Routes shape.",
         "properties": {
           "numbers": {
             "items": {
@@ -1760,7 +1951,8 @@
             "type": "array",
             "required": [
               "number"
-            ]
+            ],
+            "example": []
           },
           "apikey": {
             "type": "string",
@@ -1774,9 +1966,11 @@
         ]
       },
       "mdr-mms": {
+        "description": "Mdr mms shape.",
         "properties": {
           "start": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           },
           "number": {
             "type": "integer",
@@ -1787,7 +1981,8 @@
             "example": "Your API Key"
           },
           "end": {
-            "type": "integer"
+            "type": "integer",
+            "example": 0
           }
         },
         "type": "object",
@@ -1797,6 +1992,7 @@
         ]
       },
       "number": {
+        "description": "Number shape.",
         "properties": {
           "number": {
             "type": "string",
@@ -1809,6 +2005,7 @@
         ]
       },
       "disable": {
+        "description": "Disable shape.",
         "properties": {
           "numbers": {
             "items": {
@@ -1817,7 +2014,8 @@
             "type": "array",
             "required": [
               "number"
-            ]
+            ],
+            "example": []
           },
           "apikey": {
             "type": "string",
@@ -1831,6 +2029,7 @@
         ]
       },
       "status": {
+        "description": "Status shape.",
         "properties": {
           "numbers": {
             "items": {
@@ -1839,7 +2038,8 @@
             "type": "array",
             "required": [
               "number"
-            ]
+            ],
+            "example": []
           },
           "apikey": {
             "type": "string",
@@ -1853,6 +2053,7 @@
         ]
       },
       "route": {
+        "description": "Route shape.",
         "properties": {
           "number": {
             "type": "string",
@@ -1872,6 +2073,7 @@
     },
     "securitySchemes": {
       "apikey": {
+        "description": "32-character hexadecimal API key. Pass as Bearer token.",
         "scheme": "bearer",
         "type": "http"
       }
@@ -1882,5 +2084,11 @@
       "url": "https://api.voicetel.com"
     }
   ],
-  "openapi": "3.0.0"
+  "openapi": "3.1.1",
+  "tags": [
+    {
+      "name": "Messaging",
+      "description": "Customer-facing messaging endpoints."
+    }
+  ]
 }

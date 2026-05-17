@@ -20,7 +20,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers add.",
             "content": {
               "application/json": {
                 "schema": {
@@ -30,7 +30,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers add.",
             "content": {
               "application/json": {
                 "schema": {
@@ -62,6 +62,7 @@
         },
         "description": "Assigns telephone numbers to the account. Account balance must cover the monthly DID rate multiplied by the number of DIDs being added.",
         "requestBody": {
+          "description": "Body for add numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -71,7 +72,10 @@
             }
           }
         },
-        "operationId": "numbersAdd"
+        "operationId": "numbersAdd",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/cnam/": {
@@ -94,7 +98,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers cnam.",
             "content": {
               "application/json": {
                 "schema": {
@@ -104,7 +108,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers cnam.",
             "content": {
               "application/json": {
                 "schema": {
@@ -126,6 +130,7 @@
         },
         "description": "Enables or disables inbound Caller ID Name (CNAM) lookup for one or more numbers.",
         "requestBody": {
+          "description": "Body for enable or disable inbound cnam.",
           "required": true,
           "content": {
             "application/json": {
@@ -135,7 +140,10 @@
             }
           }
         },
-        "operationId": "numbersCnam"
+        "operationId": "numbersCnam",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/disconnect/": {
@@ -158,7 +166,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers disconnect.",
             "content": {
               "application/json": {
                 "schema": {
@@ -168,7 +176,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers disconnect.",
             "content": {
               "application/json": {
                 "schema": {
@@ -190,6 +198,7 @@
         },
         "description": "Removes numbers from the account and returns them to the available pool. Numbers currently porting cannot be disconnected.",
         "requestBody": {
+          "description": "Body for disconnect numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -199,7 +208,10 @@
             }
           }
         },
-        "operationId": "numbersDisconnect"
+        "operationId": "numbersDisconnect",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/forward/": {
@@ -222,7 +234,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers forward remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -232,7 +244,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers forward remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -254,6 +266,7 @@
         },
         "description": "Removes call forwarding from one or more numbers.",
         "requestBody": {
+          "description": "Body for remove call forward.",
           "required": true,
           "content": {
             "application/json": {
@@ -263,7 +276,10 @@
             }
           }
         },
-        "operationId": "numbersForwardRemove"
+        "operationId": "numbersForwardRemove",
+        "tags": [
+          "Numbers"
+        ]
       },
       "post": {
         "security": [
@@ -284,7 +300,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers forward set.",
             "content": {
               "application/json": {
                 "schema": {
@@ -294,7 +310,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers forward set.",
             "content": {
               "application/json": {
                 "schema": {
@@ -316,6 +332,7 @@
         },
         "description": "Enables call forwarding on one or more numbers to a destination number.",
         "requestBody": {
+          "description": "Body for set call forward.",
           "required": true,
           "content": {
             "application/json": {
@@ -325,7 +342,10 @@
             }
           }
         },
-        "operationId": "numbersForwardSet"
+        "operationId": "numbersForwardSet",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/lidb/": {
@@ -348,7 +368,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers lidb.",
             "content": {
               "application/json": {
                 "schema": {
@@ -358,7 +378,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers lidb.",
             "content": {
               "application/json": {
                 "schema": {
@@ -378,8 +398,9 @@
             }
           }
         },
-        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for one or more numbers. Updates both the local database and submits to the carrier. The number must be on the account.",
+        "description": "Sets the outbound Caller ID Name (CNAM/LIDB) for one or more numbers. Updates the database and the routing network. The number must be on the account.",
         "requestBody": {
+          "description": "Body for set lidb / outbound caller id name.",
           "required": true,
           "content": {
             "application/json": {
@@ -389,7 +410,10 @@
             }
           }
         },
-        "operationId": "numbersLidb"
+        "operationId": "numbersLidb",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/list/": {
@@ -402,7 +426,7 @@
         "summary": "List Numbers",
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK response from numbers list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -412,7 +436,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -422,7 +446,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers list.",
             "content": {
               "application/json": {
                 "schema": {
@@ -444,6 +468,7 @@
         },
         "description": "Returns telephone numbers on the account with their route and gateway IP. Optionally filter by route ID or number.",
         "requestBody": {
+          "description": "Body for list numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -453,7 +478,10 @@
             }
           }
         },
-        "operationId": "numbersList"
+        "operationId": "numbersList",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/move/": {
@@ -476,7 +504,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers move.",
             "content": {
               "application/json": {
                 "schema": {
@@ -486,7 +514,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers move.",
             "content": {
               "application/json": {
                 "schema": {
@@ -508,6 +536,7 @@
         },
         "description": "Moves one or more numbers to a different account with a specified route.",
         "requestBody": {
+          "description": "Body for move numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -517,7 +546,10 @@
             }
           }
         },
-        "operationId": "numbersMove"
+        "operationId": "numbersMove",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/remove/": {
@@ -540,7 +572,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -550,7 +582,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers remove.",
             "content": {
               "application/json": {
                 "schema": {
@@ -572,6 +604,7 @@
         },
         "description": "Deletes numbers from the account entirely. Numbers currently porting cannot be removed.",
         "requestBody": {
+          "description": "Body for remove numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -581,7 +614,10 @@
             }
           }
         },
-        "operationId": "numbersRemove"
+        "operationId": "numbersRemove",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/route/": {
@@ -604,7 +640,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers route.",
             "content": {
               "application/json": {
                 "schema": {
@@ -614,7 +650,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers route.",
             "content": {
               "application/json": {
                 "schema": {
@@ -636,6 +672,7 @@
         },
         "description": "Sets the gateway route for one or more numbers.",
         "requestBody": {
+          "description": "Body for route numbers.",
           "required": true,
           "content": {
             "application/json": {
@@ -645,7 +682,10 @@
             }
           }
         },
-        "operationId": "numbersRoute"
+        "operationId": "numbersRoute",
+        "tags": [
+          "Numbers"
+        ]
       }
     },
     "/v2.1/numbers/translations/": {
@@ -668,7 +708,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized response from numbers translations.",
             "content": {
               "application/json": {
                 "schema": {
@@ -678,7 +718,7 @@
             }
           },
           "400": {
-            "description": "Bad Request",
+            "description": "Bad request response from numbers translations.",
             "content": {
               "application/json": {
                 "schema": {
@@ -700,6 +740,7 @@
         },
         "description": "Sets the inbound DNIS translation for one or more numbers.",
         "requestBody": {
+          "description": "Body for set number translations.",
           "required": true,
           "content": {
             "application/json": {
@@ -709,13 +750,17 @@
             }
           }
         },
-        "operationId": "numbersTranslations"
+        "operationId": "numbersTranslations",
+        "tags": [
+          "Numbers"
+        ]
       }
     }
   },
   "components": {
     "schemas": {
       "numberListEntry": {
+        "description": "A single number list row.",
         "required": [
           "number",
           "route",
@@ -739,6 +784,7 @@
         }
       },
       "numbersAddResponse": {
+        "description": "Response wrapper for the numbers add operation.",
         "required": [
           "statusCode",
           "status",
@@ -755,7 +801,8 @@
             "type": "string",
             "enum": [
               "Numbers added"
-            ]
+            ],
+            "example": "Numbers added"
           },
           "statusCode": {
             "example": "200",
@@ -765,11 +812,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberAddedEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersForwardDeleteRequest": {
+        "description": "Request body for the numbers forward delete operation.",
         "required": [
           "apikey",
           "numbers"
@@ -793,11 +842,13 @@
                   "type": "integer"
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberTranslationFailEntry": {
+        "description": "A single number translation fail row.",
         "required": [
           "number",
           "translation",
@@ -817,11 +868,13 @@
             "type": "string",
             "enum": [
               "Failed"
-            ]
+            ],
+            "example": "Failed"
           }
         }
       },
       "numbersRouteConflictResponse": {
+        "description": "Response wrapper for the numbers route conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -836,17 +889,21 @@
             "type": "string"
           },
           "numbers_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberRouteEntry"
             },
-            "nullable": true
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Route result"
-            ]
+            ],
+            "example": "Route result"
           },
           "statusCode": {
             "example": "409",
@@ -856,11 +913,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberRouteFailEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersCnamResponse": {
+        "description": "Response wrapper for the numbers cnam operation.",
         "required": [
           "statusCode",
           "status",
@@ -877,7 +936,8 @@
             "type": "string",
             "enum": [
               "CNAM results"
-            ]
+            ],
+            "example": "CNAM results"
           },
           "statusCode": {
             "example": "200",
@@ -887,11 +947,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberCnamEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numberCnamEntry": {
+        "description": "A single number cnam row.",
         "required": [
           "number",
           "cnam"
@@ -908,11 +970,13 @@
             "enum": [
               "TRUE",
               "FALSE"
-            ]
+            ],
+            "example": "TRUE"
           }
         }
       },
       "numbersRouteRequest": {
+        "description": "Request body for the numbers route operation.",
         "required": [
           "apikey",
           "numbers"
@@ -941,11 +1005,13 @@
                   "type": "integer"
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersAddConflictResponse": {
+        "description": "Response wrapper for the numbers add conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -963,13 +1029,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberAddedEntry"
-            }
+            },
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Numbers not added"
-            ]
+            ],
+            "example": "Numbers not added"
           },
           "statusCode": {
             "example": "409",
@@ -979,11 +1047,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberAddFailEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numberAddFailEntry": {
+        "description": "A single number add fail row.",
         "required": [
           "number",
           "route",
@@ -1006,6 +1076,7 @@
         }
       },
       "numberMoveFailEntry": {
+        "description": "A single number move fail row.",
         "required": [
           "number",
           "account",
@@ -1027,7 +1098,8 @@
             "enum": [
               "Failed",
               "Invalid Route"
-            ]
+            ],
+            "example": "Failed"
           },
           "account": {
             "example": 4592086960,
@@ -1036,6 +1108,7 @@
         }
       },
       "numberAddedEntry": {
+        "description": "A single number added row.",
         "required": [
           "number",
           "route"
@@ -1053,6 +1126,7 @@
         }
       },
       "numbersArrayRequest": {
+        "description": "Request body for the numbers array operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1076,11 +1150,13 @@
                   "type": "integer"
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberForwardEntry": {
+        "description": "A single number forward row.",
         "required": [
           "number",
           "destination"
@@ -1098,6 +1174,7 @@
         }
       },
       "numbersLidbRequest": {
+        "description": "Request body for the numbers lidb operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1132,11 +1209,13 @@
                   "description": "Optional order reference. Auto-generated if omitted."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersCnamConflictResponse": {
+        "description": "Response wrapper for the numbers cnam conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -1151,17 +1230,21 @@
             "type": "string"
           },
           "numbers_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberCnamEntry"
             },
-            "nullable": true
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "CNAM result"
-            ]
+            ],
+            "example": "CNAM result"
           },
           "statusCode": {
             "example": "409",
@@ -1171,11 +1254,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberCnamFailEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersListRequest": {
+        "description": "Request body for the numbers list operation.",
         "required": [
           "apikey"
         ],
@@ -1198,6 +1283,7 @@
         }
       },
       "numbersTranslationsRequest": {
+        "description": "Request body for the numbers translations operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1227,11 +1313,13 @@
                   "description": "DNIS translation value. Digits and # only."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberLidbEntry": {
+        "description": "A single number lidb row.",
         "required": [
           "number",
           "cnam",
@@ -1253,11 +1341,13 @@
             "enum": [
               "Local database updated",
               "Remote database updated"
-            ]
+            ],
+            "example": "Local database updated"
           }
         }
       },
       "numbersRemovedResponse": {
+        "description": "Response wrapper for the numbers removed operation.",
         "required": [
           "statusCode",
           "status",
@@ -1274,7 +1364,8 @@
             "type": "string",
             "enum": [
               "Numbers removed"
-            ]
+            ],
+            "example": "Numbers removed"
           },
           "statusCode": {
             "example": "200",
@@ -1284,11 +1375,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberRemovedEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersMoveResponse": {
+        "description": "Response wrapper for the numbers move operation.",
         "required": [
           "statusCode",
           "status",
@@ -1305,7 +1398,8 @@
             "type": "string",
             "enum": [
               "Move results"
-            ]
+            ],
+            "example": "Move results"
           },
           "statusCode": {
             "example": "200",
@@ -1315,7 +1409,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberMoveEntry"
-            }
+            },
+            "example": []
           }
         }
       },
@@ -1334,7 +1429,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberForwardFailEntry"
-            }
+            },
+            "example": []
           },
           "status": {
             "example": "Error",
@@ -1344,22 +1440,27 @@
             "type": "string",
             "enum": [
               "Foward result"
-            ]
+            ],
+            "example": "Foward result"
           },
           "statusCode": {
             "example": "409",
             "type": "string"
           },
           "foward_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberForwardEntry"
             },
-            "nullable": true
+            "example": []
           }
         }
       },
       "numberMoveEntry": {
+        "description": "A single number move row.",
         "required": [
           "number",
           "account",
@@ -1382,6 +1483,7 @@
         }
       },
       "numbersMoveRequest": {
+        "description": "Request body for the numbers move operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1417,11 +1519,13 @@
                   "description": "Destination account username."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberTranslationEntry": {
+        "description": "A single number translation row.",
         "required": [
           "number",
           "translation"
@@ -1439,6 +1543,7 @@
         }
       },
       "numberRouteFailEntry": {
+        "description": "A single number route fail row.",
         "required": [
           "number",
           "route",
@@ -1459,11 +1564,13 @@
             "enum": [
               "Failed",
               "Invalid Route"
-            ]
+            ],
+            "example": "Failed"
           }
         }
       },
       "numberRouteEntry": {
+        "description": "A single number route row.",
         "required": [
           "number",
           "route"
@@ -1481,6 +1588,7 @@
         }
       },
       "numberCnamFailEntry": {
+        "description": "A single number cnam fail row.",
         "required": [
           "number",
           "cnam",
@@ -1497,17 +1605,20 @@
             "enum": [
               "TRUE",
               "FALSE"
-            ]
+            ],
+            "example": "TRUE"
           },
           "message": {
             "type": "string",
             "enum": [
               "Failed"
-            ]
+            ],
+            "example": "Failed"
           }
         }
       },
       "numberForwardFailEntry": {
+        "description": "A single number forward fail row.",
         "required": [
           "number",
           "destination",
@@ -1523,7 +1634,8 @@
             "type": "string",
             "enum": [
               "Failed"
-            ]
+            ],
+            "example": "Failed"
           },
           "destination": {
             "example": "2125551234",
@@ -1532,6 +1644,7 @@
         }
       },
       "numbersRouteResponse": {
+        "description": "Response wrapper for the numbers route operation.",
         "required": [
           "statusCode",
           "status",
@@ -1548,7 +1661,8 @@
             "type": "string",
             "enum": [
               "Route results"
-            ]
+            ],
+            "example": "Route results"
           },
           "statusCode": {
             "example": "200",
@@ -1558,11 +1672,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberRouteEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersListResponse": {
+        "description": "Response wrapper for the numbers list operation.",
         "required": [
           "statusCode",
           "status",
@@ -1578,7 +1694,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberListEntry"
-            }
+            },
+            "example": []
           },
           "statusCode": {
             "example": "200",
@@ -1587,6 +1704,7 @@
         }
       },
       "numbersMoveConflictResponse": {
+        "description": "Response wrapper for the numbers move conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -1601,17 +1719,21 @@
             "type": "string"
           },
           "numbers_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberMoveEntry"
             },
-            "nullable": true
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Move result"
-            ]
+            ],
+            "example": "Move result"
           },
           "statusCode": {
             "example": "409",
@@ -1621,12 +1743,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberMoveFailEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersForwardResponse": {
-        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API.",
+        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API (schema numbersForwardResponse).",
         "required": [
           "statusCode",
           "status",
@@ -1643,13 +1766,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberForwardEntry"
-            }
+            },
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Foward results"
-            ]
+            ],
+            "example": "Foward results"
           },
           "statusCode": {
             "example": "200",
@@ -1658,6 +1783,7 @@
         }
       },
       "numbersLidbConflictResponse": {
+        "description": "Response wrapper for the numbers lidb conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -1672,17 +1798,21 @@
             "type": "string"
           },
           "numbers_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberLidbEntry"
             },
-            "nullable": true
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Numbers not modified"
-            ]
+            ],
+            "example": "Numbers not modified"
           },
           "statusCode": {
             "example": "409",
@@ -1692,11 +1822,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberLidbFailEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersListNotFound": {
+        "description": "Numbers list not found shape.",
         "required": [
           "statusCode",
           "status",
@@ -1713,7 +1845,8 @@
             "type": "string",
             "enum": [
               "Not Found"
-            ]
+            ],
+            "example": "Not Found"
           },
           "statusCode": {
             "example": "404",
@@ -1722,6 +1855,7 @@
         }
       },
       "numbersAddRequest": {
+        "description": "Request body for the numbers add operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1750,11 +1884,13 @@
                   "description": "Gateway route ID. Defaults to 4 (DID) if omitted or invalid."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberLidbFailEntry": {
+        "description": "A single number lidb fail row.",
         "required": [
           "number",
           "cnam",
@@ -1777,6 +1913,7 @@
         }
       },
       "errorResponse": {
+        "description": "Response wrapper for the error operation.",
         "required": [
           "statusCode",
           "status",
@@ -1799,7 +1936,7 @@
         }
       },
       "numbersForwardDeleteResponse": {
-        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API.",
+        "description": "Note: response key is 'foward' (not 'forward') \u2014 this is the key name as returned by the API (schema numbersForwardDeleteResponse).",
         "required": [
           "statusCode",
           "status",
@@ -1816,13 +1953,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberForwardRemovedEntry"
-            }
+            },
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Foward results"
-            ]
+            ],
+            "example": "Foward results"
           },
           "statusCode": {
             "example": "200",
@@ -1831,6 +1970,7 @@
         }
       },
       "numbersLidbResponse": {
+        "description": "Response wrapper for the numbers lidb operation.",
         "required": [
           "statusCode",
           "status",
@@ -1847,7 +1987,8 @@
             "type": "string",
             "enum": [
               "Numbers modified"
-            ]
+            ],
+            "example": "Numbers modified"
           },
           "statusCode": {
             "example": "200",
@@ -1857,11 +1998,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberLidbEntry"
-            }
+            },
+            "example": []
           }
         }
       },
       "numbersRemoveConflictResponse": {
+        "description": "Response wrapper for the numbers remove conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -1876,23 +2019,28 @@
             "type": "string"
           },
           "numbers_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberRemovedEntry"
             },
-            "nullable": true
+            "example": []
           },
           "numbers_error": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberRemoveErrorEntry"
-            }
+            },
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Remove result"
-            ]
+            ],
+            "example": "Remove result"
           },
           "statusCode": {
             "example": "409",
@@ -1901,6 +2049,7 @@
         }
       },
       "numbersTranslationsResponse": {
+        "description": "Response wrapper for the numbers translations operation.",
         "required": [
           "statusCode",
           "status",
@@ -1913,7 +2062,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberTranslationEntry"
-            }
+            },
+            "example": []
           },
           "status": {
             "example": "Success",
@@ -1923,7 +2073,8 @@
             "type": "string",
             "enum": [
               "Translation results"
-            ]
+            ],
+            "example": "Translation results"
           },
           "statusCode": {
             "example": "200",
@@ -1932,6 +2083,7 @@
         }
       },
       "numbersCnamRequest": {
+        "description": "Request body for the numbers cnam operation.",
         "required": [
           "apikey",
           "numbers"
@@ -1961,11 +2113,13 @@
                   "description": "true to enable inbound CNAM lookup, false to disable."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       },
       "numberForwardRemovedEntry": {
+        "description": "A single number forward removed row.",
         "required": [
           "number",
           "destination"
@@ -1980,11 +2134,13 @@
             "type": "string",
             "enum": [
               "removed"
-            ]
+            ],
+            "example": "removed"
           }
         }
       },
       "numberRemoveErrorEntry": {
+        "description": "A single number remove error row.",
         "required": [
           "number"
         ],
@@ -2002,6 +2158,7 @@
         }
       },
       "numbersTranslationsConflictResponse": {
+        "description": "Response wrapper for the numbers translations conflict operation.",
         "required": [
           "statusCode",
           "status",
@@ -2012,11 +2169,14 @@
         "type": "object",
         "properties": {
           "translation_success": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/numberTranslationEntry"
             },
-            "nullable": true
+            "example": []
           },
           "status": {
             "example": "Error",
@@ -2026,13 +2186,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/numberTranslationFailEntry"
-            }
+            },
+            "example": []
           },
           "message": {
             "type": "string",
             "enum": [
               "Translation result"
-            ]
+            ],
+            "example": "Translation result"
           },
           "statusCode": {
             "example": "409",
@@ -2041,6 +2203,7 @@
         }
       },
       "numberRemovedEntry": {
+        "description": "A single number removed row.",
         "required": [
           "number"
         ],
@@ -2053,6 +2216,7 @@
         }
       },
       "numbersForwardRequest": {
+        "description": "Request body for the numbers forward operation.",
         "required": [
           "apikey",
           "numbers"
@@ -2082,13 +2246,15 @@
                   "description": "10-digit destination number."
                 }
               }
-            }
+            },
+            "example": []
           }
         }
       }
     },
     "securitySchemes": {
       "apikey": {
+        "description": "apikey security scheme.",
         "type": "http",
         "scheme": "bearer"
       }
@@ -2109,7 +2275,13 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "v2.1.5"
+    "version": "v2.1.6"
   },
-  "openapi": "3.0.1"
+  "openapi": "3.1.1",
+  "tags": [
+    {
+      "name": "Numbers",
+      "description": "Number-management endpoints."
+    }
+  ]
 }

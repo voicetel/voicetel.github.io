@@ -1,17 +1,17 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.1.1",
   "servers": [
     {
       "url": "https://api.voicetel.com"
     }
   ],
   "info": {
-    "description": "iNumbering Porting",
+    "description": "iNumbering Porting. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/apikey on the same host \u2014 this endpoint does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`.",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "v2.1.5",
+    "version": "v2.1.6",
     "title": "iNumbering Porting API",
     "contact": {
       "email": "support@voicetel.com"
@@ -21,11 +21,13 @@
     "securitySchemes": {
       "apikey": {
         "scheme": "bearer",
-        "type": "http"
+        "type": "http",
+        "description": "32-character hexadecimal API key obtained by POSTing your username and password to /v2.2/account/apikey. Pass it as the Bearer token on every request."
       }
     },
     "schemas": {
       "portInOrder_tnItem_endUser": {
+        "description": "Port in order tn item end user shape.",
         "type": "object",
         "required": [
           "city",
@@ -105,6 +107,7 @@
         }
       },
       "portInAvailability": {
+        "description": "Port in availability shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -121,6 +124,7 @@
         }
       },
       "portStatus": {
+        "description": "Port status shape.",
         "type": "object",
         "required": [
           "apikey"
@@ -133,6 +137,7 @@
         }
       },
       "portInOrder": {
+        "description": "Port in order shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -149,6 +154,7 @@
         }
       },
       "tn": {
+        "description": "Tn shape.",
         "type": "object",
         "required": [
           "tn"
@@ -161,6 +167,7 @@
         }
       },
       "portInOrder_tnItem_tnFeature_callerId": {
+        "description": "Port in order tn item tn feature caller id shape.",
         "type": "object",
         "properties": {
           "callingName": {
@@ -170,17 +177,53 @@
         }
       },
       "portOutPin_portOutPin": {
+        "description": "Port out pin port out pin shape.",
         "type": "object",
         "required": [
           "tnList"
         ],
         "properties": {
           "tnList": {
-            "$ref": "#/components/schemas/tnList"
+            "$ref": "#/components/schemas/portOutPin_tnList"
+          }
+        }
+      },
+      "portOutPin_tnItem": {
+        "description": "Port out pin tn item shape.",
+        "type": "object",
+        "required": [
+          "tn"
+        ],
+        "properties": {
+          "tn": {
+            "type": "integer",
+            "example": 2015551234
+          },
+          "portOutPin": {
+            "type": "string",
+            "description": "Optional 4-digit PIN. If omitted, the server auto-generates a random PIN in the range 1000-9999 and returns it in the response.",
+            "example": "4291"
+          }
+        }
+      },
+      "portOutPin_tnList": {
+        "description": "Port out pin tn list shape.",
+        "type": "object",
+        "required": [
+          "tnItem"
+        ],
+        "properties": {
+          "tnItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/portOutPin_tnItem"
+            },
+            "example": []
           }
         }
       },
       "portOutPin": {
+        "description": "Port out pin shape.",
         "type": "object",
         "required": [
           "apikey",
@@ -197,6 +240,7 @@
         }
       },
       "portInOrder_portInOrder": {
+        "description": "Port in order port in order shape.",
         "type": "object",
         "required": [
           "desiredDueDate",
@@ -214,6 +258,7 @@
         }
       },
       "portInOrder_tnItem": {
+        "description": "Port in order tn item shape.",
         "type": "object",
         "required": [
           "accountNum",
@@ -235,6 +280,7 @@
             "example": "Name of port-in authorizer"
           },
           "authDate": {
+            "type": "string",
             "format": "date",
             "description": "Auto-set to 2 days ago; callers do not need to provide this field.",
             "example": "1970-01-01"
@@ -257,6 +303,7 @@
         }
       },
       "portInOrder_tnItem_tnFeature": {
+        "description": "Port in order tn item tn feature shape.",
         "type": "object",
         "properties": {
           "callerId": {
@@ -265,6 +312,7 @@
         }
       },
       "tnList": {
+        "description": "Tn list shape.",
         "type": "object",
         "required": [
           "tnItem"
@@ -277,11 +325,13 @@
             },
             "required": [
               "tn"
-            ]
+            ],
+            "example": []
           }
         }
       },
       "portInOrder_portInOrder_tnList": {
+        "description": "Port in order port in order tn list shape.",
         "type": "object",
         "required": [
           "tnItem"
@@ -291,7 +341,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/portInOrder_tnItem"
-            }
+            },
+            "example": []
           }
         }
       }
@@ -327,13 +378,13 @@
             }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad request response from port status."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from port status."
           },
           "200": {
-            "description": "Success.",
+            "description": "OK response from port status.",
             "content": {
               "application/json": {
                 "schema": {
@@ -422,7 +473,8 @@
                             }
                           }
                         }
-                      }
+                      },
+                      "example": []
                     }
                   }
                 }
@@ -446,7 +498,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/portInAvailability/": {
@@ -454,13 +509,13 @@
         "description": "Check number portability. All TNs must be verified here before submitting a portInOrder \u2014 returns 412 if any TN was not pre-verified. The portability result is cached for one hour; re-checking within that window returns the cached result.",
         "responses": {
           "400": {
-            "description": "Bad input"
+            "description": "Bad request response from port in availability."
           },
           "409": {
             "description": "Invalid TN submitted | Invalid Input Parameters"
           },
           "410": {
-            "description": "DB Error"
+            "description": "DB Error response from port in availability."
           },
           "200": {
             "description": "Portability check successful. notPortableReason is omitted when isPortable is true.",
@@ -480,7 +535,8 @@
                         "properties": {
                           "serviceProviderName": {
                             "type": "string",
-                            "example": "Level 3- SVR:8824/1"
+                            "description": "Current service provider for the TN.",
+                            "example": "Service Provider Name"
                           },
                           "telephoneNumber": {
                             "type": "string",
@@ -495,7 +551,8 @@
                             "type": "string"
                           }
                         }
-                      }
+                      },
+                      "example": []
                     },
                     "statusCode": {
                       "type": "string",
@@ -507,19 +564,19 @@
             }
           },
           "430": {
-            "description": "No Result Found"
+            "description": "No Result Found response from port in availability."
           },
           "414": {
             "description": "Fields Are Required | Wireless not allowed for Customer"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from port in availability."
           },
           "431": {
-            "description": "Unable to complete the request"
+            "description": "Unable to complete the request (POST /v2/iNumbering/portInAvailability/)."
           },
           "411": {
-            "description": "Unknown Error"
+            "description": "Unknown Error response from port in availability."
           }
         },
         "summary": "Portability Check",
@@ -538,21 +595,24 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/portInOrder/": {
       "post": {
-        "description": "Submit a port-in order directly to the carrier. ADMIN ONLY \u2014 customer port submissions must use POST /v2.2/account/port which routes through the LNP review queue. All TNs must first be verified via portInAvailability (returns 412 if not). authDate is auto-set. The configured per-TN port fee is deducted from the account balance.",
+        "description": "Submit a port-in order directly. ADMIN ONLY \u2014 customer port submissions must use POST /v2.2/account/port which routes through the LNP review queue. All TNs must first be verified via portInAvailability (returns 412 if not). authDate is auto-set. The configured per-TN port fee is deducted from the account balance.",
         "responses": {
           "400": {
-            "description": "Bad input"
+            "description": "Bad request response from port in order."
           },
           "409": {
-            "description": "Conflict"
+            "description": "Conflict response from port in order."
           },
           "410": {
-            "description": "DB Error"
+            "description": "DB Error response from port in order."
           },
           "412": {
             "description": "Pre-verification required \u2014 at least one submitted TN was not verified via portInAvailability first.",
@@ -603,16 +663,16 @@
             }
           },
           "414": {
-            "description": "Fields Are Required"
+            "description": "Fields Are Required response from port in order."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from port in order."
           },
           "431": {
-            "description": "Unable to complete the request"
+            "description": "Unable to complete the request (POST /v2/iNumbering/portInOrder/)."
           },
           "430": {
-            "description": "No Result Found"
+            "description": "No Result Found response from port in order."
           },
           "403": {
             "description": "Forbidden - administrator access required. Customers must use POST /v2.2/account/port instead."
@@ -634,7 +694,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     },
     "/v2/iNumbering/portOutPinUpdate/": {
@@ -642,13 +705,13 @@
         "description": "Update port-out PINs for phone numbers. portOutPin is optional for each tnItem \u2014 if omitted, a random 4-digit PIN (1000-9999) is auto-generated. Only TNs belonging to the authenticated account are processed.",
         "responses": {
           "409": {
-            "description": "Conflict"
+            "description": "Conflict response from port out pin update."
           },
           "400": {
             "description": "Bad input / missing tn."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized response from port out pin update."
           },
           "200": {
             "description": "Success. The portOutPin object is echoed back with auto-generated PINs filled in for any tnItem that did not include one. Only TNs belonging to the authenticated account are included.",
@@ -683,6 +746,16 @@
                             }
                           }
                         }
+                      },
+                      "example": {
+                        "tnList": {
+                          "tnItem": [
+                            {
+                              "tn": 2012548000,
+                              "portOutPin": "4287"
+                            }
+                          ]
+                        }
                       }
                     },
                     "status": {
@@ -694,6 +767,20 @@
                       "example": "200"
                     }
                   }
+                },
+                "example": {
+                  "statusCode": "200",
+                  "portOutPin": {
+                    "tnList": {
+                      "tnItem": [
+                        {
+                          "tn": 2012548000,
+                          "portOutPin": "4287"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Success"
                 }
               }
             }
@@ -715,8 +802,17 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "iNumbering"
+        ]
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "iNumbering",
+      "description": "Carrier port-in/port-out operations."
+    }
+  ]
 }

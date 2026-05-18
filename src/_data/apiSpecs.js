@@ -25,7 +25,11 @@ for (const file of files) {
 	const name = basename(file, ".json");
 	const specPath = resolve(SPECS_DIR, file);
 	const spec = JSON.parse(readFileSync(specPath, "utf8"));
-	const version = spec.info?.version || "";
+	// Upstream sometimes ships the version with the v prefix, sometimes without
+	// (v2.2.8 → 2.2.10 swap). Normalize so rendered version strings stay
+	// consistent across specs and across releases.
+	const rawVersion = spec.info?.version || "";
+	const version = /^v/i.test(rawVersion) ? rawVersion : rawVersion ? `v${rawVersion}` : "";
 	const mm = majorMinor(version);
 	if (!mm) {
 		throw new Error(`apiSpecs: cannot derive majorMinor from version "${version}" for ${file}`);

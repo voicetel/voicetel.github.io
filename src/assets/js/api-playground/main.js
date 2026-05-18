@@ -115,7 +115,22 @@ function groupByTag(operations) {
 		if (!groups.has(tag)) groups.set(tag, []);
 		groups.get(tag).push(op);
 	}
-	return groups;
+	// Sort group keys alphabetically (case-insensitive); pin "Other" to the bottom.
+	const sorted = new Map();
+	const tags = Array.from(groups.keys())
+		.filter((t) => t !== "Other")
+		.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+	for (const t of tags) sorted.set(t, sortOps(groups.get(t)));
+	if (groups.has("Other")) sorted.set("Other", sortOps(groups.get("Other")));
+	return sorted;
+}
+
+function sortOps(ops) {
+	return ops.slice().sort((a, b) =>
+		(a.summary || a.operationId).localeCompare(b.summary || b.operationId, undefined, {
+			sensitivity: "base",
+		})
+	);
 }
 
 function renderOpPicker(state) {
@@ -129,10 +144,10 @@ function renderOpPicker(state) {
 				)
 				.join("");
 			return `
-				<section class="playground-op-group">
-					<h3>${escapeText(tag)}</h3>
+				<details class="playground-op-group" open data-tag="${escapeAttr(tag)}">
+					<summary><span class="playground-op-group-name">${escapeText(tag)}</span> <span class="playground-op-group-count">${ops.length}</span></summary>
 					<ul>${items}</ul>
-				</section>
+				</details>
 			`;
 		})
 		.join("");
@@ -158,7 +173,14 @@ function selectOp(state, op) {
 	state.currentOp = op;
 
 	state.els.picker.querySelectorAll("[data-op-id]").forEach((btn) => {
-		btn.classList.toggle("is-active", btn.dataset.opId === op.operationId);
+		const active = btn.dataset.opId === op.operationId;
+		btn.classList.toggle("is-active", active);
+		// Auto-open the group containing the active op so it stays visible
+		// after the user folds groups or navigates by hash.
+		if (active) {
+			const group = btn.closest(".playground-op-group");
+			if (group && !group.open) group.open = true;
+		}
 	});
 
 	state.els.opTitle.textContent = op.summary || op.operationId;

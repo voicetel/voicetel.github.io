@@ -3326,13 +3326,54 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 	margin-bottom: var(--space-3);
 }
 
-.playground-op-group h3 {
+.playground-op-group > summary {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
 	margin: 0 0 var(--space-1);
+	padding: var(--space-1) 0;
 	font-size: var(--text-xs);
 	font-weight: var(--weight-semibold);
 	text-transform: uppercase;
 	letter-spacing: 0.04em;
 	color: var(--text-muted);
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+}
+
+.playground-op-group > summary::-webkit-details-marker {
+	display: none;
+}
+
+.playground-op-group > summary::before {
+	content: "";
+	display: inline-block;
+	width: 0.6em;
+	height: 0.6em;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(-45deg);
+	transition: transform 120ms ease;
+	flex: 0 0 auto;
+}
+
+.playground-op-group[open] > summary::before {
+	transform: rotate(45deg);
+}
+
+.playground-op-group > summary:focus-visible {
+	outline: 2px solid var(--primary-light);
+	outline-offset: 2px;
+}
+
+.playground-op-group-name {
+	flex: 1 1 auto;
+}
+
+.playground-op-group-count {
+	color: var(--text-muted);
+	font-weight: var(--weight-regular);
 }
 
 .playground-op-group ul {

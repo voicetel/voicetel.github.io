@@ -144,7 +144,7 @@ function renderOpPicker(state) {
 				)
 				.join("");
 			return `
-				<details class="playground-op-group" open data-tag="${escapeAttr(tag)}">
+				<details class="playground-op-group" data-tag="${escapeAttr(tag)}">
 					<summary><span class="playground-op-group-name">${escapeText(tag)}</span> <span class="playground-op-group-count">${ops.length}</span></summary>
 					<ul>${items}</ul>
 				</details>

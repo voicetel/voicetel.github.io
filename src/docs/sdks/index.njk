@@ -1,0 +1,86 @@
+---
+layout: layouts/page.njk
+permalink: /docs/sdks/
+title: "SDKs"
+description: "Official VoiceTel SDKs for Python, TypeScript, Go, Java, Kotlin, Scala, PHP, Ruby, C#, Rust, Swift, and Lua. All open-source, MIT-licensed, targeting the VoiceTel REST API v2.2.10."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / SDKs</p>
+<h1>Official client libraries for the VoiceTel REST API.</h1>
+<p class="lede">Twelve language SDKs, an interactive CLI, and Postman + Bruno collections — all open-source under MIT, all generated from the same OpenAPI spec, all targeting VoiceTel REST API {{ sdks.targetApi | replace("VoiceTel REST API ", "") }}.</p>
+
+<p class="hero-actions">
+	<a class="btn btn-primary" href="{{ sdks.source }}">Browse GitHub</a>
+	<a class="btn btn-secondary" href="/docs/api/v2.2/">API reference</a>
+</p>
+
+<section class="section-block">
+	<h2>SDKs</h2>
+	<div class="oss-cards">
+		{% for sdk in sdks.sdks %}
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "github" %}</span>
+				<h3 class="oss-card__title"><a href="{{ sdk.repo }}">{{ sdk.name }}</a></h3>
+			</header>
+			<p class="oss-card__description">{{ sdk.description }}</p>
+			<p class="oss-card__install">
+				{% if sdk.installLabel %}<span class="oss-card__install-label">{{ sdk.installLabel }}</span>{% endif %}<code>{{ sdk.install }}</code>
+			</p>
+			<p class="oss-card__url"><a href="{{ sdk.repo }}">{{ sdk.repo | replace("https://", "") }}</a></p>
+		</article>
+		{% endfor %}
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Tooling</h2>
+	<div class="oss-cards">
+		{% for tool in sdks.tooling %}
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon tool.icon %}</span>
+				<h3 class="oss-card__title"><a href="{{ tool.repo }}">{{ tool.name }}</a></h3>
+			</header>
+			<p class="oss-card__description">{{ tool.description }}</p>
+			<p class="oss-card__install"><code>{{ tool.install }}</code></p>
+			<p class="oss-card__url"><a href="{{ tool.repo }}">{{ tool.repo | replace("https://", "") }}</a></p>
+		</article>
+		{% endfor %}
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>What every SDK gets you</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+			<h3>Generated from the spec</h3>
+			<p>Every method, parameter, and response model is generated from <code>vendor/api-specs/v2.2.json</code>. The SDK shape matches the wire shape one-to-one.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Bearer auth, sane defaults</h3>
+			<p>Pass your 32-character API key once at construction. The SDK injects <code>Authorization: Bearer &lt;key&gt;</code> on every request; the key never appears in logs or error output.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3>Typed errors, not strings</h3>
+			<p>Distinct exception or result types for transport failures, 4xx client errors, 5xx server errors, and rate-limit responses. Branch on the type, not on the message text.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>All 74 operations covered</h3>
+			<p>Every operation in <a href="/docs/api/v2.2/">v2.2.10</a> is reachable from every SDK. No "supported in Python but not Go" gaps. CI runs the full operation matrix per release.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="sdk-cta-heading">
+	<h2 id="sdk-cta-heading">Prefer to call the API directly?</h2>
+	<p>The REST API is fully documented and runnable from your browser. Set your key in the playground and send live requests against the same endpoints these SDKs wrap.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/docs/api/v2.2/">API reference</a>
+		<a class="btn btn-secondary" href="/docs/api/v2.2/playground/">Try in playground</a>
+	</p>
+</aside>

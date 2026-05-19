@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "Open Source"
-description: "VoiceTel open-source projects: the voicetel/sdks index of 12 VoiceTel REST API libraries, the voicetel/voiceml-sdks index of 8 VoiceML voice + AMD libraries, memdb in-RAM SQLite with PostgreSQL wire protocol, mod_siprec RFC 7866 recording client for FreeSWITCH, and freeswitch-security event-driven threat detection."
+description: "VoiceTel open-source projects: the voicetel/sdks index of 12 VoiceTel REST API libraries, the voicetel/voiceml-sdks index of 8 VoiceML voice + AMD libraries, VoiceTel Phone cross-platform SIP softphone, memdb in-RAM SQLite with PostgreSQL wire protocol, mod_siprec RFC 7866 recording client for FreeSWITCH, and freeswitch-security event-driven threat detection."
 ---
 
 <p class="eyebrow">Open Source</p>
@@ -32,6 +32,15 @@ description: "VoiceTel open-source projects: the voicetel/sdks index of 12 Voice
 			</header>
 			<p class="oss-card__description">Index of the official VoiceML client libraries — eight language SDKs (<a href="https://github.com/voicetel/voiceml-python-sdk">Python</a>, <a href="https://github.com/voicetel/voiceml-node-sdk">TypeScript</a>, <a href="https://github.com/voicetel/voiceml-go-sdk">Go</a>, <a href="https://github.com/voicetel/voiceml-java-sdk">Java</a>, <a href="https://github.com/voicetel/voiceml-csharp-sdk">C#</a>, <a href="https://github.com/voicetel/voiceml-php-sdk">PHP</a>, <a href="https://github.com/voicetel/voiceml-ruby-sdk">Ruby</a>, <a href="https://github.com/voicetel/voiceml-swift">Swift</a>) for VoiceTel's outbound voice and answering-machine-detection service. Twilio-shape wire format, hand-written, MIT-licensed, all targeting VoiceML API v0.4.0. See also <a href="/docs/voiceml-sdks/">/docs/voiceml-sdks/</a>.</p>
 			<p class="oss-card__url"><a href="https://github.com/voicetel/voiceml-sdks">github.com/voicetel/voiceml-sdks</a></p>
+		</article>
+
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "github" %}</span>
+				<h3 class="oss-card__title"><a href="https://github.com/voicetel/phone">VoiceTel Phone</a></h3>
+			</header>
+			<p class="oss-card__description">Cross-platform SIP softphone that runs in the browser, as a desktop application on Windows, macOS, and Linux, and as a mobile app on iOS and Android. Built on SIP.js over WebRTC with SIP over TLS, RFC 2833 DTMF with SIP INFO fallback, call recording with inline playback, call history, contacts integration, NAT-friendly ICE/STUN, and a real-time SIP message log for debugging. The same code that powers <a href="https://phone.voicetel.com/">phone.voicetel.com</a>.</p>
+			<p class="oss-card__url"><a href="https://github.com/voicetel/phone">github.com/voicetel/phone</a></p>
 		</article>
 
 		<article class="oss-card">

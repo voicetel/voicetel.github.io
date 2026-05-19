@@ -1,0 +1,68 @@
+{
+	"source": "https://github.com/voicetel/voiceml-sdks",
+	"license": "MIT",
+	"targetApi": "VoiceML API v0.4.0",
+	"operationCount": 53,
+	"resourceGroupCount": 6,
+	"resourceGroups": "Calls, Conferences, Queues, Applications, Recordings, and Diagnostics",
+	"sdks": [
+		{
+			"name": "Python",
+			"slug": "python",
+			"repo": "https://github.com/voicetel/voiceml-python-sdk",
+			"install": "pip install voiceml",
+			"description": "Synchronous Client and AsyncClient. Pydantic v2 models, httpx transport, typed exception hierarchy."
+		},
+		{
+			"name": "TypeScript / Node",
+			"slug": "typescript",
+			"repo": "https://github.com/voicetel/voiceml-node-sdk",
+			"install": "npm install voiceml",
+			"description": "ESM and CJS entry points. Async-only API, fetch-based transport, zero runtime dependencies."
+		},
+		{
+			"name": "Go",
+			"slug": "go",
+			"repo": "https://github.com/voicetel/voiceml-go-sdk",
+			"install": "go get github.com/voicetel/voiceml-go-sdk",
+			"description": "Context-aware methods over net/http from the standard library. No third-party dependencies on the hot path."
+		},
+		{
+			"name": "Java",
+			"slug": "java",
+			"repo": "https://github.com/voicetel/voiceml-java-sdk",
+			"install": "com.voicetel:voiceml:0.4.0",
+			"installLabel": "Maven",
+			"description": "Java 11+ client over java.net.http. Builder-style request construction, Jackson serialization."
+		},
+		{
+			"name": "C# / .NET",
+			"slug": "csharp",
+			"repo": "https://github.com/voicetel/voiceml-csharp-sdk",
+			"install": "dotnet add package VoiceML",
+			"description": "Net 8 async/await client. System.Text.Json serialization; zero NuGet dependencies."
+		},
+		{
+			"name": "PHP",
+			"slug": "php",
+			"repo": "https://github.com/voicetel/voiceml-php-sdk",
+			"install": "composer require voicetel/voiceml",
+			"description": "PHP 8.1+ client on Guzzle 7. Typed enums, PSR-4 autoloading, predictable exception types."
+		},
+		{
+			"name": "Ruby",
+			"slug": "ruby",
+			"repo": "https://github.com/voicetel/voiceml-ruby-sdk",
+			"install": "gem install voiceml",
+			"description": "Ruby 3 client over the standard-library Net::HTTP. Keyword-argument methods, zero gem dependencies."
+		},
+		{
+			"name": "Swift",
+			"slug": "swift",
+			"repo": "https://github.com/voicetel/voiceml-swift",
+			"install": "https://github.com/voicetel/voiceml-swift",
+			"installLabel": "Swift Package Manager",
+			"description": "Swift 5.9 client with async throws methods over URLSession. iOS, macOS, tvOS, watchOS, and Linux targets."
+		}
+	]
+}

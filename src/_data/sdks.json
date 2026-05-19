@@ -1,0 +1,114 @@
+{
+	"source": "https://github.com/voicetel",
+	"license": "MIT",
+	"targetApi": "VoiceTel REST API v2.2.10",
+	"sdks": [
+		{
+			"name": "Python",
+			"slug": "python",
+			"repo": "https://github.com/voicetel/python-sdk",
+			"install": "pip install voicetel-api",
+			"import": "import voicetel",
+			"description": "Idiomatic Python client. Synchronous and async transports, typed request/response models, retries with exponential backoff."
+		},
+		{
+			"name": "TypeScript / JavaScript",
+			"slug": "typescript",
+			"repo": "https://github.com/voicetel/typescript-sdk",
+			"install": "npm install @voicetel/sdk",
+			"description": "Typed client for Node and modern browsers. ESM and CJS entry points, generated from the OpenAPI spec, fetch-based transport."
+		},
+		{
+			"name": "Go",
+			"slug": "go",
+			"repo": "https://github.com/voicetel/go-sdk",
+			"install": "go get github.com/voicetel/go-sdk",
+			"description": "Generated Go client with context-aware methods and structured error types. No reflection on the hot path."
+		},
+		{
+			"name": "Java",
+			"slug": "java",
+			"repo": "https://github.com/voicetel/java-sdk",
+			"install": "com.voicetel:voicetel-sdk:2.2.10",
+			"installLabel": "Maven",
+			"description": "Java 11+ client with builder-style request construction. Pluggable HTTP transport; OkHttp by default."
+		},
+		{
+			"name": "Kotlin",
+			"slug": "kotlin",
+			"repo": "https://github.com/voicetel/kotlin-sdk",
+			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.10",
+			"installLabel": "Gradle",
+			"description": "Coroutine-first Kotlin client. Suspending functions, sealed result types, idiomatic null handling."
+		},
+		{
+			"name": "Scala",
+			"slug": "scala",
+			"repo": "https://github.com/voicetel/scala-sdk",
+			"install": "com.voicetel:voicetel-sdk_3:2.2.10",
+			"installLabel": "sbt",
+			"description": "Scala 3 client. Effect-system-agnostic core with thin Future and cats-effect bindings."
+		},
+		{
+			"name": "PHP",
+			"slug": "php",
+			"repo": "https://github.com/voicetel/php-sdk",
+			"install": "composer require voicetel/sdk",
+			"description": "PSR-7 / PSR-18 client for PHP 8.1+. Strict types, enum responses, predictable exception hierarchy."
+		},
+		{
+			"name": "Ruby",
+			"slug": "ruby",
+			"repo": "https://github.com/voicetel/ruby-sdk",
+			"install": "gem install voicetel",
+			"description": "Ruby 3 client. Block-form pagination, Faraday-based transport, typed Struct responses."
+		},
+		{
+			"name": "C# / .NET",
+			"slug": "csharp",
+			"repo": "https://github.com/voicetel/csharp-sdk",
+			"install": "dotnet add package VoiceTel.Sdk",
+			"description": "Net 8 client with async/await throughout. Source-generated System.Text.Json serialization; AOT-compatible."
+		},
+		{
+			"name": "Rust",
+			"slug": "rust",
+			"repo": "https://github.com/voicetel/rust-sdk",
+			"install": "cargo add voicetel",
+			"description": "Async Rust client over reqwest. Strongly typed request and response structs; serde everywhere."
+		},
+		{
+			"name": "Swift",
+			"slug": "swift",
+			"repo": "https://github.com/voicetel/swift-sdk",
+			"install": "https://github.com/voicetel/swift-sdk",
+			"installLabel": "Swift Package Manager",
+			"description": "Swift 5.9+ async/await client. Codable models, structured concurrency, iOS and macOS targets."
+		},
+		{
+			"name": "Lua",
+			"slug": "lua",
+			"repo": "https://github.com/voicetel/lua-sdk",
+			"install": "drop into /etc/freeswitch/scripts/",
+			"description": "FreeSWITCH mod_lua client. Call into the VoiceTel API from dialplan scripts without leaving the runtime."
+		}
+	],
+	"tooling": [
+		{
+			"name": "VoiceTel CLI",
+			"slug": "cli",
+			"icon": "gear",
+			"repo": "https://github.com/voicetel/cli",
+			"install": "go install github.com/voicetel/cli@latest",
+			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.10 operation from the terminal."
+		},
+		{
+			"name": "API Collections",
+			"slug": "collections",
+			"icon": "layers",
+			"repo": "https://github.com/voicetel/api-collections",
+			"install": "import into Postman or Bruno",
+			"description": "Pre-built Postman and Bruno collections covering all 74 v2.2.10 operations. Environment templates for API key and base URL included."
+		}
+	]
+}

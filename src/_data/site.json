@@ -221,6 +221,7 @@
 			"label": "Resources",
 			"items": [
 				{ "label": "Documentation", "href": "/docs/" },
+				{ "label": "SDKs", "href": "/docs/sdks/" },
 				{ "label": "FAQ", "href": "/faq/" },
 				{ "label": "Support", "href": "/support/" },
 				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },

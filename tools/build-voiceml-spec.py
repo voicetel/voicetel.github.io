@@ -36,6 +36,9 @@ def rewrite_branding(value):
 		value = re.sub(r"callbroadcast", "voiceml", value)
 		# Single canonical host
 		value = value.replace("east-1.us.voiceml.voicetel.com", "voiceml.voicetel.com")
+		# Upstream substitutes the base URL at request time. For static rendering
+		# we want the canonical public host baked in.
+		value = value.replace("__CB_BASE_URL__", "https://voiceml.voicetel.com")
 		# License URL pointed at an internal repo; redirect to the public legal page
 		value = re.sub(
 			r"https?://github\.com/voicetel/[A-Za-z0-9_-]+/blob/[^/]+/LICENSE",
@@ -70,11 +73,12 @@ TAG_RULES = [
 	(re.compile(r"^/Queues/\{[^}]+\}/Members"), "Queues / Members"),
 	(re.compile(r"^/Queues"), "Queues"),
 	(re.compile(r"^/Applications"), "Applications"),
+	(re.compile(r"^/IncomingPhoneNumbers"), "IncomingPhoneNumbers"),
 	(re.compile(r"^/Recordings"), "Recordings"),
 ]
 
 # Paths NOT under /AccountSid/ — diagnostics / service introspection.
-DIAG_PATHS = {"/health", "/openapi.yaml", "/openapi.json"}
+DIAG_PATHS = {"/health", "/openapi.yaml", "/openapi.yml", "/openapi.json"}
 
 # x-tagGroups for Redoc's left-rail grouping. Order matters — controls reading
 # order of the rendered docs.
@@ -84,6 +88,7 @@ TAG_GROUPS = [
 	{"name": "Conferences", "tags": ["Conferences", "Conferences / Participants", "Conferences / Recordings"]},
 	{"name": "Queues", "tags": ["Queues", "Queues / Members"]},
 	{"name": "Applications", "tags": ["Applications"]},
+	{"name": "Numbers", "tags": ["IncomingPhoneNumbers"]},
 	{"name": "Recordings (top-level)", "tags": ["Recordings"]},
 	{"name": "Diagnostics", "tags": ["Diagnostics"]},
 ]

@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.4.0",
+    "version": "0.6.1",
     "summary": "Outbound voice + AMD service with Twilio-shaped REST surface",
-    "description": "VoiceML exposes the Twilio Programmable Voice Calls REST API surface\nso existing Twilio SDKs (`twilio-node`, `twilio-python`, `twilio-go`, ...)\nwork against it as a drop-in replacement. The wire shape, authentication\nmodel, error codes, and pagination envelope all match Twilio's\ndocumented behaviour.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — drop-in compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
+    "description": "VoiceML (development name `VoiceML`) exposes the Twilio Programmable\nVoice Calls REST API surface so existing Twilio SDKs (`twilio-node`,\n`twilio-python`, `twilio-go`, ...) work against it as a drop-in replacement.\nThe wire shape, authentication model, error codes, and pagination envelope\nall match Twilio's documented behaviour.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against it produce strict-Twilio-shape\nURLs out of the box; existing clients that omit `.json` continue to work\nunchanged.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — drop-in compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
       "name": "VoiceTel",
       "url": "https://voiceml.voicetel.com"
@@ -23,6 +23,59 @@
   "security": [
     {
       "basicAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Applications"
+    },
+    {
+      "name": "Calls"
+    },
+    {
+      "name": "Calls / Events"
+    },
+    {
+      "name": "Calls / Notifications"
+    },
+    {
+      "name": "Calls / Recordings"
+    },
+    {
+      "name": "Calls / Siprec"
+    },
+    {
+      "name": "Calls / Streams"
+    },
+    {
+      "name": "Calls / Transcriptions"
+    },
+    {
+      "name": "Calls / UserDefinedMessages"
+    },
+    {
+      "name": "Conferences"
+    },
+    {
+      "name": "Conferences / Participants"
+    },
+    {
+      "name": "Conferences / Recordings"
+    },
+    {
+      "name": "Diagnostics"
+    },
+    {
+      "name": "IncomingPhoneNumbers"
+    },
+    {
+      "name": "Queues"
+    },
+    {
+      "name": "Queues / Members"
+    },
+    {
+      "name": "Recordings"
     }
   ],
   "components": {
@@ -92,6 +145,60 @@
         "schema": {
           "type": "string",
           "pattern": "^AP[0-9a-f]{32}$"
+        }
+      },
+      "SubresourceSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-shape subresource SID — used by Streams (`MZ` prefix),\nSiprec (`SR` prefix), and Transcriptions (`RT` prefix). The\nregex covers all three subresources mounted under\n`/Calls/{CallSid}/{Streams|Siprec|Transcriptions}/{Sid}`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^(MZ|SR|RT)[a-f0-9]{32}$"
+        }
+      },
+      "PhoneNumber": {
+        "name": "PhoneNumber",
+        "in": "path",
+        "required": true,
+        "deprecated": true,
+        "description": "Legacy E.164 path form for IncomingPhoneNumber resources.\nNew code SHOULD use the canonical `PhoneNumberSid` parameter\n(the `PN`-prefixed sid emitted on response). Accepted during\nthe v0.5.x soft-transition window for backwards-compat with\nclients that still construct URLs from the E.164.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$"
+        }
+      },
+      "PhoneNumberSid": {
+        "name": "PhoneNumberSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-shape IncomingPhoneNumber identifier — literal `PN` +\n32 lowercase hex characters (34 total). Server-generated when\nthe DID is first claimed by an account; stable for the row's\nlifetime on this account. The legacy E.164 path shape\n(`/IncomingPhoneNumbers/+18005551234`) is still accepted on\ninput during the v0.5.x soft-transition window — same\nprecedent as `ConferenceSid` which accepts both canonical and\nlegacy forms. Responses always emit the `PN…` form on the\n`sid` field regardless of which key resolved the request.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^PN[a-f0-9]{32}$|^\\+[1-9]\\d{1,14}$"
+        }
+      },
+      "Page": {
+        "name": "Page",
+        "in": "query",
+        "required": false,
+        "description": "Zero-based page index.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "PageSize": {
+        "name": "PageSize",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Max 1000; default 50.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 50
         }
       }
     },
@@ -314,9 +421,11 @@
           "status": {
             "type": "string",
             "enum": [
+              "init",
               "in-progress",
               "completed"
-            ]
+            ],
+            "description": "`init` matches Twilio's transient pre-mix-engine state. VoiceML\nnever emits it today (the conference materializes only after a\nparticipant joins), but the value is documented for SDK\nenum-deserializer parity.\n"
           },
           "region": {
             "type": "string",
@@ -556,8 +665,7 @@
           },
           "average_wait_time": {
             "type": "integer",
-            "description": "Seconds",
-            "trailing 5-minute window. 0 when no recent exits.": null
+            "description": "Seconds in the trailing 5-minute window. 0 when no recent exits."
           },
           "date_created": {
             "type": "string",
@@ -879,13 +987,14 @@
             "type": "string",
             "enum": [
               "in-progress",
-              "completed",
-              "failed",
-              "absent",
               "paused",
               "stopped",
-              "processing"
-            ]
+              "processing",
+              "completed",
+              "absent",
+              "deleted"
+            ],
+            "description": "Twilio-canonical enum. `failed` is intentionally absent — Twilio\ndoes not document it on Recording.status (failure of an Outbound\nrecording surfaces as `absent`). VoiceML production code only\nemits `completed`; the wider set is documented for SDK parity.\n"
           },
           "source": {
             "type": "string",
@@ -938,6 +1047,330 @@
             "type": "object",
             "additionalProperties": true,
             "description": "Twilio-compat subresource map (currently empty)."
+          }
+        }
+      },
+      "RecordingList": {
+        "type": "object",
+        "required": [
+          "recordings",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "description": "Canonical Twilio pagination envelope for recording-list\nendpoints. Used by both the account-scoped `/Recordings`\nlist, the per-call `/Calls/{Sid}/Recordings` list, and the\nper-conference `/Conferences/{Sid}/Recordings` list — every\nSDK auto-paginator depends on the same fields.\n",
+        "properties": {
+          "recordings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Recording"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "IncomingPhoneNumber": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "phone_number",
+          "api_version",
+          "uri",
+          "capabilities"
+        ],
+        "description": "Tenant-self-serve view of an assigned DID. Twilio-shape — `sid`\nis the canonical `PN`-prefixed opaque identifier (34 chars) and\n`phone_number` carries the E.164 form. These are distinct\nfields.\n\nThe full Twilio field set is documented here so strict-binding\nSDKs (twilio-csharp StringEnumConverter, twilio-java Jackson)\ndeserialize without throwing. Fields VoiceML doesn't track\n(regulatory, SMS, emergency, trunking) emit a Twilio-compat\ndefault — empty string, `null`, or the documented enum default.\nCustomer code that reads e.g. `number.capabilities.voice`\ntherefore behaves identically against VoiceML and Twilio.\n",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^PN[a-f0-9]{32}$",
+            "example": "PNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string",
+            "pattern": "^AC[0-9a-f]{32}$"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "E.164 — leading `+`, 7-15 digits.",
+            "example": "+18005551234"
+          },
+          "friendly_name": {
+            "type": "string",
+            "description": "Display name. Empty by default in v0.5.x; tenant-editable via POST in a future release."
+          },
+          "api_version": {
+            "type": "string",
+            "example": "2010-04-01"
+          },
+          "uri": {
+            "type": "string",
+            "description": "Path under `/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json` — uses the canonical PN sid form."
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "twilio",
+              "hosted",
+              ""
+            ],
+            "description": "Twilio compat: source of the number. VoiceML emits empty (provisioning model is operator-managed, not number-buy)."
+          },
+          "beta": {
+            "type": "boolean",
+            "description": "Twilio compat: `true` for numbers from beta-availability inventory. VoiceML always emits `false`."
+          },
+          "capabilities": {
+            "type": "object",
+            "required": [
+              "voice",
+              "sms",
+              "mms",
+              "fax"
+            ],
+            "description": "Twilio compat: which channel types this DID supports. VoiceML is voice-only — `voice=true`, the rest `false`.",
+            "properties": {
+              "voice": {
+                "type": "boolean"
+              },
+              "sms": {
+                "type": "boolean"
+              },
+              "mms": {
+                "type": "boolean"
+              },
+              "fax": {
+                "type": "boolean"
+              }
+            }
+          },
+          "voice_url": {
+            "type": "string"
+          },
+          "voice_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_fallback_url": {
+            "type": "string"
+          },
+          "voice_fallback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_application_sid": {
+            "type": "string",
+            "description": "Twilio compat: linked `AP…` Application sid that supplies voice_url. VoiceML's `<Dial><Application>` flow keeps the link on the Application resource, not here — emits empty."
+          },
+          "voice_caller_id_lookup": {
+            "type": "boolean",
+            "description": "Twilio compat: CNAM lookup flag. VoiceML doesn't perform CNAM — always `false`."
+          },
+          "voice_receive_mode": {
+            "type": "string",
+            "enum": [
+              "voice",
+              "fax"
+            ],
+            "description": "Twilio compat: VoiceML routes inbound as voice only — always `voice`."
+          },
+          "sms_url": {
+            "type": "string",
+            "description": "Twilio compat: SMS handler URL. VoiceML is voice-only — empty."
+          },
+          "sms_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              ""
+            ],
+            "description": "Twilio compat: empty (SMS not handled)."
+          },
+          "sms_fallback_url": {
+            "type": "string",
+            "description": "Twilio compat: empty (SMS not handled)."
+          },
+          "sms_fallback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              ""
+            ],
+            "description": "Twilio compat: empty (SMS not handled)."
+          },
+          "sms_application_sid": {
+            "type": "string",
+            "description": "Twilio compat: empty (SMS not handled)."
+          },
+          "status_callback": {
+            "type": "string",
+            "description": "Twilio compat: lifecycle webhook. VoiceML emits empty (status is per-call via Call status_callback)."
+          },
+          "status_callback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              ""
+            ],
+            "description": "Twilio compat: empty."
+          },
+          "trunk_sid": {
+            "type": "string",
+            "description": "Twilio compat: SIP trunk routing. VoiceML uses gateway-config-driven trunking — emits empty."
+          },
+          "address_sid": {
+            "type": "string",
+            "description": "Twilio compat: regulatory street-address resource. Not tracked by VoiceML — empty."
+          },
+          "address_requirements": {
+            "type": "string",
+            "enum": [
+              "none",
+              "any",
+              "local",
+              "foreign",
+              ""
+            ],
+            "description": "Twilio compat: address requirement class. VoiceML emits `none`."
+          },
+          "identity_sid": {
+            "type": "string",
+            "description": "Twilio compat: business-identity resource. Not tracked — empty."
+          },
+          "bundle_sid": {
+            "type": "string",
+            "description": "Twilio compat: regulatory bundle. Not tracked — empty."
+          },
+          "emergency_status": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Inactive",
+              ""
+            ],
+            "description": "Twilio compat: E911 registration. Not handled by VoiceML — emits empty."
+          },
+          "emergency_address_sid": {
+            "type": "string",
+            "description": "Twilio compat: E911 address resource. Not tracked — empty."
+          },
+          "emergency_address_status": {
+            "type": "string",
+            "enum": [
+              "registered",
+              "unregistered",
+              "pending-registration",
+              "registration-failure",
+              ""
+            ],
+            "description": "Twilio compat: E911 registration state. Not tracked — empty."
+          },
+          "status": {
+            "type": "string",
+            "description": "Twilio compat: provisioning status (`in-use`, etc.). VoiceML doesn't model this — empty."
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          }
+        }
+      },
+      "IncomingPhoneNumberList": {
+        "type": "object",
+        "required": [
+          "incoming_phone_numbers",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "incoming_phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingPhoneNumber"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
           }
         }
       },
@@ -1280,7 +1713,7 @@
           },
           "CallReason": {
             "type": "string",
-            "description": "Stored as the `cb_call_reason` channel variable for customer dialplans + reporting (Twilio's analogue is the same name)."
+            "description": "Stored as a custom channel variable on the originating call leg, accessible to customer dialplans for reporting and routing decisions."
           },
           "SipAuthUsername": {
             "type": "string",
@@ -1438,15 +1871,19 @@
     }
   },
   "paths": {
-    "/2010-04-01/Accounts/{AccountSid}/Calls": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         }
       ],
       "get": {
+        "operationId": "calls.list",
+        "tags": [
+          "Calls"
+        ],
         "summary": "List calls",
-        "description": "Paginated list of call records for the given account. Filters\nmatch Twilio: `To`, `From`, `Status`, `ParentCallSid`, `StartTime>=`,\n`StartTime<=`. Pagination via `Page` and `PageSize` (max 1000).\n",
+        "description": "Paginated list of call records for the given account. Filters\nmatch Twilio: `To`, `From`, `Status`, `ParentCallSid`,\n`StartTime>=`, `StartTime<=`, `EndTime>=`, `EndTime<=`. Pagination\nvia `Page` and `PageSize` (max 1000). `EndTime` filters\nrestrict the result set to terminal-status rows (an in-progress\ncall has no end time and cannot match an EndTime window).\n",
         "parameters": [
           {
             "name": "To",
@@ -1491,23 +1928,24 @@
             }
           },
           {
-            "name": "Page",
+            "name": "EndTime>=",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
+              "type": "string"
             }
           },
           {
-            "name": "PageSize",
+            "name": "EndTime<=",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 1000,
-              "default": 50
+              "type": "string"
             }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
           }
         ],
         "responses": {
@@ -1527,12 +1965,13 @@
           "429": {
             "$ref": "#/components/responses/TooManyRequests"
           }
-        },
-        "tags": [
-          "Calls"
-        ]
+        }
       },
       "post": {
+        "operationId": "calls.create",
+        "tags": [
+          "Calls"
+        ],
         "summary": "Create (originate) a call",
         "description": "Originates an outbound call via FreeSWITCH. The `To` and `From`\nnumbers are validated and normalised to E.164 against the\nauthenticated tenant's `phone_regions` list — set per-account in\nthe admin API. Empty list disables validation; multi-region\ntenants accept numbers valid in any listed region.\n`MachineDetection` is optional; omitting it skips AMD entirely.\n",
         "requestBody": {
@@ -1580,13 +2019,10 @@
               }
             }
           }
-        },
-        "tags": [
-          "Calls"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -1596,6 +2032,10 @@
         }
       ],
       "get": {
+        "operationId": "calls.fetch",
+        "tags": [
+          "Calls"
+        ],
         "summary": "Fetch a call",
         "responses": {
           "200": {
@@ -1614,12 +2054,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls"
-        ]
+        }
       },
       "post": {
+        "operationId": "calls.update",
+        "tags": [
+          "Calls"
+        ],
         "summary": "Update or terminate a live call",
         "description": "Three flows on the same endpoint (mirrors Twilio):\n  * `Status=completed|canceled` — terminate the call.\n  * `Twiml=<inline>` — execute inline TwiML on the live call\n    (wins over `Url` when both are present).\n  * `Url=…` — fetch new TwiML and execute it on the live call\n    (live redirect / hot swap).\nIf `Status` is present alongside any TwiML source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
         "requestBody": {
@@ -1664,12 +2105,13 @@
               }
             }
           }
-        },
-        "tags": [
-          "Calls"
-        ]
+        }
       },
       "delete": {
+        "operationId": "calls.delete",
+        "tags": [
+          "Calls"
+        ],
         "summary": "Delete a call record",
         "responses": {
           "204": {
@@ -1681,21 +2123,30 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         }
       ],
       "get": {
+        "operationId": "conferences.list",
+        "tags": [
+          "Conferences"
+        ],
         "summary": "List active conferences for the account",
         "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via TwiML\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of conferences.",
@@ -1720,13 +2171,10 @@
               }
             }
           }
-        },
-        "tags": [
-          "Conferences"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -1736,6 +2184,10 @@
         }
       ],
       "get": {
+        "operationId": "conferences.fetch",
+        "tags": [
+          "Conferences"
+        ],
         "summary": "Fetch a single conference",
         "responses": {
           "200": {
@@ -1754,12 +2206,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Conferences"
-        ]
+        }
       },
       "post": {
+        "operationId": "conferences.update",
+        "tags": [
+          "Conferences"
+        ],
         "summary": "End an active conference",
         "description": "v1 supports only `Status=completed` — kicks every participant\nand tears down the room. Twilio's other update fields\n(`Announce*`) are not yet implemented.\n",
         "requestBody": {
@@ -1802,14 +2255,21 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Conference subsystem not configured (passive AMD-on-fork mode).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "tags": [
-          "Conferences"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -1819,7 +2279,19 @@
         }
       ],
       "get": {
+        "operationId": "participants.list",
+        "tags": [
+          "Conferences / Participants"
+        ],
         "summary": "List participants in a conference",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of participants.",
@@ -1837,13 +2309,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Conferences / Participants"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -1856,6 +2325,10 @@
         }
       ],
       "get": {
+        "operationId": "participants.fetch",
+        "tags": [
+          "Conferences / Participants"
+        ],
         "summary": "Fetch a single participant",
         "responses": {
           "200": {
@@ -1874,12 +2347,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Conferences / Participants"
-        ]
+        }
       },
       "post": {
+        "operationId": "participants.update",
+        "tags": [
+          "Conferences / Participants"
+        ],
         "summary": "Mute / unmute / hold a participant",
         "description": "At least one of `Muted` or `Hold` must be set. Twilio's\n`HoldUrl` (custom hold-music URL) and `AnnounceUrl` are\nnot yet implemented.\n",
         "requestBody": {
@@ -1922,12 +2396,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Conferences / Participants"
-        ]
+        }
       },
       "delete": {
+        "operationId": "participants.delete",
+        "tags": [
+          "Conferences / Participants"
+        ],
         "summary": "Kick a participant out of the conference",
         "responses": {
           "204": {
@@ -1939,19 +2414,20 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Conferences / Participants"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         }
       ],
       "post": {
+        "operationId": "queues.create",
+        "tags": [
+          "Queues"
+        ],
         "summary": "Create a queue",
         "description": "Create a named queue. Idempotent — POSTing the same\nFriendlyName a second time returns the existing queue rather\nthan erroring (matches Twilio).\n",
         "requestBody": {
@@ -1994,14 +2470,33 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Queue subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "tags": [
-          "Queues"
-        ]
+        }
       },
       "get": {
+        "operationId": "queues.list",
+        "tags": [
+          "Queues"
+        ],
         "summary": "List queues for the account (paged, FriendlyName ASC)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of queues.",
@@ -2016,13 +2511,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Queues"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2032,6 +2524,10 @@
         }
       ],
       "get": {
+        "operationId": "queues.fetch",
+        "tags": [
+          "Queues"
+        ],
         "summary": "Fetch a queue",
         "responses": {
           "200": {
@@ -2050,12 +2546,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Queues"
-        ]
+        }
       },
       "post": {
+        "operationId": "queues.update",
+        "tags": [
+          "Queues"
+        ],
         "summary": "Update a queue (FriendlyName / MaxSize)",
         "requestBody": {
           "required": true,
@@ -2097,12 +2594,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Queues"
-        ]
+        }
       },
       "delete": {
+        "operationId": "queues.delete",
+        "tags": [
+          "Queues"
+        ],
         "summary": "Delete a queue",
         "description": "Refused with 409 if any members are still waiting — caller must\ndrain the queue first (matches Twilio's behaviour).\n",
         "responses": {
@@ -2125,13 +2623,10 @@
               }
             }
           }
-        },
-        "tags": [
-          "Queues"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2141,6 +2636,10 @@
         }
       ],
       "get": {
+        "operationId": "queueMembers.list",
+        "tags": [
+          "Queues / Members"
+        ],
         "summary": "List waiting members in a queue",
         "description": "Returned ordered by position; position 1 = longest waiting\n(front of queue).\n",
         "responses": {
@@ -2160,13 +2659,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Queues / Members"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/Front": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/Front.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2176,6 +2672,10 @@
         }
       ],
       "get": {
+        "operationId": "queueMembers.fetchFront",
+        "tags": [
+          "Queues / Members"
+        ],
         "summary": "Peek the longest-waiting member",
         "responses": {
           "200": {
@@ -2201,12 +2701,13 @@
               }
             }
           }
-        },
-        "tags": [
-          "Queues / Members"
-        ]
+        }
       },
       "post": {
+        "operationId": "queueMembers.dequeueFront",
+        "tags": [
+          "Queues / Members"
+        ],
         "summary": "Dequeue the front member to a TwiML URL",
         "description": "Pops the longest-waiting member and redirects their call to the\nURL in the body. The member's <Enqueue> wait-loop fetches that\nURL and runs the returned TwiML on their leg as continuation.\n",
         "requestBody": {
@@ -2264,13 +2765,10 @@
               }
             }
           }
-        },
-        "tags": [
-          "Queues / Members"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/{CallSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}/Members/{CallSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2283,6 +2781,10 @@
         }
       ],
       "get": {
+        "operationId": "queueMembers.fetch",
+        "tags": [
+          "Queues / Members"
+        ],
         "summary": "Fetch a specific member by CallSid",
         "responses": {
           "200": {
@@ -2301,12 +2803,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Queues / Members"
-        ]
+        }
       },
       "post": {
+        "operationId": "queueMembers.dequeue",
+        "tags": [
+          "Queues / Members"
+        ],
         "summary": "Dequeue a specific member to a TwiML URL",
         "requestBody": {
           "required": true,
@@ -2355,19 +2858,20 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Queues / Members"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Applications": {
+    "/2010-04-01/Accounts/{AccountSid}/Applications.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         }
       ],
       "post": {
+        "operationId": "applications.create",
+        "tags": [
+          "Applications"
+        ],
         "summary": "Create an Application",
         "description": "Persistent named TwiML+callback bundle — referenced by\n`<Dial><Application>AP…</Application></Dial>`. The agent's\nDial verb resolves the SID, fetches voice_url, and runs the\nreturned TwiML on the call leg.\n",
         "requestBody": {
@@ -2441,14 +2945,33 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Application subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "tags": [
-          "Applications"
-        ]
+        }
       },
       "get": {
+        "operationId": "applications.list",
+        "tags": [
+          "Applications"
+        ],
         "summary": "List Applications for the account (paged, FriendlyName ASC)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of Applications.",
@@ -2463,13 +2986,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Applications"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Applications/{ApplicationSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Applications/{ApplicationSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2479,6 +2999,10 @@
         }
       ],
       "get": {
+        "operationId": "applications.fetch",
+        "tags": [
+          "Applications"
+        ],
         "summary": "Fetch an Application",
         "responses": {
           "200": {
@@ -2497,12 +3021,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Applications"
-        ]
+        }
       },
       "post": {
+        "operationId": "applications.update",
+        "tags": [
+          "Applications"
+        ],
         "summary": "Update an Application (partial — only set fields are touched)",
         "requestBody": {
           "required": true,
@@ -2578,12 +3103,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Applications"
-        ]
+        }
       },
       "delete": {
+        "operationId": "applications.delete",
+        "tags": [
+          "Applications"
+        ],
         "summary": "Delete an Application",
         "responses": {
           "204": {
@@ -2595,39 +3121,27 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Applications"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Recordings": {
+    "/2010-04-01/Accounts/{AccountSid}/Recordings.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         }
       ],
       "get": {
+        "operationId": "recordings.list",
+        "tags": [
+          "Recordings"
+        ],
         "summary": "List recordings for the account",
         "parameters": [
           {
-            "name": "Page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
-            }
+            "$ref": "#/components/parameters/Page"
           },
           {
-            "name": "PageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 1000,
-              "default": 50
-            }
+            "$ref": "#/components/parameters/PageSize"
           }
         ],
         "responses": {
@@ -2636,24 +3150,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "recordings": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Recording"
-                      }
-                    },
-                    "page": {
-                      "type": "integer"
-                    },
-                    "page_size": {
-                      "type": "integer"
-                    },
-                    "total": {
-                      "type": "integer"
-                    }
-                  }
+                  "$ref": "#/components/schemas/RecordingList"
                 }
               }
             }
@@ -2661,13 +3158,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Recordings"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2677,22 +3171,26 @@
         }
       ],
       "get": {
+        "operationId": "callRecordings.list",
+        "tags": [
+          "Calls / Recordings"
+        ],
         "summary": "List recordings for one call",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of recordings.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "recordings": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Recording"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/RecordingList"
                 }
               }
             }
@@ -2700,12 +3198,13 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Recordings"
-        ]
+        }
       },
       "post": {
+        "operationId": "callRecordings.create",
+        "tags": [
+          "Calls / Recordings"
+        ],
         "summary": "Start a recording mid-call",
         "description": "Begins a fresh recording on the live call leg via FreeSWITCH's\n`uuid_record`. The new Recording resource is returned in the\n201 response. Distinct from `Record=true` on `POST /Calls`,\nwhich captures from the start of the call.\n",
         "requestBody": {
@@ -2769,14 +3268,21 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Recording subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "tags": [
-          "Calls / Recordings"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2786,6 +3292,10 @@
         }
       ],
       "get": {
+        "operationId": "streams.list",
+        "tags": [
+          "Calls / Streams"
+        ],
         "summary": "List active media streams for the call",
         "description": "Returns 0 or 1 entries — mod_audio_fork supports a single\nactive fork per call uuid, matching the slot model on the\nVoiceML tracker. Pagination envelope is the canonical\nTwilio shape so SDK auto-paginators round-trip cleanly.\n",
         "responses": {
@@ -2846,12 +3356,13 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Streams"
-        ]
+        }
       },
       "post": {
+        "operationId": "streams.create",
+        "tags": [
+          "Calls / Streams"
+        ],
         "summary": "Start a media stream on the call (REST equivalent of `<Connect><Stream>`/`<Start><Stream>`)",
         "description": "Issues `uuid_audio_fork start` on the call leg via the same\nexecutor primitive the TwiML verbs use. Returns the new Stream\nresource with an MZ-prefixed sid.\n",
         "requestBody": {
@@ -2908,13 +3419,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Streams"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams/{Sid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Streams/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -2923,16 +3431,14 @@
           "$ref": "#/components/parameters/CallSid"
         },
         {
-          "name": "Sid",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "description": "Stream sid (MZ...)"
+          "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
       "get": {
+        "operationId": "streams.fetch",
+        "tags": [
+          "Calls / Streams"
+        ],
         "summary": "Fetch a single stream by sid",
         "responses": {
           "200": {
@@ -2951,12 +3457,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Streams"
-        ]
+        }
       },
       "post": {
+        "operationId": "streams.update",
+        "tags": [
+          "Calls / Streams"
+        ],
         "summary": "Update a media stream — only Status=stopped is meaningful",
         "requestBody": {
           "required": true,
@@ -2996,13 +3503,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Streams"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3012,6 +3516,10 @@
         }
       ],
       "get": {
+        "operationId": "siprec.list",
+        "tags": [
+          "Calls / Siprec"
+        ],
         "summary": "List active SIPREC sessions for the call",
         "description": "Returns 0 or 1 entries — mod_siprec supports one mirror per\ncall uuid. Pagination envelope is the canonical Twilio shape.\n",
         "responses": {
@@ -3072,12 +3580,13 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Siprec"
-        ]
+        }
       },
       "post": {
+        "operationId": "siprec.create",
+        "tags": [
+          "Calls / Siprec"
+        ],
         "summary": "Start a SIPREC session on the call (REST equivalent of `<Start><Siprec>`)",
         "description": "Invokes the `siprec` dialplan app via `uuid_broadcast` against\nthe configured connector profile. Returns the new Siprec\nresource with an SR-prefixed sid.\n",
         "requestBody": {
@@ -3131,13 +3640,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Siprec"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec/{Sid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3146,16 +3652,14 @@
           "$ref": "#/components/parameters/CallSid"
         },
         {
-          "name": "Sid",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "description": "SIPREC sid (SR...)"
+          "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
       "get": {
+        "operationId": "siprec.fetch",
+        "tags": [
+          "Calls / Siprec"
+        ],
         "summary": "Fetch a single SIPREC session by sid",
         "responses": {
           "200": {
@@ -3174,12 +3678,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Siprec"
-        ]
+        }
       },
       "post": {
+        "operationId": "siprec.update",
+        "tags": [
+          "Calls / Siprec"
+        ],
         "summary": "Update a SIPREC session — clears tracking only",
         "description": "StefanYohansson/mod_siprec doesn't expose a stop verb; the SRS\nrecording session continues until the call hangs up. This\nendpoint clears VoiceML's session-tracking entry only.\nDocumented mod_siprec limitation.\n",
         "requestBody": {
@@ -3220,13 +3725,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Siprec"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3236,6 +3738,10 @@
         }
       ],
       "get": {
+        "operationId": "transcriptions.list",
+        "tags": [
+          "Calls / Transcriptions"
+        ],
         "summary": "List active transcriptions for the call",
         "description": "Returns 0 or 1 entries. Pagination envelope is the canonical\nTwilio shape.\n",
         "responses": {
@@ -3296,12 +3802,13 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Transcriptions"
-        ]
+        }
       },
       "post": {
+        "operationId": "transcriptions.create",
+        "tags": [
+          "Calls / Transcriptions"
+        ],
         "summary": "Start real-time transcription on the call (REST equivalent of `<Start><Transcription>`)",
         "requestBody": {
           "required": false,
@@ -3376,13 +3883,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Transcriptions"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions/{Sid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Transcriptions/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3391,16 +3895,14 @@
           "$ref": "#/components/parameters/CallSid"
         },
         {
-          "name": "Sid",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          },
-          "description": "Transcription sid (RT...)"
+          "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
       "get": {
+        "operationId": "transcriptions.fetch",
+        "tags": [
+          "Calls / Transcriptions"
+        ],
         "summary": "Fetch a single transcription by sid",
         "responses": {
           "200": {
@@ -3419,12 +3921,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Transcriptions"
-        ]
+        }
       },
       "post": {
+        "operationId": "transcriptions.update",
+        "tags": [
+          "Calls / Transcriptions"
+        ],
         "summary": "Update a transcription — only Status=stopped is meaningful",
         "requestBody": {
           "required": true,
@@ -3464,13 +3967,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Calls / Transcriptions"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3480,6 +3980,10 @@
         }
       ],
       "get": {
+        "operationId": "callNotifications.list",
+        "tags": [
+          "Calls / Notifications"
+        ],
         "summary": "List per-call notifications (compat stub)",
         "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through Prometheus + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list.\n",
         "responses": {
@@ -3530,13 +4034,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Notifications"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Events": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Events.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3546,6 +4047,10 @@
         }
       ],
       "get": {
+        "operationId": "callEvents.list",
+        "tags": [
+          "Calls / Events"
+        ],
         "summary": "List per-call lifecycle events (compat stub)",
         "description": "Twilio's fine-grained per-call event stream. VoiceML\ndelivers equivalent data via `StatusCallback` (initiated /\nringing / answered / completed); this endpoint is mounted\nas a stub returning an empty list so SDK helpers iterate\ncleanly. The canonical event source is the customer's\n`StatusCallback` URL.\n",
         "responses": {
@@ -3596,13 +4101,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Events"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/UserDefinedMessages": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/UserDefinedMessages.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3612,8 +4114,22 @@
         }
       ],
       "post": {
+        "operationId": "userDefinedMessages.create",
+        "tags": [
+          "Calls / UserDefinedMessages"
+        ],
         "summary": "Send a user-defined message on a live call (NOT IMPLEMENTED)",
-        "description": "Twilio's chat-style messages on a live call. Real\nmessage-passing infrastructure (a websocket on the\ncustomer-facing leg) that's out of scope for VoiceML.\nReturns 501 with Twilio code 20501.\n",
+        "description": "Twilio's chat-style messages on a live call. Real\nmessage-passing infrastructure (a websocket on the\ncustomer-facing leg) that's out of scope for VoiceML.\nReturns 501 with Twilio code 20501. The empty request body\nschema is declared so codegen tooling emits a method\nsignature consistent with Twilio's SDK.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
         "responses": {
           "501": {
             "description": "Not implemented.",
@@ -3631,13 +4147,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / UserDefinedMessages"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3647,23 +4160,27 @@
         }
       ],
       "get": {
+        "operationId": "conferenceRecordings.list",
+        "tags": [
+          "Conferences / Recordings"
+        ],
         "summary": "List recordings captured by a conference",
         "description": "Returns recordings created by `<Dial><Conference record=\"record-from-start\">`\nverbs that ran in this conference. Pagination envelope same as\n`/Recordings`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Page of conference-scoped recordings.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "recordings": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Recording"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/RecordingList"
                 }
               }
             }
@@ -3671,13 +4188,10 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           }
-        },
-        "tags": [
-          "Conferences / Recordings"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{RecordingSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{RecordingSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3690,6 +4204,10 @@
         }
       ],
       "get": {
+        "operationId": "callRecordings.fetch",
+        "tags": [
+          "Calls / Recordings"
+        ],
         "summary": "Fetch recording metadata for a specific call (call-scoped form)",
         "description": "Same JSON resource as `/Recordings/{RecordingSid}` but enforces\nthe call-scope from the URL path. 404 if the recording exists\nbut is attached to a different call.\n",
         "responses": {
@@ -3709,12 +4227,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Recordings"
-        ]
+        }
       },
       "post": {
+        "operationId": "callRecordings.update",
+        "tags": [
+          "Calls / Recordings"
+        ],
         "summary": "Update a mid-call recording's status",
         "description": "Wires `uuid_record stop|pause|resume` on the live call leg.\nAll three transitions return 200 + the post-mutation\nRecording resource. Tenant-scoped: a RecordingSid that\nbelongs to a different account returns 404 without leaking\nexistence.\n",
         "requestBody": {
@@ -3767,12 +4286,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Recordings"
-        ]
+        }
       },
       "delete": {
+        "operationId": "callRecordings.delete",
+        "tags": [
+          "Calls / Recordings"
+        ],
         "summary": "Delete a recording (row + local WAV + S3 object when present)",
         "description": "Removes the memdb row, unlinks the on-disk WAV, and (when\n`RECORDING_S3_BUCKET` is configured) issues an S3 DeleteObject\non the archived copy. S3 deletion is best-effort: failure logs\nbut does not fail the API call (the bucket lifecycle policy is\nthe long-stop cleanup). Tenant-scoped — cross-tenant DELETE\nreturns 404 without affecting the row.\n",
         "responses": {
@@ -3785,13 +4305,10 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        },
-        "tags": [
-          "Calls / Recordings"
-        ]
+        }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}": {
+    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -3801,17 +4318,71 @@
         }
       ],
       "get": {
-        "summary": "Fetch recording metadata or audio",
-        "description": "Returns JSON metadata when the path ends in `/{RecordingSid}`\n(no extension). When the path ends in `/{RecordingSid}.wav`\nthe response is the captured audio as `audio/wav` with one\nof three delivery shapes:\n\n  * `200 OK` — local file present (typical for the first\n    `RECORDING_LOCAL_GRACE` window after the call ends).\n  * `302 Found` — local file cleaned up but archived to S3;\n    `Location` header points at a presigned URL with TTL\n    `RECORDING_PRESIGN_TTL`.\n  * `410 Gone` — local file gone AND no `s3_key` set\n    (typically: archival not configured + cleanup ran, or\n    archival failed and the WAV was lost).\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
+        "operationId": "recordings.fetch",
+        "tags": [
+          "Recordings"
+        ],
+        "summary": "Fetch recording metadata",
+        "description": "Returns JSON metadata for the recording. The companion\n`.wav` path returns the audio bytes (or a 302/410 redirect\ndepending on archival state); see `recordings.fetchAudio`.\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
         "responses": {
           "200": {
-            "description": "Recording metadata or WAV audio.",
+            "description": "Recording metadata.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Recording"
                 }
-              },
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "recordings.delete",
+        "tags": [
+          "Recordings"
+        ],
+        "summary": "Delete a recording (row + local WAV + S3 object when present)",
+        "description": "Removes the memdb row, unlinks the on-disk WAV, and (when\n`RECORDING_S3_BUCKET` is configured) issues an S3 DeleteObject\non the archived copy. S3 deletion is best-effort: failure logs\nbut does not fail the API call (the bucket lifecycle policy is\nthe long-stop cleanup). Tenant-scoped — cross-tenant DELETE\nreturns 404 without affecting the row.\n",
+        "responses": {
+          "204": {
+            "description": "Recording deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}.wav": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/RecordingSid"
+        }
+      ],
+      "get": {
+        "operationId": "recordings.fetchAudio",
+        "tags": [
+          "Recordings"
+        ],
+        "summary": "Fetch recording audio (WAV)",
+        "description": "Returns the captured audio as `audio/wav` with one of three\ndelivery shapes:\n\n  * `200 OK` — local file present (typical for the first\n    `RECORDING_LOCAL_GRACE` window after the call ends).\n  * `302 Found` — local file cleaned up but archived to S3;\n    `Location` header points at a presigned URL with TTL\n    `RECORDING_PRESIGN_TTL`.\n  * `410 Gone` — local file gone AND no `s3_key` set\n    (typically: archival not configured + cleanup ran, or\n    archival failed and the WAV was lost).\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
+        "responses": {
+          "200": {
+            "description": "Recording audio.",
+            "content": {
               "audio/wav": {}
             }
           },
@@ -3842,32 +4413,15 @@
               }
             }
           }
-        },
-        "tags": [
-          "Recordings"
-        ]
-      },
-      "delete": {
-        "summary": "Delete a recording (row + local WAV + S3 object when present)",
-        "description": "Removes the memdb row, unlinks the on-disk WAV, and (when\n`RECORDING_S3_BUCKET` is configured) issues an S3 DeleteObject\non the archived copy. S3 deletion is best-effort: failure logs\nbut does not fail the API call (the bucket lifecycle policy is\nthe long-stop cleanup). Tenant-scoped — cross-tenant DELETE\nreturns 404 without affecting the row.\n",
-        "responses": {
-          "204": {
-            "description": "Recording deleted."
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        },
-        "tags": [
-          "Recordings"
-        ]
+        }
       }
     },
     "/health": {
       "get": {
+        "operationId": "health.check",
+        "tags": [
+          "Diagnostics"
+        ],
         "summary": "Deep liveness probe",
         "description": "Composite probe with two-tier severity. Hard checks (memdb,\ndisk free space, FreeSWITCH process + required modules +\nSofia profile RUNNING) flip the LB-facing `ok` boolean.\nSoft checks (host CPU loadavg, memory pressure, FS workload\npercents, Raft cluster) surface in `warnings` only — the LB\nstays in rotation. Result cached 5 s on full success.\n",
         "security": [],
@@ -3933,14 +4487,15 @@
               }
             }
           }
-        },
-        "tags": [
-          "Diagnostics"
-        ]
+        }
       }
     },
     "/openapi.yaml": {
       "get": {
+        "operationId": "openapi.yaml",
+        "tags": [
+          "Diagnostics"
+        ],
         "summary": "OpenAPI spec (YAML)",
         "security": [],
         "responses": {
@@ -3950,14 +4505,34 @@
               "application/yaml": {}
             }
           }
-        },
+        }
+      }
+    },
+    "/openapi.yml": {
+      "get": {
+        "operationId": "openapi.yml",
         "tags": [
           "Diagnostics"
-        ]
+        ],
+        "summary": "OpenAPI spec (YAML, .yml alias)",
+        "description": "Alias for `/openapi.yaml`. Same response, same content type.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "This document.",
+            "content": {
+              "application/yaml": {}
+            }
+          }
+        }
       }
     },
     "/openapi.json": {
       "get": {
+        "operationId": "openapi.json",
+        "tags": [
+          "Diagnostics"
+        ],
         "summary": "OpenAPI spec (JSON)",
         "security": [],
         "responses": {
@@ -3967,63 +4542,383 @@
               "application/json": {}
             }
           }
-        },
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "incomingPhoneNumbers.list",
         "tags": [
-          "Diagnostics"
-        ]
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "List DIDs assigned to the authenticated tenant",
+        "description": "Returns every DID currently bound to the authenticated\naccount. Tenant-scoped — only the caller's own rows are\nreturned; the global admin list endpoint is on the private\nlistener and not described here.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "required": false,
+            "description": "Exact-match filter on the E.164 phone number. Twilio's\ncanonical lookup pattern is\n`GET /IncomingPhoneNumbers?PhoneNumber=+1...` followed by\n`GET /IncomingPhoneNumbers/{sid}` using the `sid` from the\nlist result. SDK clients (twilio-python's\n`.list(phone_number=...)` etc.) issue this pattern; the\nfilter exists so it Just Works against VoiceML.\nReturns a 0-or-1-row envelope.\n",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\+[1-9]\\d{1,14}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of incoming phone numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "incomingPhoneNumbers.create",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Assign a DID to the authenticated tenant",
+        "description": "Tenant self-serve assignment of an E.164 DID. Idempotent on\nthe same tenant — re-POSTing the same `PhoneNumber` rebinds\nits voice routing without erroring (matches Twilio's update\nsemantics). Returns 409 when the number is already claimed\nby a different account.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumber"
+                ],
+                "properties": {
+                  "PhoneNumber": {
+                    "type": "string",
+                    "description": "E.164 — leading `+`, 7-15 digits."
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumber"
+                ],
+                "properties": {
+                  "PhoneNumber": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Newly assigned DID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing DID rebound to the same tenant (idempotent re-POST).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "Phone number is already assigned to a different account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{PhoneNumberSid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/PhoneNumberSid"
+        }
+      ],
+      "get": {
+        "operationId": "incomingPhoneNumbers.fetch",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Fetch a single DID assigned to the authenticated tenant",
+        "description": "Tenant-scoped — a phone number that exists but belongs to a\ndifferent account 404s with the same shape as a nonexistent\nnumber (no enumeration leak).\n",
+        "responses": {
+          "200": {
+            "description": "Incoming phone number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "incomingPhoneNumbers.update",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Update voice routing on an assigned DID",
+        "description": "Only-set-fields-touched semantics. Tenant-scoped — a number\nassigned to a different account 404s.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Incoming phone number (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "incomingPhoneNumbers.delete",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Release a DID from the authenticated tenant",
+        "description": "Tenant-scoped — a number assigned to a different account 404s\nwithout affecting the row. Idempotent: 204 on success OR if\nthe number was already gone.\n",
+        "responses": {
+          "204": {
+            "description": "Phone number released."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
-  "tags": [
-    {
-      "name": "Applications"
-    },
-    {
-      "name": "Calls"
-    },
-    {
-      "name": "Calls / Events"
-    },
-    {
-      "name": "Calls / Notifications"
-    },
-    {
-      "name": "Calls / Recordings"
-    },
-    {
-      "name": "Calls / Siprec"
-    },
-    {
-      "name": "Calls / Streams"
-    },
-    {
-      "name": "Calls / Transcriptions"
-    },
-    {
-      "name": "Calls / UserDefinedMessages"
-    },
-    {
-      "name": "Conferences"
-    },
-    {
-      "name": "Conferences / Participants"
-    },
-    {
-      "name": "Conferences / Recordings"
-    },
-    {
-      "name": "Diagnostics"
-    },
-    {
-      "name": "Queues"
-    },
-    {
-      "name": "Queues / Members"
-    },
-    {
-      "name": "Recordings"
-    }
-  ],
   "x-tagGroups": [
     {
       "name": "Voice — calls",
@@ -4062,6 +4957,12 @@
       "name": "Applications",
       "tags": [
         "Applications"
+      ]
+    },
+    {
+      "name": "Numbers",
+      "tags": [
+        "IncomingPhoneNumbers"
       ]
     },
     {

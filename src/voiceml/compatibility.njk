@@ -246,10 +246,30 @@ description: "A compatibility matrix for VoiceML, covering supported, partial, u
 				</tr>
 
 				<tr>
-					<th scope="row"><strong>IncomingPhoneNumbers</strong></th>
-					<td>full sub-resource</td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td>Number provisioning is handled by the <a href="/numbers/">VoiceTel Numbers</a> workflow, not the compatible voice API.</td>
+					<th scope="row" rowspan="5"><strong>IncomingPhoneNumbers</strong></th>
+					<td><code>GET /IncomingPhoneNumbers</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Tenant-scoped list of DIDs assigned to the authenticated account.</td>
+				</tr>
+				<tr>
+					<td><code>POST /IncomingPhoneNumbers</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Self-serve DID assignment by E.164. Idempotent on the same tenant; 409 if the number is claimed by another account. Inventory itself is provisioned via the <a href="/numbers/">VoiceTel Numbers</a> workflow.</td>
+				</tr>
+				<tr>
+					<td><code>GET /IncomingPhoneNumbers/{Sid}</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Cross-tenant fetches 404 with the same shape as a nonexistent number — no enumeration leak.</td>
+				</tr>
+				<tr>
+					<td><code>POST /IncomingPhoneNumbers/{Sid}</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Only-set-fields-touched update semantics for voice routing on an assigned DID.</td>
+				</tr>
+				<tr>
+					<td><code>DELETE /IncomingPhoneNumbers/{Sid}</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Idempotent release: 204 on success or if the number was already gone.</td>
 				</tr>
 				<tr>
 					<th scope="row"><strong>AvailablePhoneNumbers</strong></th>

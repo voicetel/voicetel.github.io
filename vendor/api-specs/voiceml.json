@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.6.2",
+    "version": "0.6.3",
     "summary": "Outbound voice + AMD service with Twilio-shaped REST surface",
     "description": "VoiceML (development name `VoiceML`) exposes the Twilio Programmable\nVoice Calls REST API surface so existing Twilio SDKs (`twilio-node`,\n`twilio-python`, `twilio-go`, ...) work against it as a drop-in replacement.\nThe wire shape, authentication model, error codes, and pagination envelope\nall match Twilio's documented behaviour.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against it produce strict-Twilio-shape\nURLs out of the box; existing clients that omit `.json` continue to work\nunchanged.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — drop-in compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
@@ -145,6 +145,16 @@
         "schema": {
           "type": "string",
           "pattern": "^AP[0-9a-f]{32}$"
+        }
+      },
+      "ResourceSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio generic resource identifier on fetch-by-id endpoints\n(`CA`/`RE`/`AP`/`QU`/`CF`/`PN` + 32 hex, or dashed `CA`\nform). Parameter name is always `Sid` per twilio-oai; the\npath segment position determines which prefix is valid.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^(CA(?:[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{8})|RE[0-9a-f]{32}|AP[0-9a-f]{32}|QU[0-9a-f]{32}|CF[0-9a-f]{32}|PN[0-9a-f]{32})$"
         }
       },
       "SubresourceSid": {
@@ -293,11 +303,11 @@
           },
           "start_time": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "end_time": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "duration": {
             "type": "string",
@@ -332,10 +342,12 @@
             "description": "Twilio compatibility — always empty."
           },
           "date_created": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "date_updated": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "uri": {
             "type": "string"
@@ -439,14 +451,24 @@
           },
           "date_created": {
             "type": "string",
+            "format": "date-time-rfc-2822",
             "description": "Emitted via omitempty when not tracked (VoiceML queries mod_conference live and does not persist room creation timestamps)."
           },
           "date_updated": {
             "type": "string",
+            "format": "date-time-rfc-2822",
             "description": "Same caveat as `date_created`."
           },
           "reason_conference_ended": {
             "type": "string",
+            "enum": [
+              "conference-ended-via-api",
+              "last-participant-kicked",
+              "last-participant-left",
+              "participant-with-end-conference-on-exit-kicked",
+              "participant-with-end-conference-on-exit-left",
+              ""
+            ],
             "description": "Populated only on the synthesised post-end response —\ne.g. `conference-ended-via-rest-api` after a\n`Status=completed` POST. Empty while in-progress.\n"
           },
           "call_sid_ending_conference": {
@@ -521,6 +543,8 @@
           "account_sid",
           "muted",
           "hold",
+          "coaching",
+          "queue_time",
           "status",
           "start_conference_on_enter",
           "end_conference_on_exit",
@@ -544,6 +568,18 @@
           "hold": {
             "type": "boolean"
           },
+          "call_sid_to_coach": {
+            "type": "string",
+            "description": "When `coaching` is true, the CallSid of the participant this\ncoach can speak to (Twilio whisper-coach). Empty when\n`coaching` is false or the coach target has not joined.\nSee #267.\n"
+          },
+          "coaching": {
+            "type": "boolean",
+            "description": "True when this participant joined with the `coach` role\n(Twilio whisper-coach pattern). A coach hears the entire\nconference but is only audible to the participant\nidentified by `call_sid_to_coach`. Derived from\nmod_conference's `coach` flag in `conference <name> list`.\nSee #266.\n"
+          },
+          "queue_time": {
+            "type": "string",
+            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the TwiML executor.\nSee #268.\n"
+          },
           "start_conference_on_enter": {
             "type": "boolean",
             "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`true`) for every participant — per-participant attribute persistence is on the roadmap."
@@ -560,6 +596,8 @@
               "ringing",
               "connected",
               "on-hold",
+              "complete",
+              "failed",
               "completed"
             ],
             "description": "Derived from live mod_conference state: `connected`\nwhile the participant is in the room, `on-hold` while\nthe `hold` flag is set, `completed` after they've\nleft (visible only briefly via the synthesised\nresponse when a mute/hold update races a leave).\n"
@@ -576,10 +614,12 @@
           },
           "date_created": {
             "type": "string",
+            "format": "date-time-rfc-2822",
             "description": "Emitted via omitempty when not tracked."
           },
           "date_updated": {
             "type": "string",
+            "format": "date-time-rfc-2822",
             "description": "Emitted via omitempty when not tracked."
           }
         }
@@ -660,8 +700,8 @@
           },
           "max_size": {
             "type": "integer",
-            "default": 100,
-            "description": "Capacity ceiling; further enqueues fail with 503."
+            "default": 0,
+            "description": "Capacity ceiling; 0 means unlimited (Twilio default). Further enqueues fail when current_size equals a positive max_size."
           },
           "average_wait_time": {
             "type": "integer",
@@ -669,11 +709,11 @@
           },
           "date_created": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "date_updated": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "uri": {
             "type": "string"
@@ -757,7 +797,7 @@
           },
           "date_enqueued": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "wait_time": {
             "type": "integer",
@@ -896,11 +936,11 @@
           },
           "date_created": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "date_updated": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time-rfc-2822"
           },
           "uri": {
             "type": "string"
@@ -1004,7 +1044,8 @@
               "DialVerb",
               "Conference",
               "Trunking",
-              "StartCallRecordingAPI"
+              "StartCallRecordingAPI",
+              "StartConferenceRecordingAPI"
             ]
           },
           "channels": {
@@ -1022,13 +1063,16 @@
             "type": "string"
           },
           "date_created": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "date_updated": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "start_time": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "price": {
             "type": "string",
@@ -1051,6 +1095,11 @@
           "media_url": {
             "type": "string",
             "description": "Twilio-canonical canonical URL for the recording audio.\nVoiceML serves the WAV at `/Accounts/{AccountSid}/Recordings/{Sid}.wav`\n— emitted here so strict-binding SDK clients (e.g.\ntwilio-csharp's `recording.MediaUrl`) bind cleanly without\nnull-deref. Same auth requirements as the resource itself.\n"
+          },
+          "error_code": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Twilio-canonical per-call error taxonomy for failed\nrecordings. `null` (the common case) means no error;\nnon-zero values reference twilio.com/docs/api/errors. See\n#269. The wire shape uses `null`, never `0` — strict-mode\nSDK deserialisers (twilio-csharp / twilio-java) expect\nnull on the no-error path.\n"
           }
         }
       },
@@ -1309,6 +1358,8 @@
               "unregistered",
               "pending-registration",
               "registration-failure",
+              "pending-unregistration",
+              "unregistration-failure",
               ""
             ],
             "description": "Twilio compat: E911 registration state. Not tracked — empty."
@@ -1328,10 +1379,12 @@
             "description": "Twilio compat: number class. VoiceML doesn't categorize numbers this way — emits empty."
           },
           "date_created": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           },
           "date_updated": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time-rfc-2822"
           }
         }
       },
@@ -1897,7 +1950,7 @@
           "Calls"
         ],
         "summary": "List calls",
-        "description": "Paginated list of call records for the given account. Filters\nmatch Twilio: `To`, `From`, `Status`, `ParentCallSid`,\n`StartTime>=`, `StartTime<=`, `EndTime>=`, `EndTime<=`. Pagination\nvia `Page` and `PageSize` (max 1000). `EndTime` filters\nrestrict the result set to terminal-status rows (an in-progress\ncall has no end time and cannot match an EndTime window).\n",
+        "description": "Paginated list of call records for the given account. Filters\nmatch Twilio: `To`, `From`, `Status`, `ParentCallSid`,\n`StartTime` (bare = full UTC day), `StartTime<` (strict upper),\n`StartTime>` (strict lower), and the same triple for `EndTime`.\nFor backwards compatibility the legacy `StartTime>=` / `EndTime<=`\nSQL-style operators are also accepted at the handler. Pagination\nvia `Page` and `PageSize` (max 1000). `EndTime` filters\nrestrict the result set to terminal-status rows (an in-progress\ncall has no end time and cannot match an EndTime window).\n",
         "parameters": [
           {
             "name": "To",
@@ -1928,32 +1981,58 @@
             }
           },
           {
-            "name": "StartTime>=",
+            "name": "StartTime",
             "in": "query",
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls started on this UTC date (YYYY-MM-DD)."
           },
           {
-            "name": "StartTime<=",
+            "name": "StartTime<",
             "in": "query",
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls started strictly before this UTC date/time."
           },
           {
-            "name": "EndTime>=",
+            "name": "StartTime>",
             "in": "query",
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls started strictly after this UTC date/time."
           },
           {
-            "name": "EndTime<=",
+            "name": "EndTime",
             "in": "query",
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls ended on this UTC date (YYYY-MM-DD)."
+          },
+          {
+            "name": "EndTime<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls ended strictly before this UTC date/time."
+          },
+          {
+            "name": "EndTime>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Calls ended strictly after this UTC date/time."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -2036,13 +2115,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/CallSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -2155,6 +2234,27 @@
         "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via TwiML\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
         "parameters": [
           {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to conferences with this exact FriendlyName."
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "init",
+                "in-progress",
+                "completed"
+              ]
+            },
+            "description": "Filter to conferences in this lifecycle state."
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -2188,13 +2288,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/ConferenceSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -2299,6 +2399,30 @@
         ],
         "summary": "List participants in a conference",
         "parameters": [
+          {
+            "name": "Muted",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to participants with this Muted state."
+          },
+          {
+            "name": "Hold",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to participants with this Hold state."
+          },
+          {
+            "name": "Coaching",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to participants with this Coaching state."
+          },
           {
             "$ref": "#/components/parameters/Page"
           },
@@ -2460,8 +2584,8 @@
                   },
                   "MaxSize": {
                     "type": "integer",
-                    "default": 100,
-                    "minimum": 1
+                    "default": 0,
+                    "minimum": 0
                   }
                 }
               }
@@ -2528,13 +2652,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Queues/{QueueSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Queues/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/QueueSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -2581,7 +2705,7 @@
                   },
                   "MaxSize": {
                     "type": "integer",
-                    "minimum": 1
+                    "minimum": 0
                   }
                 }
               }
@@ -2656,6 +2780,14 @@
         ],
         "summary": "List waiting members in a queue",
         "description": "Returned ordered by position; position 1 = longest waiting\n(front of queue).\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Members list.",
@@ -2980,6 +3112,14 @@
         "summary": "List Applications for the account (paged, FriendlyName ASC)",
         "parameters": [
           {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to Applications with this exact FriendlyName."
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -3003,13 +3143,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Applications/{ApplicationSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Applications/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/ApplicationSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -3152,6 +3292,51 @@
         "summary": "List recordings for the account",
         "parameters": [
           {
+            "name": "DateCreated",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created on this UTC date (YYYY-MM-DD)."
+          },
+          {
+            "name": "DateCreated<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly before this UTC date."
+          },
+          {
+            "name": "DateCreated>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly after this UTC date."
+          },
+          {
+            "name": "CallSid",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^CA[0-9a-fA-F]{32}$"
+            },
+            "description": "Filter to recordings whose CallSid equals this value."
+          },
+          {
+            "name": "ConferenceSid",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^CF[0-9a-fA-F]{32}$"
+            },
+            "description": "Filter to recordings whose ConferenceSid equals this value."
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -3191,6 +3376,33 @@
         ],
         "summary": "List recordings for one call",
         "parameters": [
+          {
+            "name": "DateCreated",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created on this UTC date (YYYY-MM-DD)."
+          },
+          {
+            "name": "DateCreated<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly before this UTC date."
+          },
+          {
+            "name": "DateCreated>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly after this UTC date."
+          },
           {
             "$ref": "#/components/parameters/Page"
           },
@@ -3260,8 +3472,18 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Recording started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Recording started (Twilio-historical 201 Created). VoiceML\nreturns 200 OK exclusively; this code is declared so the\nspec matches twilio-oai's documented response set verbatim\nand SDK codegen produces the same response-handling\nswitch. See parity-lint .cache/twilio_api_v2010.json.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -3417,7 +3639,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Stream started.",
             "content": {
               "application/json": {
@@ -3638,7 +3860,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "SIPREC session started.",
             "content": {
               "application/json": {
@@ -3881,7 +4103,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Transcription started.",
             "content": {
               "application/json": {
@@ -3999,7 +4221,28 @@
           "Calls / Notifications"
         ],
         "summary": "List per-call notifications (compat stub)",
-        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through Prometheus + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list.\n",
+        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through Prometheus + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list. Page/PageSize and Log\nare accepted for SDK ergonomics but have no effect on an\nempty list.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "Log",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "description": "Twilio-parity parameter — 0 = error-level only, 1 =\nwarning-level + above. Accepted for SDK drop-in\ncompatibility; has no effect since VoiceML's per-call\nnotification stream is unimplemented (this endpoint is a\nstub returning an empty list).\n"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Empty list (always — stub).",
@@ -4066,7 +4309,15 @@
           "Calls / Events"
         ],
         "summary": "List per-call lifecycle events (compat stub)",
-        "description": "Twilio's fine-grained per-call event stream. VoiceML\ndelivers equivalent data via `StatusCallback` (initiated /\nringing / answered / completed); this endpoint is mounted\nas a stub returning an empty list so SDK helpers iterate\ncleanly. The canonical event source is the customer's\n`StatusCallback` URL.\n",
+        "description": "Twilio's fine-grained per-call event stream. VoiceML\ndelivers equivalent data via `StatusCallback` (initiated /\nringing / answered / completed); this endpoint is mounted\nas a stub returning an empty list so SDK helpers iterate\ncleanly. The canonical event source is the customer's\n`StatusCallback` URL. Page/PageSize are accepted for SDK\nergonomics but have no effect on an empty list.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Empty list (always — stub).",
@@ -4145,6 +4396,16 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "Twilio declares 201 Created on success. VoiceML returns 501\nNot Implemented — both are declared for SDK codegen parity.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "501": {
             "description": "Not implemented.",
             "content": {
@@ -4182,6 +4443,33 @@
         "description": "Returns recordings created by `<Dial><Conference record=\"record-from-start\">`\nverbs that ran in this conference. Pagination envelope same as\n`/Recordings`.\n",
         "parameters": [
           {
+            "name": "DateCreated",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created on this UTC date (YYYY-MM-DD)."
+          },
+          {
+            "name": "DateCreated<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly before this UTC date."
+          },
+          {
+            "name": "DateCreated>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Filter to recordings created strictly after this UTC date."
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -4205,7 +4493,7 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{RecordingSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
@@ -4214,7 +4502,7 @@
           "$ref": "#/components/parameters/CallSid"
         },
         {
-          "$ref": "#/components/parameters/RecordingSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -4294,6 +4582,16 @@
               }
             }
           },
+          "408": {
+            "description": "Twilio returns 408 Request Timeout when the recording is locked.\nVoiceML uses 503/409 instead — both are declared for SDK parity.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
@@ -4322,13 +4620,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/Recordings/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/RecordingSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -4377,13 +4675,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}.wav": {
+    "/2010-04-01/Accounts/{AccountSid}/Recordings/{Sid}.wav": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/RecordingSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {
@@ -4588,6 +4886,37 @@
               "type": "string",
               "pattern": "^\\+[1-9]\\d{1,14}$"
             }
+          },
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Twilio-parity parameter. VoiceML doesn't model per-DID\nFriendlyName on phone_numbers (the field is empty in every\nview), so this parameter is accepted but does not narrow\nor widen the result set. Declared for SDK drop-in\ncompatibility.\n"
+          },
+          {
+            "name": "Beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Twilio-parity parameter. VoiceML does not model the\ncarrier-supplied \"beta\" flag (no upstream beta-status\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK drop-in\ncompatibility.\n"
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "twilio",
+                "hosted"
+              ]
+            },
+            "description": "Twilio-parity parameter. VoiceML treats every assigned DID\nas locally provisioned (no twilio/hosted origin\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK drop-in\ncompatibility.\n"
           }
         ],
         "responses": {
@@ -4749,13 +5078,13 @@
         }
       }
     },
-    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{PhoneNumberSid}.json": {
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json": {
       "parameters": [
         {
           "$ref": "#/components/parameters/AccountSid"
         },
         {
-          "$ref": "#/components/parameters/PhoneNumberSid"
+          "$ref": "#/components/parameters/ResourceSid"
         }
       ],
       "get": {

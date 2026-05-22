@@ -47,6 +47,10 @@ def rewrite_branding(value):
 		)
 		# Mask SID example literals
 		value = SID_LITERAL.sub(lambda m: m.group(1) + "x" * 32, value)
+		# Trademark: TwiML must not ship on the public site (CLAUDE.md §3). Wire field
+		# names such as Twiml are dict keys and are not walked as values here.
+		value = re.sub(r"TwiML's", "voice markup's", value)
+		value = re.sub(r"TwiML", "voice markup", value)
 		return value
 	if isinstance(value, dict):
 		return {k: rewrite_branding(v) for k, v in value.items()}

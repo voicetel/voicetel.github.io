@@ -587,7 +587,7 @@
           },
           "queue_time": {
             "type": "string",
-            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the TwiML executor.\nSee #268.\n"
+            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the voice markup executor.\nSee #268.\n"
           },
           "start_conference_on_enter": {
             "type": "boolean",
@@ -906,7 +906,7 @@
           },
           "voice_url": {
             "type": "string",
-            "description": "TwiML URL fetched when <Dial><Application>SID</Application></Dial> dispatches."
+            "description": "voice markup URL fetched when <Dial><Application>SID</Application></Dial> dispatches."
           },
           "voice_method": {
             "type": "string",
@@ -1657,7 +1657,7 @@
           },
           "Url": {
             "type": "string",
-            "description": "HTTP(S) endpoint that returns TwiML when the call answers.\nMutually exclusive with `Twiml` (inline body wins if both set).\n"
+            "description": "HTTP(S) endpoint that returns voice markup when the call answers.\nMutually exclusive with `Twiml` (inline body wins if both set).\n"
           },
           "Method": {
             "type": "string",
@@ -1670,7 +1670,7 @@
           },
           "Twiml": {
             "type": "string",
-            "description": "Inline TwiML body — alternative to `Url`. If both are set,\n`Twiml` wins (matches Twilio's documented precedence).\n"
+            "description": "Inline voice markup body — alternative to `Url`. If both are set,\n`Twiml` wins (matches Twilio's documented precedence).\n"
           },
           "ApplicationSid": {
             "type": "string",
@@ -1678,7 +1678,7 @@
           },
           "FallbackUrl": {
             "type": "string",
-            "description": "URL to fetch TwiML from if the primary `Url` / `Twiml`\nsource fails to fetch or parse. Tried only on primary\nfailure.\n"
+            "description": "URL to fetch voice markup from if the primary `Url` / `Twiml`\nsource fails to fetch or parse. Tried only on primary\nfailure.\n"
           },
           "FallbackMethod": {
             "type": "string",
@@ -1815,7 +1815,7 @@
       },
       "UpdateCallRequest": {
         "type": "object",
-        "description": "POST /Calls/{Sid} body. The endpoint serves four intents:\n\n* `Status=completed|canceled` — terminate the live call.\n* `Twiml=<inline>` — execute inline TwiML on the live call;\n  wins over `Url` when both are present (matches Twilio).\n* `Url=…` (`Method`/`FallbackUrl`/`FallbackMethod`) — fetch\n  TwiML and execute on the live call. Falls through to\n  `FallbackUrl` on primary fetch/parse failure.\n* `StatusCallback*` — swap the live call's lifecycle-\n  callback wiring (URL / method / event-mask). Twilio\n  \"only-set fields\" precedence: empty fields preserve the\n  previous value; absent `StatusCallbackEvent` leaves the\n  existing event mask, present (one or more) replaces.\n\nPrecedence: Status wins over any TwiML source. The\nStatusCallback* update is independent and applies on every\nrequest that carries it (including the terminate path).\n",
+        "description": "POST /Calls/{Sid} body. The endpoint serves four intents:\n\n* `Status=completed|canceled` — terminate the live call.\n* `Twiml=<inline>` — execute inline voice markup on the live call;\n  wins over `Url` when both are present (matches Twilio).\n* `Url=…` (`Method`/`FallbackUrl`/`FallbackMethod`) — fetch\n  voice markup and execute on the live call. Falls through to\n  `FallbackUrl` on primary fetch/parse failure.\n* `StatusCallback*` — swap the live call's lifecycle-\n  callback wiring (URL / method / event-mask). Twilio\n  \"only-set fields\" precedence: empty fields preserve the\n  previous value; absent `StatusCallbackEvent` leaves the\n  existing event mask, present (one or more) replaces.\n\nPrecedence: Status wins over any voice markup source. The\nStatusCallback* update is independent and applies on every\nrequest that carries it (including the terminate path).\n",
         "properties": {
           "Status": {
             "type": "string",
@@ -1826,7 +1826,7 @@
           },
           "Twiml": {
             "type": "string",
-            "description": "Inline TwiML body. Wins over `Url`."
+            "description": "Inline voice markup body. Wins over `Url`."
           },
           "Url": {
             "type": "string"
@@ -2167,7 +2167,7 @@
           "Calls"
         ],
         "summary": "Update or terminate a live call",
-        "description": "Three flows on the same endpoint (mirrors Twilio):\n  * `Status=completed|canceled` — terminate the call.\n  * `Twiml=<inline>` — execute inline TwiML on the live call\n    (wins over `Url` when both are present).\n  * `Url=…` — fetch new TwiML and execute it on the live call\n    (live redirect / hot swap).\nIf `Status` is present alongside any TwiML source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
+        "description": "Three flows on the same endpoint (mirrors Twilio):\n  * `Status=completed|canceled` — terminate the call.\n  * `Twiml=<inline>` — execute inline voice markup on the live call\n    (wins over `Url` when both are present).\n  * `Url=…` — fetch new voice markup and execute it on the live call\n    (live redirect / hot swap).\nIf `Status` is present alongside any voice markup source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -2201,7 +2201,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "502": {
-            "description": "TwiML fetch / execute failed.",
+            "description": "voice markup fetch / execute failed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2243,7 +2243,7 @@
           "Conferences"
         ],
         "summary": "List active conferences for the account",
-        "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via TwiML\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
+        "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via voice markup\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
         "parameters": [
           {
             "name": "FriendlyName",
@@ -2878,8 +2878,8 @@
         "tags": [
           "Queues / Members"
         ],
-        "summary": "Dequeue the front member to a TwiML URL",
-        "description": "Pops the longest-waiting member and redirects their call to the\nURL in the body. The member's <Enqueue> wait-loop fetches that\nURL and runs the returned TwiML on their leg as continuation.\n",
+        "summary": "Dequeue the front member to a voice markup URL",
+        "description": "Pops the longest-waiting member and redirects their call to the\nURL in the body. The member's <Enqueue> wait-loop fetches that\nURL and runs the returned voice markup on their leg as continuation.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -2980,7 +2980,7 @@
         "tags": [
           "Queues / Members"
         ],
-        "summary": "Dequeue a specific member to a TwiML URL",
+        "summary": "Dequeue a specific member to a voice markup URL",
         "requestBody": {
           "required": true,
           "content": {
@@ -3043,7 +3043,7 @@
           "Applications"
         ],
         "summary": "Create an Application",
-        "description": "Persistent named TwiML+callback bundle — referenced by\n`<Dial><Application>AP…</Application></Dial>`. The agent's\nDial verb resolves the SID, fetches voice_url, and runs the\nreturned TwiML on the call leg.\n",
+        "description": "Persistent named voice markup+callback bundle — referenced by\n`<Dial><Application>AP…</Application></Dial>`. The agent's\nDial verb resolves the SID, fetches voice_url, and runs the\nreturned voice markup on the call leg.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -3633,7 +3633,7 @@
           "Calls / Streams"
         ],
         "summary": "Start a media stream on the call (REST equivalent of `<Connect><Stream>`/`<Start><Stream>`)",
-        "description": "Issues `uuid_audio_fork start` on the call leg via the same\nexecutor primitive the TwiML verbs use. Returns the new Stream\nresource with an MZ-prefixed sid.\n",
+        "description": "Issues `uuid_audio_fork start` on the call leg via the same\nexecutor primitive the voice markup verbs use. Returns the new Stream\nresource with an MZ-prefixed sid.\n",
         "requestBody": {
           "required": true,
           "content": {

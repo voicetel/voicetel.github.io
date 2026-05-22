@@ -34,6 +34,8 @@ def rewrite_branding(value):
 		# Trademark: callBroadcast → VoiceML (preserve case neighbouring text)
 		value = re.sub(r"callBroadcast", "VoiceML", value)
 		value = re.sub(r"callbroadcast", "voiceml", value)
+		# Upstream notes the internal codename; drop it from public spec prose.
+		value = re.sub(r"\s*\(development name `[^`]+`\)", "", value)
 		# Single canonical host
 		value = value.replace("east-1.us.voiceml.voicetel.com", "voiceml.voicetel.com")
 		# Upstream substitutes the base URL at request time. For static rendering

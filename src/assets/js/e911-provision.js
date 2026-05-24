@@ -61,6 +61,18 @@ async function boot() {
 		return result.bodyJson;
 	}
 
+	async function verifyKey() {
+		const values = { path: {}, query: {}, header: {} };
+		const result = await sendRequest(API_BASE, makeOp("get", "/v2.2/e911"), values);
+		if (result.error) throw result.error;
+		if (result.status === 401 || result.status === 403) {
+			const json = result.bodyJson;
+			const msg = json?.error?.message || json?.message || `API returned ${result.status}`;
+			throw new Error(msg);
+		}
+		return result.bodyJson;
+	}
+
 	function showStep(name) {
 		for (const el of app.querySelectorAll("[data-step]")) {
 			el.hidden = el.dataset.step !== name;
@@ -89,16 +101,100 @@ async function boot() {
 		}
 	}
 
-	async function verifyKey() {
-		const values = { path: {}, query: {}, header: {} };
-		const result = await sendRequest(API_BASE, makeOp("get", "/v2.2/e911"), values);
-		if (result.error) throw result.error;
-		if (result.status === 401 || result.status === 403) {
-			const json = result.bodyJson;
-			const msg = json?.error?.message || json?.message || `API returned ${result.status}`;
-			throw new Error(msg);
+	function esc(str) {
+		return String(str || "")
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;");
+	}
+
+	function formatDn(dn) {
+		const d = String(dn || "");
+		const digits = d.replace(/\D/g, "");
+		const ten = digits.length === 11 ? digits.slice(1) : digits;
+		if (ten.length === 10) {
+			return `(${ten.slice(0, 3)}) ${ten.slice(3, 6)}-${ten.slice(6)}`;
+		}
+		return d;
+	}
+
+	async function loadRecords() {
+		clearError("records");
+		const container = app.querySelector("[data-records-table]");
+
+		try {
+			const json = await verifyKey();
+			const records = json?.data?.records || [];
+
+			if (records.length === 0) {
+				container.innerHTML = '<p class="text-muted">No E911 records on this account.</p>';
+				return;
+			}
+
+			const rows = records
+				.map(
+					(r) => `<tr>
+					<td>${esc(formatDn(r.dn))}</td>
+					<td>${esc(r.callername)}</td>
+					<td>${esc(r.address1)}${r.address2 ? ", " + esc(r.address2) : ""}</td>
+					<td>${esc(r.city)}, ${esc(r.state)} ${esc(r.zip)}</td>
+					<td class="e911-actions-cell">
+						<button type="button" class="btn btn-secondary btn--sm" data-edit-dn="${esc(r.dn)}" data-edit-name="${esc(r.callername)}">Edit</button>
+						<button type="button" class="btn btn-warning btn--sm" data-delete-dn="${esc(r.dn)}">Delete</button>
+					</td>
+				</tr>`
+				)
+				.join("");
+
+			container.innerHTML = `<table class="data-table">
+				<thead>
+					<tr>
+						<th scope="col">Number</th>
+						<th scope="col">Caller name</th>
+						<th scope="col">Address</th>
+						<th scope="col">City / State</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>${rows}</tbody>
+			</table>`;
+		} catch (err) {
+			container.innerHTML = "";
+			showError("records", `Failed to load records: ${err.message}`);
 		}
 	}
+
+	// Records table: edit and delete actions
+	app.querySelector("[data-records-table]").addEventListener("click", async (e) => {
+		const editBtn = e.target.closest("[data-edit-dn]");
+		const deleteBtn = e.target.closest("[data-delete-dn]");
+
+		if (editBtn) {
+			const dn = editBtn.dataset.editDn;
+			const name = editBtn.dataset.editName;
+			document.getElementById("e911-dn").value = dn.replace(/^1/, "");
+			document.getElementById("e911-callername").value = name;
+			showStep("address");
+		}
+
+		if (deleteBtn) {
+			const dn = deleteBtn.dataset.deleteDn;
+			const stripped = dn.replace(/^1/, "");
+			if (!window.confirm(`Remove E911 record for ${formatDn(dn)}?`)) return;
+
+			deleteBtn.disabled = true;
+			deleteBtn.textContent = "Deleting…";
+			try {
+				await apiCall("delete", `/v2.2/e911/${stripped}`);
+				await loadRecords();
+			} catch (err) {
+				showError("records", `Delete failed: ${err.message}`);
+				deleteBtn.disabled = false;
+				deleteBtn.textContent = "Delete";
+			}
+		}
+	});
 
 	// Step 1: API key
 	const keyForm = app.querySelector('[data-form="key"]');
@@ -117,14 +213,52 @@ async function boot() {
 				showError("key", "Enter your API key to continue.");
 				return;
 			}
-			await verifyKey();
-			showStep("address");
+			await loadRecords();
+			showStep("records");
 		} catch (err) {
 			showError("key", `Key verification failed: ${err.message}`);
 		}
 	});
 
-	// Step 2: Validate address
+	// Step 2: Records → add new (two-step) or quick provision (single-step)
+	app.querySelector('[data-action="add-new"]').addEventListener("click", () => {
+		document.getElementById("e911-dn").value = "";
+		document.getElementById("e911-callername").value = "";
+		showStep("address");
+	});
+
+	app.querySelector('[data-action="quick-provision"]').addEventListener("click", () => {
+		app.querySelector('[data-form="quick"]').reset();
+		showStep("quick");
+	});
+
+	// Quick provision form (POST /v2.2/e911 — validate + provision in one step)
+	const quickForm = app.querySelector('[data-form="quick"]');
+	quickForm.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		clearError("quick");
+
+		const body = {
+			dn: document.getElementById("e911-quick-dn").value.trim(),
+			callername: document.getElementById("e911-quick-callername").value.trim(),
+			address1: document.getElementById("e911-quick-address1").value.trim(),
+			address2: document.getElementById("e911-quick-address2").value.trim(),
+			city: document.getElementById("e911-quick-city").value.trim(),
+			state: document.getElementById("e911-quick-state").value.trim().toUpperCase(),
+			zip: document.getElementById("e911-quick-zip").value.trim(),
+		};
+
+		try {
+			const json = await apiCall("post", "/v2.2/e911", body);
+			const record = json?.data?.record ?? body;
+			fillCard(app.querySelector("[data-result-record]"), record);
+			showStep("result");
+		} catch (err) {
+			showError("quick", `Provisioning failed: ${err.message}`);
+		}
+	});
+
+	// Step 3: Validate address (two-step flow)
 	const addrForm = app.querySelector('[data-form="address"]');
 	addrForm.addEventListener("submit", async (e) => {
 		e.preventDefault();
@@ -151,12 +285,12 @@ async function boot() {
 		}
 	});
 
-	// Step 3: Confirm → provision
+	// Step 4: Confirm → provision
 	app.querySelector('[data-action="accept-address"]').addEventListener("click", () =>
 		showStep("provision")
 	);
 
-	// Step 4: Provision
+	// Step 5: Provision
 	const provForm = app.querySelector('[data-form="provision"]');
 	provForm.addEventListener("submit", async (e) => {
 		e.preventDefault();
@@ -176,22 +310,27 @@ async function boot() {
 		}
 	});
 
-	// Step 5: Actions
-	app.querySelector('[data-action="provision-another"]').addEventListener("click", () => {
-		provForm.reset();
-		showStep("provision");
+	// Step 6: Result actions
+	app.querySelector('[data-action="back-to-records"]').addEventListener("click", async () => {
+		await loadRecords();
+		showStep("records");
 	});
 
-	app.querySelector('[data-action="start-over"]').addEventListener("click", () => {
-		state.addressId = null;
-		state.validated = null;
-		for (const f of app.querySelectorAll("form")) f.reset();
-		renderKeyStep().then(() => showStep("key"));
+	app.querySelector('[data-action="add-another"]').addEventListener("click", () => {
+		document.getElementById("e911-dn").value = "";
+		document.getElementById("e911-callername").value = "";
+		addrForm.reset();
+		showStep("address");
 	});
 
 	// Back buttons
 	for (const btn of app.querySelectorAll("[data-back]")) {
-		btn.addEventListener("click", () => showStep(btn.dataset.back));
+		btn.addEventListener("click", async () => {
+			if (btn.dataset.back === "records") {
+				await loadRecords();
+			}
+			showStep(btn.dataset.back);
+		});
 	}
 }
 

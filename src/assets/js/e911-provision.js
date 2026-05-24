@@ -89,6 +89,17 @@ async function boot() {
 		}
 	}
 
+	async function verifyKey() {
+		const values = { path: {}, query: {}, header: {} };
+		const result = await sendRequest(API_BASE, makeOp("get", "/v2.2/e911"), values);
+		if (result.error) throw result.error;
+		if (result.status === 401 || result.status === 403) {
+			const json = result.bodyJson;
+			const msg = json?.error?.message || json?.message || `API returned ${result.status}`;
+			throw new Error(msg);
+		}
+	}
+
 	// Step 1: API key
 	const keyForm = app.querySelector('[data-form="key"]');
 	keyForm.addEventListener("submit", async (e) => {
@@ -106,7 +117,7 @@ async function boot() {
 				showError("key", "Enter your API key to continue.");
 				return;
 			}
-			await apiCall("get", "/v2.2/e911");
+			await verifyKey();
 			showStep("address");
 		} catch (err) {
 			showError("key", `Key verification failed: ${err.message}`);

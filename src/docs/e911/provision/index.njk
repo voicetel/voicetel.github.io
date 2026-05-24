@@ -37,9 +37,67 @@ description: "Guided form to validate an address and provision E911 records on V
 		</form>
 	</div>
 
-	{# Step 2: Validate address #}
+	{# Step 2: Existing records #}
+	<div class="e911-step" data-step="records" hidden>
+		<h2>E911 records</h2>
+		<p>Existing E911 records on your account. You can update the caller name, delete a record, or add a new one.</p>
+		<p class="form-error" data-error="records" hidden></p>
+		<div class="table-container" data-records-table></div>
+		<div class="form-actions">
+			<button type="button" class="btn btn-primary" data-action="quick-provision">Provision new record</button>
+			<button type="button" class="btn btn-secondary" data-action="add-new">Validate address first</button>
+			<button type="button" class="btn btn-secondary" data-back="key">Change API key</button>
+		</div>
+	</div>
+
+	{# Quick provision (validate + provision in one step) #}
+	<div class="e911-step" data-step="quick" hidden>
+		<h2>Provision E911</h2>
+		<p>Enter the address, phone number, and caller name. The API validates the address and provisions in a single step.</p>
+		<form class="e911-form" data-form="quick">
+			<div class="form-row">
+				<label for="e911-quick-dn">Phone number</label>
+				<input id="e911-quick-dn" type="tel" required placeholder="2015551234" pattern="[0-9]{10}" title="Ten-digit US phone number" maxlength="10">
+			</div>
+			<div class="form-row">
+				<label for="e911-quick-callername">Caller name</label>
+				<input id="e911-quick-callername" type="text" required maxlength="20" placeholder="Acme Corp Main">
+			</div>
+			<div class="form-row">
+				<label for="e911-quick-address1">Street address</label>
+				<input id="e911-quick-address1" type="text" required placeholder="123 Main Street">
+			</div>
+			<div class="form-row">
+				<label for="e911-quick-address2">Address line 2 <span class="form-optional">(optional)</span></label>
+				<input id="e911-quick-address2" type="text" placeholder="Suite, apartment, floor">
+			</div>
+			<div class="form-row form-row--half">
+				<div>
+					<label for="e911-quick-city">City</label>
+					<input id="e911-quick-city" type="text" required>
+				</div>
+				<div>
+					<label for="e911-quick-state">State</label>
+					<input id="e911-quick-state" type="text" required maxlength="2" placeholder="NJ" pattern="[A-Za-z]{2}" title="Two-letter US state code">
+				</div>
+			</div>
+			<div class="form-row form-row--quarter">
+				<div>
+					<label for="e911-quick-zip">ZIP code</label>
+					<input id="e911-quick-zip" type="text" required maxlength="10" placeholder="07102" pattern="[0-9]{5}(-[0-9]{4})?" title="Five-digit ZIP or ZIP+4">
+				</div>
+			</div>
+			<p class="form-error" data-error="quick" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Validate and provision</button>
+				<button type="button" class="btn btn-secondary" data-back="records">Back</button>
+			</div>
+		</form>
+	</div>
+
+	{# Step 3: Validate address #}
 	<div class="e911-step" data-step="address" hidden>
-		<h2>Step 2: Validate address</h2>
+		<h2>Validate address</h2>
 		<p>Enter the physical address for the E911 record. The API normalizes and verifies the address against the ALI database.</p>
 		<form class="e911-form" data-form="address">
 			<div class="form-row">
@@ -69,14 +127,14 @@ description: "Guided form to validate an address and provision E911 records on V
 			<p class="form-error" data-error="address" hidden></p>
 			<div class="form-actions">
 				<button type="submit" class="btn btn-primary">Validate address</button>
-				<button type="button" class="btn btn-secondary" data-back="key">Back</button>
+				<button type="button" class="btn btn-secondary" data-back="records">Back</button>
 			</div>
 		</form>
 	</div>
 
-	{# Step 3: Address confirmation #}
+	{# Step 4: Address confirmation #}
 	<div class="e911-step" data-step="confirm" hidden>
-		<h2>Step 3: Confirm address</h2>
+		<h2>Confirm address</h2>
 		<p>The API returned a normalized address. Confirm it is correct before provisioning.</p>
 		<div class="e911-address-card" data-validated-address>
 			<dl class="e911-dl">
@@ -100,9 +158,9 @@ description: "Guided form to validate an address and provision E911 records on V
 		</div>
 	</div>
 
-	{# Step 4: Provision number #}
+	{# Step 5: Provision number #}
 	<div class="e911-step" data-step="provision" hidden>
-		<h2>Step 4: Provision a number</h2>
+		<h2>Provision a number</h2>
 		<p>Enter the phone number and caller name for the E911 record. The caller name is displayed to the PSAP dispatcher (max 20 characters).</p>
 		<form class="e911-form" data-form="provision">
 			<div class="form-row">
@@ -121,7 +179,7 @@ description: "Guided form to validate an address and provision E911 records on V
 		</form>
 	</div>
 
-	{# Step 5: Result #}
+	{# Step 6: Result #}
 	<div class="e911-step" data-step="result" hidden>
 		<h2>E911 provisioned</h2>
 		<div class="alert alert-info" role="status">
@@ -146,8 +204,8 @@ description: "Guided form to validate an address and provision E911 records on V
 			</dl>
 		</div>
 		<div class="form-actions">
-			<button type="button" class="btn btn-primary" data-action="provision-another">Provision another number</button>
-			<button type="button" class="btn btn-secondary" data-action="start-over">Start over</button>
+			<button type="button" class="btn btn-primary" data-action="back-to-records">Back to records</button>
+			<button type="button" class="btn btn-secondary" data-action="add-another">Add another</button>
 		</div>
 	</div>
 </section>

@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.6.4",
-    "summary": "Outbound voice + AMD service with Twilio-shaped REST surface",
-    "description": "VoiceML exposes the Twilio Programmable\nVoice Calls REST API surface so existing Twilio SDKs (`twilio-node`,\n`twilio-python`, `twilio-go`, ...) work against it as a drop-in replacement.\nThe wire shape, authentication model, error codes, and pagination envelope\nall match Twilio's documented behaviour.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against it produce strict-Twilio-shape\nURLs out of the box; existing clients that omit `.json` continue to work\nunchanged.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — drop-in compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
+    "version": "0.6.6",
+    "summary": "Outbound voice + AMD service with a Twilio-compatible REST API",
+    "description": "VoiceML exposes a Twilio-compatible Programmable Voice Calls REST API so\nexisting Twilio SDKs (`twilio-node`, `twilio-python`, `twilio-go`, ...)\ncan integrate with minimal migration effort. Authentication, error codes,\nand pagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — migration-compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
       "name": "VoiceTel",
       "url": "https://voiceml.voicetel.com"
@@ -69,6 +69,9 @@
       "name": "IncomingPhoneNumbers"
     },
     {
+      "name": "Other"
+    },
+    {
       "name": "Queues"
     },
     {
@@ -76,6 +79,65 @@
     },
     {
       "name": "Recordings"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Voice — calls",
+      "tags": [
+        "Calls",
+        "Calls / Recordings",
+        "Calls / Streams",
+        "Calls / Siprec",
+        "Calls / Transcriptions"
+      ]
+    },
+    {
+      "name": "Voice — call telemetry",
+      "tags": [
+        "Calls / Events",
+        "Calls / Notifications",
+        "Calls / UserDefinedMessages"
+      ]
+    },
+    {
+      "name": "Conferences",
+      "tags": [
+        "Conferences",
+        "Conferences / Participants",
+        "Conferences / Recordings"
+      ]
+    },
+    {
+      "name": "Queues",
+      "tags": [
+        "Queues",
+        "Queues / Members"
+      ]
+    },
+    {
+      "name": "Applications",
+      "tags": [
+        "Applications"
+      ]
+    },
+    {
+      "name": "Numbers",
+      "tags": [
+        "IncomingPhoneNumbers"
+      ]
+    },
+    {
+      "name": "Recordings (top-level)",
+      "tags": [
+        "Recordings"
+      ]
+    },
+    {
+      "name": "Diagnostics",
+      "tags": [
+        "Diagnostics"
+      ]
     }
   ],
   "components": {
@@ -121,7 +183,7 @@
         "name": "ConferenceSid",
         "in": "path",
         "required": true,
-        "description": "Twilio-shape Conference SID — literal `CF` + 32 hex chars\n(34 total). Server-generated lazily on first\n`<Dial><Conference>` dispatch (or on first appearance in\na `GET /Conferences` list); cleared when the conference\nends. The v0.19.x namespaced form\n(`<AccountSid>__<friendly>`) is still accepted on input\nfor migration safety, but the response always emits the\nCF shape.\n",
+        "description": "Twilio-compatible Conference SID — literal `CF` + 32 hex chars\n(34 total). Server-generated lazily on first\n`<Dial><Conference>` dispatch (or on first appearance in\na `GET /Conferences` list); cleared when the conference\nends. The v0.19.x namespaced form\n(`<AccountSid>__<friendly>`) is still accepted on input\nfor migration safety, but the response always emits the\nCF shape.\n",
         "schema": {
           "type": "string",
           "pattern": "^CF[a-f0-9]{32}$|^[A-Z]{2}[0-9a-f]+__.+$"
@@ -131,7 +193,7 @@
         "name": "QueueSid",
         "in": "path",
         "required": true,
-        "description": "Twilio-shape Queue SID — literal \"QU\" + 32 hex chars (34\ntotal). Server-generated on `POST /Queues`.\n",
+        "description": "Twilio-compatible Queue SID — literal \"QU\" + 32 hex chars (34\ntotal). Server-generated on `POST /Queues`.\n",
         "schema": {
           "type": "string",
           "pattern": "^QU[0-9a-f]{32}$"
@@ -141,7 +203,7 @@
         "name": "ApplicationSid",
         "in": "path",
         "required": true,
-        "description": "Twilio-shape Application SID — literal \"AP\" + 32 hex chars\n(34 total). Server-generated on `POST /Applications`.\n",
+        "description": "Twilio-compatible Application SID — literal \"AP\" + 32 hex chars\n(34 total). Server-generated on `POST /Applications`.\n",
         "schema": {
           "type": "string",
           "pattern": "^AP[0-9a-f]{32}$"
@@ -161,7 +223,7 @@
         "name": "Sid",
         "in": "path",
         "required": true,
-        "description": "Twilio-shape subresource SID — used by Streams (`MZ` prefix),\nSiprec (`SR` prefix), and Transcriptions (`RT` prefix). The\nregex covers all three subresources mounted under\n`/Calls/{CallSid}/{Streams|Siprec|Transcriptions}/{Sid}`.\n",
+        "description": "Twilio-compatible subresource SID — used by Streams (`MZ` prefix),\nSiprec (`SR` prefix), and Transcriptions (`RT` prefix). The\nregex covers all three subresources mounted under\n`/Calls/{CallSid}/{Streams|Siprec|Transcriptions}/{Sid}`.\n",
         "schema": {
           "type": "string",
           "pattern": "^(MZ|SR|RT)[a-f0-9]{32}$"
@@ -182,7 +244,7 @@
         "name": "PhoneNumberSid",
         "in": "path",
         "required": true,
-        "description": "Twilio-shape IncomingPhoneNumber identifier — literal `PN` +\n32 lowercase hex characters (34 total). Server-generated when\nthe DID is first claimed by an account; stable for the row's\nlifetime on this account. The legacy E.164 path shape\n(`/IncomingPhoneNumbers/+18005551234`) is still accepted on\ninput during the v0.5.x soft-transition window — same\nprecedent as `ConferenceSid` which accepts both canonical and\nlegacy forms. Responses always emit the `PN…` form on the\n`sid` field regardless of which key resolved the request.\n",
+        "description": "Twilio-compatible IncomingPhoneNumber identifier — literal `PN` +\n32 lowercase hex characters (34 total). Server-generated when\nthe DID is first claimed by an account; stable for the row's\nlifetime on this account. The legacy E.164 path shape\n(`/IncomingPhoneNumbers/+18005551234`) is still accepted on\ninput during the v0.5.x soft-transition window — same\nprecedent as `ConferenceSid` which accepts both canonical and\nlegacy forms. Responses always emit the `PN…` form on the\n`sid` field regardless of which key resolved the request.\n",
         "schema": {
           "type": "string",
           "pattern": "^PN[a-f0-9]{32}$|^\\+[1-9]\\d{1,14}$"
@@ -446,7 +508,7 @@
               "in-progress",
               "completed"
             ],
-            "description": "`init` matches Twilio's transient pre-mix-engine state. VoiceML\nnever emits it today (the conference materializes only after a\nparticipant joins), but the value is documented for SDK\nenum-deserializer parity.\n"
+            "description": "`init` matches Twilio's transient pre-mix-engine state. VoiceML\nnever emits it today (the conference materializes only after a\nparticipant joins), but the value is documented for SDK\nenum-deserializer compatibility.\n"
           },
           "region": {
             "type": "string",
@@ -1043,7 +1105,7 @@
               "absent",
               "deleted"
             ],
-            "description": "Twilio-canonical enum. `failed` is intentionally absent — Twilio\ndoes not document it on Recording.status (failure of an Outbound\nrecording surfaces as `absent`). VoiceML production code only\nemits `completed`; the wider set is documented for SDK parity.\n"
+            "description": "Twilio-canonical enum. `failed` is intentionally absent — Twilio\ndoes not document it on Recording.status (failure of an Outbound\nrecording surfaces as `absent`). VoiceML production code only\nemits `completed`; the wider set is documented for SDK compatibility.\n"
           },
           "source": {
             "type": "string",
@@ -1176,7 +1238,7 @@
           "uri",
           "capabilities"
         ],
-        "description": "Tenant-self-serve view of an assigned DID. Twilio-shape — `sid`\nis the canonical `PN`-prefixed opaque identifier (34 chars) and\n`phone_number` carries the E.164 form. These are distinct\nfields.\n\nThe full Twilio field set is documented here so strict-binding\nSDKs (twilio-csharp StringEnumConverter, twilio-java Jackson)\ndeserialize without throwing. Fields VoiceML doesn't track\n(regulatory, SMS, emergency, trunking) emit a Twilio-compat\ndefault — empty string, `null`, or the documented enum default.\nCustomer code that reads e.g. `number.capabilities.voice`\ntherefore behaves identically against VoiceML and Twilio.\n",
+        "description": "Tenant-self-serve view of an assigned DID. Twilio-compatible —\n`sid` is the canonical `PN`-prefixed opaque identifier (34 chars)\nand `phone_number` carries the E.164 form. These are distinct\nfields.\n\nThe full Twilio field set is documented here so strict-binding\nSDKs (twilio-csharp StringEnumConverter, twilio-java Jackson)\ndeserialize without throwing. Fields VoiceML doesn't track\n(regulatory, SMS, emergency, trunking) emit a Twilio-compat\ndefault — empty string, `null`, or the documented enum default.\nCustomer code that reads e.g. `number.capabilities.voice`\ntherefore works with the same SDK patterns on VoiceML and Twilio.\n",
         "properties": {
           "sid": {
             "type": "string",
@@ -1211,11 +1273,11 @@
               "hosted",
               ""
             ],
-            "description": "Twilio compat: source of the number. VoiceML emits empty (provisioning model is operator-managed, not number-buy)."
+            "description": "Twilio-compatible: source of the number. VoiceML emits empty (provisioning model is operator-managed, not number-buy)."
           },
           "beta": {
             "type": "boolean",
-            "description": "Twilio compat: `true` for numbers from beta-availability inventory. VoiceML always emits `false`."
+            "description": "Twilio-compatible: `true` for numbers from beta-availability inventory. VoiceML always emits `false`."
           },
           "capabilities": {
             "type": "object",
@@ -1225,7 +1287,7 @@
               "mms",
               "fax"
             ],
-            "description": "Twilio compat: which channel types this DID supports. VoiceML is voice-only — `voice=true`, the rest `false`.",
+            "description": "Twilio-compatible: which channel types this DID supports. VoiceML is voice-only — `voice=true`, the rest `false`.",
             "properties": {
               "voice": {
                 "type": "boolean"
@@ -1263,11 +1325,11 @@
           },
           "voice_application_sid": {
             "type": "string",
-            "description": "Twilio compat: linked `AP…` Application sid that supplies voice_url. VoiceML's `<Dial><Application>` flow keeps the link on the Application resource, not here — emits empty."
+            "description": "Twilio-compatible: linked `AP…` Application sid that supplies voice_url. VoiceML's `<Dial><Application>` flow keeps the link on the Application resource, not here — emits empty."
           },
           "voice_caller_id_lookup": {
             "type": "boolean",
-            "description": "Twilio compat: CNAM lookup flag. VoiceML doesn't perform CNAM — always `false`."
+            "description": "Twilio-compatible: CNAM lookup flag. VoiceML doesn't perform CNAM — always `false`."
           },
           "voice_receive_mode": {
             "type": "string",
@@ -1275,11 +1337,11 @@
               "voice",
               "fax"
             ],
-            "description": "Twilio compat: VoiceML routes inbound as voice only — always `voice`."
+            "description": "Twilio-compatible: VoiceML routes inbound as voice only — always `voice`."
           },
           "sms_url": {
             "type": "string",
-            "description": "Twilio compat: SMS handler URL. VoiceML is voice-only — empty."
+            "description": "Twilio-compatible: SMS handler URL. VoiceML is voice-only — empty."
           },
           "sms_method": {
             "type": "string",
@@ -1288,11 +1350,11 @@
               "POST",
               ""
             ],
-            "description": "Twilio compat: empty (SMS not handled)."
+            "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_fallback_url": {
             "type": "string",
-            "description": "Twilio compat: empty (SMS not handled)."
+            "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_fallback_method": {
             "type": "string",
@@ -1301,15 +1363,15 @@
               "POST",
               ""
             ],
-            "description": "Twilio compat: empty (SMS not handled)."
+            "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_application_sid": {
             "type": "string",
-            "description": "Twilio compat: empty (SMS not handled)."
+            "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "status_callback": {
             "type": "string",
-            "description": "Twilio compat: lifecycle webhook. VoiceML emits empty (status is per-call via Call status_callback)."
+            "description": "Twilio-compatible: lifecycle webhook. VoiceML emits empty (status is per-call via Call status_callback)."
           },
           "status_callback_method": {
             "type": "string",
@@ -1318,15 +1380,15 @@
               "POST",
               ""
             ],
-            "description": "Twilio compat: empty."
+            "description": "Twilio-compatible: empty."
           },
           "trunk_sid": {
             "type": "string",
-            "description": "Twilio compat: SIP trunk routing. VoiceML uses gateway-config-driven trunking — emits empty."
+            "description": "Twilio-compatible: SIP trunk routing. VoiceML uses gateway-config-driven trunking — emits empty."
           },
           "address_sid": {
             "type": "string",
-            "description": "Twilio compat: regulatory street-address resource. Not tracked by VoiceML — empty."
+            "description": "Twilio-compatible: regulatory street-address resource. Not tracked by VoiceML — empty."
           },
           "address_requirements": {
             "type": "string",
@@ -1337,15 +1399,15 @@
               "foreign",
               ""
             ],
-            "description": "Twilio compat: address requirement class. VoiceML emits `none`."
+            "description": "Twilio-compatible: address requirement class. VoiceML emits `none`."
           },
           "identity_sid": {
             "type": "string",
-            "description": "Twilio compat: business-identity resource. Not tracked — empty."
+            "description": "Twilio-compatible: business-identity resource. Not tracked — empty."
           },
           "bundle_sid": {
             "type": "string",
-            "description": "Twilio compat: regulatory bundle. Not tracked — empty."
+            "description": "Twilio-compatible: regulatory bundle. Not tracked — empty."
           },
           "emergency_status": {
             "type": "string",
@@ -1354,11 +1416,11 @@
               "Inactive",
               ""
             ],
-            "description": "Twilio compat: E911 registration. Not handled by VoiceML — emits empty."
+            "description": "Twilio-compatible: E911 registration. Not handled by VoiceML — emits empty."
           },
           "emergency_address_sid": {
             "type": "string",
-            "description": "Twilio compat: E911 address resource. Not tracked — empty."
+            "description": "Twilio-compatible: E911 address resource. Not tracked — empty."
           },
           "emergency_address_status": {
             "type": "string",
@@ -1371,11 +1433,11 @@
               "unregistration-failure",
               ""
             ],
-            "description": "Twilio compat: E911 registration state. Not tracked — empty."
+            "description": "Twilio-compatible: E911 registration state. Not tracked — empty."
           },
           "status": {
             "type": "string",
-            "description": "Twilio compat: provisioning status (`in-use`, etc.). VoiceML doesn't model this — empty."
+            "description": "Twilio-compatible: provisioning status (`in-use`, etc.). VoiceML doesn't model this — empty."
           },
           "type": {
             "type": "string",
@@ -1385,7 +1447,7 @@
               "toll-free",
               ""
             ],
-            "description": "Twilio compat: number class. VoiceML doesn't categorize numbers this way — emits empty."
+            "description": "Twilio-compatible: number class. VoiceML doesn't categorize numbers this way — emits empty."
           },
           "date_created": {
             "type": "string",
@@ -2267,6 +2329,60 @@
             "description": "Filter to conferences in this lifecycle state."
           },
           {
+            "name": "DateCreated",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible parameter. VoiceML's conference list is a live FreeSWITCH query with no historical store — accepted but does not narrow the result set."
+          },
+          {
+            "name": "DateCreated<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on live conference list."
+          },
+          {
+            "name": "DateCreated>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on live conference list."
+          },
+          {
+            "name": "DateUpdated",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on live conference list."
+          },
+          {
+            "name": "DateUpdated<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on live conference list."
+          },
+          {
+            "name": "DateUpdated>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on live conference list."
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -2464,6 +2580,111 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "participants.create",
+        "tags": [
+          "Conferences / Participants"
+        ],
+        "summary": "Dial a participant into a conference",
+        "description": "Places an outbound call from `From` to `To` that joins the named\nconference on answer via inline voice markup. Returns immediately with\n`status=queued` while the leg is ringing.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "From",
+                  "To"
+                ],
+                "properties": {
+                  "From": {
+                    "type": "string",
+                    "description": "Caller ID / originating endpoint (E.164 or Twilio client:/sip:/app: form)."
+                  },
+                  "To": {
+                    "type": "string",
+                    "description": "Destination endpoint to dial into the conference."
+                  },
+                  "Label": {
+                    "type": "string"
+                  },
+                  "Muted": {
+                    "type": "boolean"
+                  },
+                  "StartConferenceOnEnter": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "EndConferenceOnExit": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "Timeout": {
+                    "type": "integer",
+                    "description": "Ring timeout in seconds (default 60)."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "StatusCallbackEvent": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Participant resource (queued while dialing).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "502": {
+            "description": "Outbound originate dispatch failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Conference or outbound dial subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -3364,6 +3585,15 @@
             "description": "Filter to recordings whose ConferenceSid equals this value."
           },
           {
+            "name": "IncludeSoftDeleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Twilio-compatible parameter. VoiceML hard-deletes recordings —\nthere is no soft-delete store — so this parameter is\naccepted but does not change the result set.\n"
+          },
+          {
             "$ref": "#/components/parameters/Page"
           },
           {
@@ -3516,7 +3746,7 @@
             }
           },
           "201": {
-            "description": "Recording started (Twilio-historical 201 Created). VoiceML\nreturns 200 OK exclusively; this code is declared so the\nspec matches twilio-oai's documented response set verbatim\nand SDK codegen produces the same response-handling\nswitch. See parity-lint .cache/twilio_api_v2010.json.\n",
+            "description": "Recording started (Twilio-historical 201 Created). VoiceML\nreturns 200 OK exclusively; this code is declared so the\nspec matches twilio-oai's documented response set verbatim\nand SDK codegen produces the same response-handling\nswitch. Aligned with the Twilio OpenAPI reference response set.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -4276,7 +4506,37 @@
                 1
               ]
             },
-            "description": "Twilio-parity parameter — 0 = error-level only, 1 =\nwarning-level + above. Accepted for SDK drop-in\ncompatibility; has no effect since VoiceML's per-call\nnotification stream is unimplemented (this endpoint is a\nstub returning an empty list).\n"
+            "description": "Twilio-compatible parameter — 0 = error-level only, 1 =\nwarning-level + above. Accepted for SDK migration\ncompatibility; has no effect since VoiceML's per-call\nnotification stream is unimplemented (this endpoint is a\nstub returning an empty list).\n"
+          },
+          {
+            "name": "MessageDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+          },
+          {
+            "name": "MessageDate<",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+          },
+          {
+            "name": "MessageDate>",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
           }
         ],
         "responses": {
@@ -4317,6 +4577,196 @@
                       "type": "string"
                     }
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "$ref": "#/components/parameters/ResourceSid"
+        }
+      ],
+      "get": {
+        "operationId": "callNotifications.fetch",
+        "tags": [
+          "Calls / Notifications"
+        ],
+        "summary": "Fetch a per-call notification (compat stub)",
+        "description": "Per-call notification fetch. VoiceML does not persist a\nnotification stream — the list endpoint is always empty and\nindividual fetches return 404.\n",
+        "responses": {
+          "200": {
+            "description": "Notification resource (unused — stub always 404s today).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Notifications.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "notifications.list",
+        "tags": [
+          "Other"
+        ],
+        "summary": "List account notifications (compat stub)",
+        "description": "Account-wide notification log. VoiceML delivers events via\nStatusCallback — this endpoint returns an empty list so SDK\nhelpers do not 404.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          },
+          {
+            "name": "MessageDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+          },
+          {
+            "name": "MessageDate<",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+          },
+          {
+            "name": "MessageDate>",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+          },
+          {
+            "name": "Log",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "description": "Twilio-compatible parameter — accept-but-no-op on empty notification stub."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empty list (always — stub).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "notifications",
+                    "page",
+                    "page_size",
+                    "total",
+                    "uri"
+                  ],
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "page_size": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "enum": [
+                        0
+                      ]
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Notifications/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ResourceSid"
+        }
+      ],
+      "get": {
+        "operationId": "notifications.fetch",
+        "tags": [
+          "Other"
+        ],
+        "summary": "Fetch an account notification (compat stub)",
+        "description": "Always 404 — VoiceML does not persist notifications.",
+        "responses": {
+          "200": {
+            "description": "Notification resource (unused — stub always 404s today).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -4436,7 +4886,7 @@
         },
         "responses": {
           "201": {
-            "description": "Twilio declares 201 Created on success. VoiceML returns 501\nNot Implemented — both are declared for SDK codegen parity.\n",
+            "description": "Twilio declares 201 Created on success. VoiceML returns 501\nNot Implemented — both are declared for SDK codegen compatibility.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -4535,6 +4985,116 @@
         }
       }
     },
+    "/2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Recordings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ConferenceSid"
+        },
+        {
+          "$ref": "#/components/parameters/ResourceSid"
+        }
+      ],
+      "get": {
+        "operationId": "conferenceRecordings.fetch",
+        "tags": [
+          "Conferences / Recordings"
+        ],
+        "summary": "Fetch a conference-scoped recording",
+        "description": "Same JSON resource as `/Recordings/{RecordingSid}` but enforces\nthe conference scope from the URL path. 404 if the recording exists\nbut is attached to a different conference.\n",
+        "responses": {
+          "200": {
+            "description": "Recording metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "conferenceRecordings.update",
+        "tags": [
+          "Conferences / Recordings"
+        ],
+        "summary": "Update a conference-scoped recording's status",
+        "description": "Same semantics as `/Calls/{CallSid}/Recordings/{Sid}` but enforces\nconference scope from the URL path.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Status"
+                ],
+                "properties": {
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "stopped",
+                      "paused",
+                      "in-progress"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recording resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recording"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "conferenceRecordings.delete",
+        "tags": [
+          "Conferences / Recordings"
+        ],
+        "summary": "Delete a conference-scoped recording",
+        "description": "Same semantics as `/Recordings/{Sid}` but enforces conference\nscope from the URL path.\n",
+        "responses": {
+          "204": {
+            "description": "Recording deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Recordings/{Sid}.json": {
       "parameters": [
         {
@@ -4625,7 +5185,7 @@
             }
           },
           "408": {
-            "description": "Twilio returns 408 Request Timeout when the recording is locked.\nVoiceML uses 503/409 instead — both are declared for SDK parity.\n",
+            "description": "Twilio returns 408 Request Timeout when the recording is locked.\nVoiceML uses 503/409 instead — both are declared for SDK compatibility.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -4678,6 +5238,17 @@
         ],
         "summary": "Fetch recording metadata",
         "description": "Returns JSON metadata for the recording. The companion\n`.wav` path returns the audio bytes (or a 302/410 redirect\ndepending on archival state); see `recordings.fetchAudio`.\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
+        "parameters": [
+          {
+            "name": "IncludeSoftDeleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Twilio-compatible parameter. VoiceML hard-deletes recordings —\naccepted but does not change fetch behaviour.\n"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Recording metadata.",
@@ -4939,7 +5510,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Twilio-parity parameter. VoiceML doesn't model per-DID\nFriendlyName on phone_numbers (the field is empty in every\nview), so this parameter is accepted but does not narrow\nor widen the result set. Declared for SDK drop-in\ncompatibility.\n"
+            "description": "Twilio-compatible parameter. VoiceML doesn't model per-DID\nFriendlyName on phone_numbers (the field is empty in every\nview), so this parameter is accepted but does not narrow\nor widen the result set. Declared for SDK migration\ncompatibility.\n"
           },
           {
             "name": "Beta",
@@ -4948,7 +5519,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Twilio-parity parameter. VoiceML does not model the\ncarrier-supplied \"beta\" flag (no upstream beta-status\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK drop-in\ncompatibility.\n"
+            "description": "Twilio-compatible parameter. VoiceML does not model the\ncarrier-supplied \"beta\" flag (no upstream beta-status\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK migration\ncompatibility.\n"
           },
           {
             "name": "Origin",
@@ -4961,7 +5532,7 @@
                 "hosted"
               ]
             },
-            "description": "Twilio-parity parameter. VoiceML treats every assigned DID\nas locally provisioned (no twilio/hosted origin\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK drop-in\ncompatibility.\n"
+            "description": "Twilio-compatible parameter. VoiceML treats every assigned DID\nas locally provisioned (no twilio/hosted origin\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK migration\ncompatibility.\n"
           }
         ],
         "responses": {
@@ -5086,6 +5657,525 @@
           },
           "200": {
             "description": "Existing DID rebound to the same tenant (idempotent re-POST).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "Phone number is already assigned to a different account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/Local.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "incomingPhoneNumbers.listLocal",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "List local DIDs assigned to the authenticated tenant",
+        "description": "Twilio type-specific list alias. Returns DIDs inferred as\n`local` (non-toll-free US numbers and all non-US numbers).\nSame pagination envelope as `/IncomingPhoneNumbers`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\+[1-9]\\d{1,14}$"
+            }
+          },
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "twilio",
+                "hosted"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of local incoming phone numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "incomingPhoneNumbers.createLocal",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Assign a local DID to the authenticated tenant",
+        "description": "Twilio type-specific create alias — same semantics as\n`POST /IncomingPhoneNumbers`.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumber"
+                ],
+                "properties": {
+                  "PhoneNumber": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Newly assigned DID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing DID rebound (idempotent re-POST).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "Phone number is already assigned to a different account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/Mobile.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "incomingPhoneNumbers.listMobile",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "List mobile DIDs assigned to the authenticated tenant",
+        "description": "Twilio type-specific list alias. VoiceML does not track carrier\nmobile classification on BYO DIDs — this endpoint returns an\nempty page unless future metadata is added.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\+[1-9]\\d{1,14}$"
+            }
+          },
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "twilio",
+                "hosted"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of mobile incoming phone numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "incomingPhoneNumbers.createMobile",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Assign a mobile DID to the authenticated tenant",
+        "description": "Twilio type-specific create alias — same semantics as\n`POST /IncomingPhoneNumbers`.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumber"
+                ],
+                "properties": {
+                  "PhoneNumber": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Newly assigned DID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing DID rebound (idempotent re-POST).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "Phone number is already assigned to a different account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/TollFree.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "incomingPhoneNumbers.listTollFree",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "List toll-free DIDs assigned to the authenticated tenant",
+        "description": "Twilio type-specific list alias. Returns US toll-free NPAs\n(800/833/844/855/866/877/888). Same pagination envelope as\n`/IncomingPhoneNumbers`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\+[1-9]\\d{1,14}$"
+            }
+          },
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "twilio",
+                "hosted"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of toll-free incoming phone numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "incomingPhoneNumbers.createTollFree",
+        "tags": [
+          "IncomingPhoneNumbers"
+        ],
+        "summary": "Assign a toll-free DID to the authenticated tenant",
+        "description": "Twilio type-specific create alias — same semantics as\n`POST /IncomingPhoneNumbers`.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumber"
+                ],
+                "properties": {
+                  "PhoneNumber": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Newly assigned DID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingPhoneNumber"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing DID rebound (idempotent re-POST).",
             "content": {
               "application/json": {
                 "schema": {
@@ -5306,64 +6396,5 @@
         }
       }
     }
-  },
-  "x-tagGroups": [
-    {
-      "name": "Voice — calls",
-      "tags": [
-        "Calls",
-        "Calls / Recordings",
-        "Calls / Streams",
-        "Calls / Siprec",
-        "Calls / Transcriptions"
-      ]
-    },
-    {
-      "name": "Voice — call telemetry",
-      "tags": [
-        "Calls / Events",
-        "Calls / Notifications",
-        "Calls / UserDefinedMessages"
-      ]
-    },
-    {
-      "name": "Conferences",
-      "tags": [
-        "Conferences",
-        "Conferences / Participants",
-        "Conferences / Recordings"
-      ]
-    },
-    {
-      "name": "Queues",
-      "tags": [
-        "Queues",
-        "Queues / Members"
-      ]
-    },
-    {
-      "name": "Applications",
-      "tags": [
-        "Applications"
-      ]
-    },
-    {
-      "name": "Numbers",
-      "tags": [
-        "IncomingPhoneNumbers"
-      ]
-    },
-    {
-      "name": "Recordings (top-level)",
-      "tags": [
-        "Recordings"
-      ]
-    },
-    {
-      "name": "Diagnostics",
-      "tags": [
-        "Diagnostics"
-      ]
-    }
-  ]
+  }
 }

@@ -35,20 +35,21 @@ function init() {
 	}
 
 	async function apiCall(method, path, body) {
-		const opts = {
-			method,
-			headers: {
-				Authorization: `Bearer ${state.apiKey}`,
-				"Content-Type": "application/json",
-			},
-		};
+		const headers = { Authorization: `Bearer ${state.apiKey}` };
+		if (body) headers["Content-Type"] = "application/json";
+		const opts = { method, headers };
 		if (body) opts.body = JSON.stringify(body);
 
 		const res = await fetch(`${API_BASE}${path}`, opts);
 		const json = await res.json().catch(() => null);
 
 		if (!res.ok) {
-			const raw = json?.data?.message || json?.message || json?.data?.error || json?.error;
+			const raw =
+				json?.data?.message ||
+				json?.message ||
+				json?.error?.message ||
+				json?.data?.error ||
+				json?.error;
 			const msg =
 				typeof raw === "string"
 					? raw

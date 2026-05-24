@@ -1,17 +1,57 @@
-/**
- * E911 provisioning wizard — stepped form that calls the VoiceTel v2.2 E911 API.
- * API key is held in memory only; never persisted.
- */
+import * as keyStore from "./api-playground/key-store.js";
 
 const API_BASE = "https://api.voicetel.com";
+const APEX_HOST = "voicetel.com";
 
 const app = document.getElementById("e911-provision-app");
-if (app) init();
+if (app) boot();
 
-function init() {
-	const state = { apiKey: null, addressId: null, validated: null };
+async function boot() {
+	if (!isApex()) return;
+	if (!window.indexedDB || !window.crypto || !window.crypto.subtle) return;
 
-	// Step navigation
+	const state = { addressId: null, validated: null };
+
+	await renderKeyStep();
+
+	async function renderKeyStep() {
+		const status = await keyStore.getStatus();
+		const step = app.querySelector('[data-step="key"]');
+		const info = step.querySelector("[data-key-info]");
+		const form = step.querySelector('[data-form="key"]');
+
+		if (status.set) {
+			info.innerHTML =
+				'<p class="playground-key-state playground-key-state--set">API key set on this device.</p>';
+			form.querySelector("[data-key-input]").placeholder = "Paste to replace";
+			form.querySelector("[data-key-submit]").textContent = "Continue";
+		} else {
+			info.innerHTML = "";
+			form.querySelector("[data-key-submit]").textContent = "Save and continue";
+		}
+	}
+
+	async function apiCall(method, path, body) {
+		const headers = new Headers({ Accept: "application/json" });
+		if (body) headers.set("Content-Type", "application/json");
+		const init = await keyStore.authorize({ method, headers });
+		if (body) init.body = JSON.stringify(body);
+
+		const res = await fetch(`${API_BASE}${path}`, init);
+		const json = await res.json().catch(() => null);
+
+		if (!res.ok) {
+			const msg =
+				json?.data?.message ||
+				json?.message ||
+				json?.error?.message ||
+				(typeof json?.error === "string" ? json.error : null) ||
+				`API returned ${res.status}`;
+			throw new Error(msg);
+		}
+		return json;
+	}
+
 	function showStep(name) {
 		for (const el of app.querySelectorAll("[data-step]")) {
 			el.hidden = el.dataset.step !== name;
@@ -34,56 +74,32 @@ function init() {
 		}
 	}
 
-	async function apiCall(method, path, body) {
-		const headers = { Authorization: `Bearer ${state.apiKey}` };
-		if (body) headers["Content-Type"] = "application/json";
-		const opts = { method, headers };
-		if (body) opts.body = JSON.stringify(body);
-
-		const res = await fetch(`${API_BASE}${path}`, opts);
-		const json = await res.json().catch(() => null);
-
-		if (!res.ok) {
-			const raw =
-				json?.data?.message ||
-				json?.message ||
-				json?.error?.message ||
-				json?.data?.error ||
-				json?.error;
-			const msg =
-				typeof raw === "string"
-					? raw
-					: raw
-						? JSON.stringify(raw)
-						: `API returned ${res.status}`;
-			throw new Error(msg);
-		}
-		return json;
-	}
-
 	function fillCard(container, data) {
 		for (const dd of container.querySelectorAll("[data-val]")) {
-			const key = dd.dataset.val;
-			dd.textContent = data[key] ?? "";
+			dd.textContent = data[dd.dataset.val] ?? "";
 		}
 	}
 
-	// Step 1: Verify API key
+	// Step 1: API key
 	const keyForm = app.querySelector('[data-form="key"]');
 	keyForm.addEventListener("submit", async (e) => {
 		e.preventDefault();
 		clearError("key");
-		const input = document.getElementById("e911-api-key");
-		const key = input.value.trim();
-		if (!key) return;
+		const input = keyForm.querySelector("[data-key-input]");
+		const value = input.value.trim();
 
 		try {
-			state.apiKey = key;
+			if (value) {
+				await keyStore.setKey(value);
+				input.value = "";
+			}
+			if (!(await keyStore.hasKey())) {
+				showError("key", "Enter your API key to continue.");
+				return;
+			}
 			await apiCall("GET", "/v2.2/e911");
-			input.value = "";
 			showStep("address");
 		} catch (err) {
-			state.apiKey = null;
 			showError("key", `Key verification failed: ${err.message}`);
 		}
 	});
@@ -132,11 +148,7 @@ function init() {
 
 		try {
 			const json = await apiCall("PUT", `/v2.2/e911/${dn}`, body);
-			const record = json?.data?.record ?? {
-				dn,
-				callername,
-				...state.validated,
-			};
+			const record = json?.data?.record ?? { dn, callername, ...state.validated };
 			fillCard(app.querySelector("[data-result-record]"), record);
 			showStep("result");
 		} catch (err) {
@@ -151,15 +163,22 @@ function init() {
 	});
 
 	app.querySelector('[data-action="start-over"]').addEventListener("click", () => {
-		state.apiKey = null;
 		state.addressId = null;
 		state.validated = null;
 		for (const f of app.querySelectorAll("form")) f.reset();
-		showStep("key");
+		renderKeyStep().then(() => showStep("key"));
 	});
 
 	// Back buttons
 	for (const btn of app.querySelectorAll("[data-back]")) {
 		btn.addEventListener("click", () => showStep(btn.dataset.back));
 	}
+}
+
+function isApex() {
+	return (
+		location.hostname === APEX_HOST ||
+		location.hostname === "localhost" ||
+		location.hostname === "127.0.0.1"
+	);
 }

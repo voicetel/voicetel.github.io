@@ -2345,9 +2345,9 @@ abbr.tm {
 }
 
 .vt-chip--active {
-	background: var(--primary-light);
+	background: var(--primary-dark);
 	color: var(--paper);
-	border-color: var(--primary-light);
+	border-color: var(--primary-dark);
 }
 
 .vt-num-list {
@@ -2537,13 +2537,15 @@ abbr.tm {
 	height: 36px;
 	border-radius: var(--radius-pill);
 	border: 1px solid var(--border-color);
-	background: var(--paper);
-	color: var(--primary-color);
+	background: #fff;
+	color: var(--text-strong);
 	cursor: pointer;
 	font-size: var(--text-base);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+	z-index: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2709,6 +2711,14 @@ abbr.tm {
 	color: var(--text-default);
 	line-height: var(--leading-relaxed);
 	margin: 0;
+}
+
+.feature p a {
+	color: var(--text-default);
+}
+
+.feature p a:hover {
+	color: var(--primary-dark);
 }
 
 /* ─── Section blocks (rendered from marketingCopy) ─── */
@@ -3243,7 +3253,7 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 	align-items: center;
 	justify-self: start;
 	gap: var(--space-2);
-	color: var(--primary-light);
+	color: var(--text-default);
 	font-size: var(--text-sm);
 	font-weight: var(--weight-semibold);
 	text-decoration: none;
@@ -3267,7 +3277,7 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 	height: 24px;
 	border-radius: var(--radius-sm);
 	background: var(--paper);
-	color: var(--primary-light);
+	color: var(--text-default);
 	border: 1px solid var(--border-color);
 }
 

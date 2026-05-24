@@ -23,15 +23,16 @@ description: "Guided form to validate an address and provision E911 records on V
 	{# Step 1: API key #}
 	<div class="e911-step" data-step="key">
 		<h2>Step 1: API key</h2>
-		<p>Enter your VoiceTel API key. It is used only for requests during this session and is not stored. Need a key? See <a href="/docs/api/v2.2/credentials/">API credentials</a>.</p>
+		<p>Your API key is encrypted on this device and shared with the <a href="/docs/api/v2.2/playground/">API playground</a>. If you have already set a key there, it will be used here automatically. Need a key? See <a href="/docs/api/v2.2/credentials/">API credentials</a>.</p>
+		<div data-key-info></div>
 		<form class="e911-form" data-form="key" autocomplete="off">
 			<div class="form-row">
 				<label for="e911-api-key">API key</label>
-				<input id="e911-api-key" type="password" autocomplete="off" spellcheck="false" required>
+				<input id="e911-api-key" type="password" data-key-input autocomplete="off" spellcheck="false">
 			</div>
 			<p class="form-error" data-error="key" hidden></p>
 			<div class="form-actions">
-				<button type="submit" class="btn btn-primary">Verify key</button>
+				<button type="submit" class="btn btn-primary" data-key-submit>Save and continue</button>
 			</div>
 		</form>
 	</div>

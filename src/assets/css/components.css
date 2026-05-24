@@ -635,6 +635,78 @@ textarea {
 	word-break: break-all;
 }
 
+/* ─── E911 provisioning wizard ─── */
+
+.e911-step {
+	margin-bottom: var(--space-6);
+}
+
+.e911-form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--space-4);
+}
+
+.e911-form .form-row {
+	grid-column: 1 / -1;
+}
+
+.form-row--half {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--space-4);
+	grid-column: 1 / -1;
+}
+
+.form-row--quarter {
+	grid-column: 1 / 2;
+}
+
+.form-optional {
+	font-weight: normal;
+	color: var(--text-muted);
+}
+
+.e911-address-card {
+	background: var(--paper);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+	padding: var(--space-4) var(--space-5);
+	margin-bottom: var(--space-5);
+}
+
+.e911-dl {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: var(--space-2) var(--space-4);
+	margin: 0;
+}
+
+.e911-dl dt {
+	font-weight: var(--weight-semibold);
+	color: var(--text-default);
+	margin: 0;
+}
+
+.e911-dl dd {
+	margin: 0;
+	color: var(--text-strong);
+}
+
+@media (width <= 600px) {
+	.e911-form {
+		grid-template-columns: 1fr;
+	}
+
+	.form-row--half {
+		grid-template-columns: 1fr;
+	}
+
+	.form-row--quarter {
+		grid-column: 1 / -1;
+	}
+}
+
 /* ─── Offices grid (contact page) ─── */
 
 .offices-grid {

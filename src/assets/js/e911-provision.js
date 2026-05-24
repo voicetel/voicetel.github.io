@@ -1,4 +1,5 @@
 import * as keyStore from "./api-playground/key-store.js";
+import { sendRequest } from "./api-playground/request.js";
 
 const API_BASE = "https://api.voicetel.com";
 const APEX_HOST = "voicetel.com";
@@ -31,25 +32,33 @@ async function boot() {
 		}
 	}
 
+	function makeOp(method, path) {
+		return {
+			method,
+			path,
+			operationId: `${method}-${path}`,
+			parameters: [],
+			requestBody: null,
+		};
+	}
+
 	async function apiCall(method, path, body) {
-		const headers = new Headers({ Accept: "application/json" });
-		if (body) headers.set("Content-Type", "application/json");
-		const init = await keyStore.authorize({ method, headers });
-		if (body) init.body = JSON.stringify(body);
+		const values = { path: {}, query: {}, header: {} };
+		if (body) values.body = JSON.stringify(body);
+		const result = await sendRequest(API_BASE, makeOp(method, path), values);
 
-		const res = await fetch(`${API_BASE}${path}`, init);
-		const json = await res.json().catch(() => null);
-
-		if (!res.ok) {
+		if (result.error) throw result.error;
+		if (result.status >= 400) {
+			const json = result.bodyJson;
 			const msg =
 				json?.data?.message ||
 				json?.message ||
 				json?.error?.message ||
 				(typeof json?.error === "string" ? json.error : null) ||
-				`API returned ${res.status}`;
+				`API returned ${result.status}`;
 			throw new Error(msg);
 		}
-		return json;
+		return result.bodyJson;
 	}
 
 	function showStep(name) {
@@ -97,7 +106,7 @@ async function boot() {
 				showError("key", "Enter your API key to continue.");
 				return;
 			}
-			await apiCall("GET", "/v2.2/e911");
+			await apiCall("get", "/v2.2/e911");
 			showStep("address");
 		} catch (err) {
 			showError("key", `Key verification failed: ${err.message}`);
@@ -119,7 +128,7 @@ async function boot() {
 		};
 
 		try {
-			const json = await apiCall("POST", "/v2.2/e911/validations", body);
+			const json = await apiCall("post", "/v2.2/e911/validations", body);
 			const addr = json?.data?.address;
 			if (!addr?.addressid) throw new Error("No address ID returned");
 			state.addressId = addr.addressid;
@@ -147,7 +156,7 @@ async function boot() {
 		const body = { addressid: state.addressId, callername };
 
 		try {
-			const json = await apiCall("PUT", `/v2.2/e911/${dn}`, body);
+			const json = await apiCall("put", `/v2.2/e911/${dn}`, body);
 			const record = json?.data?.record ?? { dn, callername, ...state.validated };
 			fillCard(app.querySelector("[data-result-record]"), record);
 			showStep("result");

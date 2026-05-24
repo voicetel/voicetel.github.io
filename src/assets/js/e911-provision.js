@@ -48,7 +48,13 @@ function init() {
 		const json = await res.json().catch(() => null);
 
 		if (!res.ok) {
-			const msg = json?.message || json?.error || `API returned ${res.status}`;
+			const raw = json?.data?.message || json?.message || json?.data?.error || json?.error;
+			const msg =
+				typeof raw === "string"
+					? raw
+					: raw
+						? JSON.stringify(raw)
+						: `API returned ${res.status}`;
 			throw new Error(msg);
 		}
 		return json;

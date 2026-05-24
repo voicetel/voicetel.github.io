@@ -1,0 +1,163 @@
+---
+layout: layouts/page.njk
+permalink: /docs/e911/provision/
+title: "Provision E911"
+description: "Guided form to validate an address and provision E911 records on VoiceTel numbers using your API key. Runs entirely in your browser — no data is stored server-side."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / <a href="/docs/e911/">E911</a> / Provision</p>
+<h1>Provision E911.</h1>
+<p class="lede">Validate an address, then provision E911 on one or more numbers &mdash; step by step, from your browser. Your API key is used for live requests to <code>{{ site.apiBaseUrl }}</code> and is never stored or transmitted elsewhere.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Sign up</a>
+	<a class="btn btn-secondary" href="/docs/e911/">E911 documentation</a>
+</p>
+
+<section class="section-block" id="e911-provision-app">
+	<noscript>
+		<div class="alert alert-info" role="note">
+			<p>This form requires JavaScript to make API calls to <code>{{ site.apiBaseUrl }}</code>.</p>
+		</div>
+	</noscript>
+
+	{# Step 1: API key #}
+	<div class="e911-step" data-step="key">
+		<h2>Step 1: API key</h2>
+		<p>Enter your VoiceTel API key. It is used only for requests during this session and is not stored. Need a key? See <a href="/docs/api/v2.2/credentials/">API credentials</a>.</p>
+		<form class="e911-form" data-form="key" autocomplete="off">
+			<div class="form-row">
+				<label for="e911-api-key">API key</label>
+				<input id="e911-api-key" type="password" autocomplete="off" spellcheck="false" required>
+			</div>
+			<p class="form-error" data-error="key" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Verify key</button>
+			</div>
+		</form>
+	</div>
+
+	{# Step 2: Validate address #}
+	<div class="e911-step" data-step="address" hidden>
+		<h2>Step 2: Validate address</h2>
+		<p>Enter the physical address for the E911 record. The API normalizes and verifies the address against the ALI database.</p>
+		<form class="e911-form" data-form="address">
+			<div class="form-row">
+				<label for="e911-address1">Street address</label>
+				<input id="e911-address1" type="text" required placeholder="123 Main Street">
+			</div>
+			<div class="form-row">
+				<label for="e911-address2">Address line 2 <span class="form-optional">(optional)</span></label>
+				<input id="e911-address2" type="text" placeholder="Suite, apartment, floor">
+			</div>
+			<div class="form-row form-row--half">
+				<div>
+					<label for="e911-city">City</label>
+					<input id="e911-city" type="text" required>
+				</div>
+				<div>
+					<label for="e911-state">State</label>
+					<input id="e911-state" type="text" required maxlength="2" placeholder="NJ" pattern="[A-Za-z]{2}" title="Two-letter US state code">
+				</div>
+			</div>
+			<div class="form-row form-row--quarter">
+				<div>
+					<label for="e911-zip">ZIP code</label>
+					<input id="e911-zip" type="text" required maxlength="10" placeholder="07102" pattern="[0-9]{5}(-[0-9]{4})?" title="Five-digit ZIP or ZIP+4">
+				</div>
+			</div>
+			<p class="form-error" data-error="address" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Validate address</button>
+				<button type="button" class="btn btn-secondary" data-back="key">Back</button>
+			</div>
+		</form>
+	</div>
+
+	{# Step 3: Address confirmation #}
+	<div class="e911-step" data-step="confirm" hidden>
+		<h2>Step 3: Confirm address</h2>
+		<p>The API returned a normalized address. Confirm it is correct before provisioning.</p>
+		<div class="e911-address-card" data-validated-address>
+			<dl class="e911-dl">
+				<dt>Address</dt>
+				<dd data-val="address1"></dd>
+				<dt>Line 2</dt>
+				<dd data-val="address2"></dd>
+				<dt>City</dt>
+				<dd data-val="city"></dd>
+				<dt>State</dt>
+				<dd data-val="state"></dd>
+				<dt>ZIP</dt>
+				<dd data-val="zip"></dd>
+				<dt>Address ID</dt>
+				<dd data-val="addressid"></dd>
+			</dl>
+		</div>
+		<div class="form-actions">
+			<button type="button" class="btn btn-primary" data-action="accept-address">Use this address</button>
+			<button type="button" class="btn btn-secondary" data-back="address">Edit address</button>
+		</div>
+	</div>
+
+	{# Step 4: Provision number #}
+	<div class="e911-step" data-step="provision" hidden>
+		<h2>Step 4: Provision a number</h2>
+		<p>Enter the phone number and caller name for the E911 record. The caller name is displayed to the PSAP dispatcher (max 20 characters).</p>
+		<form class="e911-form" data-form="provision">
+			<div class="form-row">
+				<label for="e911-dn">Phone number</label>
+				<input id="e911-dn" type="tel" required placeholder="2015551234" pattern="[0-9]{10}" title="Ten-digit US phone number" maxlength="10">
+			</div>
+			<div class="form-row">
+				<label for="e911-callername">Caller name</label>
+				<input id="e911-callername" type="text" required maxlength="20" placeholder="Acme Corp Main">
+			</div>
+			<p class="form-error" data-error="provision" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Provision E911</button>
+				<button type="button" class="btn btn-secondary" data-back="confirm">Back</button>
+			</div>
+		</form>
+	</div>
+
+	{# Step 5: Result #}
+	<div class="e911-step" data-step="result" hidden>
+		<h2>E911 provisioned</h2>
+		<div class="alert alert-info" role="status">
+			<p>E911 record created successfully. Address changes may take up to 24 hours to propagate to all PSAP databases.</p>
+		</div>
+		<div class="e911-address-card" data-result-record>
+			<dl class="e911-dl">
+				<dt>Number</dt>
+				<dd data-val="dn"></dd>
+				<dt>Caller name</dt>
+				<dd data-val="callername"></dd>
+				<dt>Address</dt>
+				<dd data-val="address1"></dd>
+				<dt>Line 2</dt>
+				<dd data-val="address2"></dd>
+				<dt>City</dt>
+				<dd data-val="city"></dd>
+				<dt>State</dt>
+				<dd data-val="state"></dd>
+				<dt>ZIP</dt>
+				<dd data-val="zip"></dd>
+			</dl>
+		</div>
+		<div class="form-actions">
+			<button type="button" class="btn btn-primary" data-action="provision-another">Provision another number</button>
+			<button type="button" class="btn btn-secondary" data-action="start-over">Start over</button>
+		</div>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="e911-provision-cta">
+	<h2 id="e911-provision-cta">Don't have an account?</h2>
+	<p>Sign up and start using E911 instantly. Provision emergency service on your numbers as soon as your account is active.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign up</a>
+		<a class="btn btn-secondary" href="/docs/e911/">E911 documentation</a>
+	</p>
+</aside>
+
+<script type="module" src="/assets/js/e911-provision.js"></script>

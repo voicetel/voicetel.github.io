@@ -1,0 +1,198 @@
+---
+layout: layouts/page.njk
+permalink: /docs/e911/
+title: "E911 provisioning"
+description: "How to provision, validate, update, and remove Enhanced 911 (E911) records on VoiceTel numbers using the v2.2 REST API."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / E911</p>
+<h1>E911 provisioning.</h1>
+<p class="lede">Every VoiceTel number that handles inbound voice traffic can be provisioned with an E911 record so emergency calls route to the correct PSAP with your registered address and caller name. E911 records are managed via the v2.2 REST API at <code>{{ site.apiBaseUrl }}/v2.2/e911</code>.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/docs/e911/provision/">Provision E911</a>
+	<a class="btn btn-secondary" href="/signup/">Sign up</a>
+</p>
+
+<section class="section-block">
+	<h2>How it works</h2>
+	<p>Provisioning an E911 record is a two-step process:</p>
+	<ol>
+		<li><strong>Validate the address</strong> &mdash; POST the street address to <code>/v2.2/e911/validations</code>. The API normalizes and verifies the address against the ALI (Automatic Location Identification) database and returns an <code>addressid</code>.</li>
+		<li><strong>Provision the number</strong> &mdash; PUT the <code>addressid</code> and caller name to <code>/v2.2/e911/{dn}</code> to bind the validated address to a specific phone number on your account.</li>
+	</ol>
+	<p>You can also create a record in a single step by POSTing the full address and phone number to <code>/v2.2/e911</code>. The API validates and provisions in one request.</p>
+</section>
+
+<section class="section-block">
+	<h2>API endpoints</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Method</th>
+					<th scope="col">Endpoint</th>
+					<th scope="col">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>POST</code></td>
+					<td><code>/v2.2/e911/validations</code></td>
+					<td>Validate an address and receive an <code>addressid</code></td>
+				</tr>
+				<tr>
+					<td><code>POST</code></td>
+					<td><code>/v2.2/e911</code></td>
+					<td>Create an E911 record (validate + provision in one step)</td>
+				</tr>
+				<tr>
+					<td><code>PUT</code></td>
+					<td><code>/v2.2/e911/{dn}</code></td>
+					<td>Provision or update E911 with a known <code>addressid</code></td>
+				</tr>
+				<tr>
+					<td><code>GET</code></td>
+					<td><code>/v2.2/e911</code></td>
+					<td>List all E911 records on the account</td>
+				</tr>
+				<tr>
+					<td><code>GET</code></td>
+					<td><code>/v2.2/e911/{dn}</code></td>
+					<td>Get E911 record for a specific number</td>
+				</tr>
+				<tr>
+					<td><code>DELETE</code></td>
+					<td><code>/v2.2/e911/{dn}</code></td>
+					<td>Remove E911 record from a number</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Full request/response schemas are documented in the <a href="/docs/api/v2.2/">v2.2 API reference</a>. Try endpoints live in the <a href="/docs/api/v2.2/playground/">API playground</a>.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Validate an address</h2>
+	<p>Before provisioning, validate the address against the ALI database. This confirms the address is serviceable and returns a stable <code>addressid</code> you can reuse across multiple numbers at the same location.</p>
+
+	<h3>Request</h3>
+	<pre class="code-block"><code>POST {{ site.apiBaseUrl }}/v2.2/e911/validations
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "address1": "123 Main Street",
+  "address2": "Suite 400",
+  "city": "Newark",
+  "state": "NJ",
+  "zip": "07102"
+}</code></pre>
+
+	<h3>Response</h3>
+	<pre class="code-block"><code>{
+  "status": "success",
+  "data": {
+    "address": {
+      "addressid": 48291,
+      "address1": "123 MAIN ST",
+      "address2": "STE 400",
+      "city": "NEWARK",
+      "state": "NJ",
+      "zip": "07102"
+    }
+  }
+}</code></pre>
+	<p>The response returns the normalized address. Save the <code>addressid</code> for provisioning.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Provision a number</h2>
+	<p>Bind the validated address to a phone number on your account. The <code>callername</code> is what the PSAP dispatcher sees when the caller dials 911.</p>
+
+	<h3>Request</h3>
+	<pre class="code-block"><code>PUT {{ site.apiBaseUrl }}/v2.2/e911/2015551234
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "addressid": 48291,
+  "callername": "Acme Corp Main Office"
+}</code></pre>
+
+	<h3>Response</h3>
+	<pre class="code-block"><code>{
+  "status": "success",
+  "data": {
+    "record": {
+      "dn": "12015551234",
+      "callername": "Acme Corp Main Office",
+      "address1": "123 MAIN ST",
+      "address2": "STE 400",
+      "city": "NEWARK",
+      "state": "NJ",
+      "zip": "07102"
+    }
+  }
+}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Alternative: single-step provisioning</h2>
+	<p>If you only need to provision one number at an address, you can skip the separate validation step and POST the full record directly.</p>
+
+	<pre class="code-block"><code>POST {{ site.apiBaseUrl }}/v2.2/e911
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "dn": "2015551234",
+  "callername": "Acme Corp Main Office",
+  "address1": "123 Main Street",
+  "address2": "Suite 400",
+  "city": "Newark",
+  "state": "NJ",
+  "zip": "07102"
+}</code></pre>
+	<p>The API validates the address and provisions the number in a single request. For multiple numbers at the same address, use the two-step flow to avoid redundant validation.</p>
+</section>
+
+<section class="section-block">
+	<h2>Query and manage records</h2>
+
+	<h3>List all E911 records</h3>
+	<pre class="code-block"><code>GET {{ site.apiBaseUrl }}/v2.2/e911
+Authorization: Bearer YOUR_API_KEY</code></pre>
+
+	<h3>Get a specific record</h3>
+	<pre class="code-block"><code>GET {{ site.apiBaseUrl }}/v2.2/e911/2015551234
+Authorization: Bearer YOUR_API_KEY</code></pre>
+
+	<h3>Update a record</h3>
+	<p>To change the address on a number, validate the new address first, then PUT the new <code>addressid</code>. To change only the caller name, PUT with the existing <code>addressid</code> and the new <code>callername</code>.</p>
+
+	<h3>Remove a record</h3>
+	<pre class="code-block"><code>DELETE {{ site.apiBaseUrl }}/v2.2/e911/2015551234
+Authorization: Bearer YOUR_API_KEY</code></pre>
+	<p>Removing an E911 record means emergency calls from that number will no longer route to a PSAP with your registered address. Only remove records when the number is being released or reassigned.</p>
+</section>
+
+<section class="section-block">
+	<h2>Important notes</h2>
+	<ul>
+		<li>E911 address validation checks the ALI database maintained by the Master Street Address Guide (MSAG). Not all addresses are serviceable &mdash; the API will return an error for addresses that cannot be validated.</li>
+		<li>The <code>dn</code> must be a ten-digit US telephone number owned by the authenticated account.</li>
+		<li>The <code>callername</code> is limited to 20 characters by PSAP display standards.</li>
+		<li>Address changes may take up to 24 hours to propagate to all downstream PSAP databases.</li>
+		<li>E911 is a US-only service. International emergency service routing is not available.</li>
+		<li>VoIP-based E911 has inherent limitations compared to wireline 911 service. Customers must inform end-users of these limitations per FCC requirements. See <a href="/legal/">terms of service</a> for details.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="e911-cta">
+	<h2 id="e911-cta">Provision E911 now</h2>
+	<p>Use the guided form to validate an address and provision E911 on your numbers &mdash; no code required.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/docs/e911/provision/">Provision E911</a>
+		<a class="btn btn-secondary" href="/docs/api/v2.2/playground/">API playground</a>
+	</p>
+</aside>

@@ -1,0 +1,144 @@
+---
+layout: layouts/page.njk
+title: "Opening a support ticket"
+description: "How to open a VoiceTel support ticket that gets understood and resolved fast — best and worst practices for describing a voice or messaging problem."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / Opening a ticket</p>
+<h1>Opening a support ticket.</h1>
+<p class="lede">A good ticket gets resolved faster than a bad one — often by a wide margin. This page shows you how to write one. The rules are simple, and they are the same whether your issue is a voice call that won't connect or a text message that won't send.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/contact/">Contact us</a>
+	<a class="btn btn-secondary" href="/signup/">Free trial</a>
+</p>
+
+<section class="section-block">
+	<h2>How a ticket gets handled</h2>
+	<p>When your ticket arrives, an AI assistant reads it first. It classifies the problem, pulls out the key details, and routes it to the right engineer. A human at our US-based NOC does the actual diagnosis and resolution — the assistant just makes the first pass fast and accurate.</p>
+	<p>That first pass matters more than you'd think. The assistant works from exactly what you wrote, taken literally. A clear, single, honest description gets routed correctly on the first try. A vague or contradictory one gets misrouted, or bounces back to you with questions — and every round trip costs you time you didn't need to spend.</p>
+	<p>So the goal of your opening message is narrow: describe <strong>one problem</strong>, clearly enough that someone who has never seen your account can understand it, and honestly enough that nothing in it sends the diagnosis down the wrong path.</p>
+</section>
+
+<section class="section-block">
+	<h2>What a good ticket contains</h2>
+	<p>Most good tickets answer the same handful of questions:</p>
+	<ul>
+		<li><strong>What did you expect to happen, and what actually happened?</strong> State both. "I expected the call to connect; instead it rings once and drops."</li>
+		<li><strong>When did it start?</strong> Give a date and a time, with the time zone. "Started around 09:15 ET today." If it's intermittent, say so.</li>
+		<li><strong>What's affected, and how much?</strong> One number or all of them? One device or the whole account? Some calls or every call?</li>
+		<li><strong>The specifics, written out.</strong> Phone numbers in full, error messages copied exactly as they appeared, the IP address of your phone or PBX if you have it, and an example or two (a call at a specific time, from one number to another).</li>
+		<li><strong>What you already checked.</strong> This saves the engineer from repeating work you've done.</li>
+	</ul>
+	<p>You don't need all of it. You need enough that the problem is unambiguous.</p>
+</section>
+
+<section class="section-block">
+	<h2>Best and worst practices</h2>
+	<p>The patterns below are the ones that most often slow a ticket down. Each shows the version to avoid and the version that gets resolved.</p>
+
+	<h3>Don't dump raw data. Describe the problem, then attach the data.</h3>
+	<p>A wall of logs with no explanation forces the reader to guess what you're worried about — and a guess can be wrong.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> <em>(2,000 lines of SIP trace pasted into the message, no description.)</em></p>
+		<p><strong>Best:</strong> "Outbound calls fail immediately. I've attached the full log; the relevant attempt is at 14:02:11 UTC, where I see a <code>503 Service Unavailable</code> response."</p>
+	</blockquote>
+	<p>A SIP trace is the call's signaling conversation — the back-and-forth messages your system and ours exchange to set up a call. It's useful, so do send it. Just tell us what to look for, and where.</p>
+
+	<h3>Open one ticket per problem.</h3>
+	<p>A single ticket tracks a single issue from open to resolved. Put two unrelated problems in one ticket and they can't both be tracked, routed, or closed cleanly — and the assistant has to pick one to classify it under, so the other gets lost.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> "Calls drop after 30 seconds. Also my caller ID shows the wrong name, and can you turn on text messaging for my account?"</p>
+		<p><strong>Best:</strong> Three separate tickets — one for the dropped calls, one for the caller ID, one for the messaging request.</p>
+	</blockquote>
+
+	<h3>Don't add unrelated issues to an existing ticket.</h3>
+	<p>The same rule applies over time. Replying to an open or resolved ticket with a brand-new, unrelated problem buries it. The thread is already classified as the old issue, so the new one inherits the wrong routing and the wrong priority.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> Replying to a closed number-porting ticket with "while I have you — calls to our main line have had bad echo all week."</p>
+		<p><strong>Best:</strong> Open a new ticket for the echo. Reply to the porting ticket only with information about the port.</p>
+	</blockquote>
+	<p>A reply that adds a <strong>new observation about the same problem</strong> is exactly right. A reply that opens a new topic is not.</p>
+
+	<h3>Report what you observed, not what you concluded.</h3>
+	<p>This is the one that trips up the most tickets, and it's worth slowing down on. When something breaks, it's natural to summarize — "nothing changed on our side." But that's a conclusion, and it's almost always broader than what you actually know. What you really mean is "nothing changed that I'm aware of." The assistant and the engineer take a stated fact as a constraint, so a too-confident conclusion quietly rules out the most common cause of new problems — a recent change — and sends diagnosis down a longer path.</p>
+	<p>The fix is to downgrade conclusions to observations, and to say what you actually checked.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> "Nothing changed on our side."</p>
+		<p><strong>Best:</strong> "We didn't deploy any changes that I'm aware of. I haven't yet checked our firewall or PBX configuration."</p>
+	</blockquote>
+	<p>The second version is more useful precisely because it's more honest about the edges of what you know. It tells the engineer what's been ruled out and what hasn't.</p>
+
+	<h3>Asking whether something changed is fine — lead with what you saw.</h3>
+	<p>It's completely reasonable to ask whether something changed on our end; a configuration change on the carrier side is a real and common cause. The problem is only when the question arrives as an accusation with no information attached, because there's nothing in it to act on.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> "Did you change something? Our calls just stopped."</p>
+		<p><strong>Best:</strong> "Outbound calls started failing at 14:02 UTC with <code>503 Service Unavailable</code>. Sample call: from +1 212 555 0148 to +1 415 555 0102 at 14:02:11 UTC. Was there any change on your side around then?"</p>
+	</blockquote>
+	<p>Same question. The second one gives the engineer a timestamp, an error, and an example to check it against. That's a data point, not a standoff.</p>
+
+	<h3>Skip statements that don't help.</h3>
+	<p>"Everything is broken" and "it's urgent" feel informative but tell the assistant nothing it can route on — they only generate a question back to you. Replace intensity with specifics; the specifics convey the urgency on their own.</p>
+	<blockquote>
+		<p><strong>Worst:</strong> "Everything is down, this is critical, please fix ASAP."</p>
+		<p><strong>Best:</strong> "Since 09:15 ET, all outbound calls from DID +1 212 555 0148 fail. Inbound still works. This number takes our order line, so we're losing calls."</p>
+	</blockquote>
+</section>
+
+<section class="section-block">
+	<h2>Common error messages, in plain terms</h2>
+	<p>If your phone, softphone, or PBX shows an error, copy it into your ticket exactly and say what you were doing when it appeared. These are the ones VoIP providers' own help desks cite most often, in roughly the order you're likely to run into them:</p>
+	<ul>
+		<li><strong><code>403 Forbidden</code></strong> — the request was understood but refused. Usual causes: a wrong username/password combination, or your IP address not being permitted — either not on the allow-list, or temporarily blocked after repeated failed attempts.</li>
+		<li><strong><code>401 Unauthorized</code></strong> — the system is asking your device to prove who it is. A single 401 while a device is registering is normal handshaking; repeated 401s usually mean a credential problem.</li>
+		<li><strong><code>408 Request Timeout</code></strong> — no reply came back in time. Often a network or firewall issue, where the messages aren't reaching us or the replies aren't reaching you.</li>
+		<li><strong><code>480 Temporarily Unavailable</code></strong> — the number you're calling is reachable but not currently registered or online — powered off, disconnected, or set to do-not-disturb.</li>
+		<li><strong><code>486 Busy Here</code></strong> — the far end is busy or declined the call.</li>
+		<li><strong><code>488 Not Acceptable Here</code></strong> — the two sides couldn't agree on a shared audio format (known as a codec). The call signaling works, but there's no common method to encode the voice, so it won't connect.</li>
+		<li><strong><code>503 Service Unavailable</code></strong> — the far end couldn't take the request right then, commonly a routing or capacity problem upstream.</li>
+		<li><strong><code>603 Decline</code></strong> — the call reached the far end but was turned down. This can be the person declining, or a network choosing not to complete the call. It's a broad code, so on its own it doesn't say which.</li>
+		<li><strong><code>608 Rejected</code></strong> — an automated system in the call path — a call-analytics or blocking service, not a person — rejected the call before it reached anyone. If you're a legitimate caller and believe you were blocked in error, a 608 is designed to carry contact details for requesting that the block be reviewed.</li>
+		<li><strong>One-way audio, or no audio</strong> — not an error code at all: the call connects, but voice travels only one way or not at all. This is almost always a network problem with the audio path — NAT, a firewall, or a router feature called SIP ALG that rewrites call traffic and frequently breaks it.</li>
+	</ul>
+	<p>You don't have to interpret these. Report the exact text and the context — diagnosing the cause is our job.</p>
+</section>
+
+<section class="section-block">
+	<h2>A template you can copy</h2>
+	<p>For voice or messaging issues, paste this into a new ticket and fill it in. Leave out any line you can't answer.</p>
+	<div class="code-block-header">
+		<h3>Ticket template</h3>
+		<button type="button" class="btn btn-secondary btn-sm" data-copy-source="ticket-template">Copy</button>
+	</div>
+	<pre class="code-block"><code id="ticket-template">Subject: &lt;one-line summary&gt; — &lt;key number or account&gt;
+
+Summary:         &lt;one sentence: what's wrong&gt;
+Expected:        &lt;what should happen&gt;
+Actual:          &lt;what happens instead&gt;
+Started:         &lt;date + time + time zone; note if intermittent&gt;
+Scope:           &lt;which numbers / devices / accounts; all or some&gt;
+To reproduce:    &lt;how to see it happen&gt;
+Already checked: &lt;what you've tried or ruled out&gt;
+Identifiers:     &lt;account, DID(s), device or PBX IP, exact error text&gt;
+Example:         &lt;a specific call or message: time, from, to&gt;
+Impact:          &lt;what this is blocking, if anything&gt;</code></pre>
+	<p>A DID is simply one of the phone numbers on your account (short for Direct Inward Dial).</p>
+
+	<h3>Optional: let an AI tidy it up first</h3>
+	<p>If your notes are scattered, it can help to paste them into an AI assistant — ChatGPT, Claude, or similar — and ask it to organize them into the template above. A well-structured ticket is read correctly on the first pass, so this genuinely speeds things up. Use the AI to reorder and clarify what you've written; you don't need it to invent anything.</p>
+	<div class="alert alert-warning" role="note">
+		<p><strong>Never paste sensitive information into a third-party AI tool.</strong> That includes SIP or account passwords, API keys, full account or payment-card numbers, recordings or transcripts of calls, and any personal details of your own customers. Strip those out before you paste, and only send them to us inside the ticket itself. If you're unsure whether something is safe to share with an outside tool, leave it out.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>After you submit</h2>
+	<p>You'll get a ticket number. Reply on that thread with anything new you learn about <strong>that</strong> problem — a fresh example, a change in behavior, a detail you forgot. For anything unrelated, open a new ticket. Keeping each thread to one problem is the single biggest thing you can do to get it resolved quickly.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="ticket-cta-heading">
+	<h2 id="ticket-cta-heading">Don't see what you need?</h2>
+	<p>If you're not sure which surface your issue falls under, or how to describe it, send what you have and we'll help you shape it. A rough ticket that follows these rules beats a polished one that doesn't.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+	</p>
+</aside>

@@ -244,7 +244,7 @@
 			"key": "intro",
 			"isHero": true,
 			"tagline": "Wholesale telecommunications",
-			"title": "Twilio-compatible voice without the Twilio markup.",
+			"title": "Twilio-compatible voice on wholesale carrier infrastructure.",
 			"description": "Run compatible Programmable Voice workloads without rewriting call logic. Bring your own speech, storage, and AI vendors. Pay published carrier rates without platform markup.",
 			"href": "/pricing/",
 			"cta": "See the rates",

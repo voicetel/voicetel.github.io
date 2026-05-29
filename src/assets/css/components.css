@@ -1969,15 +1969,23 @@ abbr.tm {
 	min-height: 220px;
 	background: var(--paper);
 	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 1.2s ease,
+		visibility 0s linear 1.2s;
 }
 
 .menu-carousel-slide:not([inert]) {
 	opacity: 1;
+	visibility: visible;
+	transition:
+		opacity 1.2s ease,
+		visibility 0s linear 0s;
 }
 
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: reduce) {
 	.menu-carousel-slide {
-		transition: opacity 1.2s ease;
+		transition: none;
 	}
 }
 

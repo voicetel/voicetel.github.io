@@ -226,7 +226,8 @@
 				{ "label": "FAQ", "href": "/faq/" },
 				{ "label": "Support", "href": "/support/" },
 				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },
-				{ "label": "Network status", "href": "/status/" }
+				{ "label": "Network status", "href": "/status/" },
+				{ "label": "Changelog", "href": "/changelog/" }
 			]
 		},
 		{

@@ -1,0 +1,29 @@
+---
+permalink: /changelog/feed.xml
+eleventyExcludeFromCollections: true
+---
+{%- set entries = collections.all | changelogFlat(lastmod, 90) -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{ site.brand }} — recent updates</title>
+	<subtitle>{{ site.tagline }}</subtitle>
+	<link href="{{ site.url }}/changelog/feed.xml" rel="self" type="application/atom+xml"/>
+	<link href="{{ site.url }}/changelog/" rel="alternate" type="text/html"/>
+	<id>{{ site.url }}/changelog/</id>
+	<updated>{% if entries | length > 0 %}{{ entries[0].date }}T00:00:00Z{% else %}{% todayISO %}T00:00:00Z{% endif %}</updated>
+	<author>
+		<name>{{ site.brand }}</name>
+		<uri>{{ site.url }}</uri>
+	</author>
+	{%- for entry in entries %}
+	<entry>
+		<id>{{ site.url }}{{ entry.url }}</id>
+		<title>{{ entry.title }}</title>
+		<link href="{{ site.url }}{{ entry.url }}" rel="alternate" type="text/html"/>
+		<updated>{{ entry.date }}T00:00:00Z</updated>
+		{%- if entry.description %}
+		<summary>{{ entry.description }}</summary>
+		{%- endif %}
+	</entry>
+	{%- endfor %}
+</feed>

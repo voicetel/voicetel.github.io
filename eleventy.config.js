@@ -69,6 +69,127 @@ export default function (eleventyConfig) {
 		}).format(new Date())
 	);
 
+	// Path-prefixes that count as "content surfaces" — pages where currency
+	// is load-bearing for the reader. Used by both the visible byline gate
+	// and the schema.org @type selector.
+	const CONTENT_PREFIXES = [
+		"/docs/",
+		"/support/",
+		"/voiceml/migrate",
+		"/voiceml/calculator",
+		"/voiceml/compatibility",
+		"/voiceml/validator",
+		"/pricing/",
+		"/network/",
+		"/colocations/",
+		"/cloud-regions/",
+	];
+	const TECH_ARTICLE_PREFIXES = [
+		"/docs/api/",
+		"/docs/sdks",
+		"/docs/voiceml-sdks",
+		"/support/voice/",
+	];
+
+	function startsWithAny(url, prefixes) {
+		if (!url) return false;
+		return prefixes.some((p) => url === p || url.startsWith(p));
+	}
+
+	eleventyConfig.addFilter("showUpdatedByline", function (pageUrl, override) {
+		if (override === false) return false;
+		if (override === true) return true;
+		return startsWithAny(pageUrl, CONTENT_PREFIXES);
+	});
+
+	eleventyConfig.addShortcode(
+		"pageJsonLd",
+		function (pageUrl, inputPath, title, description, lastmodMap, dpMap, site) {
+			const mod = lastmodMap && lastmodMap[inputPath];
+			if (!mod) return "";
+			const pub = (dpMap && dpMap[inputPath]) || mod;
+			let type = "WebPage";
+			if (startsWithAny(pageUrl, TECH_ARTICLE_PREFIXES)) {
+				type = "TechArticle";
+			} else if (startsWithAny(pageUrl, CONTENT_PREFIXES)) {
+				type = "Article";
+			}
+			const url = `${site.url}${pageUrl}`;
+			const name = title ? `${title} — ${site.brand}` : `${site.brand} — ${site.tagline}`;
+			const desc = description || site.description;
+			const payload = {
+				"@context": "https://schema.org",
+				"@type": type,
+				url,
+				name,
+				description: desc,
+				datePublished: pub,
+				dateModified: mod,
+				inLanguage: site.lang || "en",
+				isPartOf: { "@type": "WebSite", name: site.brand, url: site.url },
+				publisher: {
+					"@type": "Organization",
+					name: site.brand,
+					url: site.url,
+					logo: `${site.url}/assets/img/og-default.png`,
+				},
+			};
+			if (type !== "WebPage") {
+				payload.headline = title || site.brand;
+				payload.author = { "@type": "Organization", name: site.brand, url: site.url };
+				payload.mainEntityOfPage = { "@type": "WebPage", "@id": url };
+			}
+			return `<script type="application/ld+json">${JSON.stringify(payload)}</script>`;
+		}
+	);
+
+	// Builds a flat, newest-first list of pages updated within `days`.
+	// Used by /changelog/ (grouped view) and /changelog/feed.xml (Atom).
+	function changelogFlat(allPages, lastmodMap, days) {
+		const cutoff = new Date();
+		cutoff.setUTCDate(cutoff.getUTCDate() - days);
+		const cutoffIso = cutoff.toISOString().slice(0, 10);
+		const out = [];
+		for (const p of allPages || []) {
+			if (!p || !p.url) continue;
+			if (p.data && p.data.eleventyExcludeFromCollections) continue;
+			if (p.url === "/404.html" || p.url === "/changelog/") continue;
+			const inputPath = p.inputPath;
+			const date =
+				(lastmodMap && lastmodMap[inputPath]) ||
+				(p.date && p.date.toISOString && p.date.toISOString().slice(0, 10));
+			if (!date || date < cutoffIso) continue;
+			const rawTitle = p.data && p.data.title;
+			const title = rawTitle || (p.url === "/" ? "Home" : p.url);
+			out.push({
+				url: p.url,
+				title,
+				description: (p.data && p.data.description) || "",
+				date,
+			});
+		}
+		out.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+		return out;
+	}
+
+	eleventyConfig.addFilter("changelogFlat", function (allPages, lastmodMap, days) {
+		return changelogFlat(allPages, lastmodMap, Number(days) || 90);
+	});
+
+	eleventyConfig.addFilter("changelogGroups", function (allPages, lastmodMap, days) {
+		const flat = changelogFlat(allPages, lastmodMap, Number(days) || 90);
+		const groups = [];
+		let current = null;
+		for (const e of flat) {
+			if (!current || current.date !== e.date) {
+				current = { date: e.date, entries: [] };
+				groups.push(current);
+			}
+			current.entries.push(e);
+		}
+		return groups;
+	});
+
 	eleventyConfig.addShortcode("breadcrumbsJsonLd", function (pageUrl, allPages, siteUrl) {
 		if (!pageUrl || pageUrl === "/") return "";
 		const segments = pageUrl.split("/").filter(Boolean);

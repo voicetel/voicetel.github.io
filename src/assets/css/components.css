@@ -3729,6 +3729,63 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 	margin: 0;
 }
 
+.changelog-list {
+	list-style: none;
+	padding: 0;
+	margin: var(--space-5) 0 0 0;
+	border-top: 1px solid var(--border-color);
+}
+
+.changelog-group {
+	display: grid;
+	grid-template-columns: 9rem 1fr;
+	gap: var(--space-4);
+	padding: var(--space-4) 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.changelog-date {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.changelog-entries {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.changelog-entries li {
+	margin: 0 0 var(--space-3) 0;
+}
+
+.changelog-entries li:last-child {
+	margin-bottom: 0;
+}
+
+.changelog-entries a {
+	font-weight: 500;
+}
+
+.changelog-summary {
+	display: block;
+	margin-top: var(--space-1);
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+	line-height: var(--leading-relaxed);
+}
+
+@media (width <= 600px) {
+	.changelog-group {
+		grid-template-columns: 1fr;
+		gap: var(--space-2);
+	}
+}
+
 .playground-status {
 	font-family: var(--font-mono);
 	font-size: var(--text-sm);

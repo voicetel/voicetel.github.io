@@ -15,6 +15,10 @@
 		<meta property="og:type" content="website">
 		<meta property="og:site_name" content="{{ site.brand }}">
 		<meta property="og:locale" content="en_US">
+		{%- set _lastmod = lastmod[page.inputPath] or page.date.toISOString().split("T")[0] %}
+		{%- set _datepublished = datepublished[page.inputPath] or _lastmod %}
+		<meta property="article:modified_time" content="{{ _lastmod }}T00:00:00Z">
+		<meta property="article:published_time" content="{{ _datepublished }}T00:00:00Z">
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="{% if title %}{{ title }} — {{ site.brand }}{% else %}{{ site.brand }} — {{ site.tagline }}{% endif %}">
 		<meta name="twitter:description" content="{{ description or site.description }}">
@@ -83,6 +87,7 @@
 		</script>
 		{%- endif %}
 		{% breadcrumbsJsonLd page.url, collections.all, site.url %}
+		{% pageJsonLd page.url, page.inputPath, title, description, lastmod, datepublished, site %}
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>

@@ -166,6 +166,25 @@ main > .container:first-child {
 	margin: 0 0 var(--space-2) 0;
 }
 
+.page-updated {
+	float: right;
+	margin: 0 0 var(--space-1) var(--space-3);
+	font-family: var(--font-mono);
+	font-size: var(--text-xs);
+	color: var(--text-muted);
+}
+
+.page-updated time {
+	font-variant-numeric: tabular-nums;
+}
+
+@media (width <= 600px) {
+	.page-updated {
+		float: none;
+		margin: 0 0 var(--space-2) 0;
+	}
+}
+
 .lede {
 	font-size: var(--text-md);
 	line-height: var(--leading-relaxed);

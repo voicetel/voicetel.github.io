@@ -2,5 +2,10 @@
 layout: layouts/base.njk
 ---
 <div class="container">
-{{- content | safe }}
+	{%- set _showByline = page.url | showUpdatedByline(showUpdated) %}
+	{%- set _bylineDate = lastmod[page.inputPath] or page.date.toISOString().split("T")[0] %}
+	{%- if _showByline and _bylineDate %}
+	<p class="page-updated">Updated <time datetime="{{ _bylineDate }}">{{ _bylineDate }}</time></p>
+	{%- endif %}
+	{{- content | safe }}
 </div>

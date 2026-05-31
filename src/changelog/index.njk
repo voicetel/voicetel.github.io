@@ -1,0 +1,32 @@
+---
+layout: layouts/page.njk
+title: "Recent updates"
+description: "Pages updated across voicetel.com in the last 90 days."
+showUpdated: false
+---
+<p class="eyebrow">Site updates</p>
+<h1>Recent updates.</h1>
+<p class="lede">Pages that have been added or revised across voicetel.com in the last 90 days, newest first. Dates reflect the most recent commit touching the page or any partial or data file it consumes. Subscribe via the <a href="/changelog/feed.xml">Atom feed</a>.</p>
+
+{%- set groups = collections.all | changelogGroups(lastmod, 90) %}
+{%- if groups | length == 0 %}
+<p>No updates in the last 90 days.</p>
+{%- else %}
+<ol class="changelog-list">
+	{%- for group in groups %}
+	<li class="changelog-group">
+		<h2 class="changelog-date"><time datetime="{{ group.date }}">{{ group.date }}</time></h2>
+		<ul class="changelog-entries">
+			{%- for entry in group.entries %}
+			<li>
+				<a href="{{ entry.url }}">{{ entry.title or entry.url }}</a>
+				{%- if entry.description %}
+				<span class="changelog-summary">{{ entry.description }}</span>
+				{%- endif %}
+			</li>
+			{%- endfor %}
+		</ul>
+	</li>
+	{%- endfor %}
+</ol>
+{%- endif %}

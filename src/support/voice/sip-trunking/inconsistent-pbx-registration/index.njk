@@ -1,0 +1,83 @@
+---
+layout: layouts/page.njk
+title: "Inconsistent PBX registration"
+description: "A practical checklist for troubleshooting intermittent PBX registration issues on VoiceTel SIP trunks — credentials, ACLs, profile state, and registration targets."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/sip-trunking/">SIP Trunking</a> / Inconsistent PBX registration</p>
+<h1>Inconsistent PBX registration.</h1>
+<p class="lede">When a PBX registers some of the time and not others, the fastest path is to verify the small set of settings that actually control registration: credentials, authentication mode, source-IP access, the SIP profile state, and the registration target. Work these checks in order before changing routing or opening a deeper interop investigation.</p>
+
+<section class="section-block">
+	<h2>1. Verify the SIP username, password, and authentication method</h2>
+	<p>Confirm that the PBX is using the SIP username and password assigned to the trunk. Then confirm the authentication method matches the trunk configuration:</p>
+	<ul>
+		<li><strong>Digest authentication</strong> — the PBX registers with a SIP username and password.</li>
+		<li><strong>IP authentication</strong> — VoiceTel identifies the trunk by source IP address; there is no SIP password challenge.</li>
+	</ul>
+	<p>A mismatch here looks like a registration problem even when the network path is healthy.</p>
+</section>
+
+<section class="section-block">
+	<h2>2. Confirm the VoiceTel infrastructure IPs are allowed</h2>
+	<p>Make sure every VoiceTel infrastructure IP address required for the trunk is present in the PBX, SBC, and firewall access-control lists. Then confirm that the ACL is actually applied to the SIP profile, trunk, or interface handling the registration traffic.</p>
+	<p>This matters especially on Switchvox: a Switchvox system can have the right IP addresses entered but still reject traffic if the ACL is not attached to the active profile or rule set. Check both parts:</p>
+	<ol>
+		<li>The VoiceTel IP addresses are present.</li>
+		<li>The ACL containing those addresses is applied to the active SIP path.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>3. Restart the SIP profile and verify that it restarted</h2>
+	<p>Restart the SIP profile, gateway, or trunk process on the PBX.</p>
+	<p>Do not assume the restart completed just because the button was clicked or the command was issued. Confirm that the profile actually restarted and that the PBX attempted a fresh registration afterward — look for a new <code>REGISTER</code> attempt, a new contact binding, or updated registration status in the PBX logs.</p>
+</section>
+
+<section class="section-block">
+	<h2>4. Reboot the device to clear local in-memory bans</h2>
+	<p>If the configuration is correct but registration still fails, reboot the PBX or edge device. Some PBX platforms, firewalls, and SIP stacks hold temporary in-memory blocks, failed-authentication bans, stale NAT mappings, or cached registration state. A reboot clears the local state and forces a clean registration attempt.</p>
+</section>
+
+<section class="section-block">
+	<h2>5. Change the registration target</h2>
+	<p>If the PBX still will not register, change the registration domain. Start with the general registration domains:</p>
+	<pre class="code-block"><code>geo.voicetel.com
+bgp.voicetel.com</code></pre>
+	<p>If the PBX is currently using <code>geo.voicetel.com</code>, test <code>bgp.voicetel.com</code>.</p>
+	<p>If that does not resolve the issue, register directly to a specific geographic target as a last-ditch test:</p>
+	<pre class="code-block"><code>sjc.geo.voicetel.com
+dfw.geo.voicetel.com
+den.geo.voicetel.com
+ord.geo.voicetel.com
+clt.geo.voicetel.com
+nyc.geo.voicetel.com
+west.voicetel.com
+east.voicetel.com
+europe.voicetel.com</code></pre>
+	<p>Direct geographic targets isolate whether the issue is tied to a specific network path, local routing decision, or POP preference.</p>
+</section>
+
+<section class="section-block">
+	<h2>When to contact VoiceTel</h2>
+	<p>If registration still fails after these checks, collect the following before opening a ticket:</p>
+	<ul>
+		<li>PBX make and model</li>
+		<li>Current registration domain</li>
+		<li>Authentication method in use</li>
+		<li>Source public IP address of the PBX or SBC</li>
+		<li>Timestamp of the most recent failed registration attempt</li>
+		<li>SIP response code, if visible</li>
+		<li>SIP trace or packet capture, if available</li>
+	</ul>
+	<p>With that, VoiceTel engineering can review the registration attempt, confirm whether traffic is reaching the network, and identify whether the failure is credentials, ACL, routing, or SIP interop related.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="reg-cta-heading">
+	<h2 id="reg-cta-heading">Still seeing dropped registrations?</h2>
+	<p>If these checks don't resolve it, open a ticket with the items listed above. The more of that context you include up front, the faster the engineer working your ticket can get to root cause.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

@@ -1,0 +1,195 @@
+---
+layout: layouts/page.njk
+title: "Authentication types and DID routing"
+description: "How SIP authentication type and DID routing interact on a VoiceTel trunk — Digest, IP, Lax, Strict, route destinations, and outbound SIP requirements."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/sip-trunking/">SIP Trunking</a> / Authentication types and DID routing</p>
+<h1>Authentication types and DID routing.</h1>
+<p class="lede">VoiceTel supports four SIP authentication types and several DID routing options. Authentication controls how VoiceTel authorizes traffic; DID routing controls where inbound calls are delivered. The two are configured independently — and changing one does not automatically reconfigure the other.</p>
+
+<div class="alert alert-warning" role="note">
+	<p><strong>Authentication type and DID routing are separate settings.</strong> Changing the authentication type does not automatically route inbound DIDs. Digest-based deployments should use the appropriate Digest route. IP-authenticated deployments must use Route Destinations for inbound DID delivery.</p>
+</div>
+
+<section class="section-block">
+	<h2>SIP standards and device configuration</h2>
+	<p>VoiceTel uses SIP for call signaling. SIP is an industry-standard protocol defined by IETF RFCs and is designed for interoperability between compliant platforms, PBXs, SBCs, gateways, and applications.</p>
+	<p>VoiceTel's SIP service follows applicable RFC behavior. Because SIP is standards-based, VoiceTel does not require certification from a third-party PBX, software vendor, or device manufacturer for a customer system to connect.</p>
+	<p>Customers are responsible for configuring their own PBX, SBC, firewall, and network environment correctly. Authentication type, source-IP controls, registration behavior, DID routing, NAT handling, and outbound call formatting must match the customer's infrastructure.</p>
+	<p>VoiceTel provides the service settings, authentication options, SIP domains, and routing controls. The customer or their PBX vendor applies those settings on customer-managed equipment.</p>
+</section>
+
+<section class="section-block">
+	<h2>Authentication types</h2>
+	<p>VoiceTel supports four authentication type settings:</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Authentication type</th>
+				<th>Behavior</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><strong>Digest</strong></td>
+				<td>Standard SIP Digest authentication. The PBX authenticates with a SIP username and password.</td>
+			</tr>
+			<tr>
+				<td><strong>Lax (Digest &#124; IP)</strong></td>
+				<td>Allows SIP traffic that matches either valid Digest authentication or an approved source IP address. IP-based acceptance depends on the configured IP address list.</td>
+			</tr>
+			<tr>
+				<td><strong>IP</strong></td>
+				<td>Source-IP authentication. The source IP address must match an approved IP address in the account configuration.</td>
+			</tr>
+			<tr>
+				<td><strong>Strict (Digest + IP)</strong></td>
+				<td>Requires both valid SIP Digest authentication <em>and</em> a matching approved source IP address.</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>The correct authentication type depends on the customer's PBX, SBC, firewall, network design, and routing requirements. VoiceTel does not recommend a single authentication type for every deployment — the customer selects and configures the option that matches their infrastructure.</p>
+</section>
+
+<section class="section-block">
+	<h2>IP address list</h2>
+	<p>When IP-based authentication is used, the customer maintains the approved IP address list. This applies to:</p>
+	<ul>
+		<li><strong>Lax (Digest &#124; IP)</strong></li>
+		<li><strong>IP</strong></li>
+		<li><strong>Strict (Digest + IP)</strong></li>
+	</ul>
+	<p>IP addresses can be added to or removed from the list as needed. Configured IP addresses should match the public source IP addresses that VoiceTel will see when SIP traffic reaches the VoiceTel network.</p>
+	<p>If a customer changes firewalls, SBCs, internet circuits, NAT behavior, or public IP addresses, they should review and update the IP address list before expecting IP-based authentication to work.</p>
+</section>
+
+<section class="section-block">
+	<h2>DID routing behavior</h2>
+	<p>Authentication type controls how VoiceTel authorizes SIP traffic. DID routing controls where inbound calls are delivered.</p>
+	<p>Inbound call delivery is driven by the DID routing configuration. Customers should test and confirm the configuration that works correctly for their specific PBX, SBC, firewall, and network environment.</p>
+</section>
+
+<section class="section-block">
+	<h2>Routing DIDs with Digest authentication</h2>
+	<p>When Digest authentication is used, inbound calls can follow the Digest route associated with the SIP registration. Digest routing is based on the registration point — VoiceTel routes calls toward the registered endpoint using the most appropriate route for the registration location.</p>
+	<ol>
+		<li>Confirm that the PBX is configured for <strong>Digest</strong> authentication.</li>
+		<li>Confirm that the PBX is registering successfully with the assigned SIP username and password.</li>
+		<li>Open the DID routing configuration for the DID.</li>
+		<li>Set the DID to use the appropriate <strong>Digest route</strong>.</li>
+		<li>Save the DID routing configuration.</li>
+		<li>Place an inbound test call to the DID.</li>
+		<li>Confirm that the call reaches the registered PBX.</li>
+		<li>If the call does not route as expected, verify that the PBX is still registered and that the DID is assigned to the correct Digest route.</li>
+	</ol>
+	<p>Customers using Digest authentication should confirm the PBX registration is stable before troubleshooting DID routing.</p>
+</section>
+
+<section class="section-block">
+	<h2>Routing DIDs with IP authentication</h2>
+	<p>When IP authentication is used, inbound calls must be routed through a configured Route Destination. IP authentication does not rely on a PBX registration contact for inbound delivery — the DID must be pointed to a destination that tells VoiceTel where to send the call.</p>
+	<ol>
+		<li>Confirm that the authentication type is set to an IP-based mode: <strong>Lax (Digest &#124; IP)</strong>, <strong>IP</strong>, or <strong>Strict (Digest + IP)</strong>.</li>
+		<li>Confirm that the customer's public source IP address is present in the approved IP address list.</li>
+		<li>Add or update the approved IP address list if needed.</li>
+		<li>Open the DID routing configuration for the DID.</li>
+		<li>Select <strong>Add Route Destination</strong>.</li>
+		<li>Choose the destination type that matches the customer's PBX, SBC, application, or VoiceTel platform service.</li>
+		<li>Enter or select the destination value — IP address, IP address with optional port using <code>IP:PORT</code>, hostname, SIP URI, platform-specific product, or an existing route destination. Examples:
+			<pre class="code-block"><code>203.0.113.10
+203.0.113.10:5060</code></pre>
+		</li>
+		<li>Optionally select geographic routing if the destination should use a specific VoiceTel region or ingress path.</li>
+		<li>Save the route destination.</li>
+		<li>Assign the DID to the new or existing route destination.</li>
+		<li>Save the DID routing configuration.</li>
+		<li>Place an inbound test call to the DID.</li>
+		<li>Confirm that the call reaches the expected PBX, SBC, application, or platform service.</li>
+	</ol>
+	<p>When routing a DID to an IP-authenticated destination, the destination may be entered as an IP address or as an IP address with a port using <code>IP:PORT</code>. The correct port depends on the customer's PBX, SBC, firewall, and SIP listener configuration.</p>
+	<p>If IP authentication is enabled but the DID is not assigned to a valid route destination, inbound calls may not route as expected.</p>
+</section>
+
+<section class="section-block">
+	<h2>Route destination options</h2>
+	<p>When adding or modifying DID routing, the routing type determines how calls are presented or where they are delivered.</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Routing type</th>
+				<th>Behavior</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><strong>User</strong></td>
+				<td>Calls to the DID appear as the username.</td>
+			</tr>
+			<tr>
+				<td><strong>DID</strong></td>
+				<td>Calls to the DID appear as the DID.</td>
+			</tr>
+			<tr>
+				<td><strong>Platform-specific product</strong></td>
+				<td>Calls route to a selected VoiceTel platform product or service.</td>
+			</tr>
+			<tr>
+				<td><strong>Route destination</strong></td>
+				<td>Calls route to a configured IP address, hostname, SIP URI, or destination.</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>Select the routing type that matches how the PBX, SBC, application, or VoiceTel platform service expects to receive calls.</p>
+</section>
+
+<section class="section-block">
+	<h2>Lax and Strict modes</h2>
+	<p>For <strong>Lax (Digest &#124; IP)</strong> and <strong>Strict (Digest + IP)</strong>, inbound behavior still depends on the DID routing configuration. Authentication type determines what VoiceTel will accept; DID routing determines where the call is sent.</p>
+	<h3>Lax mode</h3>
+	<p>In Lax mode, VoiceTel accepts SIP traffic that matches either valid Digest authentication or the approved source IP address list. For IP-based authentication in Lax mode, the source IP address must still match the approved IP address list.</p>
+	<h3>Strict mode</h3>
+	<p>In Strict mode, the SIP request must pass Digest authentication <em>and</em> come from an approved source IP address. Customers using Strict mode should verify both:</p>
+	<ol>
+		<li>The PBX is using the correct SIP username and password.</li>
+		<li>The source IP address is present in the approved IP address list.</li>
+	</ol>
+	<p>The DID must still be routed according to the desired inbound behavior.</p>
+</section>
+
+<section class="section-block">
+	<h2>Geographic routing</h2>
+	<p>When configuring IP-auth DID routing, customers may optionally select a geographic route destination. Geographic routing is used when a destination should be associated with a specific VoiceTel region or ingress path. The correct selection depends on the customer's infrastructure, network design, redundancy model, and testing results.</p>
+	<p>Test the available configuration options and confirm the routing behavior that works best for the deployment.</p>
+</section>
+
+<section class="section-block">
+	<h2>Outbound calling with IP-based authentication</h2>
+	<p>All IP-based authentication modes require the same outbound call format. This applies to:</p>
+	<ul>
+		<li><strong>Lax (Digest &#124; IP)</strong></li>
+		<li><strong>IP</strong></li>
+		<li><strong>Strict (Digest + IP)</strong></li>
+	</ul>
+	<p>When any of these modes are used for IP-based authentication, the PBX, SBC, or application must format outbound SIP calls according to VoiceTel's documented IP authentication outbound calling requirements. The outbound format is documented separately; follow that document when configuring outbound calls for any IP-authenticated mode.</p>
+	<p>Authentication type determines how VoiceTel authorizes the SIP traffic. It does not remove the customer's responsibility to format outbound SIP calls correctly for the selected authentication method and infrastructure.</p>
+	<aside class="caveat-block" aria-labelledby="from-tag-rule-heading">
+		<h3 id="from-tag-rule-heading">From-tag rule: <code>From:</code> username = SIP account username</h3>
+		<p>The SIP <code>From:</code> header username on outbound INVITEs must be the SIP account username, never the caller ID. VoiceTel uses the From username for trunk identification and STIR/SHAKEN attestation; substituting the caller ID breaks both. Caller ID belongs in the <code>P-Asserted-Identity</code> header (number) and the From display-name (caller's name).</p>
+	</aside>
+</section>
+
+<section class="section-block">
+	<h2>Customer responsibility</h2>
+	<p>VoiceTel provides SIP service settings, authentication options, IP address controls, registration domains, DID routing controls, and route-destination options. The customer is responsible for configuring and testing their PBX, SBC, firewall, NAT behavior, source IP behavior, DID routing, and outbound SIP format.</p>
+	<p>If a customer is unsure which authentication or routing configuration is appropriate, review the PBX or SBC documentation, consult the PBX vendor, and test the configuration that best matches the infrastructure.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="auth-cta-heading">
+	<h2 id="auth-cta-heading">Need help picking the right mode?</h2>
+	<p>If you'd like a second opinion on which authentication type fits your PBX, SBC, and firewall setup, open a ticket and include your current configuration, the source IP addresses you expect VoiceTel to see, and the DID routing behavior you want.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

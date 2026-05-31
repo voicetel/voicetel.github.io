@@ -1,0 +1,46 @@
+---
+layout: layouts/page.njk
+title: "SIP Trunking"
+description: "Configuration and troubleshooting guides for VoiceTel SIP trunks — authentication, DID routing, registration, and supported transports."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / SIP Trunking</p>
+<h1>SIP trunk configuration and troubleshooting.</h1>
+<p class="lede">Guides for the trunk-level settings that govern how a PBX, SBC, or application connects to VoiceTel — authentication mode, DID routing behavior, registration domains, and common failure modes.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking overview</a>
+</p>
+
+<section class="section-block">
+	<h2>Articles</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<h3><a href="/support/voice/sip-trunking/authentication-types-and-did-routing/">Authentication types and DID routing</a></h3>
+			<p>The four supported authentication types (Digest, Lax, IP, Strict) and how they interact with DID routing — Digest routes versus Route Destinations, IP address lists, geographic routing, and the outbound SIP requirements that apply when IP authentication is in use.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/sip-trunking/inconsistent-pbx-registration/">Inconsistent PBX registration</a></h3>
+			<p>Checklist for intermittent registration failures: credentials, ACL placement on Switchvox-class systems, profile-restart verification, in-memory ban clearing, and registration-target rotation.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Related</h2>
+	<ul>
+		<li><a href="/support/voice/pbx/">Open-source PBX platforms</a> — FreePBX, FusionPBX, 3CX, raw Asterisk.</li>
+		<li><a href="/support/voice/sbc/">Session Border Controllers</a> — AudioCodes, Cisco CUBE, FreeSWITCH, Asterisk.</li>
+		<li><a href="/support/voice/firewall/">Firewalls</a> — SIP-aware NAT, ALG behavior, port allowances.</li>
+		<li><a href="/support/voice/phone/">IP phones</a> — provisioning and registration for desk phones.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="sip-cta-heading">
+	<h2 id="sip-cta-heading">Don't see the topic you need?</h2>
+	<p>Open a ticket with as much detail as you can — PBX make and model, authentication method, registration domain, and a SIP trace if you have one.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

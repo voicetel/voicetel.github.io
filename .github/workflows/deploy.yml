@@ -19,6 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so src/_data/lastmod.js + datepublished.js can
+          # walk git log per file. Shallow clone (default depth=1) makes
+          # every page's lastmod resolve to the most recent commit.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:

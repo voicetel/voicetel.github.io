@@ -186,10 +186,16 @@
 			"alignment": "right",
 			"items": [
 				{
-					"label": "Sign in",
+					"label": "Carrier Login",
 					"icon": "box-arrow-in-right",
 					"href": "https://www.voicetel.com/?login",
-					"description": "Already have an account."
+					"description": "Manage voice, messaging, numbers, and SIP trunks."
+				},
+				{
+					"label": "VoiceML Login",
+					"icon": "code-slash",
+					"href": "https://voiceml.voicetel.com",
+					"description": "Programmable voice console for VoiceML applications."
 				},
 				{
 					"label": "Sign up",

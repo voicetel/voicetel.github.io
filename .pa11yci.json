@@ -13,6 +13,13 @@
 		"http://localhost:8000/",
 		"http://localhost:8000/changelog/",
 		"http://localhost:8000/support/opening-a-ticket/",
-		"http://localhost:8000/support/voice/"
+		"http://localhost:8000/support/voice/",
+		"http://localhost:8000/support/voice/sip-trunking/whitelisting-voicetel-ip-addresses/",
+		"http://localhost:8000/support/voice/sip-trunking/ip-termination-account-prefix/",
+		"http://localhost:8000/support/voice/sip-trunking/ip-termination-from-tag/",
+		"http://localhost:8000/support/voice/fax/",
+		"http://localhost:8000/support/voice/fax/electronic-faxing/",
+		"http://localhost:8000/voiceml/migrate/",
+		"http://localhost:8000/support/voice/sbc/asterisk/"
 	]
 }

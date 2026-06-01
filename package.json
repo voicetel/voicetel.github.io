@@ -19,7 +19,8 @@
 		"a11y": "start-server-and-test 'http-server _site -p 8000 -s' http://localhost:8000 'pa11y-ci --config .pa11yci.json'",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"audit:pages": "python3 tools/audit-page-shapes.py"
+		"audit:pages": "python3 tools/audit-page-shapes.py",
+		"check:fingerprint": "bash tools/check-fingerprint.sh"
 	},
 	"devDependencies": {
 		"@11ty/eleventy": "^3.0.0",

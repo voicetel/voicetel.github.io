@@ -56,3 +56,19 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  notify-indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch live sitemap
+        run: curl -fsS https://voicetel.com/sitemap.xml -o sitemap.xml
+
+      - name: Submit URLs to IndexNow
+        run: node tools/submit-indexnow.mjs sitemap.xml

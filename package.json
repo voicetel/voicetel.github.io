@@ -20,7 +20,8 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"audit:pages": "python3 tools/audit-page-shapes.py",
-		"check:fingerprint": "bash tools/check-fingerprint.sh"
+		"check:fingerprint": "bash tools/check-fingerprint.sh",
+		"notify:indexnow": "node tools/submit-indexnow.mjs"
 	},
 	"devDependencies": {
 		"@11ty/eleventy": "^3.0.0",

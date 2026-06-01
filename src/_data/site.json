@@ -12,8 +12,6 @@
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
-	"googleVerification": "SvyJVIkyAvSUQcerelwY0wSmgzEbOaS-AQgRs1eEPb0",
-	"bingVerification": "",
 	"supportEmail": "support@voicetel.com",
 	"webEmails": {
 		"compliance": "compliance+ws@voicetel.com",

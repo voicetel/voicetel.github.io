@@ -1,0 +1,106 @@
+---
+layout: layouts/page.njk
+title: "IP termination using From tag"
+description: "Configure IP-authenticated outbound SIP termination using From tags, caller ID headers, and the VoiceTel termination endpoints."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/sip-trunking/">SIP Trunking</a> / IP termination using From tag</p>
+<h1>IP termination using From tag.</h1>
+<p class="lede">VoiceTel supports IP-authenticated outbound SIP termination for customers who prefer to authorize outbound traffic by source IP address instead of registration. The outbound SIP request must include the correct caller ID header and the correct <code>From</code> tag so VoiceTel can associate the call with the proper account and IP access list.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/contact/">Contact us</a>
+</p>
+
+<section class="section-block">
+	<h2>Network endpoints</h2>
+	<p>Use one of the following VoiceTel termination endpoints:</p>
+	<pre class="code-block" data-lang="text"><code>geo.voicetel.com
+bgp.voicetel.com</code></pre>
+	<p>Both endpoints are available for IP-authenticated outbound traffic. Test the endpoint that works best for the network path, routing behavior, PBX, SBC, and firewall configuration.</p>
+</section>
+
+<section class="section-block">
+	<h2>Caller ID and From tag requirements</h2>
+	<p>Outbound traffic must include a supported caller ID header and the correct <code>From</code> tag.</p>
+	<h3>Caller ID header</h3>
+	<p>Use one of the following caller ID header types:</p>
+	<pre class="code-block" data-lang="text"><code>P-Asserted-Identity
+Remote-Party-ID</code></pre>
+	<h3>From tag</h3>
+	<p>The <code>From</code> tag must contain the account username. VoiceTel uses the username in the <code>From</code> tag to associate the outbound traffic with the correct account and approved IP address list.</p>
+</section>
+
+<div class="alert alert-warning" role="note">
+	<p>The <code>From</code> username must equal the SIP account username, not the caller ID. Substituting the caller ID for the account username is the most common reason IP-authenticated outbound calls fail with a 403 or 401.</p>
+</div>
+
+<section class="section-block">
+	<h2>Asterisk example</h2>
+	<p>Example using account username <code>1234567890</code>:</p>
+	<pre class="code-block" data-lang="ini"><code>host=geo.voicetel.com
+fromdomain=geo.voicetel.com
+fromuser=1234567890
+username=1234567890
+
+; IP-authenticated termination should not use a registration line.
+; Remove or comment out the register statement.
+;register =&gt; 1234567890:PASSWORD@geo.voicetel.com:5060/1234567890~360</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>FreeSWITCH example</h2>
+	<p>Example using account username <code>1234567890</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;param name="username" value="1234567890" /&gt;
+&lt;param name="from-user" value="1234567890" /&gt;
+&lt;param name="proxy" value="geo.voicetel.com" /&gt;
+&lt;param name="realm" value="geo.voicetel.com" /&gt;
+&lt;param name="register" value="false" /&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Add approved IP addresses</h2>
+	<p>To use IP authentication, add the customer source IP addresses to the approved IP address list.</p>
+	<ol>
+		<li>Log in to the VoiceTel portal.</li>
+		<li>Go to <strong>Settings</strong>.</li>
+		<li>Open <strong>Authentication</strong>.</li>
+		<li>Click <strong>+ IP</strong>.</li>
+		<li>Add the public source IP address that VoiceTel will see when the PBX, SBC, or firewall sends SIP traffic.</li>
+		<li>Save the change.</li>
+		<li>Select the authentication type that matches the customer configuration.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Authentication type</h2>
+	<p>Available authentication types:</p>
+	<table class="data-table">
+		<thead>
+			<tr>
+				<th scope="col">Authentication type</th>
+				<th scope="col">Behavior</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td><strong>Digest</strong></td><td>Allows outbound calls using SIP Digest authentication.</td></tr>
+			<tr><td><strong>Lax (Digest &#124; IP)</strong></td><td>Allows traffic that matches either valid Digest authentication or the approved source IP address list.</td></tr>
+			<tr><td><strong>IP</strong></td><td>Allows traffic only when the source IP address matches the approved IP address list.</td></tr>
+			<tr><td><strong>Strict (Digest + IP)</strong></td><td>Requires both valid Digest authentication and a matching approved source IP address.</td></tr>
+		</tbody>
+	</table>
+	<p>See <a href="/support/voice/sip-trunking/authentication-types-and-did-routing/">Authentication types and DID routing</a> for how each mode interacts with inbound DID delivery.</p>
+</section>
+
+<div class="alert alert-info" role="note">
+	<p>Changing authentication type can affect inbound DID behavior. Confirm DID routing after changing authentication type, approved IP addresses, or outbound call formatting.</p>
+</div>
+
+<aside class="cta-block" aria-labelledby="fromtag-cta-heading">
+	<h2 id="fromtag-cta-heading">Need a SIP trace reviewed?</h2>
+	<p>Open a ticket with your PBX or SBC model, the outbound endpoint you're using, and a capture of the failing INVITE if you have one.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

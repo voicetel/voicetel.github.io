@@ -20,6 +20,18 @@ description: "Configuration and troubleshooting guides for VoiceTel SIP trunks �
 			<p>The four supported authentication types (Digest, Lax, IP, Strict) and how they interact with DID routing — Digest routes versus Route Destinations, IP address lists, geographic routing, and the outbound SIP requirements that apply when IP authentication is in use.</p>
 		</li>
 		<li class="feature">
+			<h3><a href="/support/voice/sip-trunking/whitelisting-voicetel-ip-addresses/">Whitelisting VoiceTel IP addresses</a></h3>
+			<p>The signaling and media subnets — Amazon proxy and RTPProxy, plus the SJC, DFW, ORD, DEN, NYC, AMS colocations and the Anycast range — that customer firewalls, PBX ACLs, and SBC trusted-IP lists need to allow for SIP and RTP to flow.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/sip-trunking/ip-termination-account-prefix/">IP termination using an account prefix</a></h3>
+			<p>Outbound IP-authenticated termination using the <code>ACCOUNT#DEST@geo.voicetel.com</code> dialing format. Endpoints, dialing-format rules, approved IP setup, and how the account prefix scopes the call to the right tenant.</p>
+		</li>
+		<li class="feature">
+			<h3><a href="/support/voice/sip-trunking/ip-termination-from-tag/">IP termination using From tag</a></h3>
+			<p>Outbound IP-authenticated termination where the SIP <code>From</code> username carries the account ID and the caller ID rides in P-Asserted-Identity or Remote-Party-ID. Asterisk and FreeSWITCH examples included.</p>
+		</li>
+		<li class="feature">
 			<h3><a href="/support/voice/sip-trunking/inconsistent-pbx-registration/">Inconsistent PBX registration</a></h3>
 			<p>Checklist for intermittent registration failures: credentials, ACL placement on Switchvox-class systems, profile-restart verification, in-memory ban clearing, and registration-target rotation.</p>
 		</li>

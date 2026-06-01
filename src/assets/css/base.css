@@ -58,14 +58,14 @@ p {
 }
 
 a {
-	color: var(--btn-primary-bg);
+	color: var(--primary-light);
 	text-decoration: underline;
 	text-underline-offset: 0.18em;
 	text-decoration-thickness: 1px;
 }
 
 a:hover {
-	color: var(--btn-primary-bg-hover);
+	color: var(--primary-dark);
 }
 
 a:focus-visible {

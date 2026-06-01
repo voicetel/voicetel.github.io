@@ -12,6 +12,7 @@
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
+	"indexNowKey": "ee3f17480b5943cc24d10fc60445a4cd",
 	"supportEmail": "support@voicetel.com",
 	"webEmails": {
 		"compliance": "compliance+ws@voicetel.com",

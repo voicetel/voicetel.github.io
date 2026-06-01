@@ -23,12 +23,6 @@
 		<meta name="twitter:title" content="{% if title %}{{ title }} — {{ site.brand }}{% else %}{{ site.brand }} — {{ site.tagline }}{% endif %}">
 		<meta name="twitter:description" content="{{ description or site.description }}">
 		<meta name="twitter:image" content="{{ site.url }}/assets/img/og-default.png">
-		{%- if site.googleVerification %}
-		<meta name="google-site-verification" content="{{ site.googleVerification }}">
-		{%- endif %}
-		{%- if site.bingVerification %}
-		<meta name="msvalidate.01" content="{{ site.bingVerification }}">
-		{%- endif %}
 		<link rel="icon" href="/assets/img/favicon.ico" sizes="any">
 		<link rel="preload" href="/assets/fonts/plex-mono/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 		<link rel="stylesheet" href="/assets/css/tokens.css">

@@ -94,6 +94,15 @@ export default function (eleventyConfig) {
 		return prefixes.some((p) => url === p || url.startsWith(p));
 	}
 
+	// Convert a YYYY-MM-DD date string into a fully-qualified ISO 8601
+	// datetime at midnight UTC. Google's Rich Results checker flags
+	// date-only values on Article.datePublished / dateModified as
+	// "Invalid datetime" + "missing a timezone".
+	function toIsoDateTime(d) {
+		if (!d) return d;
+		return /^\d{4}-\d{2}-\d{2}$/.test(d) ? `${d}T00:00:00+00:00` : d;
+	}
+
 	eleventyConfig.addShortcode(
 		"pageJsonLd",
 		function (pageUrl, inputPath, title, description, lastmodMap, dpMap, site) {
@@ -109,21 +118,23 @@ export default function (eleventyConfig) {
 			const url = `${site.url}${pageUrl}`;
 			const name = title ? `${title} — ${site.brand}` : `${site.brand} — ${site.tagline}`;
 			const desc = description || site.description;
+			const ogImage = `${site.url}/assets/img/og-default.png`;
 			const payload = {
 				"@context": "https://schema.org",
 				"@type": type,
 				url,
 				name,
 				description: desc,
-				datePublished: pub,
-				dateModified: mod,
+				image: { "@type": "ImageObject", url: ogImage, width: 1200, height: 630 },
+				datePublished: toIsoDateTime(pub),
+				dateModified: toIsoDateTime(mod),
 				inLanguage: site.lang || "en",
 				isPartOf: { "@type": "WebSite", name: site.brand, url: site.url },
 				publisher: {
 					"@type": "Organization",
 					name: site.brand,
 					url: site.url,
-					logo: `${site.url}/assets/img/og-default.png`,
+					logo: { "@type": "ImageObject", url: ogImage, width: 1200, height: 630 },
 				},
 			};
 			if (type !== "WebPage") {

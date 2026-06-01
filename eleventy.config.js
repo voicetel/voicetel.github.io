@@ -69,9 +69,7 @@ export default function (eleventyConfig) {
 		}).format(new Date())
 	);
 
-	// Path-prefixes that count as "content surfaces" — pages where currency
-	// is load-bearing for the reader. Used by both the visible byline gate
-	// and the schema.org @type selector.
+	// Path-prefixes that drive the schema.org @type selector in pageJsonLd.
 	const CONTENT_PREFIXES = [
 		"/docs/",
 		"/support/",
@@ -95,12 +93,6 @@ export default function (eleventyConfig) {
 		if (!url) return false;
 		return prefixes.some((p) => url === p || url.startsWith(p));
 	}
-
-	eleventyConfig.addFilter("showUpdatedByline", function (pageUrl, override) {
-		if (override === false) return false;
-		if (override === true) return true;
-		return startsWithAny(pageUrl, CONTENT_PREFIXES);
-	});
 
 	eleventyConfig.addShortcode(
 		"pageJsonLd",

@@ -27,7 +27,7 @@ description: "A practical migration page for compatible Twilio voice application
 	<ol>
 		<li><strong>Get account credentials</strong> — VoiceTel onboarding returns an account SID (Twilio-format <code>AC</code> + 32 hex) and an API key. The API key is shown once at create or rotate time — capture it on your side immediately.</li>
 		<li><strong>Override the SDK host</strong> — Subclass your Twilio helper library's HTTP client and rewrite outbound URLs from <code>api.twilio.com</code> to the VoiceTel host. About five lines per language. Authentication, signing, request shapes, and response shapes match Twilio exactly — only the destination host differs.</li>
-		<li><strong>Verify webhook signatures</strong> — VoiceTel signs every webhook with <code>X-Twilio-Signature</code> using the per-tenant API key. The Twilio SDK's verification middleware works without modification: pass the API key wherever the SDK asks for the auth token.</li>
+		<li id="webhook-signatures"><strong>Verify webhook signatures</strong> — VoiceTel signs every webhook with <code>X-Twilio-Signature</code> using the per-tenant API key. The Twilio SDK's verification middleware works without modification: pass the API key wherever the SDK asks for the auth token.</li>
 		<li><strong>Cut over a single call flow</strong> — Run a real call against VoiceTel; verify origination, webhook delivery, recordings if used, and the per-call billing line. Expand to additional flows once the test passes.</li>
 	</ol>
 </section>

@@ -9,5 +9,10 @@
 			"args": ["--no-sandbox"]
 		}
 	},
-	"urls": ["http://localhost:8000/"]
+	"urls": [
+		"http://localhost:8000/",
+		"http://localhost:8000/changelog/",
+		"http://localhost:8000/support/opening-a-ticket/",
+		"http://localhost:8000/support/voice/"
+	]
 }

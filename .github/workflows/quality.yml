@@ -22,6 +22,9 @@ jobs:
       - name: Format check
         run: npm run format:check
 
+      - name: Audit page shapes
+        run: npm run audit:pages
+
       - name: Lint JS
         run: npm run lint:js
 

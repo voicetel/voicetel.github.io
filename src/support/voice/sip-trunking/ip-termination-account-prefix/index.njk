@@ -1,0 +1,88 @@
+---
+layout: layouts/page.njk
+title: "IP termination using an account prefix"
+description: "Configure IP-authenticated outbound SIP termination using the account-prefix dialing format on the VoiceTel network."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/sip-trunking/">SIP Trunking</a> / IP termination using an account prefix</p>
+<h1>IP termination using an account prefix.</h1>
+<p class="lede">VoiceTel supports IP-authenticated outbound SIP termination using an account-prefix dialing format. The account username is placed in the dialed destination, and VoiceTel uses the prefix to associate the call with the correct account and approved IP address list.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/contact/">Contact us</a>
+</p>
+
+<section class="section-block">
+	<h2>Network endpoints</h2>
+	<p>Use one of the following VoiceTel termination endpoints:</p>
+	<pre class="code-block" data-lang="text"><code>geo.voicetel.com
+bgp.voicetel.com
+sbc.voicetel.com</code></pre>
+	<p>Test the endpoint that works best for the PBX, SBC, firewall, and network path in use.</p>
+</section>
+
+<section class="section-block">
+	<h2>Dialing format</h2>
+	<p>Use the following format for outbound calls:</p>
+	<pre class="code-block" data-lang="text"><code>ACCOUNT_NUMBER#10_DIGIT_DESTINATION_NUMBER@geo.voicetel.com</code></pre>
+	<p>The account number identifies the VoiceTel account. The 10-digit destination number identifies the number being called.</p>
+</section>
+
+<section class="section-block">
+	<h2>Example</h2>
+	<p>To call VoiceTel support at <code>(917) 580-3000</code> from account number <code>1234567890</code>, send the call as:</p>
+	<pre class="code-block" data-lang="text"><code>1234567890#9175803000@geo.voicetel.com</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>How the prefix is used</h2>
+	<p>VoiceTel uses the account prefix to identify the correct account and apply the proper IP-authenticated outbound calling behavior.</p>
+	<p>The PBX, SBC, or application must format the outbound destination correctly. If the prefix is missing or malformed, VoiceTel may not be able to associate the outbound call with the correct account.</p>
+</section>
+
+<section class="section-block">
+	<h2>Add approved IP addresses</h2>
+	<p>To use IP authentication, add the customer source IP addresses to the approved IP address list.</p>
+	<ol>
+		<li>Log in to the VoiceTel portal.</li>
+		<li>Go to <strong>Settings</strong>.</li>
+		<li>Open <strong>Authentication</strong>.</li>
+		<li>Click <strong>+ IP</strong>.</li>
+		<li>Add the public source IP address that VoiceTel will see when the PBX, SBC, or firewall sends SIP traffic.</li>
+		<li>Save the change.</li>
+		<li>Select the authentication type that matches the customer configuration.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Authentication type</h2>
+	<p>Available authentication types:</p>
+	<table class="data-table">
+		<thead>
+			<tr>
+				<th scope="col">Authentication type</th>
+				<th scope="col">Behavior</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td><strong>Digest</strong></td><td>Allows outbound calls using SIP Digest authentication.</td></tr>
+			<tr><td><strong>Lax (Digest &#124; IP)</strong></td><td>Allows traffic that matches either valid Digest authentication or the approved source IP address list.</td></tr>
+			<tr><td><strong>IP</strong></td><td>Allows traffic only when the source IP address matches the approved IP address list.</td></tr>
+			<tr><td><strong>Strict (Digest + IP)</strong></td><td>Requires both valid Digest authentication and a matching approved source IP address.</td></tr>
+		</tbody>
+	</table>
+	<p>The customer selects the authentication type that matches their PBX, SBC, firewall, and network configuration. See <a href="/support/voice/sip-trunking/authentication-types-and-did-routing/">Authentication types and DID routing</a> for how authentication interacts with inbound DID delivery.</p>
+</section>
+
+<div class="alert alert-info" role="note">
+	<p>Changing authentication type can affect inbound DID behavior. Digest-based routing and IP-authenticated routing are configured differently. Confirm DID routing after changing authentication type, approved IP addresses, or outbound call formatting.</p>
+</div>
+
+<aside class="cta-block" aria-labelledby="prefix-cta-heading">
+	<h2 id="prefix-cta-heading">Need help formatting outbound calls?</h2>
+	<p>Open a ticket with your PBX or SBC model, the dialing format your application produces, and a sample failed outbound SIP INVITE if you have one.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

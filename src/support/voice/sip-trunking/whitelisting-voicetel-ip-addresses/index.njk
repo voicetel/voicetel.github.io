@@ -1,0 +1,113 @@
+---
+layout: layouts/page.njk
+title: "Whitelisting VoiceTel IP addresses"
+description: "VoiceTel SIP signaling and media subnets — cloud proxies, RTP proxies, and colocation facilities — for customer firewall, PBX, and SBC allow rules."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/sip-trunking/">SIP Trunking</a> / Whitelisting VoiceTel IP addresses</p>
+<h1>Whitelisting VoiceTel IP addresses.</h1>
+<p class="lede">VoiceTel SIP service requires customer firewalls, PBXs, and SBCs to allow traffic from VoiceTel signaling and media infrastructure. Blocking these addresses can cause failed registration, failed inbound calls, one-way audio, missing audio, or intermittent call behavior.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/contact/">Contact us</a>
+</p>
+
+<section class="section-block">
+	<h2>Customer responsibility</h2>
+	<p>VoiceTel provides the infrastructure IP addresses and subnets used for SIP signaling and media. The customer is responsible for configuring their firewall, PBX, SBC, NAT rules, and access-control lists correctly.</p>
+	<p>If a customer uses a managed firewall, hosted PBX, or third-party SBC, they should provide this list to the vendor responsible for that equipment.</p>
+</section>
+
+<section class="section-block">
+	<h2>Firewall requirements</h2>
+	<p>Allow UDP traffic from one or more of the following VoiceTel infrastructure addresses and subnets. Customers should whitelist the ranges that match their selected VoiceTel routing, registration, media, and geographic configuration.</p>
+</section>
+
+<section class="section-block">
+	<h2>Cloud infrastructure</h2>
+	<table class="data-table">
+		<thead>
+			<tr>
+				<th scope="col">Infrastructure</th>
+				<th scope="col">Subnet</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td>Amazon Proxy West</td><td><code>50.18.88.40/32</code></td></tr>
+			<tr><td>Amazon Proxy West</td><td><code>192.73.251.107/32</code></td></tr>
+			<tr><td>Amazon Proxy East</td><td><code>52.201.88.130/32</code></td></tr>
+			<tr><td>Amazon Proxy East</td><td><code>192.73.251.107/32</code></td></tr>
+			<tr><td>Amazon RTPProxy West</td><td><code>52.9.226.100/32</code></td></tr>
+			<tr><td>Amazon RTPProxy East</td><td><code>52.20.181.50/32</code></td></tr>
+		</tbody>
+	</table>
+</section>
+
+<section class="section-block">
+	<h2>Colocation facilities</h2>
+	<table class="data-table">
+		<thead>
+			<tr>
+				<th scope="col">Location</th>
+				<th scope="col">Subnet</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td>SJC</td><td><code>104.225.6.160/29</code></td></tr>
+			<tr><td>DFW</td><td><code>104.225.13.72/29</code></td></tr>
+			<tr><td>ORD</td><td><code>192.73.246.104/29</code></td></tr>
+			<tr><td>DEN</td><td><code>192.73.250.96/29</code></td></tr>
+			<tr><td>NYC</td><td><code>192.73.251.104/29</code></td></tr>
+			<tr><td>AMS</td><td><code>94.75.246.192/26</code></td></tr>
+			<tr><td>Anycast</td><td><code>148.59.176.0/23</code></td></tr>
+		</tbody>
+	</table>
+</section>
+
+<section class="section-block">
+	<h2>Recommended configuration steps</h2>
+	<ol>
+		<li>Identify the PBX, SBC, or firewall that receives SIP and RTP traffic from VoiceTel.</li>
+		<li>Open the firewall or access-control configuration for that device.</li>
+		<li>Add UDP allow rules for the VoiceTel infrastructure addresses and subnets used by the deployment.</li>
+		<li>Apply the rules to the interface or policy that handles SIP and RTP traffic.</li>
+		<li>Confirm that NAT, port-forwarding, and SIP helper behavior are configured correctly for the environment.</li>
+		<li>Save and apply the firewall changes.</li>
+		<li>Restart or reload the relevant firewall policy if required by the firewall vendor.</li>
+		<li>Place inbound and outbound test calls.</li>
+		<li>Confirm that calls connect and that audio works in both directions.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>PBX and SBC access-control lists</h2>
+	<p>Some PBXs and SBCs maintain their own access-control lists in addition to the network firewall. If the PBX or SBC has a SIP access list, trusted IP list, trunk ACL, or media ACL, add the VoiceTel infrastructure addresses there as well.</p>
+	<p>After adding the addresses, confirm that the ACL is applied to the active SIP profile, trunk, interface, or listener. Adding addresses to an unused ACL does not allow traffic.</p>
+</section>
+
+<section class="section-block">
+	<h2>Troubleshooting</h2>
+	<p>If calls still fail after the firewall rules are added, check the following:</p>
+	<ul>
+		<li>The firewall rules allow UDP traffic.</li>
+		<li>The rules are applied to the correct WAN interface or security zone.</li>
+		<li>The PBX or SBC is not blocking the same traffic with its own ACL.</li>
+		<li>NAT is forwarding traffic to the correct internal PBX or SBC.</li>
+		<li>The customer's public IP address matches the IP address configured for any IP-authenticated VoiceTel service.</li>
+		<li>The PBX or SBC has been restarted or reloaded if required.</li>
+		<li>Test calls are using the expected VoiceTel route, registration domain, or geographic target.</li>
+	</ul>
+</section>
+
+<div class="alert alert-info" role="note">
+	<p>VoiceTel infrastructure includes both SIP signaling and media addresses. Do not whitelist only a single address unless the deployment has been specifically designed and tested that way. Coordinate firewall changes with the PBX, SBC, or firewall administrator and test both call setup and two-way audio after the changes are applied.</p>
+</div>
+
+<aside class="cta-block" aria-labelledby="whitelist-cta-heading">
+	<h2 id="whitelist-cta-heading">Need help selecting the right subnets?</h2>
+	<p>Open a ticket with your PBX or SBC model, your geographic routing preference, and whether the deployment uses registration, IP authentication, or both.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

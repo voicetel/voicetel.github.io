@@ -2821,6 +2821,10 @@ abbr.tm {
 	color: var(--alert-info-fg);
 }
 
+.cta-block p a:not(.btn) {
+	color: var(--primary-dark);
+}
+
 .caveat-block {
 	border-left: 3px solid var(--warning-color);
 	background: var(--alert-warning-bg);
@@ -3052,17 +3056,18 @@ abbr.tm {
 .code-block code {
 	font-family: inherit;
 	font-size: inherit;
-	color: inherit;
-	background: none;
+	color: #f6f6f6;
+	background-color: #11171a;
 	padding: 0;
 	white-space: pre;
 }
 
 .code-block[data-lang]::before {
 	content: attr(data-lang);
-	position: absolute;
-	top: 0;
-	right: 0;
+	display: block;
+	width: fit-content;
+	margin-left: auto;
+	margin-bottom: var(--space-3);
 	padding: var(--space-2) var(--space-3);
 	background: #263238;
 	color: #c8d3d9;
@@ -3070,7 +3075,7 @@ abbr.tm {
 	font-weight: var(--weight-semibold);
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
-	border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+	border-radius: var(--radius-sm);
 	pointer-events: none;
 	user-select: none;
 }

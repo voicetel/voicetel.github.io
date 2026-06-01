@@ -1,0 +1,97 @@
+---
+layout: layouts/page.njk
+title: "Electronic faxing"
+description: "Configure VoiceTel electronic faxing — DID routing for inbound fax-to-email and email-to-fax outbound through the VoiceTel fax domain."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/fax/">Fax</a> / Electronic faxing</p>
+<h1>Electronic faxing.</h1>
+<p class="lede">VoiceTel electronic faxing receives inbound faxes by email and sends outbound faxes from an authorized email address. Fax behavior is controlled through DID routing and the Fax to Email Service settings; refresh the portal after making changes and confirm the correct email address is selected before testing.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/contact/">Contact us</a>
+</p>
+
+<section class="section-block">
+	<h2>Configure inbound fax routing</h2>
+	<p>To receive inbound faxes by email, route the fax DID to the fax service.</p>
+	<ol>
+		<li>Log in to the VoiceTel portal.</li>
+		<li>Go to <strong>Settings</strong>.</li>
+		<li>Open <strong>DID</strong>.</li>
+		<li>Select the DID that should receive faxes.</li>
+		<li>Set the DID route to either <strong>T.30 Fax to Email</strong> or <strong>T.38 Fax to Email</strong>.</li>
+		<li>Save the DID routing change.</li>
+		<li>Refresh the page to confirm the updated route is applied.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Set the inbound fax email destination</h2>
+	<p>After the DID is routed to fax-to-email, select the email address that should receive inbound faxes.</p>
+	<ol>
+		<li>Go to <strong>Settings</strong>.</li>
+		<li>Open <strong>Fax to Email Service</strong>.</li>
+		<li>Find the <strong>Inbound Fax Email</strong> field.</li>
+		<li>Select the email address that should receive inbound fax messages.</li>
+		<li>Save the change.</li>
+		<li>Refresh the page and confirm the selected email address is still shown.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Add a new fax email destination</h2>
+	<p>If the desired email address is not available in the Fax to Email settings, add it as a fax destination.</p>
+	<ol>
+		<li>Go to <strong>Settings</strong>.</li>
+		<li>Open <strong>Fax to Email Service</strong>.</li>
+		<li>Click <strong>Add Fax Destination</strong>.</li>
+		<li>Enter the new email address.</li>
+		<li>Save the new destination.</li>
+		<li>Refresh the page.</li>
+		<li>Return to the <strong>Inbound Fax Email</strong> field.</li>
+		<li>Select the newly added email address.</li>
+		<li>Save the change again.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Send an outbound fax by email</h2>
+	<p>Outbound faxes are sent by email through the VoiceTel fax domain.</p>
+
+	<h3>To address</h3>
+	<p>Send the email to the assigned fax DID at <code>fax.voicetel.com</code>:</p>
+	<pre class="code-block" data-lang="text"><code>10digitDID@fax.voicetel.com</code></pre>
+	<p>Example:</p>
+	<pre class="code-block" data-lang="text"><code>1234567890@fax.voicetel.com</code></pre>
+	<p>Replace <code>1234567890</code> with the assigned VoiceTel fax number.</p>
+
+	<h3>Subject line</h3>
+	<p>Enter the destination fax number in the email subject. For multiple destinations, separate each number with a semicolon:</p>
+	<pre class="code-block" data-lang="text"><code>1234567890;0987654321</code></pre>
+
+	<h3>Attachments</h3>
+	<p>Attach the document to be faxed. Supported attachment types:</p>
+	<pre class="code-block" data-lang="text"><code>PDF
+DOC
+DOCX</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Authorization</h2>
+	<p>Only the email address configured as the <strong>Inbound Fax Email</strong> destination is authorized to send outbound faxes.</p>
+	<p>If outbound faxing fails, confirm that the sender email address matches the configured fax email destination exactly.</p>
+</section>
+
+<div class="alert alert-info" role="note">
+	<p>Route the DID to <strong>T.30 Fax to Email</strong> or <strong>T.38 Fax to Email</strong> before expecting inbound fax delivery. Configure the <strong>Inbound Fax Email</strong> field before testing. Refresh the portal after configuration changes. Test inbound and outbound faxing after every change is saved.</p>
+</div>
+
+<aside class="cta-block" aria-labelledby="fax-art-cta-heading">
+	<h2 id="fax-art-cta-heading">Need help with a fax issue?</h2>
+	<p>Open a ticket with the fax DID, the inbound route currently set on the DID, the destination email address, and the sender email address used for outbound faxes.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/opening-a-ticket/">How to open a ticket</a>
+	</p>
+</aside>

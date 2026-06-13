@@ -51,6 +51,14 @@ def rewrite_branding(value):
 		# names such as Twiml are dict keys and are not walked as values here.
 		value = re.sub(r"TwiML's", "voice markup's", value)
 		value = re.sub(r"TwiML", "voice markup", value)
+		# PCI / PCI-DSS references must not appear on the public site — they imply
+		# a compliance posture we do not certify externally. Strip leading PCI from
+		# upstream phrases like "PCI Pay session" so they render as "Pay session".
+		value = re.sub(r"\s*\(PCI[- ]DSS[^)]*\)", "", value)
+		value = re.sub(r"\bPCI[- ]DSS\b", "", value)
+		value = re.sub(r"\bPCI Pay\b", "Pay", value)
+		value = re.sub(r"\bPCI\b", "", value)
+		value = re.sub(r" {2,}", " ", value)
 		return value
 	if isinstance(value, dict):
 		return {k: rewrite_branding(v) for k, v in value.items()}
@@ -78,6 +86,8 @@ TAG_RULES = [
 	(re.compile(r"^/Queues"), "Queues"),
 	(re.compile(r"^/Applications"), "Applications"),
 	(re.compile(r"^/IncomingPhoneNumbers"), "IncomingPhoneNumbers"),
+	(re.compile(r"^/Messages"), "Messages"),
+	(re.compile(r"^/Notifications"), "Notifications"),
 	(re.compile(r"^/Recordings"), "Recordings"),
 ]
 
@@ -93,6 +103,8 @@ TAG_GROUPS = [
 	{"name": "Queues", "tags": ["Queues", "Queues / Members"]},
 	{"name": "Applications", "tags": ["Applications"]},
 	{"name": "Numbers", "tags": ["IncomingPhoneNumbers"]},
+	{"name": "Messaging", "tags": ["Messages"]},
+	{"name": "Account telemetry", "tags": ["Notifications"]},
 	{"name": "Recordings (top-level)", "tags": ["Recordings"]},
 	{"name": "Diagnostics", "tags": ["Diagnostics"]},
 ]

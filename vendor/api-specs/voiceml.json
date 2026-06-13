@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.6.6",
-    "summary": "Outbound voice + AMD service with a Twilio-compatible REST API",
-    "description": "VoiceML exposes a Twilio-compatible Programmable Voice Calls REST API so\nexisting Twilio SDKs (`twilio-node`, `twilio-python`, `twilio-go`, ...)\ncan integrate with minimal migration effort. Authentication, error codes,\nand pagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n  * Username = `:AccountSid` (the URL path parameter, Twilio-format\n    AC + 32 hex chars). Same value the Twilio SDK validates in its\n    constructor — migration-compatible.\n  * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
+    "version": "0.7.1",
+    "summary": "Twilio-compatible voice (inbound + outbound), SMS, conferencing, recording, transcription, and payment platform",
+    "description": "VoiceML exposes a Twilio-compatible REST + voice markup surface covering\nvoice (inbound + outbound calls, conferences, queues), SMS via the\nMessages resource, mid-call recording / SIPREC / real-time\ntranscription / `<Pay>` subresources, and the `IncomingPhoneNumbers`\n+ `Applications` configuration surfaces. Existing Twilio SDKs\n(`twilio-node`, `twilio-python`, `twilio-go`, ...) integrate with\nminimal migration effort. Authentication, error codes, and\npagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n * Username = `:AccountSid` (the URL path parameter, Twilio-format\n AC + 32 hex chars). Same value the Twilio SDK validates in its\n constructor — migration-compatible.\n * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
       "name": "VoiceTel",
       "url": "https://voiceml.voicetel.com"
@@ -39,6 +39,9 @@
       "name": "Calls / Notifications"
     },
     {
+      "name": "Calls / Payments"
+    },
+    {
       "name": "Calls / Recordings"
     },
     {
@@ -69,7 +72,10 @@
       "name": "IncomingPhoneNumbers"
     },
     {
-      "name": "Other"
+      "name": "Messages"
+    },
+    {
+      "name": "Notifications"
     },
     {
       "name": "Queues"
@@ -97,6 +103,7 @@
       "tags": [
         "Calls / Events",
         "Calls / Notifications",
+        "Calls / Payments",
         "Calls / UserDefinedMessages"
       ]
     },
@@ -125,6 +132,18 @@
       "name": "Numbers",
       "tags": [
         "IncomingPhoneNumbers"
+      ]
+    },
+    {
+      "name": "Messaging",
+      "tags": [
+        "Messages"
+      ]
+    },
+    {
+      "name": "Account telemetry",
+      "tags": [
+        "Notifications"
       ]
     },
     {
@@ -298,42 +317,52 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string",
             "example": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "api_version": {
+            "nullable": true,
             "type": "string",
             "example": "2010-04-01"
           },
           "to": {
+            "nullable": true,
             "type": "string",
             "example": "+18005551234"
           },
           "to_formatted": {
+            "nullable": true,
             "type": "string",
             "description": "Human-readable national formatting of `to`, e.g. `(800) 555-1234` for US/CA numbers. Generated via libphonenumber; falls back to the E.164 form if parsing fails."
           },
           "from": {
+            "nullable": true,
             "type": "string",
             "example": "+18005550000"
           },
           "from_formatted": {
+            "nullable": true,
             "type": "string",
             "description": "Human-readable national formatting of `from`. Same generation rules as `to_formatted`."
           },
           "parent_call_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Set on B-leg child calls (e.g. legs created by `<Dial>`). Empty on the originating A-leg or when no `<Dial>`-style bridge has occurred."
           },
           "caller_name": {
+            "nullable": true,
             "type": "string",
             "description": "SIP From: display-name captured on inbound calls (CNAM-style identification). Empty for outbound originates and for inbound calls without a display name."
           },
           "forwarded_from": {
+            "nullable": true,
             "type": "string",
             "description": "Originator of a forwarded inbound call, captured from the SIP `Diversion` (RFC 5806) or `History-Info` (RFC 7044) header. Empty for non-forwarded calls."
           },
@@ -352,6 +381,7 @@
           },
           "direction": {
             "type": "string",
+            "nullable": true,
             "enum": [
               "inbound",
               "outbound-api",
@@ -360,7 +390,8 @@
           },
           "answered_by": {
             "type": "string",
-            "description": "AMD verdict. Wire-strict Twilio enum — VoiceML's\ninternal extended verdicts (`screened`, `screened_ivr`,\n`disconnected`) are remapped at the response boundary\nso strict-mode SDK deserialisers (twilio-csharp\nStringEnumConverter, twilio-java Jackson EnumDeserializer)\ndon't throw. The original verdict survives in metric\nlabels — see docs/detectors.md.\n",
+            "nullable": true,
+            "description": "AMD verdict. Wire-strict Twilio enum, suitable for\nstrict-mode SDK deserialisers.\n",
             "enum": [
               "human",
               "machine_start",
@@ -373,26 +404,32 @@
             ]
           },
           "start_time": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "end_time": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "duration": {
+            "nullable": true,
             "type": "string",
             "description": "Seconds, as decimal string."
           },
           "price": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty (VoiceML does not bill per-call)."
           },
           "price_unit": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty."
           },
           "phone_number_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty."
           },
@@ -401,30 +438,37 @@
             "description": "Twilio compatibility — always empty."
           },
           "group_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty."
           },
           "queue_time": {
+            "nullable": true,
             "type": "string",
             "description": "Seconds spent in `<Enqueue>` queue, as decimal string. Empty for non-queued calls."
           },
           "trunk_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty."
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           },
           "subresource_uris": {
             "type": "object",
+            "nullable": true,
             "additionalProperties": {
               "type": "string"
             }
@@ -490,14 +534,17 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^CF[a-f0-9]{32}$",
             "example": "CFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "friendly_name": {
+            "nullable": true,
             "type": "string",
             "example": "incident-42"
           },
@@ -512,20 +559,25 @@
           },
           "region": {
             "type": "string",
+            "nullable": true,
             "description": "Twilio edge region label. Defaults to `us1`; reserved\nfor operator-overridable region taxonomy in a future\nrelease. Informational — VoiceML does not route\nby region today.\n"
           },
           "api_version": {
+            "nullable": true,
             "type": "string"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822",
-            "description": "Emitted via omitempty when not tracked (VoiceML queries mod_conference live and does not persist room creation timestamps)."
+            "description": "Emitted via omitempty when not tracked (room state is queried live; creation timestamps are not persisted)."
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822",
             "description": "Same caveat as `date_created`."
@@ -544,14 +596,16 @@
           },
           "call_sid_ending_conference": {
             "type": "string",
+            "nullable": true,
             "description": "Populated only when a participant left with `endConferenceOnExit=true`; empty otherwise."
           },
           "subresource_uris": {
             "type": "object",
+            "nullable": true,
             "additionalProperties": {
               "type": "string"
             },
-            "description": "Map of `participants` and `recordings` URIs — Twilio-canonical."
+            "description": "Map of `participants` and `recordings` URIs — Twilio-compatible."
           },
           "member_count": {
             "type": "integer",
@@ -624,39 +678,49 @@
         ],
         "properties": {
           "call_sid": {
+            "nullable": true,
             "type": "string",
             "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "conference_sid": {
+            "nullable": true,
             "type": "string"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "muted": {
+            "nullable": true,
             "type": "boolean"
           },
           "hold": {
+            "nullable": true,
             "type": "boolean"
           },
           "call_sid_to_coach": {
             "type": "string",
-            "description": "When `coaching` is true, the CallSid of the participant this\ncoach can speak to (Twilio whisper-coach). Empty when\n`coaching` is false or the coach target has not joined.\nSee #267.\n"
+            "nullable": true,
+            "description": "When `coaching` is true, the CallSid of the participant this\ncoach can speak to (Twilio whisper-coach). Empty when\n`coaching` is false or the coach target has not joined.\n"
           },
           "coaching": {
             "type": "boolean",
-            "description": "True when this participant joined with the `coach` role\n(Twilio whisper-coach pattern). A coach hears the entire\nconference but is only audible to the participant\nidentified by `call_sid_to_coach`. Derived from\nmod_conference's `coach` flag in `conference <name> list`.\nSee #266.\n"
+            "nullable": true,
+            "description": "True when this participant joined with the `coach` role\n(Twilio whisper-coach pattern). A coach hears the entire\nconference but is only audible to the participant\nidentified by `call_sid_to_coach`.\n"
           },
           "queue_time": {
             "type": "string",
-            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the voice markup executor.\nSee #268.\n"
+            "nullable": true,
+            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the voice markup executor.\n"
           },
           "start_conference_on_enter": {
             "type": "boolean",
+            "nullable": true,
             "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`true`) for every participant — per-participant attribute persistence is on the roadmap."
           },
           "end_conference_on_exit": {
             "type": "boolean",
+            "nullable": true,
             "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`false`) for every participant."
           },
           "status": {
@@ -671,9 +735,10 @@
               "failed",
               "completed"
             ],
-            "description": "Derived from live mod_conference state: `connected`\nwhile the participant is in the room, `on-hold` while\nthe `hold` flag is set, `completed` after they've\nleft (visible only briefly via the synthesised\nresponse when a mute/hold update races a leave).\n"
+            "description": "Derived from live conference state: `connected`\nwhile the participant is in the room, `on-hold` while\nthe `hold` flag is set, `completed` after they've\nleft (visible only briefly via the synthesised\nresponse when a mute/hold update races a leave).\n"
           },
           "label": {
+            "nullable": true,
             "type": "string",
             "description": "Optional tag set via `<Conference participantLabel=…>`. Empty when not set."
           },
@@ -681,14 +746,17 @@
             "type": "string"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822",
             "description": "Emitted via omitempty when not tracked."
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822",
             "description": "Emitted via omitempty when not tracked."
@@ -754,14 +822,17 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^QU[0-9a-f]{32}$",
             "example": "QU0123456789abcdef0123456789abcdef"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "friendly_name": {
+            "nullable": true,
             "type": "string",
             "example": "support"
           },
@@ -779,14 +850,17 @@
             "description": "Seconds in the trailing 5-minute window. 0 when no recent exits."
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           }
         }
@@ -857,16 +931,19 @@
         ],
         "properties": {
           "call_sid": {
+            "nullable": true,
             "type": "string",
             "example": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "queue_sid": {
+            "nullable": true,
             "type": "string"
           },
           "account_sid": {
             "type": "string"
           },
           "date_enqueued": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
@@ -879,6 +956,7 @@
             "description": "1-based; 1 = front of queue (longest waiting)."
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           }
         }
@@ -952,25 +1030,31 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^AP[0-9a-f]{32}$",
             "example": "AP0123456789abcdef0123456789abcdef"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "friendly_name": {
+            "nullable": true,
             "type": "string",
             "example": "ivr-main"
           },
           "api_version": {
+            "nullable": true,
             "type": "string"
           },
           "voice_url": {
+            "nullable": true,
             "type": "string",
             "description": "voice markup URL fetched when <Dial><Application>SID</Application></Dial> dispatches."
           },
           "voice_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -978,10 +1062,12 @@
             ]
           },
           "voice_fallback_url": {
+            "nullable": true,
             "type": "string",
             "description": "Fetched when voice_url returns non-2xx or fails."
           },
           "voice_fallback_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -989,12 +1075,15 @@
             ]
           },
           "voice_caller_id_lookup": {
+            "nullable": true,
             "type": "boolean"
           },
           "status_callback": {
+            "nullable": true,
             "type": "string"
           },
           "status_callback_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1006,14 +1095,17 @@
             "description": "Comma-separated."
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           }
         }
@@ -1071,6 +1163,197 @@
           }
         }
       },
+      "Message": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "api_version",
+          "to",
+          "from",
+          "body",
+          "status",
+          "num_segments",
+          "num_media",
+          "direction",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^SM[0-9a-f]{32}$",
+            "example": "SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "api_version": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string",
+            "description": "Destination phone number in E.164 form."
+          },
+          "from": {
+            "type": "string",
+            "description": "Source phone number; falls back to the tenant's configured default sender if omitted."
+          },
+          "body": {
+            "type": "string",
+            "description": "Message text. Empty string after a redaction update."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "sending",
+              "sent",
+              "failed",
+              "delivered",
+              "undelivered",
+              "receiving",
+              "received",
+              "accepted",
+              "scheduled",
+              "read",
+              "canceled"
+            ]
+          },
+          "num_segments": {
+            "type": "string",
+            "description": "Per-message segment count as Twilio surfaces it — string-typed wire format."
+          },
+          "num_media": {
+            "type": "string",
+            "description": "Always '0' today (no MMS support yet)."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "outbound-api",
+              "outbound-call",
+              "outbound-reply",
+              "inbound"
+            ]
+          },
+          "price": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price_unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "error_code": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Twilio-shape error taxonomy. 21609 = gateway not configured; 30001 = upstream gateway failure."
+          },
+          "error_message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Sanitised — never contains upstream URL or credentials."
+          },
+          "messaging_service_sid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_sent": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "subresource_uris": {
+            "type": "object",
+            "properties": {
+              "media": {
+                "type": "string"
+              },
+              "feedback": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "MessageList": {
+        "type": "object",
+        "required": [
+          "messages",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
       "Recording": {
         "type": "object",
         "required": [
@@ -1081,17 +1364,21 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "example": "RExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "call_sid": {
+            "nullable": true,
             "type": "string"
           },
           "conference_sid": {
             "type": "string",
+            "nullable": true,
             "description": "Set only on conference-room captures (`<Dial><Conference record=\"record-from-start\">`); empty on per-leg recordings."
           },
           "status": {
@@ -1105,7 +1392,7 @@
               "absent",
               "deleted"
             ],
-            "description": "Twilio-canonical enum. `failed` is intentionally absent — Twilio\ndoes not document it on Recording.status (failure of an Outbound\nrecording surfaces as `absent`). VoiceML production code only\nemits `completed`; the wider set is documented for SDK compatibility.\n"
+            "description": "Twilio-compatible enum. `failed` is intentionally absent — Twilio\ndoes not document it on Recording.status (failure of an Outbound\nrecording surfaces as `absent`). VoiceML production code only\nemits `completed`; the wider set is documented for SDK compatibility.\n"
           },
           "source": {
             "type": "string",
@@ -1120,57 +1407,69 @@
             ]
           },
           "channels": {
+            "nullable": true,
             "type": "integer",
             "minimum": 1,
             "maximum": 2
           },
           "duration": {
+            "nullable": true,
             "type": "string"
           },
           "api_version": {
+            "nullable": true,
             "type": "string"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "start_time": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "price": {
+            "nullable": true,
             "type": "string",
             "description": "Reserved; VoiceML emits empty."
           },
           "price_unit": {
+            "nullable": true,
             "type": "string",
             "description": "Reserved; VoiceML emits empty."
           },
           "encryption_details": {
             "type": "object",
+            "nullable": true,
             "additionalProperties": true,
             "description": "Reserved for SSE-KMS metadata when encryption details are exposed; currently empty."
           },
           "subresource_uris": {
             "type": "object",
+            "nullable": true,
             "additionalProperties": true,
             "description": "Twilio-compat subresource map (currently empty)."
           },
           "media_url": {
             "type": "string",
-            "description": "Twilio-canonical canonical URL for the recording audio.\nVoiceML serves the WAV at `/Accounts/{AccountSid}/Recordings/{Sid}.wav`\n— emitted here so strict-binding SDK clients (e.g.\ntwilio-csharp's `recording.MediaUrl`) bind cleanly without\nnull-deref. Same auth requirements as the resource itself.\n"
+            "nullable": true,
+            "description": "Twilio-compatible URL for the recording audio.\nVoiceML serves the WAV at `/Accounts/{AccountSid}/Recordings/{Sid}.wav`\n— emitted here so strict-binding SDK clients (e.g.\ntwilio-csharp's `recording.MediaUrl`) bind cleanly without\nnull-deref. Same auth requirements as the resource itself.\n"
           },
           "error_code": {
             "type": "integer",
             "nullable": true,
-            "description": "Twilio-canonical per-call error taxonomy for failed\nrecordings. `null` (the common case) means no error;\nnon-zero values reference twilio.com/docs/api/errors. See\n#269. The wire shape uses `null`, never `0` — strict-mode\nSDK deserialisers (twilio-csharp / twilio-java) expect\nnull on the no-error path.\n"
+            "description": "Twilio-compatible per-call error code for failed\nrecordings. `null` (the common case) means no error;\nnon-zero values reference twilio.com/docs/api/errors.\nThe wire shape uses `null`, never `0` — strict-mode SDK\ndeserialisers expect null on the no-error path.\n"
           }
         }
       },
@@ -1238,35 +1537,42 @@
           "uri",
           "capabilities"
         ],
-        "description": "Tenant-self-serve view of an assigned DID. Twilio-compatible —\n`sid` is the canonical `PN`-prefixed opaque identifier (34 chars)\nand `phone_number` carries the E.164 form. These are distinct\nfields.\n\nThe full Twilio field set is documented here so strict-binding\nSDKs (twilio-csharp StringEnumConverter, twilio-java Jackson)\ndeserialize without throwing. Fields VoiceML doesn't track\n(regulatory, SMS, emergency, trunking) emit a Twilio-compat\ndefault — empty string, `null`, or the documented enum default.\nCustomer code that reads e.g. `number.capabilities.voice`\ntherefore works with the same SDK patterns on VoiceML and Twilio.\n",
+        "description": "Tenant-self-serve view of an assigned DID. Twilio-compatible —\n`sid` is the canonical `PN`-prefixed opaque identifier (34 chars)\nand `phone_number` carries the E.164 form. These are distinct\nfields.\n\nThe full Twilio field set is documented here so strict-binding\nSDKs deserialize without throwing. Fields VoiceML doesn't track\n(regulatory, SMS, emergency, trunking) emit a Twilio-compat\ndefault — empty string, `null`, or the documented enum default.\nCustomer code that reads e.g. `number.capabilities.voice`\ntherefore works with the same SDK patterns on VoiceML and Twilio.\n",
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^PN[a-f0-9]{32}$",
             "example": "PNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^AC[0-9a-f]{32}$"
           },
           "phone_number": {
+            "nullable": true,
             "type": "string",
             "description": "E.164 — leading `+`, 7-15 digits.",
             "example": "+18005551234"
           },
           "friendly_name": {
+            "nullable": true,
             "type": "string",
             "description": "Display name. Empty by default in v0.5.x; tenant-editable via POST in a future release."
           },
           "api_version": {
+            "nullable": true,
             "type": "string",
             "example": "2010-04-01"
           },
           "uri": {
+            "nullable": true,
             "type": "string",
             "description": "Path under `/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers/{Sid}.json` — uses the canonical PN sid form."
           },
           "origin": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "twilio",
@@ -1276,11 +1582,13 @@
             "description": "Twilio-compatible: source of the number. VoiceML emits empty (provisioning model is operator-managed, not number-buy)."
           },
           "beta": {
+            "nullable": true,
             "type": "boolean",
             "description": "Twilio-compatible: `true` for numbers from beta-availability inventory. VoiceML always emits `false`."
           },
           "capabilities": {
             "type": "object",
+            "nullable": true,
             "required": [
               "voice",
               "sms",
@@ -1304,9 +1612,11 @@
             }
           },
           "voice_url": {
+            "nullable": true,
             "type": "string"
           },
           "voice_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1314,9 +1624,11 @@
             ]
           },
           "voice_fallback_url": {
+            "nullable": true,
             "type": "string"
           },
           "voice_fallback_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1324,10 +1636,12 @@
             ]
           },
           "voice_application_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: linked `AP…` Application sid that supplies voice_url. VoiceML's `<Dial><Application>` flow keeps the link on the Application resource, not here — emits empty."
           },
           "voice_caller_id_lookup": {
+            "nullable": true,
             "type": "boolean",
             "description": "Twilio-compatible: CNAM lookup flag. VoiceML doesn't perform CNAM — always `false`."
           },
@@ -1340,10 +1654,12 @@
             "description": "Twilio-compatible: VoiceML routes inbound as voice only — always `voice`."
           },
           "sms_url": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: SMS handler URL. VoiceML is voice-only — empty."
           },
           "sms_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1353,10 +1669,12 @@
             "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_fallback_url": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_fallback_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1366,14 +1684,17 @@
             "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "sms_application_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: empty (SMS not handled)."
           },
           "status_callback": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: lifecycle webhook. VoiceML emits empty (status is per-call via Call status_callback)."
           },
           "status_callback_method": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "GET",
@@ -1383,10 +1704,12 @@
             "description": "Twilio-compatible: empty."
           },
           "trunk_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: SIP trunk routing. VoiceML uses gateway-config-driven trunking — emits empty."
           },
           "address_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: regulatory street-address resource. Not tracked by VoiceML — empty."
           },
@@ -1402,10 +1725,12 @@
             "description": "Twilio-compatible: address requirement class. VoiceML emits `none`."
           },
           "identity_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: business-identity resource. Not tracked — empty."
           },
           "bundle_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: regulatory bundle. Not tracked — empty."
           },
@@ -1419,6 +1744,7 @@
             "description": "Twilio-compatible: E911 registration. Not handled by VoiceML — emits empty."
           },
           "emergency_address_sid": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: E911 address resource. Not tracked — empty."
           },
@@ -1436,10 +1762,12 @@
             "description": "Twilio-compatible: E911 registration state. Not tracked — empty."
           },
           "status": {
+            "nullable": true,
             "type": "string",
             "description": "Twilio-compatible: provisioning status (`in-use`, etc.). VoiceML doesn't model this — empty."
           },
           "type": {
+            "nullable": true,
             "type": "string",
             "enum": [
               "local",
@@ -1450,10 +1778,12 @@
             "description": "Twilio-compatible: number class. VoiceML doesn't categorize numbers this way — emits empty."
           },
           "date_created": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string",
             "format": "date-time-rfc-2822"
           }
@@ -1524,17 +1854,21 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^MZ[a-f0-9]{32}$",
             "example": "MZxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "call_sid": {
+            "nullable": true,
             "type": "string"
           },
           "name": {
+            "nullable": true,
             "type": "string",
             "description": "Operator-supplied label for the stream; round-trips on the resource."
           },
@@ -1550,9 +1884,11 @@
             "description": "Set on start; preserved across update."
           },
           "date_updated": {
+            "nullable": true,
             "type": "string"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           }
         }
@@ -1569,22 +1905,26 @@
         ],
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
             "pattern": "^SR[a-f0-9]{32}$",
             "example": "SRxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "call_sid": {
+            "nullable": true,
             "type": "string"
           },
           "name": {
+            "nullable": true,
             "type": "string"
           },
           "connector_name": {
             "type": "string",
-            "description": "mod_siprec profile (`SIPREC_DEFAULT_PROFILE` env when empty)."
+            "description": "SIPREC profile name. Falls back to the configured default when empty."
           },
           "status": {
             "type": "string",
@@ -1592,6 +1932,47 @@
               "in-progress",
               "stopped"
             ]
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
+      "CallPayment": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "api_version",
+          "uri",
+          "date_created",
+          "date_updated"
+        ],
+        "description": "<Pay> REST companion resource. Twilio's response shape\nis intentionally minimal — runtime config (chargeAmount,\npaymentConnector, validCardTypes, etc.) is captured server-side\nbut not echoed back. VoiceML tracks the status enum locally\nso SDKs can introspect lifecycle progression; the field is\nsurfaced as a VoiceML extension on top of Twilio's response\nschema.\n",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^PK[a-f0-9]{32}$",
+            "example": "PK1234567890abcdef1234567890abcdef"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "api_version": {
+            "type": "string",
+            "example": "2010-04-01"
           },
           "date_created": {
             "type": "string"
@@ -1617,17 +1998,21 @@
         "description": "Live per-call transcription resource (REST equivalent of\n`<Start><Transcription>`). Distinct from any post-recording\ntranscription resource — events are streamed via the\nStatusCallback URL while the call is live.\n",
         "properties": {
           "sid": {
+            "nullable": true,
             "type": "string",
-            "pattern": "^RT[a-f0-9]{32}$",
-            "example": "RTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            "pattern": "^GT[a-f0-9]{32}$",
+            "example": "GT1234567890abcdef1234567890abcdef"
           },
           "account_sid": {
+            "nullable": true,
             "type": "string"
           },
           "call_sid": {
+            "nullable": true,
             "type": "string"
           },
           "name": {
+            "nullable": true,
             "type": "string"
           },
           "language_code": {
@@ -1654,9 +2039,11 @@
             "type": "string"
           },
           "date_updated": {
+            "nullable": true,
             "type": "string"
           },
           "uri": {
+            "nullable": true,
             "type": "string"
           }
         }
@@ -1839,7 +2226,7 @@
             "type": "integer",
             "minimum": 1,
             "default": 60,
-            "description": "Originate timeout (seconds). Drives the FreeSWITCH `originate_timeout` channel variable."
+            "description": "Originate timeout (seconds)."
           },
           "SendDigits": {
             "type": "string",
@@ -1863,7 +2250,7 @@
           },
           "Byoc": {
             "type": "string",
-            "description": "Twilio BYOC Trunk SID. Accepted-and-ignored — VoiceML routes via FreeSWITCH gateways configured at deploy time."
+            "description": "Twilio BYOC Trunk SID. Accepted-and-ignored — VoiceML routes via gateways configured at deploy time."
           },
           "AsyncAmd": {
             "type": "boolean",
@@ -1877,7 +2264,7 @@
       },
       "UpdateCallRequest": {
         "type": "object",
-        "description": "POST /Calls/{Sid} body. The endpoint serves four intents:\n\n* `Status=completed|canceled` — terminate the live call.\n* `Twiml=<inline>` — execute inline voice markup on the live call;\n  wins over `Url` when both are present (matches Twilio).\n* `Url=…` (`Method`/`FallbackUrl`/`FallbackMethod`) — fetch\n  voice markup and execute on the live call. Falls through to\n  `FallbackUrl` on primary fetch/parse failure.\n* `StatusCallback*` — swap the live call's lifecycle-\n  callback wiring (URL / method / event-mask). Twilio\n  \"only-set fields\" precedence: empty fields preserve the\n  previous value; absent `StatusCallbackEvent` leaves the\n  existing event mask, present (one or more) replaces.\n\nPrecedence: Status wins over any voice markup source. The\nStatusCallback* update is independent and applies on every\nrequest that carries it (including the terminate path).\n",
+        "description": "POST /Calls/{Sid} body. The endpoint serves four intents:\n\n* `Status=completed|canceled` — terminate the live call.\n* `Twiml=<inline>` — execute inline voice markup on the live call;\n wins over `Url` when both are present (matches Twilio).\n* `Url=…` (`Method`/`FallbackUrl`/`FallbackMethod`) — fetch\n voice markup and execute on the live call. Falls through to\n `FallbackUrl` on primary fetch/parse failure.\n* `StatusCallback*` — swap the live call's lifecycle-\n callback wiring (URL / method / event-mask). Twilio\n \"only-set fields\" precedence: empty fields preserve the\n previous value; absent `StatusCallbackEvent` leaves the\n existing event mask, present (one or more) replaces.\n\nPrecedence: Status wins over any voice markup source. The\nStatusCallback* update is independent and applies on every\nrequest that carries it (including the terminate path).\n",
         "properties": {
           "Status": {
             "type": "string",
@@ -1938,7 +2325,7 @@
     },
     "responses": {
       "Unauthorized": {
-        "description": "Authentication failed. All of the following return the same 401\nwith the same body, intentionally indistinguishable from outside:\n  * Unknown :AccountSid\n  * Disabled account\n  * Wrong api_key\n  * Source IP not in the account's allow_cidr (per-tenant allowlist)\n",
+        "description": "Authentication failed. All of the following return the same 401\nwith the same body, intentionally indistinguishable from outside:\n * Unknown :AccountSid\n * Disabled account\n * Wrong api_key\n * Source IP not in the account's allow_cidr (per-tenant allowlist)\n",
         "headers": {
           "WWW-Authenticate": {
             "schema": {
@@ -2140,7 +2527,7 @@
           "Calls"
         ],
         "summary": "Create (originate) a call",
-        "description": "Originates an outbound call via FreeSWITCH. The `To` and `From`\nnumbers are validated and normalised to E.164 against the\nauthenticated tenant's `phone_regions` list — set per-account in\nthe admin API. Empty list disables validation; multi-region\ntenants accept numbers valid in any listed region.\n`MachineDetection` is optional; omitting it skips AMD entirely.\n",
+        "description": "Originates an outbound call. The `To` and `From`\nnumbers are validated and normalised to E.164 against the\nauthenticated tenant's `phone_regions` list — set per-account in\nthe admin API. Empty list disables validation; multi-region\ntenants accept numbers valid in any listed region.\n`MachineDetection` is optional; omitting it skips AMD entirely.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -2177,7 +2564,7 @@
             "$ref": "#/components/responses/TooManyRequests"
           },
           "502": {
-            "description": "Originate failed (carrier unreachable, FreeSWITCH error, ...).",
+            "description": "Originate failed (carrier unreachable, internal error, ...).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2229,7 +2616,7 @@
           "Calls"
         ],
         "summary": "Update or terminate a live call",
-        "description": "Three flows on the same endpoint (mirrors Twilio):\n  * `Status=completed|canceled` — terminate the call.\n  * `Twiml=<inline>` — execute inline voice markup on the live call\n    (wins over `Url` when both are present).\n  * `Url=…` — fetch new voice markup and execute it on the live call\n    (live redirect / hot swap).\nIf `Status` is present alongside any voice markup source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
+        "description": "Three flows on the same endpoint (mirrors Twilio):\n * `Status=completed|canceled` — terminate the call.\n * `Twiml=<inline>` — execute inline voice markup on the live call\n (wins over `Url` when both are present).\n * `Url=…` — fetch new voice markup and execute it on the live call\n (live redirect / hot swap).\nIf `Status` is present alongside any voice markup source, `Status`\nwins. The success response is the full Call resource — same\nshape `GET` returns — so SDK deserialisers round-trip.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -2305,7 +2692,7 @@
           "Conferences"
         ],
         "summary": "List active conferences for the account",
-        "description": "Returns conferences currently active in mod_conference for\nthis tenant. Live query — no caching, always reflects the\nFreeSWITCH state of the moment. Conferences appear once a\nfirst participant joins (typically via voice markup\n`<Dial><Conference>`) and disappear as soon as the last\nparticipant leaves.\n",
+        "description": "Returns conferences currently active for this tenant. Live\nquery — no caching, always reflects state at request time.\nConferences appear once a first participant joins (typically\nvia voice markup `<Dial><Conference>`) and disappear as soon as the\nlast participant leaves.\n",
         "parameters": [
           {
             "name": "FriendlyName",
@@ -2335,7 +2722,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible parameter. VoiceML's conference list is a live FreeSWITCH query with no historical store — accepted but does not narrow the result set."
+            "description": "Twilio-compatible parameter. VoiceML's conference list is a live query with no historical store — accepted but does not narrow the result set."
           },
           {
             "name": "DateCreated<",
@@ -3526,6 +3913,268 @@
         }
       }
     },
+    "/2010-04-01/Accounts/{AccountSid}/Messages.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "operationId": "messages.create",
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Send an SMS",
+        "description": "Sends `Body` to `To` via the configured SMS provider. When\nthe provider is not configured the row is still persisted\nwith status=failed and error_code=21609 so the integrator can\nintrospect the rejection through GET /Messages/{Sid}.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "To",
+                  "Body"
+                ],
+                "properties": {
+                  "To": {
+                    "type": "string",
+                    "description": "Destination phone number (E.164)."
+                  },
+                  "From": {
+                    "type": "string",
+                    "description": "Source phone number; falls back to the tenant's configured default sender."
+                  },
+                  "Body": {
+                    "type": "string",
+                    "description": "Message text."
+                  },
+                  "MessagingServiceSid": {
+                    "type": "string",
+                    "description": "Accepted for parity; not yet routed against."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Reserved — outbound SMS is fire-and-forget today."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message resource (status=sent or status=failed).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "SMS gateway not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "messages.list",
+        "tags": [
+          "Messages"
+        ],
+        "summary": "List Messages for the account (paged, DateCreated DESC)",
+        "parameters": [
+          {
+            "name": "To",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "From",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DateSent",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time-rfc-2822"
+            }
+          },
+          {
+            "name": "DateSent<",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time-rfc-2822"
+            }
+          },
+          {
+            "name": "DateSent>",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time-rfc-2822"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Messages.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/ResourceSid"
+        }
+      ],
+      "get": {
+        "operationId": "messages.fetch",
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Fetch a Message",
+        "responses": {
+          "200": {
+            "description": "Message resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "messages.update",
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Update a Message (Body redaction; Status=canceled rejected)",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Body": {
+                    "type": "string",
+                    "description": "Pass empty string to redact. Non-empty Body is ignored — Twilio's documented redaction semantics."
+                  },
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "canceled"
+                    ],
+                    "description": "Returns 21610 — outbound SMS is fire-and-forget, no cancel path."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Cancellation not supported by the SMS provider.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "messages.delete",
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Delete a Message",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/2010-04-01/Accounts/{AccountSid}/Recordings.json": {
       "parameters": [
         {
@@ -3695,7 +4344,7 @@
           "Calls / Recordings"
         ],
         "summary": "Start a recording mid-call",
-        "description": "Begins a fresh recording on the live call leg via FreeSWITCH's\n`uuid_record`. The new Recording resource is returned in the\n201 response. Distinct from `Record=true` on `POST /Calls`,\nwhich captures from the start of the call.\n",
+        "description": "Begins a fresh recording on the live call leg. The new\nRecording resource is returned in the 201 response. Distinct\nfrom `Record=true` on `POST /Calls`, which captures from the\nstart of the call.\n",
         "requestBody": {
           "required": false,
           "content": {
@@ -3796,7 +4445,7 @@
           "Calls / Streams"
         ],
         "summary": "List active media streams for the call",
-        "description": "Returns 0 or 1 entries — mod_audio_fork supports a single\nactive fork per call uuid, matching the slot model on the\nVoiceML tracker. Pagination envelope is the canonical\nTwilio shape so SDK auto-paginators round-trip cleanly.\n",
+        "description": "Returns 0 or 1 entries — mod_audio_fork supports a single\nactive fork per call uuid, matching the slot model on the\nVoiceML tracker. Pagination envelope is the Twilio-compatible\nshape so SDK auto-paginators round-trip cleanly.\n",
         "responses": {
           "200": {
             "description": "Page of streams (0 or 1 entry).",
@@ -4020,7 +4669,7 @@
           "Calls / Siprec"
         ],
         "summary": "List active SIPREC sessions for the call",
-        "description": "Returns 0 or 1 entries — mod_siprec supports one mirror per\ncall uuid. Pagination envelope is the canonical Twilio shape.\n",
+        "description": "Returns 0 or 1 entries — only one SIPREC mirror per call leg\nis supported. Pagination envelope is the Twilio-compatible\nshape.\n",
         "responses": {
           "200": {
             "description": "Page of SIPREC sessions (0 or 1 entry).",
@@ -4087,7 +4736,7 @@
           "Calls / Siprec"
         ],
         "summary": "Start a SIPREC session on the call (REST equivalent of `<Start><Siprec>`)",
-        "description": "Invokes the `siprec` dialplan app via `uuid_broadcast` against\nthe configured connector profile. Returns the new Siprec\nresource with an SR-prefixed sid.\n",
+        "description": "Starts a SIPREC mirror against the configured connector\nprofile on the live call leg. Returns the new Siprec\nresource with an SR-prefixed sid.\n",
         "requestBody": {
           "required": false,
           "content": {
@@ -4100,7 +4749,7 @@
                   },
                   "ConnectorName": {
                     "type": "string",
-                    "description": "mod_siprec profile name. Empty falls back to SIPREC_DEFAULT_PROFILE then `default`."
+                    "description": "SIPREC profile name. Empty falls back to the configured default profile."
                   },
                   "Track": {
                     "type": "string",
@@ -4185,7 +4834,7 @@
           "Calls / Siprec"
         ],
         "summary": "Update a SIPREC session — clears tracking only",
-        "description": "StefanYohansson/mod_siprec doesn't expose a stop verb; the SRS\nrecording session continues until the call hangs up. This\nendpoint clears VoiceML's session-tracking entry only.\nDocumented mod_siprec limitation.\n",
+        "description": "The SIPREC integration doesn't expose a stop verb; the SRS\nrecording session continues until the call hangs up. This\nendpoint clears VoiceML's session-tracking entry only.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -4242,7 +4891,7 @@
           "Calls / Transcriptions"
         ],
         "summary": "List active transcriptions for the call",
-        "description": "Returns 0 or 1 entries. Pagination envelope is the canonical\nTwilio shape.\n",
+        "description": "Returns 0 or 1 entries. Pagination envelope is the Twilio-compatible\nshape.\n",
         "responses": {
           "200": {
             "description": "Page of transcriptions (0 or 1 entry).",
@@ -4469,6 +5118,231 @@
         }
       }
     },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        }
+      ],
+      "post": {
+        "operationId": "payments.create",
+        "tags": [
+          "Calls / Payments"
+        ],
+        "summary": "Start a <Pay> session on an existing call (REST equivalent of `<Pay>` voice markup)",
+        "description": "Initiates a Pay session against the live call leg. Mirrors\nthe voice markup `<Pay>` verb's parser + state machine; every\nattribute below is accepted and validated. The runtime\n(Stripe charge / tokenize) is currently gated; until it is\nwired, both surfaces accept and log without invoking the\nStripe connector.\n\nPer-tenant BYO is binding: the tenant's account row must have\n`pay_enabled = true` AND `stripe_secret_key` set (admin\nopt-in). No server-level Stripe key fallback — multi-tenancy\ndemands no fallback.\n\n`IdempotencyKey` is accepted and persisted on the row for\ndiagnostic visibility; replay dedup is NOT enforced today.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IdempotencyKey": {
+                    "type": "string",
+                    "description": "Body-level dedup token. Accepted; replay dedup not enforced."
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "BankAccountType": {
+                    "type": "string",
+                    "enum": [
+                      "consumer-checking",
+                      "consumer-savings",
+                      "commercial-checking"
+                    ]
+                  },
+                  "ChargeAmount": {
+                    "type": "string",
+                    "description": "Decimal under 1,000,000."
+                  },
+                  "Currency": {
+                    "type": "string",
+                    "default": "USD"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Input": {
+                    "type": "string",
+                    "enum": [
+                      "dtmf"
+                    ]
+                  },
+                  "MinPostalCodeLength": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "Parameter": {
+                    "type": "string",
+                    "description": "Single-level JSON object passed to the payment connector."
+                  },
+                  "PaymentConnector": {
+                    "type": "string",
+                    "default": "Default"
+                  },
+                  "PaymentMethod": {
+                    "type": "string",
+                    "enum": [
+                      "credit-card",
+                      "ach-debit"
+                    ]
+                  },
+                  "PostalCode": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "SecurityCode": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "Timeout": {
+                    "type": "integer",
+                    "default": 5
+                  },
+                  "TokenType": {
+                    "type": "string",
+                    "enum": [
+                      "one-time",
+                      "reusable",
+                      "payment-method"
+                    ],
+                    "default": "one-time"
+                  },
+                  "ValidCardTypes": {
+                    "type": "string",
+                    "description": "Space-separated. Default: visa mastercard amex maestro discover optima jcb diners-club enroute."
+                  },
+                  "RequireMatchingInputs": {
+                    "type": "string",
+                    "description": "Comma-separated fields requiring matcher inputs."
+                  },
+                  "Confirmation": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment session created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallPayment"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Account is not pay_enabled or has no stripe_secret_key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/CallSid"
+        },
+        {
+          "$ref": "#/components/parameters/SubresourceSid"
+        }
+      ],
+      "post": {
+        "operationId": "payments.update",
+        "tags": [
+          "Calls / Payments"
+        ],
+        "summary": "Update a Pay session — Status=complete or Status=cancel",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IdempotencyKey": {
+                    "type": "string"
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "Capture": {
+                    "type": "string",
+                    "enum": [
+                      "payment-card-number",
+                      "expiration-date",
+                      "security-code",
+                      "postal-code",
+                      "bank-routing-number",
+                      "bank-account-number",
+                      "payment-card-number-matcher",
+                      "expiration-date-matcher",
+                      "security-code-matcher",
+                      "postal-code-matcher"
+                    ]
+                  },
+                  "Status": {
+                    "type": "string",
+                    "enum": [
+                      "complete",
+                      "cancel"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Pay session update accepted; final settlement may still be pending.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallPayment"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json": {
       "parameters": [
         {
@@ -4484,7 +5358,7 @@
           "Calls / Notifications"
         ],
         "summary": "List per-call notifications (compat stub)",
-        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through Prometheus + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list. Page/PageSize and Log\nare accepted for SDK ergonomics but have no effect on an\nempty list.\n",
+        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through metrics + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list. Page/PageSize and Log\nare accepted for SDK ergonomics but have no effect on an\nempty list.\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/Page"
@@ -4638,7 +5512,7 @@
       "get": {
         "operationId": "notifications.list",
         "tags": [
-          "Other"
+          "Notifications"
         ],
         "summary": "List account notifications (compat stub)",
         "description": "Account-wide notification log. VoiceML delivers events via\nStatusCallback — this endpoint returns an empty list so SDK\nhelpers do not 404.\n",
@@ -4756,7 +5630,7 @@
       "get": {
         "operationId": "notifications.fetch",
         "tags": [
-          "Other"
+          "Notifications"
         ],
         "summary": "Fetch an account notification (compat stub)",
         "description": "Always 404 — VoiceML does not persist notifications.",
@@ -5139,7 +6013,7 @@
           "Calls / Recordings"
         ],
         "summary": "Update a mid-call recording's status",
-        "description": "Wires `uuid_record stop|pause|resume` on the live call leg.\nAll three transitions return 200 + the post-mutation\nRecording resource. Tenant-scoped: a RecordingSid that\nbelongs to a different account returns 404 without leaking\nexistence.\n",
+        "description": "Applies stop / pause / resume on the live recording.\nAll three transitions return 200 + the post-mutation\nRecording resource. Tenant-scoped: a RecordingSid that\nbelongs to a different account returns 404 without leaking\nexistence.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -5303,7 +6177,7 @@
           "Recordings"
         ],
         "summary": "Fetch recording audio (WAV)",
-        "description": "Returns the captured audio as `audio/wav` with one of three\ndelivery shapes:\n\n  * `200 OK` — local file present (typical for the first\n    `RECORDING_LOCAL_GRACE` window after the call ends).\n  * `302 Found` — local file cleaned up but archived to S3;\n    `Location` header points at a presigned URL with TTL\n    `RECORDING_PRESIGN_TTL`.\n  * `410 Gone` — local file gone AND no `s3_key` set\n    (typically: archival not configured + cleanup ran, or\n    archival failed and the WAV was lost).\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
+        "description": "Returns the captured audio as `audio/wav` with one of three\ndelivery shapes:\n\n * `200 OK` — local file present (typical for the first\n `RECORDING_LOCAL_GRACE` window after the call ends).\n * `302 Found` — local file cleaned up but archived to S3;\n `Location` header points at a presigned URL with TTL\n `RECORDING_PRESIGN_TTL`.\n * `410 Gone` — local file gone AND no `s3_key` set\n (typically: archival not configured + cleanup ran, or\n archival failed and the WAV was lost).\n\nTenant-scoped: a RecordingSid that belongs to a different\naccount returns `404` with the same shape as a nonexistent\nsid — no enumeration leak.\n\nSee [docs/aws-recordings.md](https://github.com/voicetel/VoiceML/blob/main/docs/aws-recordings.md)\nfor the archival pipeline.\n",
         "responses": {
           "200": {
             "description": "Recording audio.",
@@ -5348,7 +6222,7 @@
           "Diagnostics"
         ],
         "summary": "Deep liveness probe",
-        "description": "Composite probe with two-tier severity. Hard checks (memdb,\ndisk free space, FreeSWITCH process + required modules +\nSofia profile RUNNING) flip the LB-facing `ok` boolean.\nSoft checks (host CPU loadavg, memory pressure, FS workload\npercents, Raft cluster) surface in `warnings` only — the LB\nstays in rotation. Result cached 5 s on full success.\n",
+        "description": "Composite probe with two-tier severity. Hard checks (storage,\ndisk free space, voice stack processes + required modules +\nSIP profile state) flip the LB-facing `ok` boolean. Soft\nchecks (host CPU loadavg, memory pressure, workload percents,\ncluster health) surface in `warnings` only — the LB stays in\nrotation. Result cached 5 s on full success.\n",
         "security": [],
         "responses": {
           "200": {
@@ -5497,7 +6371,7 @@
             "name": "PhoneNumber",
             "in": "query",
             "required": false,
-            "description": "Exact-match filter on the E.164 phone number. Twilio's\ncanonical lookup pattern is\n`GET /IncomingPhoneNumbers?PhoneNumber=+1...` followed by\n`GET /IncomingPhoneNumbers/{sid}` using the `sid` from the\nlist result. SDK clients (twilio-python's\n`.list(phone_number=...)` etc.) issue this pattern; the\nfilter exists so it Just Works against VoiceML.\nReturns a 0-or-1-row envelope.\n",
+            "description": "Exact-match filter on the E.164 phone number. Twilio's\ncanonical lookup pattern is\n`GET /IncomingPhoneNumbers?PhoneNumber=+1...` followed by\n`GET /IncomingPhoneNumbers/{sid}` using the `sid` from the\nlist result. Twilio-compatible SDK clients issue this\npattern; the filter is supported so the same call pattern\nworks against VoiceML. Returns a 0-or-1-row envelope.\n",
             "schema": {
               "type": "string",
               "pattern": "^\\+[1-9]\\d{1,14}$"

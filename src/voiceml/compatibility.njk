@@ -141,8 +141,8 @@ description: "A compatibility matrix for VoiceML, covering supported, partial, u
 				<tr>
 					<th scope="row"><strong>Calls / Payments</strong></th>
 					<td><code>POST /Calls/{Sid}/Payments[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td><code>&lt;Pay&gt;</code> not implemented (PCI-DSS scope); path returns 404 — half-implementing PCI is more dangerous than a clean 404.</td>
+					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
+					<td>Parser and state machine implemented — every <code>&lt;Pay&gt;</code> attribute is accepted, validated, and logged. The card-capture runtime (Stripe charge/tokenize) is gated; the connector activates only on accounts with <code>pay_enabled</code> and a configured <code>stripe_secret_key</code>. Without it the session is recorded but no charge runs (start returns 403).</td>
 				</tr>
 
 				<tr>
@@ -296,10 +296,31 @@ description: "A compatibility matrix for VoiceML, covering supported, partial, u
 					<td>SIP-domain provisioning handled by the <a href="/sip-trunking/">SIP trunking</a> workflow.</td>
 				</tr>
 				<tr>
-					<th scope="row"><strong>Messages<br>MMS</strong></th>
-					<td><code>POST /Messages</code> etc.</td>
+					<th scope="row" rowspan="4"><strong>Messages</strong></th>
+					<td><code>POST /Messages</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Sends <code>Body</code> to <code>To</code> via the per-tenant SMS provider. Returns 201 with the Message resource (<code>status=sent</code> or <code>status=failed</code> with a Twilio-shaped <code>error_code</code>). 503 + <code>error_code=21609</code> if the provider isn't configured on the account. For the native messaging product see <a href="/messaging/">VoiceTel Messaging</a>.</td>
+				</tr>
+				<tr>
+					<td><code>GET /Messages[/{Sid}]</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Paged list (DateCreated DESC) plus single-resource fetch, same envelope as <code>/Calls</code>.</td>
+				</tr>
+				<tr>
+					<td><code>POST /Messages/{Sid}</code></td>
+					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
+					<td><code>Body</code> redaction supported; <code>Status=canceled</code> rejected with 409 (provider doesn't expose cancellation).</td>
+				</tr>
+				<tr>
+					<td><code>DELETE /Messages/{Sid}</code></td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Idempotent: 204 on success or already-gone.</td>
+				</tr>
+				<tr>
+					<th scope="row"><strong>MMS</strong></th>
+					<td><code>POST /Messages</code> + <code>MediaUrl</code></td>
 					<td><span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span></td>
-					<td>Compatibility surface is voice-only. See <a href="/messaging/">VoiceTel Messaging</a> for the native messaging product.</td>
+					<td>Media payloads not in scope on the compatibility surface. See <a href="/messaging/">VoiceTel Messaging</a> for MMS.</td>
 				</tr>
 				<tr>
 					<th scope="row"><strong>Pricing API</strong></th>

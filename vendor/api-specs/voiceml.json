@@ -711,7 +711,7 @@
           "queue_time": {
             "type": "string",
             "nullable": true,
-            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events via the voice markup executor.\n"
+            "description": "Pre-join queue-wait in seconds, string-encoded per\nTwilio's wire shape. \"0\" when the participant did not\ntransit a queue (the common case). Populated from\n`<Enqueue>` dequeue events.\n"
           },
           "start_conference_on_enter": {
             "type": "boolean",
@@ -2082,7 +2082,7 @@
           "check": {
             "type": "string",
             "example": "memdb",
-            "description": "Identifier of the tripped check (memdb / cluster / disk / cpu_load / memory / freeswitch / freeswitch_workload)."
+            "description": "Identifier of the tripped check."
           },
           "detail": {
             "type": "string",
@@ -4445,7 +4445,7 @@
           "Calls / Streams"
         ],
         "summary": "List active media streams for the call",
-        "description": "Returns 0 or 1 entries — mod_audio_fork supports a single\nactive fork per call uuid, matching the slot model on the\nVoiceML tracker. Pagination envelope is the Twilio-compatible\nshape so SDK auto-paginators round-trip cleanly.\n",
+        "description": "Returns 0 or 1 entries — the runtime supports a single\nactive media fork per call, matching the slot model on the\nVoiceML tracker. Pagination envelope is the Twilio-compatible\nshape so SDK auto-paginators round-trip cleanly.\n",
         "responses": {
           "200": {
             "description": "Page of streams (0 or 1 entry).",
@@ -4512,7 +4512,7 @@
           "Calls / Streams"
         ],
         "summary": "Start a media stream on the call (REST equivalent of `<Connect><Stream>`/`<Start><Stream>`)",
-        "description": "Issues `uuid_audio_fork start` on the call leg via the same\nexecutor primitive the voice markup verbs use. Returns the new Stream\nresource with an MZ-prefixed sid.\n",
+        "description": "Starts a media fork on the live call leg. Equivalent to\n`<Connect><Stream>` / `<Start><Stream>` in voice markup. Returns\nthe new Stream resource with an MZ-prefixed sid.\n",
         "requestBody": {
           "required": true,
           "content": {

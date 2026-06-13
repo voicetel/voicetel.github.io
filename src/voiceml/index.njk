@@ -93,8 +93,8 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 <section class="section-block" data-section-type="honest-differences">
 	<h2>What's different</h2>
 	<ul>
-		<li><strong>Voice-focused compatibility</strong> — The compatible SDK surface is voice-focused. Messaging, number provisioning, pricing APIs, and other unrelated CPaaS products use native VoiceTel product APIs or portal workflows.</li>
-		<li><strong>Unsupported payment verb</strong> — The payment verb is intentionally not implemented because PCI scope belongs in a fully certified payment flow.</li>
+		<li><strong>Voice-first compatibility</strong> — The compatible surface centers on voice: <code>Calls</code>, <code>Conferences</code>, <code>Queues</code>, <code>Applications</code>, <code>Recordings</code>, and <code>IncomingPhoneNumbers</code>. Basic SMS send / list / fetch / delete is also available via <code>/Messages</code> when a per-tenant provider is configured. MMS, number provisioning, pricing APIs, and other CPaaS products use native VoiceTel product APIs or portal workflows.</li>
+		<li><strong>Payment verb gated</strong> — The payment verb's parser and state machine are implemented; the card-capture runtime activates only on accounts that have been provisioned with a payment connector. Without provisioning, the verb is recorded but no charge is run.</li>
 		<li><strong>Number provisioning path</strong> — DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
 	</ul>
 </section>

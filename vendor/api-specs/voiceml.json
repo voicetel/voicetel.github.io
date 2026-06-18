@@ -7679,8 +7679,8 @@
         "tags": [
           "Calls / Siprec"
         ],
-        "summary": "Update a SIPREC session — clears tracking only",
-        "description": "The SIPREC integration doesn't expose a stop verb; the SRS\nrecording session continues until the call hangs up. This\nendpoint clears VoiceML's session-tracking entry only.\n",
+        "summary": "Stop a SIPREC session",
+        "description": "Stops the SIPREC session on the SRS (`Status=stopped`) and clears VoiceML's session-tracking entry. Idempotent against an already-stopped session.",
         "requestBody": {
           "required": true,
           "content": {

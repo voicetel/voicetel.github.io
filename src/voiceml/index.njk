@@ -73,6 +73,11 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 			<p>Start and inspect supported live media, transcription, and SIP recording resources with documented caveats.</p>
 		</li>
 		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>AI voice agents</h3>
+			<p>Bridge live calls to your speech-to-text + LLM + text-to-speech pipeline with <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> — a Twilio-compatible WebSocket relay that handles barge-in, DTMF forwarding, and graceful handoff.</p>
+		</li>
+		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
 			<h3>Applications</h3>
 			<p>Save voice-only application defaults and resolve them from call creation where supported.</p>
@@ -93,8 +98,8 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 <section class="section-block" data-section-type="honest-differences">
 	<h2>What's different</h2>
 	<ul>
-		<li><strong>Voice-first compatibility</strong> — The compatible surface centers on voice: <code>Calls</code>, <code>Conferences</code>, <code>Queues</code>, <code>Applications</code>, <code>Recordings</code>, and <code>IncomingPhoneNumbers</code>. Basic SMS send / list / fetch / delete is also available via <code>/Messages</code> when a per-tenant provider is configured. MMS, number provisioning, pricing APIs, and other CPaaS products use native VoiceTel product APIs or portal workflows.</li>
-		<li><strong>Payment verb gated</strong> — The payment verb's parser and state machine are implemented; the card-capture runtime activates only on accounts that have been provisioned with a payment connector. Without provisioning, the verb is recorded but no charge is run.</li>
+		<li><strong>Voice-first compatibility</strong> — The compatible surface centers on voice: <code>Calls</code>, <code>Conferences</code>, <code>Queues</code>, <code>Applications</code>, <code>Recordings</code>, <code>IncomingPhoneNumbers</code>, and the full <code>SIP/Domains</code>, <code>SIP/CredentialLists</code>, and <code>SIP/IpAccessControlLists</code> trunking surface (including domain ↔ list mappings and the <code>v2/SipDomains</code> Inbound Processing Region resource). Basic SMS send / list / fetch / delete is also available via <code>/Messages</code> when a per-tenant provider is configured. MMS, number provisioning, pricing APIs, and other CPaaS products use native VoiceTel product APIs or portal workflows.</li>
+		<li><strong>Payment verb gated</strong> — The payment verb is fully compatible. Card capture is enabled per account — <a href="/contact/">contact support</a> to turn it on.</li>
 		<li><strong>Number provisioning path</strong> — DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
 	</ul>
 </section>

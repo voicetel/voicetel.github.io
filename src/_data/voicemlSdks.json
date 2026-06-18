@@ -1,10 +1,10 @@
 {
 	"source": "https://github.com/voicetel/voiceml-sdks",
 	"license": "MIT",
-	"targetApi": "VoiceML API v0.7.1",
-	"operationCount": 81,
-	"resourceGroupCount": 20,
-	"resourceGroups": "Applications, Calls, Conferences, Diagnostics, Messaging, Numbers, Queues, and Recordings",
+	"targetApi": "VoiceML API v0.8.2",
+	"operationCount": 128,
+	"resourceGroupCount": 11,
+	"resourceGroups": "Applications, Calls, Conferences, Diagnostics, Messaging, Numbers, Queues, Recordings, and SIP trunking",
 	"sdks": [
 		{
 			"name": "Python",
@@ -31,7 +31,7 @@
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/voiceml-java-sdk",
-			"install": "com.voicetel:voiceml:0.7.1",
+			"install": "com.voicetel:voiceml:0.8.2",
 			"installLabel": "Maven",
 			"description": "Java 11+ client over java.net.http. Builder-style request construction, Jackson serialization."
 		},

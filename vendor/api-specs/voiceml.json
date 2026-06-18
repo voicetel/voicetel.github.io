@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.7.1",
+    "version": "0.8.2",
     "summary": "Twilio-compatible voice (inbound + outbound), SMS, conferencing, recording, transcription, and payment platform",
     "description": "VoiceML exposes a Twilio-compatible REST + voice markup surface covering\nvoice (inbound + outbound calls, conferences, queues), SMS via the\nMessages resource, mid-call recording / SIPREC / real-time\ntranscription / `<Pay>` subresources, and the `IncomingPhoneNumbers`\n+ `Applications` configuration surfaces. Existing Twilio SDKs\n(`twilio-node`, `twilio-python`, `twilio-go`, ...) integrate with\nminimal migration effort. Authentication, error codes, and\npagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n * Username = `:AccountSid` (the URL path parameter, Twilio-format\n AC + 32 hex chars). Same value the Twilio SDK validates in its\n constructor — migration-compatible.\n * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
@@ -85,6 +85,39 @@
     },
     {
       "name": "Recordings"
+    },
+    {
+      "name": "SIP / Auth / Calls / CredentialListMappings"
+    },
+    {
+      "name": "SIP / Auth / Calls / IpAccessControlListMappings"
+    },
+    {
+      "name": "SIP / Auth / Registrations / CredentialListMappings"
+    },
+    {
+      "name": "SIP / CredentialLists"
+    },
+    {
+      "name": "SIP / CredentialLists / Credentials"
+    },
+    {
+      "name": "SIP / Domains"
+    },
+    {
+      "name": "SIP / Domains / CredentialListMappings"
+    },
+    {
+      "name": "SIP / Domains / InboundProcessingRegion"
+    },
+    {
+      "name": "SIP / Domains / IpAccessControlListMappings"
+    },
+    {
+      "name": "SIP / IpAccessControlLists"
+    },
+    {
+      "name": "SIP / IpAccessControlLists / IpAddresses"
     }
   ],
   "x-tagGroups": [
@@ -144,6 +177,22 @@
       "name": "Account telemetry",
       "tags": [
         "Notifications"
+      ]
+    },
+    {
+      "name": "SIP trunking",
+      "tags": [
+        "SIP / Domains",
+        "SIP / Domains / InboundProcessingRegion",
+        "SIP / Domains / CredentialListMappings",
+        "SIP / Domains / IpAccessControlListMappings",
+        "SIP / Auth / Calls / CredentialListMappings",
+        "SIP / Auth / Calls / IpAccessControlListMappings",
+        "SIP / Auth / Registrations / CredentialListMappings",
+        "SIP / CredentialLists",
+        "SIP / CredentialLists / Credentials",
+        "SIP / IpAccessControlLists",
+        "SIP / IpAccessControlLists / IpAddresses"
       ]
     },
     {
@@ -267,6 +316,96 @@
         "schema": {
           "type": "string",
           "pattern": "^PN[a-f0-9]{32}$|^\\+[1-9]\\d{1,14}$"
+        }
+      },
+      "SipDomainSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP Domain SID — literal \"SD\" + 32 hex chars\n(34 total). Server-generated on `POST /SIP/Domains`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^SD[0-9a-f]{32}$"
+        }
+      },
+      "SipCredentialListSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP CredentialList SID — literal \"CL\" + 32 hex\nchars (34 total). Server-generated on `POST /SIP/CredentialLists`.\nAlso names the parent list in the Credentials sub-resource path.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^CL[0-9a-f]{32}$"
+        }
+      },
+      "SipCredentialSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP Credential SID — literal \"CR\" + 32 hex\nchars (34 total). Server-generated on\n`POST /SIP/CredentialLists/{CredentialListSid}/Credentials`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^CR[0-9a-f]{32}$"
+        }
+      },
+      "SipIpAccessControlListSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP IpAccessControlList SID — literal \"AL\" +\n32 hex chars (34 total). Server-generated on\n`POST /SIP/IpAccessControlLists`. Also names the parent list in\nthe IpAddresses sub-resource path.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^AL[0-9a-f]{32}$"
+        }
+      },
+      "SipIpAddressSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP IpAddress SID — literal \"IP\" + 32 hex\nchars (34 total). Server-generated on\n`POST /SIP/IpAccessControlLists/{IpAccessControlListSid}/IpAddresses`.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^IP[0-9a-f]{32}$"
+        }
+      },
+      "SipMappingListSid": {
+        "name": "Sid",
+        "in": "path",
+        "required": true,
+        "description": "The mapped list's SID on a SIP Domain mapping leaf. A\nCredentialList mapping carries a `CL…` sid; an\nIpAccessControlList mapping carries an `AL…` sid. The mapping's\nown `sid` IS the mapped list's sid (Twilio semantics).\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^(CL|AL)[0-9a-f]{32}$"
+        }
+      },
+      "SipParentDomainSid": {
+        "name": "DomainSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP Domain SID — literal \"SD\" + 32 hex chars\n(34 total). Names the parent Domain in a Domain mapping\nsub-resource path. Matches Twilio's `DomainSid` path-parameter\nname for the nested mapping surfaces.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^SD[0-9a-f]{32}$"
+        }
+      },
+      "SipParentCredentialListSid": {
+        "name": "CredentialListSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP CredentialList SID — literal \"CL\" + 32 hex\nchars (34 total). Names the parent CredentialList in the\nCredentials sub-resource path. Matches Twilio's\n`CredentialListSid` path-parameter name.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^CL[0-9a-f]{32}$"
+        }
+      },
+      "SipParentIpAccessControlListSid": {
+        "name": "IpAccessControlListSid",
+        "in": "path",
+        "required": true,
+        "description": "Twilio-compatible SIP IpAccessControlList SID — literal \"AL\" +\n32 hex chars (34 total). Names the parent IpAccessControlList in\nthe IpAddresses sub-resource path. Matches Twilio's\n`IpAccessControlListSid` path-parameter name.\n",
+        "schema": {
+          "type": "string",
+          "pattern": "^AL[0-9a-f]{32}$"
         }
       },
       "Page": {
@@ -1123,6 +1262,806 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Application"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipDomain": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "domain_name",
+          "api_version",
+          "uri",
+          "date_created",
+          "date_updated"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^SD[0-9a-f]{32}$",
+            "example": "SD0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string",
+            "example": "sip-ingress"
+          },
+          "domain_name": {
+            "nullable": true,
+            "type": "string",
+            "example": "example.sip.voiceml.example.com",
+            "description": "Fully-qualified SIP domain. Required on create."
+          },
+          "api_version": {
+            "nullable": true,
+            "type": "string"
+          },
+          "auth_type": {
+            "nullable": true,
+            "type": "string",
+            "description": "Authentication scheme bound to the domain (e.g. via CredentialList / IpAccessControlList mappings). Empty when no auth mapping is attached."
+          },
+          "voice_url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri"
+          },
+          "voice_method": {
+            "nullable": true,
+            "type": "string",
+            "format": "http-method",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_fallback_url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri"
+          },
+          "voice_fallback_method": {
+            "nullable": true,
+            "type": "string",
+            "format": "http-method",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "voice_status_callback_url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri"
+          },
+          "voice_status_callback_method": {
+            "nullable": true,
+            "type": "string",
+            "format": "http-method",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "sip_registration": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "emergency_calling_enabled": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "secure": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "byoc_trunk_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "emergency_caller_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "subresource_uris": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RoutesV2SipDomain": {
+        "type": "object",
+        "required": [
+          "sid",
+          "sip_domain",
+          "account_sid",
+          "date_created",
+          "date_updated"
+        ],
+        "properties": {
+          "sip_domain": {
+            "nullable": true,
+            "type": "string",
+            "example": "example.sip.voiceml.example.com"
+          },
+          "url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri"
+          },
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^QQ[0-9a-fA-F]{32}$",
+            "example": "QQ0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^AC[0-9a-fA-F]{32}$"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voice_region": {
+            "nullable": true,
+            "type": "string",
+            "description": "Inbound Processing Region that handles inbound calls for this SIP domain."
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SipDomainList": {
+        "type": "object",
+        "required": [
+          "domains",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "domains": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipDomain"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipCredentialList": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^CL[0-9a-f]{32}$",
+            "example": "CL0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string",
+            "example": "office-handsets"
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "subresource_uris": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SipCredentialListList": {
+        "type": "object",
+        "required": [
+          "credential_lists",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "credential_lists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipCredentialList"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipCredential": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "credential_list_sid",
+          "username",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^CR[0-9a-f]{32}$",
+            "example": "CR0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "credential_list_sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^CL[0-9a-f]{32}$"
+          },
+          "username": {
+            "nullable": true,
+            "type": "string",
+            "example": "alice"
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
+      "SipCredentialListPage": {
+        "type": "object",
+        "required": [
+          "credentials",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "credentials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipCredential"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipIpAccessControlList": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^AL[0-9a-f]{32}$",
+            "example": "AL0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string",
+            "example": "carrier-allowlist"
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "subresource_uris": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SipIpAccessControlListList": {
+        "type": "object",
+        "required": [
+          "ip_access_control_lists",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "ip_access_control_lists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipIpAccessControlList"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipIpAddress": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "ip_access_control_list_sid",
+          "friendly_name",
+          "ip_address",
+          "cidr_prefix_length",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^IP[0-9a-f]{32}$",
+            "example": "IP0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ip_access_control_list_sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^AL[0-9a-f]{32}$"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string",
+            "example": "carrier-edge-1"
+          },
+          "ip_address": {
+            "nullable": true,
+            "type": "string",
+            "example": "203.0.113.10"
+          },
+          "cidr_prefix_length": {
+            "type": "integer",
+            "example": 32,
+            "description": "CIDR prefix length. Defaults to 32 (single host) when omitted on create."
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
+      "SipIpAddressList": {
+        "type": "object",
+        "required": [
+          "ip_addresses",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "ip_addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipIpAddress"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipDomainMapping": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "date_created",
+          "date_updated",
+          "uri"
+        ],
+        "properties": {
+          "sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^(CL|AL)[0-9a-f]{32}$",
+            "example": "CL0123456789abcdef0123456789abcdef"
+          },
+          "account_sid": {
+            "nullable": true,
+            "type": "string"
+          },
+          "friendly_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "domain_sid": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^SD[0-9a-f]{32}$",
+            "description": "The SipDomain resource this mapping is attached to."
+          },
+          "date_created": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "date_updated": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "uri": {
+            "nullable": true,
+            "type": "string"
+          }
+        }
+      },
+      "SipCredentialListMappingList": {
+        "type": "object",
+        "required": [
+          "credential_list_mappings",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "credential_list_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipDomainMapping"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          },
+          "num_pages": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipIpAccessControlListMappingList": {
+        "type": "object",
+        "required": [
+          "ip_access_control_list_mappings",
+          "page",
+          "page_size",
+          "total"
+        ],
+        "properties": {
+          "ip_access_control_list_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipDomainMapping"
             }
           },
           "page": {
@@ -3913,6 +4852,1913 @@
         }
       }
     },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domains.create",
+        "tags": [
+          "SIP / Domains"
+        ],
+        "summary": "Create a SIP Domain",
+        "description": "Registers a SIP Domain — the SIP-ingress surface that routes\ninbound INVITEs to voice markup via `voice_url`. `DomainName` is\nrequired.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "DomainName"
+                ],
+                "properties": {
+                  "DomainName": {
+                    "type": "string"
+                  },
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceStatusCallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceStatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SipRegistration": {
+                    "type": "boolean"
+                  },
+                  "Secure": {
+                    "type": "boolean"
+                  },
+                  "EmergencyCallingEnabled": {
+                    "type": "boolean"
+                  },
+                  "ByocTrunkSid": {
+                    "type": "string"
+                  },
+                  "EmergencyCallerSid": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIP Domain resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domains.list",
+        "tags": [
+          "SIP / Domains"
+        ],
+        "summary": "List SIP Domains for the account (paged)",
+        "parameters": [
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to SIP Domains with this exact FriendlyName."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP Domains.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipDomainSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domains.fetch",
+        "tags": [
+          "SIP / Domains"
+        ],
+        "summary": "Fetch a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "SIP Domain resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "sip_domains.update",
+        "tags": [
+          "SIP / Domains"
+        ],
+        "summary": "Update a SIP Domain (partial — only set fields are touched)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "VoiceUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "VoiceStatusCallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "VoiceStatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SipRegistration": {
+                    "type": "boolean"
+                  },
+                  "Secure": {
+                    "type": "boolean"
+                  },
+                  "EmergencyCallingEnabled": {
+                    "type": "boolean"
+                  },
+                  "ByocTrunkSid": {
+                    "type": "string"
+                  },
+                  "EmergencyCallerSid": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SIP Domain resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domains.delete",
+        "tags": [
+          "SIP / Domains"
+        ],
+        "summary": "Delete a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/CredentialLists.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_credential_lists.create",
+        "tags": [
+          "SIP / CredentialLists"
+        ],
+        "summary": "Create a SIP CredentialList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIP CredentialList resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "SIP CredentialLists subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_credential_lists.list",
+        "tags": [
+          "SIP / CredentialLists"
+        ],
+        "summary": "List SIP CredentialLists for the account (paged)",
+        "parameters": [
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to CredentialLists with this exact FriendlyName."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP CredentialLists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialListList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/CredentialLists/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipCredentialListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_credential_lists.fetch",
+        "tags": [
+          "SIP / CredentialLists"
+        ],
+        "summary": "Fetch a SIP CredentialList",
+        "responses": {
+          "200": {
+            "description": "SIP CredentialList resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "sip_credential_lists.update",
+        "tags": [
+          "SIP / CredentialLists"
+        ],
+        "summary": "Update a SIP CredentialList (partial — only set fields are touched)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SIP CredentialList resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_credential_lists.delete",
+        "tags": [
+          "SIP / CredentialLists"
+        ],
+        "summary": "Delete a SIP CredentialList",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/CredentialLists/{CredentialListSid}/Credentials.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentCredentialListSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_credentials.create",
+        "tags": [
+          "SIP / CredentialLists / Credentials"
+        ],
+        "summary": "Create a SIP Credential under a CredentialList",
+        "description": "`Username` and `Password` are both required. `Password` is\nwrite-only — it is accepted here but never echoed back on any\nresponse.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "Username",
+                  "Password"
+                ],
+                "properties": {
+                  "Username": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string",
+                    "description": "Write-only — never returned on any response."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIP Credential resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredential"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Credentials subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_credentials.list",
+        "tags": [
+          "SIP / CredentialLists / Credentials"
+        ],
+        "summary": "List SIP Credentials under a CredentialList (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP Credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialListPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/CredentialLists/{CredentialListSid}/Credentials/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentCredentialListSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipCredentialSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_credentials.fetch",
+        "tags": [
+          "SIP / CredentialLists / Credentials"
+        ],
+        "summary": "Fetch a SIP Credential",
+        "responses": {
+          "200": {
+            "description": "SIP Credential resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredential"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "sip_credentials.update",
+        "tags": [
+          "SIP / CredentialLists / Credentials"
+        ],
+        "summary": "Update a SIP Credential (rotate Password; Username is immutable)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Password": {
+                    "type": "string",
+                    "description": "Write-only — never returned on any response."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SIP Credential resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredential"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_credentials.delete",
+        "tags": [
+          "SIP / CredentialLists / Credentials"
+        ],
+        "summary": "Delete a SIP Credential",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/IpAccessControlLists.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_ip_access_control_lists.create",
+        "tags": [
+          "SIP / IpAccessControlLists"
+        ],
+        "summary": "Create a SIP IpAccessControlList",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIP IpAccessControlList resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "SIP IpAccessControlLists subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_ip_access_control_lists.list",
+        "tags": [
+          "SIP / IpAccessControlLists"
+        ],
+        "summary": "List SIP IpAccessControlLists for the account (paged)",
+        "parameters": [
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to IpAccessControlLists with this exact FriendlyName."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP IpAccessControlLists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlListList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/IpAccessControlLists/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipIpAccessControlListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_ip_access_control_lists.fetch",
+        "tags": [
+          "SIP / IpAccessControlLists"
+        ],
+        "summary": "Fetch a SIP IpAccessControlList",
+        "responses": {
+          "200": {
+            "description": "SIP IpAccessControlList resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "sip_ip_access_control_lists.update",
+        "tags": [
+          "SIP / IpAccessControlLists"
+        ],
+        "summary": "Update a SIP IpAccessControlList (partial — only set fields are touched)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SIP IpAccessControlList resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_ip_access_control_lists.delete",
+        "tags": [
+          "SIP / IpAccessControlLists"
+        ],
+        "summary": "Delete a SIP IpAccessControlList",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/IpAccessControlLists/{IpAccessControlListSid}/IpAddresses.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentIpAccessControlListSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_ip_addresses.create",
+        "tags": [
+          "SIP / IpAccessControlLists / IpAddresses"
+        ],
+        "summary": "Create a SIP IpAddress under an IpAccessControlList",
+        "description": "`FriendlyName` and `IpAddress` are both required.\n`CidrPrefixLength` defaults to 32 (single host) when omitted.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "FriendlyName",
+                  "IpAddress"
+                ],
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "IpAddress": {
+                    "type": "string"
+                  },
+                  "CidrPrefixLength": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SIP IpAddress resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAddress"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "503": {
+            "description": "SIP IpAddresses subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_ip_addresses.list",
+        "tags": [
+          "SIP / IpAccessControlLists / IpAddresses"
+        ],
+        "summary": "List SIP IpAddresses under an IpAccessControlList (paged)",
+        "parameters": [
+          {
+            "name": "FriendlyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to IpAddresses with this exact FriendlyName."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP IpAddresses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAddressList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/IpAccessControlLists/{IpAccessControlListSid}/IpAddresses/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentIpAccessControlListSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipIpAddressSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_ip_addresses.fetch",
+        "tags": [
+          "SIP / IpAccessControlLists / IpAddresses"
+        ],
+        "summary": "Fetch a SIP IpAddress",
+        "responses": {
+          "200": {
+            "description": "SIP IpAddress resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAddress"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "operationId": "sip_ip_addresses.update",
+        "tags": [
+          "SIP / IpAccessControlLists / IpAddresses"
+        ],
+        "summary": "Update a SIP IpAddress (partial — only set fields are touched)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "IpAddress": {
+                    "type": "string"
+                  },
+                  "CidrPrefixLength": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SIP IpAddress resource (post-mutation state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAddress"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_ip_addresses.delete",
+        "tags": [
+          "SIP / IpAccessControlLists / IpAddresses"
+        ],
+        "summary": "Delete a SIP IpAddress",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/CredentialListMappings.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domain_credential_list_mappings.create",
+        "tags": [
+          "SIP / Domains / CredentialListMappings"
+        ],
+        "summary": "Map a CredentialList onto a SIP Domain",
+        "description": "Binds an existing CredentialList (`CL…`) to the Domain. The\nresponse echoes the mapped list's shape; the mapping's `sid` IS\nthe CredentialList's sid.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "CredentialListSid"
+                ],
+                "properties": {
+                  "CredentialListSid": {
+                    "type": "string",
+                    "pattern": "^CL[0-9a-f]{32}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domain_credential_list_mappings.list",
+        "tags": [
+          "SIP / Domains / CredentialListMappings"
+        ],
+        "summary": "List CredentialList mappings on a SIP Domain (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of CredentialList mappings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialListMappingList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/CredentialListMappings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipMappingListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domain_credential_list_mappings.fetch",
+        "tags": [
+          "SIP / Domains / CredentialListMappings"
+        ],
+        "summary": "Fetch a CredentialList mapping on a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domain_credential_list_mappings.delete",
+        "tags": [
+          "SIP / Domains / CredentialListMappings"
+        ],
+        "summary": "Unmap a CredentialList from a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/IpAccessControlListMappings.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domain_ip_access_control_list_mappings.create",
+        "tags": [
+          "SIP / Domains / IpAccessControlListMappings"
+        ],
+        "summary": "Map an IpAccessControlList onto a SIP Domain",
+        "description": "Binds an existing IpAccessControlList (`AL…`) to the Domain.\nThe response echoes the mapped list's shape; the mapping's `sid`\nIS the IpAccessControlList's sid.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "IpAccessControlListSid"
+                ],
+                "properties": {
+                  "IpAccessControlListSid": {
+                    "type": "string",
+                    "pattern": "^AL[0-9a-f]{32}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "IpAccessControlList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domain_ip_access_control_list_mappings.list",
+        "tags": [
+          "SIP / Domains / IpAccessControlListMappings"
+        ],
+        "summary": "List IpAccessControlList mappings on a SIP Domain (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of IpAccessControlList mappings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlListMappingList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/IpAccessControlListMappings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipMappingListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domain_ip_access_control_list_mappings.fetch",
+        "tags": [
+          "SIP / Domains / IpAccessControlListMappings"
+        ],
+        "summary": "Fetch an IpAccessControlList mapping on a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "IpAccessControlList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domain_ip_access_control_list_mappings.delete",
+        "tags": [
+          "SIP / Domains / IpAccessControlListMappings"
+        ],
+        "summary": "Unmap an IpAccessControlList from a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Calls/CredentialListMappings.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domain_auth_calls_credential_list_mappings.create",
+        "tags": [
+          "SIP / Auth / Calls / CredentialListMappings"
+        ],
+        "summary": "Map a CredentialList onto a SIP Domain's call authentication",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "CredentialListSid"
+                ],
+                "properties": {
+                  "CredentialListSid": {
+                    "type": "string",
+                    "pattern": "^CL[0-9a-f]{32}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Call-auth CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domain_auth_calls_credential_list_mappings.list",
+        "tags": [
+          "SIP / Auth / Calls / CredentialListMappings"
+        ],
+        "summary": "List call-auth CredentialList mappings on a SIP Domain (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of call-auth CredentialList mappings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialListMappingList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Calls/CredentialListMappings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipMappingListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domain_auth_calls_credential_list_mappings.fetch",
+        "tags": [
+          "SIP / Auth / Calls / CredentialListMappings"
+        ],
+        "summary": "Fetch a call-auth CredentialList mapping on a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "Call-auth CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domain_auth_calls_credential_list_mappings.delete",
+        "tags": [
+          "SIP / Auth / Calls / CredentialListMappings"
+        ],
+        "summary": "Unmap a call-auth CredentialList from a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Calls/IpAccessControlListMappings.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domain_auth_calls_ip_access_control_list_mappings.create",
+        "tags": [
+          "SIP / Auth / Calls / IpAccessControlListMappings"
+        ],
+        "summary": "Map an IpAccessControlList onto a SIP Domain's call authentication",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "IpAccessControlListSid"
+                ],
+                "properties": {
+                  "IpAccessControlListSid": {
+                    "type": "string",
+                    "pattern": "^AL[0-9a-f]{32}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Call-auth IpAccessControlList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domain_auth_calls_ip_access_control_list_mappings.list",
+        "tags": [
+          "SIP / Auth / Calls / IpAccessControlListMappings"
+        ],
+        "summary": "List call-auth IpAccessControlList mappings on a SIP Domain (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of call-auth IpAccessControlList mappings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipIpAccessControlListMappingList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Calls/IpAccessControlListMappings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipMappingListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domain_auth_calls_ip_access_control_list_mappings.fetch",
+        "tags": [
+          "SIP / Auth / Calls / IpAccessControlListMappings"
+        ],
+        "summary": "Fetch a call-auth IpAccessControlList mapping on a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "Call-auth IpAccessControlList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domain_auth_calls_ip_access_control_list_mappings.delete",
+        "tags": [
+          "SIP / Auth / Calls / IpAccessControlListMappings"
+        ],
+        "summary": "Unmap a call-auth IpAccessControlList from a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Registrations/CredentialListMappings.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        }
+      ],
+      "post": {
+        "operationId": "sip_domain_auth_registrations_credential_list_mappings.create",
+        "tags": [
+          "SIP / Auth / Registrations / CredentialListMappings"
+        ],
+        "summary": "Map a CredentialList onto a SIP Domain's registration authentication",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "CredentialListSid"
+                ],
+                "properties": {
+                  "CredentialListSid": {
+                    "type": "string",
+                    "pattern": "^CL[0-9a-f]{32}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registration-auth CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP Domains subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "sip_domain_auth_registrations_credential_list_mappings.list",
+        "tags": [
+          "SIP / Auth / Registrations / CredentialListMappings"
+        ],
+        "summary": "List registration-auth CredentialList mappings on a SIP Domain (paged)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of registration-auth CredentialList mappings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipCredentialListMappingList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{DomainSid}/Auth/Registrations/CredentialListMappings/{Sid}.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipParentDomainSid"
+        },
+        {
+          "$ref": "#/components/parameters/SipMappingListSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_domain_auth_registrations_credential_list_mappings.fetch",
+        "tags": [
+          "SIP / Auth / Registrations / CredentialListMappings"
+        ],
+        "summary": "Fetch a registration-auth CredentialList mapping on a SIP Domain",
+        "responses": {
+          "200": {
+            "description": "Registration-auth CredentialList mapping (mapped-list shape).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipDomainMapping"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sip_domain_auth_registrations_credential_list_mappings.delete",
+        "tags": [
+          "SIP / Auth / Registrations / CredentialListMappings"
+        ],
+        "summary": "Unmap a registration-auth CredentialList from a SIP Domain",
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/2010-04-01/Accounts/{AccountSid}/Messages.json": {
       "parameters": [
         {
@@ -5133,7 +7979,7 @@
           "Calls / Payments"
         ],
         "summary": "Start a <Pay> session on an existing call (REST equivalent of `<Pay>` voice markup)",
-        "description": "Initiates a Pay session against the live call leg. Mirrors\nthe voice markup `<Pay>` verb's parser + state machine; every\nattribute below is accepted and validated. The runtime\n(Stripe charge / tokenize) is currently gated; until it is\nwired, both surfaces accept and log without invoking the\nStripe connector.\n\nPer-tenant BYO is binding: the tenant's account row must have\n`pay_enabled = true` AND `stripe_secret_key` set (admin\nopt-in). No server-level Stripe key fallback — multi-tenancy\ndemands no fallback.\n\n`IdempotencyKey` is accepted and persisted on the row for\ndiagnostic visibility; replay dedup is NOT enforced today.\n",
+        "description": "Initiates a `<Pay>` session against the live call leg. Every `<Pay>` attribute is accepted and validated. The card-capture runtime is enabled per account — contact support to turn it on. `IdempotencyKey` is accepted and persisted for diagnostic visibility.",
         "requestBody": {
           "required": false,
           "content": {
@@ -5247,7 +8093,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "Account is not pay_enabled or has no stripe_secret_key.",
+            "description": "Account is not enabled for card capture. Contact support to turn it on.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5340,7 +8186,8 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        }
+        },
+        "description": "Updates a `<Pay>` session against the live call leg. The card-capture runtime is enabled per account — contact support to turn it on."
       }
     },
     "/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json": {
@@ -7259,6 +10106,112 @@
           },
           "503": {
             "description": "Phone-number store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/SipDomains/{SipDomain}": {
+      "parameters": [
+        {
+          "name": "SipDomain",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "The registrable SIP domain name (e.g. example.sip.voiceml.example.com)."
+        }
+      ],
+      "get": {
+        "operationId": "routes.v2.sipDomains.fetch",
+        "tags": [
+          "SIP / Domains / InboundProcessingRegion"
+        ],
+        "summary": "Fetch a SIP domain's Inbound Processing Region config",
+        "description": "Twilio Inbound Processing Region API (routes/v2). Keyed by the\ndomain name; the account is resolved from HTTP Basic auth. 404\nwhen the named domain does not exist for the authenticated\naccount.\n",
+        "responses": {
+          "200": {
+            "description": "The SIP domain Inbound Processing Region resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutesV2SipDomain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP domains store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "routes.v2.sipDomains.update",
+        "tags": [
+          "SIP / Domains / InboundProcessingRegion"
+        ],
+        "summary": "Set a SIP domain's Inbound Processing Region",
+        "description": "Updates the inbound processing region and/or friendly name of an\nexisting SIP domain (create the domain first via the 2010-04-01\nSIP Domains API). Keyed by domain name; account resolved from\nHTTP Basic auth.\n",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "VoiceRegion": {
+                    "type": "string",
+                    "description": "Inbound Processing Region for voice."
+                  },
+                  "FriendlyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated SIP domain Inbound Processing Region resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutesV2SipDomain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "SIP domains store not configured.",
             "content": {
               "application/json": {
                 "schema": {

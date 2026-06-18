@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Convert /home/michael/Downloads/openapi.yaml to vendor/api-specs/voiceml.json
-with VoiceTel branding, single voiceml.voicetel.com server, and tag groups so
-the Redoc render gets a sensible sidebar instead of a flat path list.
+"""Convert callBroadcast.yml to vendor/api-specs/voiceml.json with VoiceTel
+branding, single voiceml.voicetel.com server, and tag groups so the Redoc
+render gets a sensible sidebar instead of a flat path list.
 
-One-shot. After running, voiceml.json is the authoritative source — re-run
-only when a new OpenAPI dump arrives. Source path is hard-coded; pass the path
-as the first arg if you ever need to point it elsewhere.
+Default source is the sibling callBroadcast checkout
+(`../callBroadcast/internal/httpapi/openapi/callbroadcast.yml`); pass an
+alternate path as the first arg to override.
 """
 import json
 import re
@@ -15,7 +15,8 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/home/michael/Downloads/openapi.yaml")
+DEFAULT_SOURCE = ROOT.parent / "callBroadcast" / "internal" / "httpapi" / "openapi" / "callbroadcast.yml"
+SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_SOURCE
 OUT = ROOT / "vendor" / "api-specs" / "voiceml.json"
 
 
@@ -58,6 +59,18 @@ def rewrite_branding(value):
 		value = re.sub(r"\bPCI[- ]DSS\b", "", value)
 		value = re.sub(r"\bPCI Pay\b", "Pay", value)
 		value = re.sub(r"\bPCI\b", "", value)
+		# Payment-runtime internals (vendor names, internal flag/column names) are
+		# also not public. Replace the specific "Account is not pay_enabled or has
+		# no stripe_secret_key" 403 description shape with a customer-friendly
+		# equivalent; remaining bare tokens get stripped after.
+		value = re.sub(
+			r"Account is not pay_enabled or has no stripe_secret_key\.?",
+			"Account is not enabled for card capture. Contact support to turn it on.",
+			value,
+		)
+		value = re.sub(r"\bstripe_secret_key\b", "card capture credentials", value)
+		value = re.sub(r"\bpay_enabled\b", "card capture enabled", value)
+		value = re.sub(r"\bStripe\b", "the card-capture provider", value)
 		value = re.sub(r" {2,}", " ", value)
 		return value
 	if isinstance(value, dict):
@@ -89,6 +102,17 @@ TAG_RULES = [
 	(re.compile(r"^/Messages"), "Messages"),
 	(re.compile(r"^/Notifications"), "Notifications"),
 	(re.compile(r"^/Recordings"), "Recordings"),
+	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/CredentialListMappings"), "SIP / Auth / Calls / CredentialListMappings"),
+	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/IpAccessControlListMappings"), "SIP / Auth / Calls / IpAccessControlListMappings"),
+	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Registrations/CredentialListMappings"), "SIP / Auth / Registrations / CredentialListMappings"),
+	(re.compile(r"^/SIP/Domains/\{[^}]+\}/CredentialListMappings"), "SIP / Domains / CredentialListMappings"),
+	(re.compile(r"^/SIP/Domains/\{[^}]+\}/IpAccessControlListMappings"), "SIP / Domains / IpAccessControlListMappings"),
+	(re.compile(r"^/SIP/Domains"), "SIP / Domains"),
+	(re.compile(r"^/SIP/CredentialLists/\{[^}]+\}/Credentials"), "SIP / CredentialLists / Credentials"),
+	(re.compile(r"^/SIP/CredentialLists"), "SIP / CredentialLists"),
+	(re.compile(r"^/SIP/IpAccessControlLists/\{[^}]+\}/IpAddresses"), "SIP / IpAccessControlLists / IpAddresses"),
+	(re.compile(r"^/SIP/IpAccessControlLists"), "SIP / IpAccessControlLists"),
+	(re.compile(r"^/v2/SipDomains"), "SIP / Domains / InboundProcessingRegion"),
 ]
 
 # Paths NOT under /AccountSid/ — diagnostics / service introspection.
@@ -105,9 +129,39 @@ TAG_GROUPS = [
 	{"name": "Numbers", "tags": ["IncomingPhoneNumbers"]},
 	{"name": "Messaging", "tags": ["Messages"]},
 	{"name": "Account telemetry", "tags": ["Notifications"]},
+	{"name": "SIP trunking", "tags": [
+		"SIP / Domains",
+		"SIP / Domains / InboundProcessingRegion",
+		"SIP / Domains / CredentialListMappings",
+		"SIP / Domains / IpAccessControlListMappings",
+		"SIP / Auth / Calls / CredentialListMappings",
+		"SIP / Auth / Calls / IpAccessControlListMappings",
+		"SIP / Auth / Registrations / CredentialListMappings",
+		"SIP / CredentialLists",
+		"SIP / CredentialLists / Credentials",
+		"SIP / IpAccessControlLists",
+		"SIP / IpAccessControlLists / IpAddresses",
+	]},
 	{"name": "Recordings (top-level)", "tags": ["Recordings"]},
 	{"name": "Diagnostics", "tags": ["Diagnostics"]},
 ]
+
+
+# Description overrides for endpoints whose upstream prose leaks internal runtime
+# details (payment connector vendor names, internal flag names, etc.). The brand
+# sweep can scrub individual tokens but cannot rewrite multi-paragraph internal
+# narrative into a coherent customer-facing description — these overrides do
+# that authorship up front. Keyed by (path, method).
+DESCRIPTION_OVERRIDES = {
+	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments.json", "post"):
+		"Initiates a `<Pay>` session against the live call leg. Every `<Pay>` "
+		"attribute is accepted and validated. The card-capture runtime is "
+		"enabled per account — contact support to turn it on. `IdempotencyKey` "
+		"is accepted and persisted for diagnostic visibility.",
+	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments/{Sid}.json", "post"):
+		"Updates a `<Pay>` session against the live call leg. The card-capture "
+		"runtime is enabled per account — contact support to turn it on.",
+}
 
 
 def tag_for_path(path):
@@ -141,15 +195,19 @@ def main():
 		"description": "VoiceTel VoiceML compatibility surface",
 	}]
 
-	# Apply tags to every operation
+	# Apply tags + per-endpoint description overrides
 	tags_seen = set()
 	paths = spec.get("paths", {})
 	for path, path_item in paths.items():
 		tag = tag_for_path(path)
 		tags_seen.add(tag)
 		for method, op in path_item.items():
-			if method in ("get", "post", "put", "delete", "patch", "options", "head"):
-				op["tags"] = [tag]
+			if method not in ("get", "post", "put", "delete", "patch", "options", "head"):
+				continue
+			op["tags"] = [tag]
+			override = DESCRIPTION_OVERRIDES.get((path, method))
+			if override:
+				op["description"] = override
 
 	# Declare the tags at root level so Redoc renders them in the sidebar
 	spec["tags"] = [{"name": t} for t in sorted(tags_seen)]

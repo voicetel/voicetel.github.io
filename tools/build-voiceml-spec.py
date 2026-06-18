@@ -165,13 +165,6 @@ OPERATION_OVERRIDES = {
 			"Updates a `<Pay>` session against the live call leg. The card-capture "
 			"runtime is enabled per account — contact support to turn it on.",
 	},
-	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec/{Sid}.json", "post"): {
-		"summary": "Stop a SIPREC session",
-		"description":
-			"Stops the SIPREC session on the SRS (`Status=stopped`) and clears "
-			"VoiceML's session-tracking entry. Idempotent against an "
-			"already-stopped session.",
-	},
 }
 
 

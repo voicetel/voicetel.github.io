@@ -855,12 +855,12 @@
           "start_conference_on_enter": {
             "type": "boolean",
             "nullable": true,
-            "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`true`) for every participant — per-participant attribute persistence is on the roadmap."
+            "description": "The per-participant `<Dial><Conference startConferenceOnEnter>` value captured at join time; falls back to the Twilio default (`true`) for participants with no recorded join."
           },
           "end_conference_on_exit": {
             "type": "boolean",
             "nullable": true,
-            "description": "Reflects the `<Dial><Conference>` attribute used at join time. v0.19.x emits the documented default (`false`) for every participant."
+            "description": "The per-participant `<Dial><Conference endConferenceOnExit>` value captured at join time; falls back to the Twilio default (`false`) for participants with no recorded join."
           },
           "status": {
             "type": "string",
@@ -7680,7 +7680,7 @@
           "Calls / Siprec"
         ],
         "summary": "Stop a SIPREC session",
-        "description": "Stops the SIPREC session on the SRS (`Status=stopped`) and clears VoiceML's session-tracking entry. Idempotent against an already-stopped session.",
+        "description": "Status=stopped hard-stops the recording: VoiceML detaches the\nmedia fork (RTP stops leaving the media server immediately) and\nBYEs the SRS leg, then clears its session-tracking entry. Every\nrecording on the call leg is stopped. The stop is not resumable —\nstart a new SIPREC session to record again.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -7704,7 +7704,7 @@
         },
         "responses": {
           "200": {
-            "description": "Tracking cleared.",
+            "description": "Recording stopped.",
             "content": {
               "application/json": {
                 "schema": {

@@ -147,20 +147,31 @@ TAG_GROUPS = [
 ]
 
 
-# Description overrides for endpoints whose upstream prose leaks internal runtime
-# details (payment connector vendor names, internal flag names, etc.). The brand
-# sweep can scrub individual tokens but cannot rewrite multi-paragraph internal
-# narrative into a coherent customer-facing description — these overrides do
-# that authorship up front. Keyed by (path, method).
-DESCRIPTION_OVERRIDES = {
-	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments.json", "post"):
-		"Initiates a `<Pay>` session against the live call leg. Every `<Pay>` "
-		"attribute is accepted and validated. The card-capture runtime is "
-		"enabled per account — contact support to turn it on. `IdempotencyKey` "
-		"is accepted and persisted for diagnostic visibility.",
-	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments/{Sid}.json", "post"):
-		"Updates a `<Pay>` session against the live call leg. The card-capture "
-		"runtime is enabled per account — contact support to turn it on.",
+# Per-operation overrides for endpoints whose upstream prose either leaks
+# internal runtime details (payment connector vendor names, internal flag
+# names) or describes behavior that has since changed in the runtime but
+# is not yet refreshed in the upstream YAML. Each entry can override
+# `summary`, `description`, or both. Keyed by (path, method).
+OPERATION_OVERRIDES = {
+	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments.json", "post"): {
+		"description":
+			"Initiates a `<Pay>` session against the live call leg. Every `<Pay>` "
+			"attribute is accepted and validated. The card-capture runtime is "
+			"enabled per account — contact support to turn it on. `IdempotencyKey` "
+			"is accepted and persisted for diagnostic visibility.",
+	},
+	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments/{Sid}.json", "post"): {
+		"description":
+			"Updates a `<Pay>` session against the live call leg. The card-capture "
+			"runtime is enabled per account — contact support to turn it on.",
+	},
+	("/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Siprec/{Sid}.json", "post"): {
+		"summary": "Stop a SIPREC session",
+		"description":
+			"Stops the SIPREC session on the SRS (`Status=stopped`) and clears "
+			"VoiceML's session-tracking entry. Idempotent against an "
+			"already-stopped session.",
+	},
 }
 
 
@@ -205,9 +216,10 @@ def main():
 			if method not in ("get", "post", "put", "delete", "patch", "options", "head"):
 				continue
 			op["tags"] = [tag]
-			override = DESCRIPTION_OVERRIDES.get((path, method))
+			override = OPERATION_OVERRIDES.get((path, method))
 			if override:
-				op["description"] = override
+				for k, v in override.items():
+					op[k] = v
 
 	# Declare the tags at root level so Redoc renders them in the sidebar
 	spec["tags"] = [{"name": t} for t in sorted(tags_seen)]

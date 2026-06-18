@@ -117,8 +117,8 @@ description: "A compatibility matrix for VoiceML, covering supported, partial, u
 				</tr>
 				<tr>
 					<td><code>POST /Calls/{Sid}/Siprec/{Sid}</code> (Status=stopped)</td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>The SIPREC integration doesn't expose a stop verb; recording continues until the call hangs up.</td>
+					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
+					<td>Stops the SIPREC session on the SRS and clears tracking; idempotent against an already-stopped session.</td>
 				</tr>
 
 				<tr>

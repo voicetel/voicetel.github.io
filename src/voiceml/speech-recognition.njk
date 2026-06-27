@@ -1,0 +1,401 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/speech-recognition/
+title: "Speech recognition with <Gather>"
+description: "Transcribe what a caller says on a VoiceML call using the Twilio-compatible <Gather input=\"speech\"> verb. Bring your own Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp account."
+---
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Speech recognition</p>
+<h1>Transcribe caller speech with your own speech-to-text provider.</h1>
+<p class="lede">VoiceML transcribes what a caller says using the Twilio-compatible <code>&lt;Gather&gt;</code> verb and powers live conversation in <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. Speech recognition is <strong>bring your own</strong>: you connect your own provider account in the VoiceML portal, and transcription bills to you under your provider's terms.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
+</p>
+
+<section class="section-block">
+	<h2>Using <code>&lt;Gather&gt;</code> for speech</h2>
+
+	<h3>Quick start</h3>
+	<p>By default, <code>&lt;Gather&gt;</code> collects <strong>DTMF keypad input</strong>. To listen for spoken words, set <code>input="speech"</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+    &lt;Gather input="speech" action="/handle-speech" method="POST"&gt;
+        &lt;Say&gt;Please say your account number after the tone.&lt;/Say&gt;
+    &lt;/Gather&gt;
+&lt;/Response&gt;</code></pre>
+	<p>When the caller finishes speaking, VoiceML posts the transcript to your <code>action</code> URL. Your handler receives standard Twilio-compatible form fields:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Field</th>
+					<th scope="col">Meaning</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>SpeechResult</code></td><td>The transcribed text</td></tr>
+				<tr><td><code>Confidence</code></td><td>How confident the recognizer is (0–1)</td></tr>
+				<tr><td><code>Language</code></td><td>The language used for recognition</td></tr>
+				<tr><td><code>Digits</code></td><td>Empty for speech-only gathers</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Example handler logic (pseudo-code):</p>
+	<pre class="code-block"><code>if Confidence &gt; 0.8:
+    route_to_agent(SpeechResult)
+else:
+    ask_to_repeat()</code></pre>
+
+	<h3>Input modes</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col"><code>input</code> value</th>
+					<th scope="col">Collects</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>dtmf</code></td><td>Keypad digits only <em>(default)</em></td></tr>
+				<tr><td><code>speech</code></td><td>Spoken words only</td></tr>
+				<tr><td><code>dtmf speech</code></td><td>Either — whichever the caller provides first wins</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>For a menu that accepts both "press 1" and "say one":</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="dtmf speech" numDigits="1" action="/menu" method="POST"&gt;
+    &lt;Say&gt;Press 1 for sales, or say sales.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>Speech attributes</h3>
+	<p>These attributes control how speech is captured and transcribed:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Purpose</th>
+					<th scope="col">Default</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>language</code></td><td>Recognition language as a BCP-47 code (e.g. <code>en-US</code>, <code>es-ES</code>).</td><td><code>en-US</code></td></tr>
+				<tr><td><code>speechTimeout</code></td><td>Seconds of silence before speech is considered finished. Use <code>auto</code> for automatic detection.</td><td><code>auto</code></td></tr>
+				<tr><td><code>maxSpeechTime</code></td><td>Maximum seconds the caller may speak.</td><td><code>30</code></td></tr>
+				<tr><td><code>speechModel</code></td><td>Model hint passed to your provider (where supported).</td><td><em>(provider default)</em></td></tr>
+				<tr><td><code>hints</code></td><td>Comma-separated words or phrases to bias recognition (product names, city names, etc.).</td><td><em>(none)</em></td></tr>
+				<tr><td><code>enhanced</code></td><td>Request a premium recognition model where your provider supports it.</td><td><code>false</code></td></tr>
+				<tr><td><code>profanityFilter</code></td><td>Mask profanity in the transcript.</td><td><code>true</code></td></tr>
+				<tr><td><code>timeout</code></td><td>Seconds of silence between DTMF digits.</td><td><code>5</code></td></tr>
+				<tr><td><code>actionOnEmptyResult</code></td><td>POST to <code>action</code> even when nothing was captured.</td><td><code>false</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Spanish example with hints:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech"
+        language="es-ES"
+        hints="Madrid, Barcelona, Valencia"
+        action="/handle-speech"
+        method="POST"&gt;
+    &lt;Say language="es-ES"&gt;Diga su ciudad.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>Nested prompts</h3>
+	<p>Text inside <code>&lt;Gather&gt;</code> — <code>&lt;Say&gt;</code>, <code>&lt;Play&gt;</code>, or <code>&lt;Pause&gt;</code> — plays while collection is active, just like Twilio. The caller can respond during or after the prompt.</p>
+
+	<div class="alert alert-warning" role="note">
+		<p><strong>Before you go live.</strong> Speech recognition only works after you configure a provider on your Account page (see below). If <code>&lt;Gather input="speech"&gt;</code> runs without a configured provider, the call receives a speech-not-configured error rather than silently skipping transcription.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Bring your own speech recognition</h2>
+	<p>VoiceTel does not include a shared speech-recognition account. You choose one provider, enter your credentials in the portal, and pay that provider directly — there is no VoiceTel markup on transcription.</p>
+	<p>The same provider setting applies to:</p>
+	<ul>
+		<li><code>&lt;Gather input="speech"&gt;</code> and <code>&lt;Gather input="dtmf speech"&gt;</code></li>
+		<li><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> live conversations</li>
+	</ul>
+
+	<h3>Supported providers</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Provider</th>
+					<th scope="col">Best for</th>
+					<th scope="col">Credentials you supply</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><strong>Deepgram</strong></td><td>Real-time speech, low latency</td><td>API key, optional model</td></tr>
+				<tr><td><strong>AWS Transcribe</strong></td><td>Real-time speech in AWS environments</td><td>Access key, secret, region</td></tr>
+				<tr><td><strong>Microsoft Azure Speech</strong></td><td>Real-time speech, many languages</td><td>Subscription key, region</td></tr>
+				<tr><td><strong>Google Cloud Speech-to-Text</strong></td><td>Batch transcription after the caller speaks</td><td>Service-account JSON, optional model</td></tr>
+				<tr><td><strong>OpenAI Whisper</strong></td><td>Simple setup — API key only</td><td>API key, optional model</td></tr>
+				<tr><td><strong>whisper.cpp</strong></td><td>Self-hosted transcription server</td><td>Server URL, optional token and model</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Real-time vs. batch.</strong> Real-time providers (Deepgram, AWS, Azure) transcribe audio as the caller speaks — best for interactive menus and ConversationRelay. Batch providers (Google, OpenAI, whisper.cpp) receive the recorded clip in one request after the caller finishes — simplest to set up when you already have an OpenAI key or run your own whisper.cpp server. Both work with the same voice markup.</p>
+
+	<h3>How to enable a provider</h3>
+	<p>Configure speech recognition from your <strong>Account</strong> page in the VoiceML portal (section <strong>Speech-to-text (STT)</strong>):</p>
+	<ol>
+		<li>Open the <strong>Account</strong> page and find the <strong>Speech-to-text (STT)</strong> section.</li>
+		<li>Choose your <strong>STT provider</strong> from the dropdown, or leave it on <strong>none — speech recognition disabled</strong> to turn transcription off.</li>
+		<li>Expand that provider's section and enter its credentials (and optional model or region fields).</li>
+		<li>Save. New calls immediately use the new provider — no restart or redeploy needed.</li>
+	</ol>
+	<p>API keys and secrets are <strong>write-only</strong> in the portal — leave a secret field blank to keep the value already saved, or paste a new value to replace it.</p>
+	<div class="alert alert-warning" role="note">
+		<p>Picking a provider in the dropdown only changes routing. You must also save valid credentials in that provider's section, or speech recognition will not run on calls.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Provider setup guides</h2>
+	<p>Each guide walks through portal setup with concrete examples. After saving, place a test call that uses <code>&lt;Gather input="speech"&gt;</code>.</p>
+
+	<h3>Deepgram</h3>
+	<p><strong>What you need:</strong> a Deepgram account and API key with speech-to-text access.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>Deepgram (streaming)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Model</td><td><code>nova-2</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular models:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Model</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td><code>nova-2</code></td><td>Recommended general-purpose model; portal placeholder default</td></tr>
+				<tr><td><code>nova-3</code></td><td>Latest generation when available on your Deepgram plan</td></tr>
+				<tr><td><code>enhanced</code></td><td>Legacy enhanced tier (if enabled on your account)</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Leave Model empty to use Deepgram's default for your account.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech"
+        language="en-US"
+        speechModel="nova-2"
+        hints="billing, support, cancel"
+        action="/handle-speech"
+        method="POST"&gt;
+    &lt;Say&gt;How can we help you today?&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+	<p>The <code>speechModel</code> attribute overrides the portal model for that gather only.</p>
+
+	<h3>AWS Transcribe</h3>
+	<p><strong>What you need:</strong> an AWS account with Transcribe enabled, an IAM access key and secret with permission to stream transcription, and the AWS region where the key was created.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>AWS Transcribe (streaming)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>Access key ID</td><td><code>AKIA…</code></td></tr>
+				<tr><td>Secret access key</td><td><em>(your secret — write-only)</em></td></tr>
+				<tr><td>Region</td><td><code>us-east-1</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular regions:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Region</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td><code>us-east-1</code></td><td>US East (N. Virginia) — common default</td></tr>
+				<tr><td><code>us-west-2</code></td><td>US West (Oregon)</td></tr>
+				<tr><td><code>eu-west-1</code></td><td>Ireland</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Set the region to match where your AWS credentials are valid. Recognition language comes from the <code>&lt;Gather language="…"&gt;</code> attribute.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech" language="en-US" action="/handle-speech" method="POST"&gt;
+    &lt;Say&gt;Please state your reason for calling.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>Microsoft Azure Speech</h3>
+	<p><strong>What you need:</strong> an Azure Speech resource, its subscription key, and the region where the resource was created (for example <code>eastus</code>). The region must match your resource — a wrong region returns an authentication error.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>Azure Speech (streaming)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>Subscription key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Region</td><td><code>eastus</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular regions:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Region</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td><code>eastus</code></td><td>US East — portal placeholder default</td></tr>
+				<tr><td><code>westus2</code></td><td>US West 2</td></tr>
+				<tr><td><code>westeurope</code></td><td>Netherlands</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Set <code>&lt;Gather language="…"&gt;</code> to the locale you want recognized — for example <code>en-US</code>, <code>es-ES</code>, or <code>fr-FR</code>. See <a href="https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=stt" rel="external">Azure speech language support</a> for available locales.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech" language="fr-FR" action="/handle-speech" method="POST"&gt;
+    &lt;Say language="fr-FR"&gt;Comment puis-je vous aider?&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>Google Cloud Speech-to-Text</h3>
+	<p><strong>What you need:</strong> a Google Cloud project with the <strong>Cloud Speech-to-Text API</strong> enabled, and a service-account key JSON with permission to call that API.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>Google Speech-to-Text (batch)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>Service-account JSON</td><td><em>(paste the full JSON key — write-only)</em></td></tr>
+				<tr><td>Model</td><td><em>(leave empty for Google default)</em></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular models</strong> (optional — enter in the portal Model field or pass via <code>&lt;Gather speechModel="…"&gt;</code>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Model</th><th scope="col">Best for</th></tr></thead>
+			<tbody>
+				<tr><td><code>latest_long</code></td><td>General dictation</td></tr>
+				<tr><td><code>phone_call</code></td><td>Telephony audio</td></tr>
+				<tr><td><code>video</code></td><td>Mixed or noisy environments</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Transcription runs after the caller finishes speaking (batch mode). For the lowest latency on live back-and-forth conversations, consider Deepgram, AWS, or Azure instead.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech"
+        language="en-US"
+        speechModel="phone_call"
+        action="/handle-speech"
+        method="POST"&gt;
+    &lt;Say&gt;Please say your full name.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>OpenAI Whisper</h3>
+	<p><strong>What you need:</strong> an OpenAI API key. VoiceML sends recorded speech to OpenAI's transcription endpoint — you do not configure a custom URL.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>OpenAI Whisper (batch)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Model</td><td><code>whisper-1</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Leave Model empty to use <code>whisper-1</code>. OpenAI Whisper is the fastest provider to try — paste an API key, select OpenAI as your STT provider, save, and test. Transcription runs after the caller finishes speaking.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech" language="en-US" action="/handle-speech" method="POST"&gt;
+    &lt;Say&gt;Tell us briefly why you're calling.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+
+	<h3>whisper.cpp (self-hosted)</h3>
+	<p><strong>What you need:</strong> a running whisper.cpp HTTP server that accepts audio and returns a transcript, reachable from VoiceTel over the public internet (or your configured network path).</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>whisper.cpp (batch) — self-hosted server</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>Server URL</td><td><code>https://whisper.example.com/transcribe</code></td></tr>
+				<tr><td>Bearer token</td><td><em>(optional — write-only)</em></td></tr>
+				<tr><td>Model</td><td><code>base.en</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular models</strong> (depends on your server):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Model</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td><code>base.en</code></td><td>English, good balance of speed and accuracy</td></tr>
+				<tr><td><code>small.en</code></td><td>Higher accuracy, more compute</td></tr>
+				<tr><td><code>large-v3</code></td><td>Best quality, slowest</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Leave Model empty to use your server's default.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech" language="en-US" action="/handle-speech" method="POST"&gt;
+    &lt;Say&gt;Please describe your issue in a few words.&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>ConversationRelay</h2>
+	<p><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> runs a live voice conversation: VoiceML transcribes the caller's speech and sends text to your WebSocket endpoint; your endpoint sends back text for VoiceML to speak.</p>
+	<p>Speech recognition uses the <strong>same STT provider</strong> you configure on the Account page. Text-to-speech uses your <strong>TTS provider</strong> (see the <a href="/voiceml/text-to-speech/">text-to-speech guide</a>).</p>
+	<p>Both must be configured before ConversationRelay can run:</p>
+	<ul>
+		<li><strong>STT</strong> — select a provider and save credentials under Speech-to-text.</li>
+		<li><strong>TTS</strong> — select a provider (or use built-in voices) under Text-to-speech.</li>
+	</ul>
+	<p>Minimal ConversationRelay voice markup:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Connect&gt;
+        &lt;ConversationRelay url="wss://your-app.example/conversation"
+                           language="en-US" /&gt;
+    &lt;/Connect&gt;
+&lt;/Response&gt;</code></pre>
+	<p>Your WebSocket receives a <code>setup</code> message when the session starts, <code>prompt</code> messages with finalized caller transcripts, and sends <code>text</code> messages with replies for VoiceML to speak.</p>
+</section>
+
+<section class="section-block">
+	<h2>Migrating from Twilio</h2>
+	<p>VoiceML uses the same <code>&lt;Gather&gt;</code> syntax as Twilio:</p>
+	<ul>
+		<li><code>input="speech"</code>, <code>language</code>, <code>hints</code>, <code>speechTimeout</code>, and the action callback fields (<code>SpeechResult</code>, <code>Confidence</code>, <code>Language</code>) match Twilio's shape.</li>
+		<li>Existing voice markup that collects speech works with minimal changes — the main step is configuring your own STT provider in the VoiceML portal.</li>
+		<li>On Twilio, speech often ran on Twilio's shared recognizer. On VoiceML, you connect your own Deepgram, AWS, Azure, Google, OpenAI, or whisper.cpp account so billing and data handling follow <strong>your</strong> provider agreement.</li>
+	</ul>
+	<p>For ConversationRelay, the WebSocket message types (<code>setup</code>, <code>prompt</code>, <code>text</code>, <code>end</code>) follow Twilio's ConversationRelay protocol.</p>
+</section>
+
+<section class="section-block">
+	<h2>Troubleshooting</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Symptom</th>
+					<th scope="col">What to check</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Call fails with speech not configured</td><td>Select an STT provider on the Account page <strong>and</strong> save valid credentials in that provider's section.</td></tr>
+				<tr><td>Empty <code>SpeechResult</code> on every call</td><td>Confirm the caller spoke before silence timeout; increase <code>maxSpeechTime</code> or adjust <code>speechTimeout</code>. Check <code>actionOnEmptyResult</code> if you need callbacks on silence.</td></tr>
+				<tr><td>Wrong language recognized</td><td>Set <code>&lt;Gather language="…"&gt;</code> to the locale you expect. For Azure and AWS, the language attribute drives recognition.</td></tr>
+				<tr><td>Azure auth error</td><td>The <strong>Region</strong> in the portal must match the region where your Azure Speech resource was created.</td></tr>
+				<tr><td>AWS auth error</td><td>Confirm the access key, secret, and region are correct and the IAM user can use Transcribe streaming.</td></tr>
+				<tr><td>Google transcription fails</td><td>Verify the service-account JSON is complete, the Speech-to-Text API is enabled on the project, and the account has <code>cloud-platform</code> or Speech scopes.</td></tr>
+				<tr><td>OpenAI transcription fails</td><td>Confirm the API key is valid and your OpenAI account has transcription access.</td></tr>
+				<tr><td>whisper.cpp unreachable</td><td>Confirm the Server URL is correct and reachable from VoiceTel; add a bearer token if your server requires one.</td></tr>
+				<tr><td>Hints don't seem to help</td><td><code>hints</code> bias recognition but don't guarantee exact matches — use short, comma-separated phrases.</td></tr>
+				<tr><td>Provider change didn't apply</td><td>Changes take effect on the <strong>next call</strong>. Confirm the Account page save succeeded and place a fresh test call.</td></tr>
+				<tr><td>ConversationRelay fails immediately</td><td>Both STT <strong>and</strong> TTS must be configured. See the <a href="/voiceml/text-to-speech/">text-to-speech guide</a> for speech-output setup.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="stt-cta-heading">
+	<h2 id="stt-cta-heading">Wire one speech menu against your own STT account.</h2>
+	<p>Start a free trial, paste your Deepgram or OpenAI key in the portal, point a test number at a <code>&lt;Gather input="speech"&gt;</code> document, and confirm the transcript arrives on your action URL.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/contact/">Contact us</a>
+	</p>
+</aside>

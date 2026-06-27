@@ -1,29 +1,45 @@
 ---
 layout: layouts/page.njk
 title: "Documentation"
-description: "VoiceTel documentation for VoiceML, REST APIs, SDK migration, webhooks, SIP trunking, PBX integrations, SDN appliance, messaging, and number workflows."
+description: "VoiceTel documentation for VoiceML, Voice, Messaging, REST APIs, SDKs, SIP integrations, number workflows, and operational runbooks."
 ---
 
 <p class="eyebrow">Documentation</p>
 <h1>Reference material for teams that build and operate communications systems.</h1>
-<p class="lede">The docs landing page helps developers find API references, migration paths, compatibility notes, SIP guides, webhook verification, and operational runbooks without reading marketing copy first.</p>
+<p class="lede">The docs landing page helps developers find product hubs, API references, migration paths, compatibility notes, SIP guides, and operational runbooks without reading marketing copy first.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="/voiceml/">VoiceML guide</a>
+	<a class="btn btn-primary" href="/docs/voiceml/">VoiceML docs</a>
 	<a class="btn btn-secondary" href="/docs/api/">API reference</a>
 </p>
 
 <section class="section-block">
-	<h2>Documentation sections</h2>
+	<h2>Product hubs</h2>
 	<ul class="features-grid">
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-			<h3><a href="/voiceml/">VoiceML</a></h3>
-			<p>Overview, verbs, attributes, callbacks, compatibility notes, XML examples, and migration guide.</p>
+			<h3><a href="/docs/voiceml/">VoiceML</a></h3>
+			<p>Programmable voice runtime with Twilio-compatible verbs. Recording, speech, TTS, compatibility matrix, REST API, SDKs, calculator, validator, and migration.</p>
 		</li>
 		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3><a href="/docs/voice/">Voice</a></h3>
+			<p>Wholesale origination + termination, v2.2 REST API, E911, numbers, SIP trunking, and configuration guides for PBX, SBC, firewall, softphone, and porting workflows.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3><a href="/docs/messaging/">Messaging</a></h3>
+			<p>SMS and MMS with the CSP / 10DLC Campaign Registry workflow, compliance and operating rules, getting-started path, QA templates, and CSP REST API playground.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Cross-product reference</h2>
+	<ul class="features-grid">
+		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
-			<h3><a href="/docs/api/">REST API</a></h3>
-			<p>Accounts, calls, recordings, conferences, queues, applications, numbers, messaging, lookups, porting, and gateways where supported.</p>
+			<h3><a href="/docs/api/">REST API reference</a></h3>
+			<p>OpenAPI references and credentials pages for the v2.2 REST API, the v7.8 CSP proxy, and the VoiceML compatibility surface.</p>
 		</li>
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "github" %}</span>
@@ -36,21 +52,6 @@ description: "VoiceTel documentation for VoiceML, REST APIs, SDK migration, webh
 			<p>Official client libraries for the VoiceML voice + AMD API in Python, TypeScript, Go, Java, C#, PHP, Ruby, and Swift.</p>
 		</li>
 		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
-			<h3><a href="/voiceml/migrate/">SDK migration</a></h3>
-			<p>Host-override examples and webhook validation patterns for official Twilio helper libraries where compatible.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
-			<h3><a href="/sip-trunking/">SIP integrations</a></h3>
-			<p>Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBC, firewall, and SDN appliance guides.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3><a href="/messaging/">Messaging</a></h3>
-			<p>Send, receive, delivery receipts, A2P 10DLC, carrier-fee handling, and high-volume onboarding.</p>
-		</li>
-		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
 			<h3><a href="/numbers/">Numbers</a></h3>
 			<p>Provisioning, porting, emergency service, CNAM, caller ID, and number-routing workflows.</p>
@@ -58,7 +59,12 @@ description: "VoiceTel documentation for VoiceML, REST APIs, SDK migration, webh
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
 			<h3><a href="/docs/e911/">E911</a></h3>
-			<p>Validate addresses, provision E911 records, and manage emergency service for your numbers via the REST API.</p>
+			<p>Validate addresses, provision E911 records, and manage emergency service for your numbers via the v2.2 REST API.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
+			<h3><a href="/sip-trunking/">SIP Trunking</a></h3>
+			<p>Carrier-grade SIP trunks with Anycast/Geocast access, Digest + IP auth, and PBX/SBC/firewall guides.</p>
 		</li>
 	</ul>
 </section>

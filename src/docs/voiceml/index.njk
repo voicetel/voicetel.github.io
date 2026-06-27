@@ -1,0 +1,96 @@
+---
+layout: layouts/page.njk
+title: "VoiceML docs"
+description: "VoiceML documentation hub — product overview, voice-markup guides, compatibility matrix, REST API reference, SDKs, calculator, validator, and Twilio migration guide."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / VoiceML</p>
+<h1>Everything you need to ship and migrate VoiceML workloads.</h1>
+<p class="lede">VoiceML is VoiceTel's XML-based programmable voice runtime — Twilio-compatible verbs, signed webhooks, recordings, conferences, queues, and a REST surface centered on voice. This hub groups the overview, guides, reference material, and tooling that build on the runtime.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/voiceml/">VoiceML overview</a>
+	<a class="btn btn-secondary" href="/voiceml/migrate/">Migrate from Twilio</a>
+</p>
+
+<section class="section-block">
+	<h2>Overview and migration</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+			<h3><a href="/voiceml/">VoiceML overview</a></h3>
+			<p>What VoiceML is, the compatible surface, what's different, and the FAQ for engineers evaluating a Twilio-compatible voice runtime.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3><a href="/voiceml/migrate/">Migrate from Twilio</a></h3>
+			<p>Four-step migration with SDK host-override examples in Node, Python, Go, C#, PHP, Java, and Ruby plus webhook-signature verification.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Guides</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3><a href="/voiceml/recording/">Call recording and SIPREC</a></h3>
+			<p>Capture WAV files to your own Amazon S3 bucket via <code>&lt;Record&gt;</code> / <code>&lt;Dial&gt;</code> / <code>&lt;Conference&gt;</code>, or fork live media to your SIPREC-compatible Session Recording Server.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3><a href="/voiceml/speech-recognition/">Speech recognition with &lt;Gather&gt;</a></h3>
+			<p>Transcribe caller speech with your own Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp account. Same provider powers <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3><a href="/voiceml/text-to-speech/">Text-to-speech with &lt;Say&gt;</a></h3>
+			<p>Built-in voices in four languages, plus bring your own Polly, Azure, ElevenLabs, Deepgram Aura, or Cartesia Sonic for studio-quality speech.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Reference</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3><a href="/voiceml/compatibility/">Compatibility matrix</a></h3>
+			<p>Every verb, attribute, REST resource, and caveat labelled supported, partial, roadmap, or out of scope — line by line against the spec.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
+			<h3><a href="{{ apiSpecs.voiceml.urlPath }}">VoiceML API reference</a></h3>
+			<p>Redoc-rendered OpenAPI for the Twilio-compatible REST surface — Calls, Conferences, Queues, Applications, Recordings, IncomingPhoneNumbers, the full SIP-trunking family, and more.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/voiceml/validator/">Voice-markup validator</a></h3>
+			<p>Paste a document into the in-browser validator to check verb shape and attribute compatibility before pointing live traffic at it.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Tools and SDKs</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "calculator" %}</span>
+			<h3><a href="/voiceml/calculator/">Migration calculator</a></h3>
+			<p>Model a real monthly workload against Twilio list pricing — minutes, recordings, and per-call costs side by side with VoiceTel rates.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "github" %}</span>
+			<h3><a href="/docs/voiceml-sdks/">VoiceML SDKs</a></h3>
+			<p>Official client libraries for the VoiceML REST surface in Python, TypeScript, Go, Java, C#, PHP, Ruby, and Swift.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="voiceml-docs-cta-heading">
+	<h2 id="voiceml-docs-cta-heading">Bring one production call flow over.</h2>
+	<p>Pick a Twilio call path, validate the markup, point a test number at VoiceTel, and compare the per-call line items.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/voiceml/calculator/">Open calculator</a>
+	</p>
+</aside>

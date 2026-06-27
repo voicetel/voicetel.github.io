@@ -1,0 +1,138 @@
+---
+layout: layouts/page.njk
+title: "Voice docs"
+description: "Voice documentation hub — product overview, REST API reference, SDKs, E911 provisioning, numbers and SIP-trunking, and configuration guides for PBX, SBC, firewall, softphone, and porting workflows."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / Voice</p>
+<h1>Everything you need to run Voice on VoiceTel.</h1>
+<p class="lede">Voice covers wholesale origination and termination, the v2.2 REST API for account management, E911 provisioning, number workflows, and SIP integrations with the PBXes, SBCs, firewalls, and phones engineering teams actually deploy. This hub indexes the product overview, REST surface, and configuration guides under one page.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/voice/">Voice product</a>
+	<a class="btn btn-secondary" href="/docs/api/v2.2/playground/">API playground</a>
+</p>
+
+<section class="section-block">
+	<h2>Product and pricing</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3><a href="/voice/">Voice product overview</a></h3>
+			<p>Wholesale origination + termination, signed media, AMD, recording, and the operational model for engineering-led teams.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "calculator" %}</span>
+			<h3><a href="/pricing/">Pricing and calculator</a></h3>
+			<p>Per-minute inbound and outbound rates, toll-free, number monthlies, and a calculator that applies volume-tier discounts to your workload.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>REST API and SDKs</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
+			<h3><a href="/docs/api/v2.2/playground/">v2.2 API playground</a></h3>
+			<p>Spec-driven, in-browser playground for the v2.2 REST surface — call live endpoints with your account credentials and inspect headers and JSON responses.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/docs/api/v2.2/credentials/">v2.2 credentials</a></h3>
+			<p>Generate or rotate the API credentials the v2.2 endpoints (and the playground) authenticate against.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "github" %}</span>
+			<h3><a href="/docs/sdks/">VoiceTel SDKs</a></h3>
+			<p>Official client libraries for the VoiceTel REST API in Python, TypeScript, Go, Java, Kotlin, Scala, PHP, Ruby, C#, Rust, Swift, and Lua — plus CLI and Postman/Bruno collections.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Numbers, emergency, and SIP</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3><a href="/numbers/">Numbers</a></h3>
+			<p>Local, toll-free, and mobile-number provisioning, porting, caller ID, CNAM, and routing workflows.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
+			<h3><a href="/docs/e911/">E911 provisioning</a></h3>
+			<p>Validate addresses against the ALI database and bind E911 records to your numbers via the v2.2 REST API or guided portal form.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
+			<h3><a href="/sip-trunking/">SIP Trunking</a></h3>
+			<p>Carrier-grade SIP trunks with Anycast/Geocast access, Digest + IP auth, and PBX/SBC/firewall guides.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "plug" %}</span>
+			<h3><a href="/sdn/">SDN appliance</a></h3>
+			<p>Plug-and-play SIP traversal appliance for sites with strict firewalls or NAT issues.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Configuration guides</h2>
+	<p>Per-device and per-platform setup, troubleshooting, and known-good configurations from the support knowledge base.</p>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+			<h3><a href="/support/voice/pbx/">PBX</a></h3>
+			<p>3CX, FreePBX, FusionPBX — registration, trunks, route patterns, and known-good dial plans.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
+			<h3><a href="/support/voice/sbc/">SBC</a></h3>
+			<p>Asterisk, AudioCodes, Cisco CUBE, FreeSWITCH — session border controller wiring and SIP normalization.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3><a href="/support/voice/phone/">Desk phones</a></h3>
+			<p>Avaya, Cisco MPP, Fanvil, Grandstream, Mitel, Poly, Polycom, Sangoma, Snom, Yealink — provisioning and registration.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
+			<h3><a href="/support/voice/softphone/">Softphones</a></h3>
+			<p>Bria, Linphone, MicroSIP, Zoiper — endpoint config for laptop and mobile SIP clients.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/support/voice/firewall/">Firewall</a></h3>
+			<p>Asus, cable modem, FortiGate, Netgear, pfSense, SonicWall, UniFi — SIP ALG and SIP-aware NAT guidance.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3><a href="/support/voice/sip-trunking/">SIP trunking troubleshooting</a></h3>
+			<p>Authentication, DID routing, registration drops, IP-termination prefixes, From-tag pitfalls, IP allowlisting.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3><a href="/support/voice/porting/">Porting</a></h3>
+			<p>Porting procedure, PIN retrieval, and the port-out-PIN workflow.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3><a href="/support/voice/fax/">Fax</a></h3>
+			<p>Electronic faxing setup and constraints for fax-over-IP workloads.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
+			<h3><a href="/support/voice/compliance/">Compliance</a></h3>
+			<p>Voice-side compliance topics relevant to operators integrating with VoiceTel.</p>
+		</li>
+	</ul>
+	<p>The full support index lives at <a href="/support/voice/">/support/voice/</a> and is the canonical entry point for new troubleshooting articles.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="voice-docs-cta-heading">
+	<h2 id="voice-docs-cta-heading">Provision a number, place a call.</h2>
+	<p>Spin up a free trial, generate v2.2 credentials, claim a number, and run a test call from the playground or your SDK of choice.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/contact/">Contact us</a>
+	</p>
+</aside>

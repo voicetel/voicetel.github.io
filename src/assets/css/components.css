@@ -1948,6 +1948,78 @@ abbr.tm {
 	border-color: var(--alert-error-rule);
 }
 
+.compat-platform-grid {
+	display: grid;
+	gap: var(--space-4);
+	grid-template-columns: 1fr;
+	margin-top: var(--space-5);
+}
+
+@media (width >= 768px) {
+	.compat-platform-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+.compat-platform-card {
+	background: var(--paper);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: var(--space-4);
+}
+
+.compat-platform-card h3 {
+	margin-top: 0;
+}
+
+.compat-platform-facts {
+	display: grid;
+	gap: var(--space-3);
+	margin: var(--space-4) 0 0;
+}
+
+.compat-platform-facts dt {
+	color: var(--muted-fg);
+	font-size: var(--text-xs);
+	font-weight: var(--weight-semibold);
+	letter-spacing: 0.4px;
+	margin-bottom: var(--space-1);
+	text-transform: uppercase;
+}
+
+.compat-platform-facts dd {
+	margin: 0;
+}
+
+.compat-table--platforms {
+	min-width: 56rem;
+}
+
+.compat-table--platforms th[scope="row"] {
+	min-width: 9rem;
+	vertical-align: top;
+	white-space: normal;
+}
+
+.compat-table--platforms td.compat-endpoint {
+	min-width: 14rem;
+	vertical-align: top;
+}
+
+.compat-table--platforms th:nth-child(n + 3):nth-child(-n + 5),
+.compat-table--platforms td.compat-status {
+	text-align: center;
+	vertical-align: middle;
+	width: 5.5rem;
+}
+
+.compat-table--platforms td.compat-notes {
+	min-width: 16rem;
+	vertical-align: top;
+	white-space: normal;
+}
+
 /* ─── Menu carousel ─── */
 
 .menu-carousel {

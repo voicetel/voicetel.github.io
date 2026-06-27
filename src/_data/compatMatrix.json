@@ -50,7 +50,7 @@
 		},
 		{
 			"id": "restcomm",
-			"name": "Restcomm",
+			"name": "RestComm",
 			"summary": "Open-source CPaaS stack (Mobius) \u2014 migration-assisted overlap on classic voice/SMS, different API version and RCML markup instead of Twilio voice markup.",
 			"facts": [
 				{
@@ -67,7 +67,7 @@
 				},
 				{
 					"label": "Deployment",
-					"value": "Self-hosted or vendor-managed Restcomm/Mobius"
+					"value": "Self-hosted or vendor-managed RestComm/Mobius"
 				}
 			]
 		}
@@ -81,7 +81,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel normalises To/From against per-tenant phone regions; <code>MachineDetection</code> truly optional; <code>Twiml</code>/<code>ApplicationSid</code> accepted; per-call SIP/auth params wired through to the originate. Restcomm uses RCML URL fields and the <code>2012-04-24</code> path prefix."
+					"notes": "VoiceTel normalises To/From against per-tenant phone regions; <code>MachineDetection</code> truly optional; <code>Twiml</code>/<code>ApplicationSid</code> accepted; per-call SIP/auth params wired through to the originate. RestComm uses RCML URL fields and the <code>2012-04-24</code> path prefix."
 				},
 				{
 					"endpoints": "GET /Calls/{Sid}",
@@ -161,7 +161,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
-					"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code>. Restcomm has no equivalent live media fork REST surface."
+					"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code>. RestComm has no equivalent live media fork REST surface."
 				},
 				{
 					"endpoints": "POST /Calls/{Sid}/Streams (start)",
@@ -213,7 +213,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel mirrors <code>&lt;Start&gt;&lt;Transcription&gt;</code>; returns RT-prefixed SID. Restcomm transcription depends on deployment plugins."
+					"notes": "VoiceTel mirrors <code>&lt;Start&gt;&lt;Transcription&gt;</code>; returns RT-prefixed SID. RestComm transcription depends on deployment plugins."
 				},
 				{
 					"endpoints": "POST /Calls/{Sid}/Transcriptions (start)",
@@ -294,7 +294,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
-					"notes": "Voice markup verb (no REST mirror). VoiceTel bridges to a customer-hosted WebSocket for LLM-driven voice agents with Twilio-shaped wire messages. Restcomm has no ConversationRelay equivalent."
+					"notes": "Voice markup verb (no REST mirror). VoiceTel bridges to a customer-hosted WebSocket for LLM-driven voice agents with Twilio-shaped wire messages. RestComm has no ConversationRelay equivalent."
 				}
 			]
 		},
@@ -434,7 +434,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: voice-only fields (no SMS). Restcomm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> \u2014 not a drop-in field swap."
+					"notes": "VoiceTel: voice-only fields (no SMS). RestComm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> \u2014 not a drop-in field swap."
 				}
 			]
 		},
@@ -519,7 +519,7 @@
 					"twilio": "supported",
 					"voicetel": "unsupported",
 					"restcomm": "partial",
-					"notes": "Twilio number search/buy API. VoiceTel: use <a href=\"/numbers/\">VoiceTel Numbers</a> workflow. Restcomm inventory varies by deployment."
+					"notes": "Twilio number search/buy API. VoiceTel: use <a href=\"/numbers/\">VoiceTel Numbers</a> workflow. RestComm inventory varies by deployment."
 				}
 			]
 		},
@@ -634,7 +634,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
-					"notes": "Twilio nested SIP mapping resources. Restcomm SIP REST parity is deployment-dependent."
+					"notes": "Twilio nested SIP mapping resources. RestComm SIP REST parity is deployment-dependent."
 				}
 			]
 		},
@@ -775,7 +775,7 @@
 					"twilio": "supported",
 					"voicetel": "na",
 					"restcomm": "unsupported",
-					"notes": "Distinct Twilio platform products \u2014 out of scope for VoiceML and Restcomm voice REST parity."
+					"notes": "Distinct Twilio platform products \u2014 out of scope for VoiceML and RestComm voice REST parity."
 				}
 			]
 		}

@@ -1,0 +1,420 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/text-to-speech/
+title: "Text-to-speech with <Say>"
+description: "Turn text into spoken audio on a VoiceML call using the Twilio-compatible <Say> verb. Built-in voices in English, Spanish, French, and German plus bring-your-own Amazon Polly, Azure, ElevenLabs, Deepgram Aura, or Cartesia Sonic."
+---
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Text-to-speech</p>
+<h1>Speak text on a call with built-in voices or your own premium provider.</h1>
+<p class="lede">VoiceML turns text into spoken audio on a call using the Twilio-compatible <code>&lt;Say&gt;</code> verb. The same text-to-speech settings on your account also power agent speech in <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. This guide covers how to use <code>&lt;Say&gt;</code>, the built-in voices included with every account, and how to connect your own premium voice provider for natural, studio-quality speech.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
+</p>
+
+<section class="section-block">
+	<h2>Using <code>&lt;Say&gt;</code></h2>
+
+	<h3>Quick start</h3>
+	<p><code>&lt;Say&gt;</code> reads text aloud. The simplest form uses the default voice:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+    &lt;Say&gt;Thank you for calling. Please hold.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+	<p>To pick a different voice or language, use the <code>voice</code> and <code>language</code> attributes:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Say voice="man"&gt;Press one for sales.&lt;/Say&gt;
+&lt;Say language="es-ES"&gt;Gracias por llamar.&lt;/Say&gt;
+&lt;Say voice="man" language="fr-FR"&gt;Appuyez sur le un.&lt;/Say&gt;</code></pre>
+
+	<h3>Attributes</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Purpose</th>
+					<th scope="col">Default</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>voice</code></td><td>Which voice speaks the text.</td><td>Standard female</td></tr>
+				<tr><td><code>language</code></td><td>Language/locale as a BCP-47 code (e.g. <code>en-US</code>, <code>es-ES</code>).</td><td><code>en-US</code></td></tr>
+				<tr><td><code>loop</code></td><td>How many times to repeat the text.</td><td><code>1</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Repeat a message three times:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Say loop="3"&gt;This call is being recorded.&lt;/Say&gt;</code></pre>
+	<div class="alert alert-warning" role="note">
+		<p>Voice names may only contain letters, digits, periods, underscores, and hyphens (<code>A–Z a–z 0–9 . _ -</code>). Other characters are rejected with a clear error.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Built-in voices</h2>
+	<p>Every account includes built-in voices at no additional setup. Leave the TTS provider unset on your Account page (or choose <strong>default — built-in voices</strong>) to use them.</p>
+
+	<h3>Voice name compatibility</h3>
+	<p>You don't need to know internal voice ids. Use the same attributes Twilio documents:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col"><code>voice</code> value</th>
+					<th scope="col">Result</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>woman</code></td><td>Standard female voice</td></tr>
+				<tr><td><code>alice</code></td><td>Standard female voice</td></tr>
+				<tr><td><code>man</code></td><td>Standard male voice</td></tr>
+				<tr><td><em>(omitted)</em></td><td>Standard female voice (default)</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Gender</strong> comes from <code>voice</code>: <code>man</code> / <code>male</code> select a male voice; <code>woman</code>, <code>female</code>, <code>alice</code>, empty, and most other values select a female voice.</p>
+	<p><strong>Language</strong> comes from <code>language</code>: Spanish, French, and German tags select that language; English and any unsupported language select English.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col"><code>&lt;Say&gt;</code> attributes</th>
+					<th scope="col">Voice used</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><em>(none)</em></td><td>English, female</td></tr>
+				<tr><td><code>voice="man"</code></td><td>English, male</td></tr>
+				<tr><td><code>voice="woman"</code></td><td>English, female</td></tr>
+				<tr><td><code>language="es-ES"</code></td><td>Spanish, female</td></tr>
+				<tr><td><code>voice="man" language="es-MX"</code></td><td>Spanish, male</td></tr>
+				<tr><td><code>voice="Polly.Matthew" language="de-DE"</code></td><td>German, male</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Only the primary part of the language code matters — <code>es</code>, <code>es-ES</code>, and <code>es-MX</code> all select Spanish.</p>
+
+	<h3>Languages supported</h3>
+	<p>The built-in voices speak four languages, each with a male and a female option:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Language</th>
+					<th scope="col"><code>language</code> value</th>
+					<th scope="col">Female</th>
+					<th scope="col">Male</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>English (US)</td><td><code>en-US</code> / <code>en</code></td><td>Yes</td><td>Yes</td></tr>
+				<tr><td>Spanish</td><td><code>es-ES</code> / <code>es</code></td><td>Yes</td><td>Yes</td></tr>
+				<tr><td>French</td><td><code>fr-FR</code> / <code>fr</code></td><td>Yes</td><td>Yes</td></tr>
+				<tr><td>German</td><td><code>de-DE</code> / <code>de</code></td><td>Yes</td><td>Yes</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Voice catalog (optional)</h3>
+	<p>You can also select a voice directly by id or friendly name (either works, case-insensitive):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Voice id</th>
+					<th scope="col">Name</th>
+					<th scope="col">Language</th>
+					<th scope="col">Gender</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>en-US-female</code></td><td>Lily <em>(default)</em></td><td>English</td><td>female</td></tr>
+				<tr><td><code>en-US-male</code></td><td>Michael</td><td>English</td><td>male</td></tr>
+				<tr><td><code>es-ES-female</code></td><td>Lucia</td><td>Spanish</td><td>female</td></tr>
+				<tr><td><code>es-ES-male</code></td><td>Carlos</td><td>Spanish</td><td>male</td></tr>
+				<tr><td><code>fr-FR-female</code></td><td>Chloé <em>(or Chloe)</em></td><td>French</td><td>female</td></tr>
+				<tr><td><code>fr-FR-male</code></td><td>Pierre</td><td>French</td><td>male</td></tr>
+				<tr><td><code>de-DE-female</code></td><td>Kerstin</td><td>German</td><td>female</td></tr>
+				<tr><td><code>de-DE-male</code></td><td>Thorsten</td><td>German</td><td>male</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<pre class="code-block" data-lang="xml"><code>&lt;Say voice="es-ES-male"&gt;Bienvenido.&lt;/Say&gt;
+&lt;Say voice="de-DE-female"&gt;Willkommen.&lt;/Say&gt;</code></pre>
+
+	<h3>Defaults and graceful fallback</h3>
+	<ul>
+		<li><strong>Default voice:</strong> standard English female (Lily) when <code>voice</code> and <code>language</code> are omitted.</li>
+		<li><strong>Unsupported language:</strong> the text is still spoken (in English) rather than failing, so a call never ends in silence.</li>
+		<li><strong>Never silence:</strong> a valid <code>&lt;Say&gt;</code> always produces audio. If the requested voice can't be rendered, VoiceML automatically falls back so the caller always hears the prompt.</li>
+	</ul>
+
+	<h3>Migration-compatible voice names</h3>
+	<p>VoiceML accepts Twilio-style voice names — for example <code>Polly.Joanna</code>, <code>Polly.Matthew</code>, or <code>Google</code>-prefixed names — and maps them to the closest matching built-in voice by gender. Your existing voice markup keeps working without edits. To reproduce a specific premium Twilio voice exactly, configure <strong>Bring Your Own Voice</strong> with the matching provider below.</p>
+</section>
+
+<section class="section-block">
+	<h2>Bring Your Own Voice</h2>
+	<p>For studio-quality, natural-sounding speech and a much larger catalog of voices and languages, connect your own account with a supported text-to-speech provider. You bring the provider credentials; VoiceML uses them to synthesize your <code>&lt;Say&gt;</code> prompts and ConversationRelay agent speech.</p>
+
+	<h3>Supported providers</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Provider</th>
+					<th scope="col">Service</th>
+					<th scope="col">What you configure</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><strong>Amazon Polly</strong></td><td>Polly</td><td>Access key, secret, region, voice, engine</td></tr>
+				<tr><td><strong>Microsoft Azure</strong></td><td>Cognitive Services Speech</td><td>API key, region, voice name</td></tr>
+				<tr><td><strong>ElevenLabs</strong></td><td>Text-to-Speech</td><td>API key, voice ID, model ID</td></tr>
+				<tr><td><strong>Deepgram</strong></td><td>Aura</td><td>API key, voice model</td></tr>
+				<tr><td><strong>Cartesia</strong></td><td>Sonic</td><td>API key, voice ID, model, API version</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>How to enable a provider</h3>
+	<p>Configure a premium provider from your <strong>Account</strong> page in the VoiceML portal (section <strong>Text-to-speech (TTS)</strong>):</p>
+	<ol>
+		<li>Open the <strong>Account</strong> page and find the <strong>Text-to-speech (TTS)</strong> section.</li>
+		<li>Choose the provider you want from the dropdown, or leave it on <strong>default — built-in voices</strong> to use the standard voices above.</li>
+		<li>Expand that provider's section and enter its credentials plus a default voice.</li>
+		<li>Save. New calls immediately use the new voice — no restart or redeploy needed.</li>
+	</ol>
+	<p>Credentials in the portal are <strong>write-only</strong> — leave a field blank to keep the value already saved.</p>
+	<p>Once a provider is configured, every <code>&lt;Say&gt;</code> on your account uses it automatically. You don't need to change your voice markup unless you want to override the voice on a specific prompt.</p>
+
+	<h3>Voice resolution order</h3>
+	<p>The voice that actually speaks is resolved in this order:</p>
+	<ol>
+		<li><strong>Per-call</strong> — the <code>voice</code> attribute on the <code>&lt;Say&gt;</code> element, if set.</li>
+		<li><strong>Account default</strong> — the default voice you configured in the portal for your provider.</li>
+		<li><strong>Provider default</strong> — the provider's built-in default voice when you leave the portal voice field empty.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p>Cartesia has no built-in default voice, so always configure a default voice in the portal or pass <code>voice</code> on every <code>&lt;Say&gt;</code>.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Provider setup guides</h2>
+	<p>Each guide walks through portal setup with concrete examples and popular voice names. After saving, test on a new call.</p>
+
+	<h3>Amazon Polly</h3>
+	<p><strong>What you need:</strong> an AWS account with Polly enabled, an IAM access key and secret with permission to call Polly, and the AWS region where you created the key (for example <code>us-east-1</code>).</p>
+	<p><strong>Portal fields</strong> (Account → Text-to-speech → <strong>AWS Polly</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>Access key ID</td><td><code>AKIA…</code></td></tr>
+				<tr><td>Secret access key</td><td><em>(your secret — write-only)</em></td></tr>
+				<tr><td>Region</td><td><code>us-east-1</code></td></tr>
+				<tr><td>Voice</td><td><code>Joanna</code></td></tr>
+				<tr><td>Engine</td><td><code>neural</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular voices:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Name</th><th scope="col">Voice value</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td>Joanna</td><td><code>Joanna</code></td><td>Default US English female; platform default if voice left blank</td></tr>
+				<tr><td>Matthew</td><td><code>Matthew</code></td><td>US English male</td></tr>
+				<tr><td>Ruth</td><td><code>Ruth</code></td><td>US English female (neural)</td></tr>
+				<tr><td>Stephen</td><td><code>Stephen</code></td><td>US English male (neural)</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>We recommend the <strong>neural</strong> engine for the most natural Polly speech. Use <code>standard</code> for legacy voices or <code>long-form</code> for extended narration.</p>
+	<p><strong>Example voice markup</strong> (with Polly configured as your provider):</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say voice="Matthew"&gt;Your order has shipped.&lt;/Say&gt;
+    &lt;Say voice="Joanna" language="es-ES"&gt;Su pedido ha sido enviado.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+
+	<h3>Microsoft Azure</h3>
+	<p><strong>What you need:</strong> an Azure Speech resource and its subscription key, plus the region where the resource was created (for example <code>eastus</code>). The region must match your resource — a wrong region returns an authentication error.</p>
+	<p><strong>Portal fields</strong> (Account → Text-to-speech → <strong>Azure Cognitive Services Speech</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your subscription key — write-only)</em></td></tr>
+				<tr><td>Region</td><td><code>eastus</code></td></tr>
+				<tr><td>Voice</td><td><code>en-US-JennyNeural</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular voices:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Name</th><th scope="col">Voice value</th><th scope="col">Language</th></tr></thead>
+			<tbody>
+				<tr><td>Jenny</td><td><code>en-US-JennyNeural</code></td><td>US English female; platform default if voice left blank</td></tr>
+				<tr><td>Guy</td><td><code>en-US-GuyNeural</code></td><td>US English male</td></tr>
+				<tr><td>Aria</td><td><code>en-US-AriaNeural</code></td><td>US English female</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The voice name encodes the language — pick a voice from the <a href="https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=tts" rel="external">Azure voice gallery</a> that matches the language of your text.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say voice="en-US-GuyNeural"&gt;Press one to confirm your appointment.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+
+	<h3>ElevenLabs</h3>
+	<p><strong>What you need:</strong> an ElevenLabs API key and the voice ID of the voice you want as your default. You can find voice IDs in the ElevenLabs voice library or when creating a custom voice.</p>
+	<p><strong>Portal fields</strong> (Account → Text-to-speech → <strong>ElevenLabs</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Voice ID</td><td><code>21m00Tcm4TlvDq8ikWAM</code></td></tr>
+				<tr><td>Model ID</td><td><code>eleven_turbo_v2_5</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular voices:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Name</th><th scope="col">Voice ID</th><th scope="col">Notes</th></tr></thead>
+			<tbody>
+				<tr><td>Rachel</td><td><code>21m00Tcm4TlvDq8ikWAM</code></td><td>Platform default if voice left blank</td></tr>
+				<tr><td>Adam</td><td><code>pNInz6obpgDQGcFmaJgB</code></td><td>Deep male</td></tr>
+				<tr><td>Bella</td><td><code>EXAVITQu4vr4xnSDxMaL</code></td><td>Soft female</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular models:</strong> <code>eleven_turbo_v2_5</code> (fast, English-focused) or <code>eleven_multilingual_v2</code> (broader language support). Leave Model ID empty to use ElevenLabs' default for your account.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say voice="pNInz6obpgDQGcFmaJgB"&gt;Hello, this is a reminder about your appointment tomorrow.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+	<p>Pass the ElevenLabs <strong>voice ID</strong> in the <code>voice</code> attribute, not the display name.</p>
+
+	<h3>Deepgram Aura</h3>
+	<p><strong>What you need:</strong> a Deepgram API key with text-to-speech access. Aura voice models encode both the voice and its language in a single id (for example <code>aura-2-thalia-en</code>).</p>
+	<p><strong>Portal fields</strong> (Account → Text-to-speech → <strong>Deepgram Aura</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Voice</td><td><code>aura-2-thalia-en</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular voices:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Name</th><th scope="col">Voice value</th><th scope="col">Language</th></tr></thead>
+			<tbody>
+				<tr><td>Thalia</td><td><code>aura-2-thalia-en</code></td><td>US English female; platform default if voice left blank</td></tr>
+				<tr><td>Asteria</td><td><code>aura-2-asteria-en</code></td><td>US English female</td></tr>
+				<tr><td>Helena</td><td><code>aura-2-helena-en</code></td><td>US English female</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say voice="aura-2-asteria-en"&gt;Thanks for calling. One moment while we connect you.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+
+	<h3>Cartesia Sonic</h3>
+	<p><strong>What you need:</strong> a Cartesia API key and a voice ID from the Cartesia voice catalog or playground. Cartesia voices are referenced by UUID — copy the ID from your Cartesia dashboard.</p>
+	<p><strong>Portal fields</strong> (Account → Text-to-speech → <strong>Cartesia Sonic</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td>API key</td><td><em>(your key — write-only)</em></td></tr>
+				<tr><td>Voice ID</td><td><code>f786b574-daa5-4673-aa0c-cbe3e8534c02</code></td></tr>
+				<tr><td>Model</td><td><code>sonic-3</code></td></tr>
+				<tr><td>API version</td><td><em>(leave blank unless Cartesia instructs otherwise)</em></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><strong>Popular voices:</strong></p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Name</th><th scope="col">Voice ID</th><th scope="col">Style</th></tr></thead>
+			<tbody>
+				<tr><td>Katie</td><td><code>f786b574-daa5-4673-aa0c-cbe3e8534c02</code></td><td>Friendly, clear — great for support lines</td></tr>
+				<tr><td>Jameson</td><td><code>a5136bf9-224c-4d76-b823-52bd5efcffcc</code></td><td>US English male</td></tr>
+				<tr><td>Skylar</td><td><code>db6b0ed5-d5d3-463d-ae85-518a07d3c2b4</code></td><td>US English female</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Cartesia requires a voice ID — configure one as your account default in the portal. If you leave Model empty, VoiceML uses the current Sonic model (<code>sonic-3</code>).</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say voice="f786b574-daa5-4673-aa0c-cbe3e8534c02"&gt;Your verification code is 4 8 2 9.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Choosing a voice per call</h2>
+	<p>You can override the account default on any individual <code>&lt;Say&gt;</code> by setting the <code>voice</code> attribute to a value from your provider's catalog:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;!-- Polly: voice name --&gt;
+&lt;Say voice="Matthew"&gt;Your order has shipped.&lt;/Say&gt;
+
+&lt;!-- Azure: full neural voice name --&gt;
+&lt;Say voice="en-US-GuyNeural"&gt;Press one to confirm.&lt;/Say&gt;
+
+&lt;!-- ElevenLabs or Cartesia: voice ID --&gt;
+&lt;Say voice="21m00Tcm4TlvDq8ikWAM"&gt;Hello from Rachel.&lt;/Say&gt;
+
+&lt;!-- Deepgram: Aura model id --&gt;
+&lt;Say voice="aura-2-helena-en"&gt;Thanks for holding.&lt;/Say&gt;</code></pre>
+	<p>The <code>language</code> attribute still applies where your provider uses it. With Azure, Polly, and Deepgram Aura, the voice identifier itself usually defines the language — pick a voice that natively speaks your target language.</p>
+</section>
+
+<section class="section-block">
+	<h2>Migrating from Twilio</h2>
+	<p>VoiceML uses the same <code>&lt;Say&gt;</code> syntax as Twilio:</p>
+	<ul>
+		<li>Existing markup with <code>voice="woman"</code>, <code>voice="man"</code>, or <code>voice="alice"</code> works unchanged.</li>
+		<li>Twilio-style names like <code>Polly.Joanna</code> map to the closest built-in voice so calls keep working during migration.</li>
+		<li>When you need the <strong>exact</strong> Polly, Azure, ElevenLabs, or other premium voice Twilio offered, configure the matching provider under <strong>Bring Your Own Voice</strong> and set the provider's voice identifier in <code>voice</code>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Troubleshooting</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Symptom</th>
+					<th scope="col">What to check</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Speech sounds like the basic built-in voice, not my provider</td><td>Confirm the correct provider is selected on the Account page, credentials are saved, and the API key or region matches your provider account.</td></tr>
+				<tr><td>Wrong language spoken</td><td>Pick a voice from your provider that supports that language. Built-in voices only cover English, Spanish, French, and German.</td></tr>
+				<tr><td>Cartesia uses the wrong voice or no speech</td><td>Cartesia requires a voice ID — set a default in the portal or pass <code>voice</code> on every <code>&lt;Say&gt;</code>.</td></tr>
+				<tr><td>Azure returns an auth error</td><td>The <strong>Region</strong> in the portal must match the region where your Azure Speech resource was created.</td></tr>
+				<tr><td>Polly voice sounds flat</td><td>Switch <strong>Engine</strong> to <code>neural</code> for supported voices.</td></tr>
+				<tr><td>A configuration change didn't seem to apply</td><td>Changes take effect on the <strong>next call</strong>. Confirm the Account page save succeeded and place a fresh test call.</td></tr>
+				<tr><td>Empty <code>&lt;Say&gt;</code> does nothing</td><td>There must be text between the opening and closing tags.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="tts-cta-heading">
+	<h2 id="tts-cta-heading">Hear the difference with your own premium voice.</h2>
+	<p>Start a free trial, paste your Polly, Azure, ElevenLabs, Deepgram Aura, or Cartesia credentials in the portal, and place a test call — the next <code>&lt;Say&gt;</code> speaks in your selected voice.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/contact/">Contact us</a>
+	</p>
+</aside>

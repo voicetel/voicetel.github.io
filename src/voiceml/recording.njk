@@ -1,0 +1,561 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/recording/
+title: "Call recording and SIPREC"
+description: "Capture VoiceML call audio to your own Amazon S3 bucket or fork live media to your SIPREC-compatible Session Recording Server. Bring-your-own storage, line-item pricing, no hidden platform cuts."
+---
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Recording</p>
+<h1>Capture call audio to your own storage or your own recorder.</h1>
+<p class="lede">VoiceML offers two independent recording paths. <code>&lt;Record&gt;</code>, recorded <code>&lt;Dial&gt;</code> / <code>&lt;Conference&gt;</code>, and the Recordings REST API upload WAV files to <strong>your</strong> Amazon S3 bucket. <code>&lt;Start&gt;&lt;Siprec&gt;</code> and the Siprec REST API fork live media in parallel to <strong>your</strong> Session Recording Server over standard SIPREC (RFC 7866). Use either, both, or neither — each is configured separately on your account.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
+</p>
+
+<section class="section-block">
+	<h2>Two recording paths, fully independent</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Method</th>
+					<th scope="col">What it does</th>
+					<th scope="col">Where audio goes</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>Amazon S3 recordings</strong></td>
+					<td>Captures call audio as WAV files via <code>&lt;Record&gt;</code>, recorded <code>&lt;Dial&gt;</code> / <code>&lt;Conference&gt;</code>, or the Recordings REST API.</td>
+					<td>Your own S3 bucket</td>
+				</tr>
+				<tr>
+					<td><strong>SIPREC recording</strong></td>
+					<td>Forks live call media in parallel to your Session Recording Server (SRS) via <code>&lt;Start&gt;&lt;Siprec&gt;</code> or the Siprec REST API.</td>
+					<td>Your SIPREC-compatible recorder</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Both methods are <strong>bring your own</strong>. VoiceTel does not store recordings on shared platform storage. Until you configure a destination, calls are <strong>not recorded</strong> and nothing is kept on our side.</p>
+</section>
+
+<section class="section-block">
+	<h2>Amazon S3 recordings</h2>
+	<p>Store call recordings in <strong>your own AWS account</strong>. VoiceML uploads each recording to your S3 bucket using credentials you provide. You pay AWS directly — there is no VoiceTel markup on storage.</p>
+
+	<h3>Enable S3 recording</h3>
+	<p>Configure your destination from the <strong>Account</strong> page in the VoiceML portal (section <strong>Amazon recordings</strong>):</p>
+	<ol>
+		<li>Open <strong>Account</strong> and scroll to <strong>Amazon recordings</strong>.</li>
+		<li>Enter your bucket details and IAM credentials (see table below).</li>
+		<li>Save. New recordings upload to your bucket on the next recorded call.</li>
+	</ol>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Field</th>
+					<th scope="col">Example</th>
+					<th scope="col">Notes</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Bucket name</td>
+					<td><code>acme-voiceml-recordings</code></td>
+					<td>S3 bucket in your AWS account</td>
+				</tr>
+				<tr>
+					<td>Region</td>
+					<td><code>us-east-1</code></td>
+					<td>Must match the bucket's region</td>
+				</tr>
+				<tr>
+					<td>Object key prefix</td>
+					<td><code>prod/recordings</code></td>
+					<td>Optional path prefix</td>
+				</tr>
+				<tr>
+					<td>Access key ID</td>
+					<td><code>AKIA…</code></td>
+					<td>IAM user with bucket access</td>
+				</tr>
+				<tr>
+					<td>Secret access key</td>
+					<td><em>(write-only)</em></td>
+					<td>Leave blank to keep the saved secret</td>
+				</tr>
+				<tr>
+					<td>KMS key ID</td>
+					<td><code>arn:aws:kms:us-east-1:123…:key/…</code></td>
+					<td>Optional — per-object encryption</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The secret access key is <strong>write-only</strong> in the portal: leave it blank to keep the existing value, or paste a new value to replace it.</p>
+
+	<h3>Object key layout</h3>
+	<p>Each recording is stored as:</p>
+	<pre class="code-block"><code>&lt;prefix&gt;/&lt;AccountSid&gt;/&lt;RecordingSid&gt;.wav</code></pre>
+	<p>For example, with prefix <code>prod/recordings</code>:</p>
+	<pre class="code-block"><code>prod/recordings/AC&lt;your-account-sid&gt;/RE&lt;recording-sid&gt;.wav</code></pre>
+
+	<h3>AWS setup checklist</h3>
+	<p>Before saving your portal settings:</p>
+	<ol>
+		<li><strong>Create an S3 bucket</strong> in your AWS account (private — block public access).</li>
+		<li><strong>Create an IAM user</strong> scoped to that bucket only.</li>
+		<li><strong>Attach a minimum policy</strong> allowing upload, download, and delete on objects in the bucket:</li>
+	</ol>
+	<pre class="code-block" data-lang="json"><code>{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "VoiceMLRecordings",
+    "Effect": "Allow",
+    "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
+    "Resource": "arn:aws:s3:::your-bucket-name/*"
+  }]
+}</code></pre>
+	<ol start="4">
+		<li><strong>Generate an access key</strong> for that IAM user and enter it in the portal.</li>
+	</ol>
+	<p>Optional: enable bucket encryption (SSE-S3 or SSE-KMS) and a lifecycle policy to expire old recordings after your retention period.</p>
+
+	<h3>When S3 recording applies</h3>
+	<p>S3 recording is used by:</p>
+	<ul>
+		<li>The <code>&lt;Record&gt;</code> verb</li>
+		<li><code>&lt;Dial record="record-from-answer"&gt;</code> (and other non-<code>do-not-record</code> values)</li>
+		<li><code>&lt;Conference record="record-from-start"&gt;</code> (and similar)</li>
+		<li><code>POST /Calls/{CallSid}/Recordings</code> on the REST API</li>
+	</ul>
+	<div class="alert alert-warning" role="note">
+		<p>If your S3 destination is not configured, these verbs <strong>skip recording</strong> and the call continues normally — no audio is captured and no copy is kept on VoiceTel infrastructure.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Using <code>&lt;Record&gt;</code></h2>
+	<p>The <code>&lt;Record&gt;</code> verb captures audio from the live call into a WAV file and uploads it to your S3 bucket.</p>
+
+	<h3>Quick start</h3>
+	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+    &lt;Record action="/handle-recording" method="POST"
+            maxLength="120" playBeep="true" /&gt;
+&lt;/Response&gt;</code></pre>
+	<p>When recording finishes, VoiceML posts to your <code>action</code> URL with Twilio-compatible form fields:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Field</th>
+					<th scope="col">Meaning</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>RecordingSid</code></td><td>Unique recording identifier (<code>RE…</code>)</td></tr>
+				<tr><td><code>RecordingUrl</code></td><td>URL to fetch the WAV via the VoiceML Recordings API</td></tr>
+				<tr><td><code>RecordingDuration</code></td><td>Length in seconds</td></tr>
+				<tr><td><code>Digits</code></td><td>DTMF key that ended the recording, <code>hangup</code>, or empty</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Common attributes</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Default</th>
+					<th scope="col">Purpose</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>maxLength</code></td><td><code>3600</code></td><td>Maximum recording length in seconds</td></tr>
+				<tr><td><code>timeout</code></td><td><code>5</code></td><td>Seconds of silence before recording ends</td></tr>
+				<tr><td><code>finishOnKey</code></td><td><code>#</code></td><td>DTMF key that stops recording</td></tr>
+				<tr><td><code>playBeep</code></td><td><code>true</code></td><td>Play a beep before recording starts</td></tr>
+				<tr><td><code>trim</code></td><td><code>trim-silence</code></td><td>Strip leading/trailing silence</td></tr>
+				<tr><td><code>recordingStatusCallback</code></td><td><em>(none)</em></td><td>Webhook for lifecycle events (<code>in-progress</code>, <code>completed</code>, <code>absent</code>)</td></tr>
+				<tr><td><code>transcribe</code></td><td><code>false</code></td><td>Run speech-to-text after recording (requires STT configured — see the <a href="/voiceml/speech-recognition/">speech recognition guide</a>)</td></tr>
+				<tr><td><code>transcribeCallback</code></td><td><em>(none)</em></td><td>URL POSTed with the transcript when <code>transcribe="true"</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Voicemail-style flow</h3>
+	<p>When <code>action</code> is omitted, VoiceML re-fetches the current document after the recording finishes:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Say&gt;Please leave a message after the tone.&lt;/Say&gt;
+    &lt;Record maxLength="120" transcribe="true"
+            transcribeCallback="/voicemail-transcript" /&gt;
+    &lt;Say&gt;We did not receive a recording. Goodbye.&lt;/Say&gt;
+&lt;/Response&gt;</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Recording bridged and conference calls</h2>
+
+	<h3><code>&lt;Dial&gt;</code></h3>
+	<p>Record the bridged portion of an outbound call:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Dial record="record-from-answer"
+          recordingStatusCallback="https://app.example/recording-status"&gt;
+        &lt;Number&gt;+18005551234&lt;/Number&gt;
+    &lt;/Dial&gt;
+&lt;/Response&gt;</code></pre>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col"><code>record</code> value</th>
+					<th scope="col">Behavior</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>do-not-record</code></td><td>No recording <em>(default)</em></td></tr>
+				<tr><td><code>record-from-answer</code></td><td>Start when the called party answers</td></tr>
+				<tr><td><code>record-from-ringing</code></td><td>Start when ringing begins</td></tr>
+				<tr><td><code>record-from-answer-dual</code></td><td>Dual-channel recording from answer</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Use <code>recordingTrack="inbound"</code>, <code>outbound</code>, or <code>both</code> to select which leg is captured.</p>
+
+	<h3><code>&lt;Conference&gt;</code></h3>
+	<p>Record a conference room:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+    &lt;Dial&gt;
+        &lt;Conference record="record-from-start"
+                    recordingStatusCallback="https://app.example/conf-recording"&gt;
+            Support Queue
+        &lt;/Conference&gt;
+    &lt;/Dial&gt;
+&lt;/Response&gt;</code></pre>
+	<p>S3 must be configured on your account for <code>&lt;Dial&gt;</code> and <code>&lt;Conference&gt;</code> recording to produce files.</p>
+</section>
+
+<section class="section-block">
+	<h2>Fetch and manage recordings</h2>
+
+	<h3>Download a recording</h3>
+	<p>After a recording completes, fetch the WAV from the URL in <code>RecordingUrl</code> (or via the REST API):</p>
+	<pre class="code-block"><code>GET /2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}.wav</code></pre>
+	<p>Authenticate with your account SID and API key. The response redirects to a short-lived download URL for the object in <strong>your S3 bucket</strong>.</p>
+
+	<h3>REST API</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Method</th>
+					<th scope="col">Path</th>
+					<th scope="col">Purpose</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>GET</code></td><td><code>/Recordings</code></td><td>List recordings for your account</td></tr>
+				<tr><td><code>GET</code></td><td><code>/Recordings/{Sid}</code></td><td>Fetch recording metadata</td></tr>
+				<tr><td><code>GET</code></td><td><code>/Recordings/{Sid}.wav</code></td><td>Download the WAV</td></tr>
+				<tr><td><code>DELETE</code></td><td><code>/Recordings/{Sid}</code></td><td>Delete the recording (S3 object and metadata)</td></tr>
+				<tr><td><code>POST</code></td><td><code>/Calls/{CallSid}/Recordings</code></td><td>Start recording on a live call</td></tr>
+				<tr><td><code>POST</code></td><td><code>/Calls/{CallSid}/Recordings/{Sid}</code></td><td>Pause or resume (where supported)</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Recording metadata includes <code>status</code>, <code>duration</code>, <code>date_created</code>, and the public <code>uri</code> for the resource.</p>
+</section>
+
+<section class="section-block">
+	<h2>SIPREC recording</h2>
+	<p>SIPREC (RFC 7866) sends a <strong>parallel copy</strong> of the call's media to your own Session Recording Server while the call continues normally. Use SIPREC when you already operate an enterprise recorder (compliance archive, quality monitoring, WORM storage, etc.) and want VoiceML to act as the Session Recording Client (SRC).</p>
+	<p>SIPREC is <strong>independent</strong> of Amazon S3 recording:</p>
+	<ul>
+		<li>S3 captures WAV files through VoiceML verbs.</li>
+		<li>SIPREC streams live media to your SRS in real time.</li>
+		<li>You can run both on the same call if your compliance design requires it.</li>
+	</ul>
+	<div class="alert alert-warning" role="note">
+		<p>There is <strong>no platform-default SRS</strong>. A call that references an unknown, disabled, or unconfigured connector records <strong>nothing</strong> via SIPREC (the call itself is unaffected).</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Configure SIPREC connectors</h2>
+	<p>A <strong>connector</strong> gives your SRS a name that VoiceML and the REST API can reference. Each connector points at one SRS SIP URI.</p>
+
+	<h3>Portal setup</h3>
+	<ol>
+		<li>Open <strong>Account</strong> in the VoiceML portal.</li>
+		<li>In <strong>SIPREC recording</strong>, click <strong>Manage SIPREC connectors</strong>.</li>
+		<li>Click <strong>Add a connector</strong> and fill in:</li>
+	</ol>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Field</th>
+					<th scope="col">Example</th>
+					<th scope="col">Notes</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Connector name</td><td><code>primary-srs</code></td><td>Referenced by <code>connectorName</code> in voice markup — unique per account, no spaces</td></tr>
+				<tr><td>Friendly name</td><td><code>Compliance recorder</code></td><td>Optional label for your team</td></tr>
+				<tr><td>SRS SIP URI</td><td><code>sip:srs.example.com:5070;transport=tcp</code></td><td>Your recorder's SIP endpoint</td></tr>
+				<tr><td>Enabled</td><td>Checked</td><td>Disabled connectors record nothing</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<ol start="4">
+		<li>Save. The connector is available on the next call.</li>
+	</ol>
+	<p><strong>SRS SIP URI format:</strong> use a standard SIP or SIPS URI with the host, port, and transport your recorder expects. Examples:</p>
+	<pre class="code-block"><code>sip:10.0.1.50:5060
+sip:recorder.example.com:5070;transport=tcp
+sips:recorder.example.com:5061;transport=tls</code></pre>
+	<p>Obtain the exact URI from your recorder vendor's documentation (see <a href="#compatible-session-recording-servers">compatible Session Recording Servers</a> below). Your SRS must be reachable from VoiceTel over the network paths your deployment uses.</p>
+	<p>Ensure your SRS firewall and security groups allow inbound SIP (and RTP) from VoiceTel's media and signaling addresses.</p>
+</section>
+
+<section class="section-block">
+	<h2>Using <code>&lt;Start&gt;&lt;Siprec&gt;</code></h2>
+	<p>Start SIPREC on a live call, then continue with other voice-markup verbs:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+    &lt;Start&gt;
+        &lt;Siprec connectorName="primary-srs"
+                name="compliance-trail"
+                track="both_tracks"
+                statusCallback="https://app.example/siprec-status"
+                statusCallbackMethod="POST"&gt;
+            &lt;Parameter name="tenant" value="acme-prod"/&gt;
+            &lt;Parameter name="department" value="support"/&gt;
+        &lt;/Siprec&gt;
+    &lt;/Start&gt;
+    &lt;Dial&gt;&lt;Number&gt;+18005551234&lt;/Number&gt;&lt;/Dial&gt;
+    &lt;Stop&gt;&lt;Siprec/&gt;&lt;/Stop&gt;
+&lt;/Response&gt;</code></pre>
+
+	<h3>Attributes</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Required</th>
+					<th scope="col">Purpose</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>connectorName</code></td><td><strong>Yes</strong></td><td>Names the connector you registered in the portal</td></tr>
+				<tr><td><code>name</code></td><td>No</td><td>Identifier for logs and callbacks</td></tr>
+				<tr><td><code>track</code></td><td>No</td><td><code>inbound_track</code>, <code>outbound_track</code>, or <code>both_tracks</code> <em>(default)</em></td></tr>
+				<tr><td><code>statusCallback</code></td><td>No</td><td>Webhook for SIPREC lifecycle events</td></tr>
+				<tr><td><code>statusCallbackMethod</code></td><td>No</td><td><code>GET</code> or <code>POST</code> <em>(default POST)</em></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><code>&lt;Parameter name="…" value="…"/&gt;</code> children pass metadata through to the SIPREC session. They appear on status callbacks as <code>Parameter.&lt;name&gt;</code> form fields.</p>
+
+	<h3>Behavior notes</h3>
+	<ul>
+		<li><strong>One active SIPREC session per call.</strong> A second <code>&lt;Start&gt;&lt;Siprec&gt;</code> replaces the first.</li>
+		<li><code>&lt;Stop&gt;&lt;Siprec/&gt;</code> ends the fork; otherwise it ends when the call hangs up.</li>
+		<li><code>connectorName</code> is required. An empty or unknown name fails without starting a recording session.</li>
+	</ul>
+
+	<h3>REST API</h3>
+	<p>Start or stop SIPREC on a live call without voice markup:</p>
+	<pre class="code-block" data-lang="bash"><code># Start (connector must exist and be enabled)
+curl -X POST "https://voiceml.voicetel.com/2010-04-01/Accounts/AC…/Calls/CA…/Siprec" \
+  -u "AC…:your_api_key" \
+  --data-urlencode "ConnectorName=primary-srs"
+
+# Stop
+curl -X POST "https://voiceml.voicetel.com/2010-04-01/Accounts/AC…/Calls/CA…/Siprec/SR…" \
+  -u "AC…:your_api_key" \
+  --data-urlencode "Status=stopped"</code></pre>
+</section>
+
+<section class="section-block" id="compatible-session-recording-servers">
+	<h2>Compatible Session Recording Servers</h2>
+	<p>VoiceML implements SIPREC as a Session Recording Client and sends recording sessions to <strong>your</strong> SRS. Any recorder that accepts standard SIPREC INVITEs can work, subject to your network and codec requirements.</p>
+	<p>The table below lists widely deployed platforms customers connect to VoiceML. For each one, configure the recorder first, obtain its <strong>SRS SIP URI</strong>, then enter that URI in your VoiceML connector.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Platform</th>
+					<th scope="col">Typical use</th>
+					<th scope="col">Configuration resources</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>OrecX Oreka</strong></td>
+					<td>Open-source and commercial SIPREC recorder; popular with VoIP providers</td>
+					<td><a href="https://www.orecx.com/siprec-recording/" rel="external">OrecX SIPREC overview</a> · <a href="http://files.orecx.com/docs/oreka-administrator-manual.html" rel="external">Oreka Administrator Manual</a></td>
+				</tr>
+				<tr>
+					<td><strong>NICE CXone / NICE inContact</strong></td>
+					<td>Enterprise compliance and contact-center recording</td>
+					<td><a href="https://help.nicecxone.com/content/cxoneopenthirdparty/avaya_tsapi_and_siprec.htm" rel="external">NICE CXone SIPREC integration (Avaya/SBC)</a></td>
+				</tr>
+				<tr>
+					<td><strong>Verint Financial Compliance</strong></td>
+					<td>Regulated-industry voice capture and archiving</td>
+					<td><a href="https://www.verint.com/financial-compliance/capture/" rel="external">Verint capture overview</a></td>
+				</tr>
+				<tr>
+					<td><strong>VoIPmonitor</strong></td>
+					<td>Network monitoring and SIPREC-based capture</td>
+					<td><a href="https://www.voipmonitor.org/doc/SIPREC" rel="external">VoIPmonitor SIPREC setup</a></td>
+				</tr>
+				<tr>
+					<td><strong>Oracle Session Border Controller</strong></td>
+					<td>Carrier/enterprise SBC deployments (SRS destination configuration)</td>
+					<td><a href="https://docs.oracle.com/en/industries/communications/session-border-controller/10.1.0/monitoring/configuring-siprec.html" rel="external">Configuring SIPREC on Oracle SBC</a></td>
+				</tr>
+				<tr>
+					<td><strong>Ribbon SBC environments</strong></td>
+					<td>Service-provider SBC SIPREC deployments</td>
+					<td><a href="https://publicdoc.rbbn.com/spaces/SBXDOC111/pages/346791750/SIPREC+Support" rel="external">Ribbon SBC SIPREC support</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example connector entries</h3>
+	<p>After your vendor provides the SRS endpoint, register it in the portal:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Vendor</th>
+					<th scope="col">Connector name</th>
+					<th scope="col">Example SRS SIP URI</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>OrecX Oreka</td><td><code>oreka-primary</code></td><td><code>sip:10.0.1.12:5090;transport=tcp</code></td></tr>
+				<tr><td>VoIPmonitor</td><td><code>voipmonitor-prod</code></td><td><code>sip:monitor.example.com:5099</code></td></tr>
+				<tr><td>NICE (via your SBC)</td><td><code>nice-compliance</code></td><td><code>sip:44.227.106.81:5061;transport=tls</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Replace host, port, and transport with values from <strong>your</strong> vendor's deployment guide. NICE, Verint, and similar enterprise platforms often require TLS (<code>sips:</code>), specific ports, and allowlisting of VoiceTel's signaling addresses — follow the vendor checklist before going live.</p>
+
+	<h3>Metadata parameters</h3>
+	<p>Many enterprise recorders expect custom SIPREC metadata (tenant ID, agent ID, call type). Pass these as <code>&lt;Parameter&gt;</code> children on <code>&lt;Siprec&gt;</code>:</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Siprec connectorName="nice-compliance"&gt;
+    &lt;Parameter name="siteId" value="NYC-01"/&gt;
+    &lt;Parameter name="recordType" value="compliance"/&gt;
+&lt;/Siprec&gt;</code></pre>
+	<p>Consult your recorder vendor for supported parameter names.</p>
+</section>
+
+<section class="section-block">
+	<h2>Migrating from Twilio</h2>
+	<p>VoiceML uses the same voice markup and REST shapes Twilio documents:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Twilio feature</th>
+					<th scope="col">VoiceML equivalent</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>&lt;Record&gt;</code> + <code>RecordingUrl</code></td>
+					<td>Same attributes and callback fields; WAV stored in <strong>your S3 bucket</strong> instead of Twilio storage</td>
+				</tr>
+				<tr>
+					<td><code>&lt;Dial record="…"&gt;</code></td>
+					<td>Same; requires S3 configuration on your account</td>
+				</tr>
+				<tr>
+					<td><code>&lt;Start&gt;&lt;Siprec connectorName="…"&gt;</code></td>
+					<td>Same verb; register connectors in the VoiceML portal instead of the Twilio Marketplace</td>
+				</tr>
+				<tr>
+					<td><code>POST /Calls/{Sid}/Siprec</code></td>
+					<td>Same REST shape</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>On Twilio, recordings and SIPREC often run on Twilio-managed storage or connectors. On VoiceML, you configure <strong>your own S3 bucket</strong> and <strong>your own SRS endpoints</strong> — billing and data residency follow your AWS and recorder agreements.</p>
+</section>
+
+<section class="section-block">
+	<h2>Troubleshooting</h2>
+
+	<h3>Amazon S3 recordings</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Symptom</th>
+					<th scope="col">What to check</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Calls never produce recordings</td><td>Confirm <strong>Amazon recordings</strong> is saved on the Account page with bucket, region, access key, and secret. Without a valid destination, recording verbs skip silently.</td></tr>
+				<tr><td>Recording metadata exists but download fails</td><td>Verify the IAM policy includes <code>s3:GetObject</code> and <code>s3:PutObject</code>. Check bucket name and region match the portal settings.</td></tr>
+				<tr><td>Upload errors after key rotation</td><td>Update the access key in the portal and save. Test on a new call.</td></tr>
+				<tr><td>Wrong S3 path</td><td>Object keys use <code>&lt;prefix&gt;/&lt;AccountSid&gt;/&lt;RecordingSid&gt;.wav</code> — adjust the prefix field if needed.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>SIPREC</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Symptom</th>
+					<th scope="col">What to check</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>SIPREC never starts</td><td><code>connectorName</code> must match a connector registered on <strong>SIPREC connectors</strong>. The connector must be <strong>Enabled</strong>.</td></tr>
+				<tr><td>Recorder shows no sessions</td><td>Confirm the SRS SIP URI, port, and transport (<code>tcp</code> / <code>tls</code>) match the vendor guide. Check firewall rules allow VoiceTel to reach the SRS.</td></tr>
+				<tr><td>Wrong or missing metadata</td><td>Add <code>&lt;Parameter&gt;</code> children with names your recorder expects.</td></tr>
+				<tr><td>Changed connector didn't apply</td><td>Connector changes take effect on the <strong>next call</strong> (or next <code>&lt;Start&gt;&lt;Siprec&gt;</code> on a live call).</td></tr>
+				<tr><td>Need both S3 and SIPREC</td><td>Configure both independently — S3 on the Account page, SIPREC on the connectors page. They do not conflict.</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>General</h3>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th scope="col">Symptom</th>
+					<th scope="col">What to check</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>transcribe="true"</code> but no transcript</td><td>Configure a speech-to-text provider on the Account page — see the <a href="/voiceml/speech-recognition/">speech recognition guide</a>.</td></tr>
+				<tr><td>Recording callback missing fields</td><td>An empty S3 recording produces empty <code>RecordingSid</code> / <code>RecordingUrl</code> on the action callback — configure S3 first.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<aside class="cta-block" aria-labelledby="recording-cta-heading">
+	<h2 id="recording-cta-heading">Bring one recorded call flow end-to-end.</h2>
+	<p>Spin up a free account, point a test number at a <code>&lt;Record&gt;</code> document, and confirm the WAV lands in your S3 bucket — or fork a live call to your SRS over SIPREC.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/contact/">Contact us</a>
+	</p>
+</aside>

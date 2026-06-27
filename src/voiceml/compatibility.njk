@@ -2,464 +2,91 @@
 layout: layouts/page.njk
 permalink: /voiceml/compatibility/
 title: "VoiceML compatibility matrix"
-description: "A compatibility matrix for VoiceML, covering supported, partial, unsupported, and roadmap voice markup features."
+description: "Enterprise developer comparison of Twilio Programmable Voice, VoiceTel VoiceML, and Restcomm on REST resources, voice markup, and migration paths."
 ---
 
 <p class="eyebrow">Compatibility</p>
-<h1>Know exactly which call features are supported before migration.</h1>
-<p class="lede">Every verb, attribute, REST resource, and caveat is published with a clear support status — supported, partial, roadmap, or unsupported — so you can see exactly what migrates cleanly before you cut traffic over.</p>
+<h1>Compare Twilio, VoiceTel, and Restcomm before you migrate voice workloads.</h1>
+<p class="lede">Every REST resource and voice markup surface on the VoiceML compatibility matrix is scored side-by-side with Twilio (reference) and Restcomm (open-source CPaaS). Use it to see what moves with a hostname swap, what needs markup changes, and what stays out of scope — before you cut traffic over.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="#matrix">View matrix</a>
-	<a class="btn btn-secondary" href="/voiceml/validator/">Validate VoiceML</a>
+	<a class="btn btn-primary" href="/voiceml/validator/">Validate VoiceML</a>
 	<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
 </p>
 
+<section id="why-voicetel-built-its-own" class="section-block">
+	<h2>Why VoiceTel built its own implementation from scratch</h2>
+	<p><strong>Most Twilio-compatible CPaaS platforms in market are not original implementations — they are <a href="https://github.com/RestComm" rel="external">Restcomm</a> and their derivatives.</strong> The community open-source Restcomm stack ships the compatibility layer that voice and messaging providers then rebrand. VoiceTel authored VoiceML to make a truly conformant implementation that provides frictionless migration.</p>
+</section>
+
 <section id="matrix" class="section-block">
-	<h2>Voice markup compatibility matrix</h2>
+	<h2>Compatibility matrix</h2>
 	<p><strong>Legend:</strong>
 		<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓ Supported</span>
 		<span role="img" class="compat-badge compat-partial" aria-label="Partial or documented limitation">◐ Partial</span>
 		<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported, returns 404 or 501">✗ Unsupported</span>
-		<span role="img" class="compat-badge compat-roadmap" aria-label="Endpoint exists at Twilio but is intentionally out of scope">N/A Out of scope</span>
+		<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope on this surface">N/A Out of scope</span>
 	</p>
 	<div class="table-container">
-		<table class="data-table compat-table">
+		<table class="data-table compat-table compat-table--platforms">
 			<thead>
 				<tr>
 					<th scope="col">Resource</th>
 					<th scope="col">Endpoints</th>
+					<th scope="col">Twilio</th>
 					<th scope="col">VoiceTel</th>
+					<th scope="col">Restcomm</th>
 					<th scope="col">Notes</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<th scope="row" rowspan="5"><strong>Calls</strong></th>
-					<td><code>POST /Calls</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Normalises To/From against per-tenant phone regions; <code>MachineDetection</code> truly optional (matches Twilio — omit it and no AMD runs); <code>Twiml</code>/<code>ApplicationSid</code> accepted; per-call SIP/auth params (<code>SendDigits</code>, <code>SipAuthUsername</code>/<code>SipAuthPassword</code>, <code>Timeout</code>, <code>CallReason</code>) wired through to the originate.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Calls/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>GET /Calls</code> (filters: To, From, Status, ParentCallSid, StartTime≥/≤, EndTime≥/≤, Page, PageSize≤1000)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Full Twilio query surface; <code>EndTime</code> auto-restricts to terminal-status rows.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}</code> (Status / Twiml / Url / FallbackUrl / StatusCallback*)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Full Call resource on success; <code>Twiml</code> wins over <code>Url</code>; <code>StatusCallback*</code> swaps the live lifecycle-webhook wiring.</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Calls/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="5"><strong>Calls / Recordings</strong></th>
-					<td><code>GET /Calls/{Sid}/Recordings</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>GET /Calls/{Sid}/Recordings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Recordings</code> (start mid-call)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Honours <code>RecordingMaxDuration</code> / <code>PlayBeep</code> / <code>RecordingStatusCallback*</code>.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Recordings/{Sid}</code> (Status=stopped/paused/in-progress)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Stop, pause, resume; idempotent against already-completed.</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Calls/{Sid}/Recordings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Unlinks WAV and drops row.</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="3"><strong>Calls / Streams</strong></th>
-					<td><code>GET /Calls/{Sid}/Streams[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Live tracker; list returns 0 or 1 (one fork per call).</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Streams</code> (start)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code>; returns MZ-prefixed SID.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Streams/{Sid}</code> (Status=stopped)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="3"><strong>Calls / Siprec</strong></th>
-					<td><code>GET /Calls/{Sid}/Siprec[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Live tracker.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Siprec</code> (start)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Mirrors <code>&lt;Start&gt;&lt;Siprec&gt;</code>; returns SR-prefixed SID.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Siprec/{Sid}</code> (Status=stopped)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Stops the SIPREC session on the SRS and clears tracking; idempotent against an already-stopped session.</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="3"><strong>Calls / Transcriptions</strong></th>
-					<td><code>GET /Calls/{Sid}/Transcriptions[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Live tracker.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Transcriptions</code> (start)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Mirrors <code>&lt;Start&gt;&lt;Transcription&gt;</code>; returns RT-prefixed SID.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Calls/{Sid}/Transcriptions/{Sid}</code> (Status=stopped)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Calls / Payments</strong></th>
-					<td><code>POST /Calls/{Sid}/Payments[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Card capture is enabled per account — <a href="/contact/">contact support</a> to turn it on.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Calls / Events</strong></th>
-					<td><code>GET /Calls/{Sid}/Events</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Compatibility stub: 200 + empty list. Equivalent per-call events are delivered to your <code>StatusCallback</code> URL.</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="2"><strong>Calls / Notifications</strong></th>
-					<td><code>GET /Calls/{Sid}/Notifications</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Compatibility stub: 200 + empty list. VoiceTel doesn't track per-call notifications as a separate stream.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Calls/{Sid}/Notifications/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Single-resource fetch on the same stub — always 404.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Calls / UserDefinedMessages</strong></th>
-					<td><code>POST /Calls/{Sid}/UserDefinedMessages</code></td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td>Returns 501 + Twilio error code 20501. Out of scope on the compatibility surface.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Connect / ConversationRelay</strong></th>
-					<td><code>&lt;Connect&gt;&lt;ConversationRelay url="wss://..."/&gt;&lt;/Connect&gt;</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Voice markup verb (no REST mirror). Bridges the call to a customer-hosted WebSocket for LLM-driven voice agents. Attributes honored: <code>url</code>, <code>voice</code>, <code>language</code>, <code>welcomeGreeting</code>, <code>transcriptionProvider</code>, <code>ttsProvider</code>. Bidirectional message types match Twilio's wire shape: <code>setup</code> / <code>prompt</code> / <code>interrupt</code> / <code>dtmf</code> (server → customer) and <code>text</code> / <code>play</code> / <code>end</code> (customer → server). Posts <code>RelayStatus</code>, <code>RelayDuration</code>, <code>HandoffData</code> to <code>action=</code>.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>Connect / other sub-nouns</strong></th>
-					<td><code>&lt;VirtualAgent&gt;</code>, <code>&lt;Conversation&gt;</code>, <code>&lt;Room&gt;</code>, <code>&lt;Autopilot&gt;</code></td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td>Twilio-hosted AI / Programmable Video / Studio surfaces, out of scope. Use <code>&lt;ConversationRelay&gt;</code> for voice-agent integration.</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="3"><strong>Conferences</strong></th>
-					<td><code>GET /Conferences</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Live conference query, multi-tenant namespaced.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Conferences/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>POST /Conferences/{Sid}</code> (<code>Status=completed</code> to end)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="4"><strong>Conferences / Participants</strong></th>
-					<td><code>POST /Conferences/{Sid}/Participants</code> (dial-in)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Places an outbound call from <code>From</code> to <code>To</code> that joins the conference on answer. Returns immediately with <code>status=queued</code> while the leg is ringing.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Conferences/{Sid}/Participants[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>POST /Conferences/{Sid}/Participants/{Sid}</code> (Muted, Hold)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Mute/unmute and hold/unhold both wired.</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Conferences/{Sid}/Participants/{Sid}</code> (kick)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="4"><strong>Conferences / Recordings</strong></th>
-					<td><code>GET /Conferences/{Sid}/Recordings</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Metadata persisted at conference start; pagination envelope same as <code>/Recordings</code>.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Conferences/{Sid}/Recordings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>POST /Conferences/{Sid}/Recordings/{Sid}</code> (Status=stopped/paused/in-progress)</td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Same semantics as <code>/Calls/{Sid}/Recordings/{Sid}</code>; enforces conference scope from the URL path.</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Conferences/{Sid}/Recordings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Queues</strong></th>
-					<td><code>POST /Queues</code>, <code>GET /Queues[/{Sid}]</code>, <code>POST /Queues/{Sid}</code>, <code>DELETE /Queues/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Full CRUD; in-process state.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Queues / Members</strong></th>
-					<td><code>GET /Queues/{Sid}/Members[/{Sid}|Front]</code>, <code>POST /Queues/{Sid}/Members/{Sid|Front}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>VoiceTel extension — REST dequeue alongside <code>&lt;Dial&gt;&lt;Queue&gt;</code> markup.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>Applications</strong></th>
-					<td><code>POST /Applications</code>, <code>GET /Applications[/{Sid}]</code>, <code>POST /Applications/{Sid}</code>, <code>DELETE /Applications/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Voice-only fields (no SMS).</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="3"><strong>Recordings (top-level)</strong></th>
-					<td><code>GET /Recordings[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Recordings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Row + local WAV + S3 object (best-effort).</td>
-				</tr>
-				<tr>
-					<td><code>GET /Recordings/{Sid}.wav</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Binary <code>audio/wav</code> with three-state delivery: 200 (local), 302 to presigned S3 URL (archived), 410 Gone (cleaned up). All HTTP clients follow the 302 transparently.</td>
-				</tr>
-
-				<tr>
-					<th scope="row" rowspan="6"><strong>IncomingPhoneNumbers</strong></th>
-					<td><code>GET /IncomingPhoneNumbers</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Tenant-scoped list of DIDs assigned to the authenticated account.</td>
-				</tr>
-				<tr>
-					<td><code>POST /IncomingPhoneNumbers</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Self-serve DID assignment by E.164. Idempotent on the same tenant; 409 if the number is claimed by another account. Inventory itself is provisioned via the <a href="/numbers/">VoiceTel Numbers</a> workflow.</td>
-				</tr>
-				<tr>
-					<td><code>GET /IncomingPhoneNumbers/Local</code>, <code>GET /IncomingPhoneNumbers/Mobile</code>, <code>GET /IncomingPhoneNumbers/TollFree</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Twilio type-specific list aliases. <code>Local</code> returns non-toll-free numbers; <code>TollFree</code> returns US 800/833/844/855/866/877/888 NPAs; <code>Mobile</code> returns an empty page (no carrier-mobile classification is tracked on BYO DIDs). Same pagination envelope as <code>/IncomingPhoneNumbers</code>.</td>
-				</tr>
-				<tr>
-					<td><code>GET /IncomingPhoneNumbers/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Cross-tenant fetches 404 with the same shape as a nonexistent number — no enumeration leak.</td>
-				</tr>
-				<tr>
-					<td><code>POST /IncomingPhoneNumbers/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Only-set-fields-touched update semantics for voice routing on an assigned DID.</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /IncomingPhoneNumbers/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Idempotent release: 204 on success or if the number was already gone.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>AvailablePhoneNumbers</strong></th>
-					<td><code>GET /AvailablePhoneNumbers/{Country}/Local</code> etc.</td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>OutgoingCallerIds</strong></th>
-					<td>full sub-resource</td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>ShortCodes</strong></th>
-					<td>full sub-resource</td>
-					<td><span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span></td>
-					<td></td>
-				</tr>
-				<tr>
-					<th scope="row" rowspan="2"><strong>Account / Notifications</strong></th>
-					<td><code>GET /Notifications</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Compatibility stub: 200 + empty list. Account-wide events are delivered to your <code>StatusCallback</code> URL.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Notifications/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td>Single-resource fetch on the same stub — always 404.</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><strong>SIP / Domains</strong></th>
-					<td><code>POST /SIP/Domains</code>, <code>GET /SIP/Domains[/{Sid}]</code>, <code>POST /SIP/Domains/{Sid}</code>, <code>DELETE /SIP/Domains/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>SD-prefixed SIP-ingress resource — full CRUD, partial-update semantics on POST. Cross-reference: the <a href="/sip-trunking/">SIP trunking</a> product workflow handles inventory provisioning.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / CredentialLists</strong></th>
-					<td><code>POST /SIP/CredentialLists</code>, <code>GET /SIP/CredentialLists[/{Sid}]</code>, <code>POST /SIP/CredentialLists/{Sid}</code>, <code>DELETE /SIP/CredentialLists/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>CL-prefixed credential bucket attachable to a SIP Domain.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / CredentialLists / Credentials</strong></th>
-					<td><code>POST /SIP/CredentialLists/{Sid}/Credentials</code>, <code>GET /SIP/CredentialLists/{Sid}/Credentials[/{Sid}]</code>, <code>POST</code> / <code>DELETE /SIP/CredentialLists/{Sid}/Credentials/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Individual username/password members. <code>Password</code> is write-only — fetches return the metadata envelope without the secret.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / IpAccessControlLists</strong></th>
-					<td><code>POST /SIP/IpAccessControlLists</code>, <code>GET /SIP/IpAccessControlLists[/{Sid}]</code>, <code>POST /SIP/IpAccessControlLists/{Sid}</code>, <code>DELETE /SIP/IpAccessControlLists/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>AL-prefixed IP-allowlist bucket attachable to a SIP Domain.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / IpAccessControlLists / IpAddresses</strong></th>
-					<td><code>POST /SIP/IpAccessControlLists/{Sid}/IpAddresses</code>, <code>GET /SIP/IpAccessControlLists/{Sid}/IpAddresses[/{Sid}]</code>, <code>POST</code> / <code>DELETE /SIP/IpAccessControlLists/{Sid}/IpAddresses/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Individual IP entries with optional CIDR mask.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / CredentialListMappings</strong></th>
-					<td><code>POST</code>, <code>GET /SIP/Domains/{Sid}/CredentialListMappings[/{Sid}]</code>, <code>DELETE /SIP/Domains/{Sid}/CredentialListMappings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Default mapping that authenticates inbound INVITEs against a CredentialList.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / IpAccessControlListMappings</strong></th>
-					<td><code>POST</code>, <code>GET /SIP/Domains/{Sid}/IpAccessControlListMappings[/{Sid}]</code>, <code>DELETE /SIP/Domains/{Sid}/IpAccessControlListMappings/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Default mapping that restricts inbound INVITEs to an IP allowlist.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / Auth / Calls / CredentialListMappings</strong></th>
-					<td><code>POST</code>, <code>GET</code>, <code>DELETE /SIP/Domains/{Sid}/Auth/Calls/CredentialListMappings[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Call-specific override mapping for inbound voice INVITEs.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / Auth / Calls / IpAccessControlListMappings</strong></th>
-					<td><code>POST</code>, <code>GET</code>, <code>DELETE /SIP/Domains/{Sid}/Auth/Calls/IpAccessControlListMappings[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Call-specific override mapping for IP-allowlisted voice INVITEs.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / Auth / Registrations / CredentialListMappings</strong></th>
-					<td><code>POST</code>, <code>GET</code>, <code>DELETE /SIP/Domains/{Sid}/Auth/Registrations/CredentialListMappings[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>REGISTER-specific override mapping for SIP endpoint registrations.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>SIP / Domains / InboundProcessingRegion</strong></th>
-					<td><code>GET /v2/SipDomains/{Name}</code>, <code>POST /v2/SipDomains/{Name}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Twilio routes/v2 surface for fetching and updating the Inbound Processing Region on an existing SIP Domain. Keyed by domain name; account resolved from HTTP Basic auth.</td>
-				</tr>
-				<tr>
-					<th scope="row" rowspan="4"><strong>Messages</strong></th>
-					<td><code>POST /Messages</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Sends <code>Body</code> to <code>To</code> via the per-tenant SMS provider. Returns 201 with the Message resource (<code>status=sent</code> or <code>status=failed</code> with a Twilio-compatible <code>error_code</code>). When the provider isn't configured on the account, the row is persisted with <code>status=failed</code> and <code>error_code=21609</code>. For the native messaging product see <a href="/messaging/">VoiceTel Messaging</a>.</td>
-				</tr>
-				<tr>
-					<td><code>GET /Messages[/{Sid}]</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Paged list (DateCreated DESC) plus single-resource fetch, same envelope as <code>/Calls</code>.</td>
-				</tr>
-				<tr>
-					<td><code>POST /Messages/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span></td>
-					<td><code>Body</code> redaction supported; <code>Status=canceled</code> rejected with 409 (provider doesn't expose cancellation).</td>
-				</tr>
-				<tr>
-					<td><code>DELETE /Messages/{Sid}</code></td>
-					<td><span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span></td>
-					<td>Idempotent: 204 on success or already-gone.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>MMS</strong></th>
-					<td><code>POST /Messages</code> + <code>MediaUrl</code></td>
-					<td><span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span></td>
-					<td>Media payloads not in scope on the compatibility surface. See <a href="/messaging/">VoiceTel Messaging</a> for MMS.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>Pricing API</strong></th>
-					<td>full</td>
-					<td><span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span></td>
-					<td>VoiceTel publishes <a href="/pricing/">rates directly</a>; no Twilio-shaped pricing API.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>Insights</strong></th>
-					<td>full</td>
-					<td><span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span></td>
-					<td>Twilio-hosted analytics product.</td>
-				</tr>
-				<tr>
-					<th scope="row"><strong>Verify<br>Lookup<br>Studio<br>TaskRouter<br>Conversations<br>Chat<br>Video<br>Proxy<br>Functions/Assets<br>Wireless<br>Trunking<br>Authy</strong></th>
-					<td>full</td>
-					<td><span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span></td>
-					<td>Distinct Twilio products, out of scope for the compatibility surface.</td>
-				</tr>
+				{%- for group in compatMatrix.groups %}
+				{%- for row in group.rows %}
+				<tr>
+					{%- if loop.first %}
+					<th scope="row" rowspan="{{ group.rows | length }}"><strong>{{ group.name | safe }}</strong></th>
+					{%- endif %}
+					<td class="compat-endpoint">{{ row.endpoints | safe }}</td>
+					<td class="compat-status">
+						{%- if row.twilio == 'supported' -%}
+						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+						{%- elif row.twilio == 'partial' -%}
+						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+						{%- elif row.twilio == 'unsupported' -%}
+						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+						{%- else -%}
+						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+						{%- endif -%}
+					</td>
+					<td class="compat-status">
+						{%- if row.voicetel == 'supported' -%}
+						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+						{%- elif row.voicetel == 'partial' -%}
+						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+						{%- elif row.voicetel == 'unsupported' -%}
+						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+						{%- else -%}
+						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+						{%- endif -%}
+					</td>
+					<td class="compat-status">
+						{%- if row.restcomm == 'supported' -%}
+						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+						{%- elif row.restcomm == 'partial' -%}
+						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+						{%- elif row.restcomm == 'unsupported' -%}
+						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+						{%- else -%}
+						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+						{%- endif -%}
+					</td>
+					<td class="compat-notes">{{ row.notes | safe }}</td>
+				</tr>
+				{%- endfor %}
+				{%- endfor %}
 			</tbody>
 		</table>
 	</div>
 </section>
-
 
 <aside class="cta-block">
 	<h2>Plan your migration</h2>

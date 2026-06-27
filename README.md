@@ -54,7 +54,7 @@ All centralized data lives in `src/_data/` and is also emitted as static JSON at
 
 - `site.json` — brand metadata, hostnames, support contacts, navigation taxonomy.
 - `pricing.json` — all rates.
-- `compat.json` — voice markup compatibility matrix.
+- `compatMatrix.json` — REST and voice markup compatibility matrix (Twilio vs VoiceTel vs Restcomm).
 - `endpoints.json` — API + portal URLs, mobile app downloads, SDN endpoint.
 - `faq.json` — FAQ items + categories.
 

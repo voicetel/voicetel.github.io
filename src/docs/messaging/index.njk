@@ -1,0 +1,127 @@
+---
+layout: layouts/page.njk
+title: "Messaging docs"
+description: "Messaging documentation hub — SMS product overview, getting-started guide, 10DLC campaign registry workflow, compliance and operating rules, and the CSP REST API."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / Messaging</p>
+<h1>Everything you need to ship compliant A2P messaging.</h1>
+<p class="lede">Messaging covers wholesale SMS and MMS, the 10DLC Campaign Registry workflow, the CSP REST API, and the operational guidance that keeps A2P programs passing vetting and reaching the handset. This hub indexes the product overview, getting-started path, compliance material, and CSP API surface under one page.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/messaging/">Messaging product</a>
+	<a class="btn btn-secondary" href="/messaging/getting-started/">Get started</a>
+</p>
+
+<section class="section-block">
+	<h2>Product and pricing</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3><a href="/messaging/">Messaging product overview</a></h3>
+			<p>SMS and MMS at wholesale rates, inbound included, no per-message platform tax — plus how messaging composes with the rest of the VoiceTel stack.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "calculator" %}</span>
+			<h3><a href="/pricing/">Pricing and calculator</a></h3>
+			<p>Per-message outbound and inbound rates, carrier fees, MMS rates, and a calculator that applies volume-tier discounts to your workload.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Getting started</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3><a href="/messaging/getting-started/">Get started with business messaging</a></h3>
+			<p>Practical step-by-step path: strategy, consent, platform selection, message flows, launch, and measurement — written for teams adding SMS to a business for the first time.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/messaging/getting-started/strategy-and-consent/">Strategy and consent</a></h3>
+			<p>The use-case decision and consent design that determines whether a program passes 10DLC vetting and stays compliant in production.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+			<h3><a href="/messaging/getting-started/platform-and-flows/">Platform and flows</a></h3>
+			<p>Choosing where messages are sent from and the templates, opt-in language, STOP/HELP, and reply flows the program needs.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3><a href="/messaging/getting-started/launch-and-grow/">Launch and grow</a></h3>
+			<p>What to test before flipping live traffic on, the early-volume guard rails, and the KPIs that catch deliverability and consent issues.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>10DLC and compliance</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3><a href="/support/messaging/10dlc/">10DLC campaign registry vetting guide</a></h3>
+			<p>Pass A2P 10DLC vetting on the first try — standards from CTIA, GSMA, and The Campaign Registry; filing logic reviewers expect; common mistakes and how to avoid them.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/support/messaging/compliance/">Compliance and abuse prevention</a></h3>
+			<p>CTIA, carrier, and FCC standards every VoiceTel messaging customer must follow — A2P 10DLC requirements, opt-in, opt-out, prohibited content, carrier enforcement.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
+			<h3><a href="/support/messaging/operating-rules/">SMS operating rules</a></h3>
+			<p>Day-to-day operating rules for U.S. A2P programs — consent, copy, frequency, and support rules that keep traffic compliant after launch.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>QA, themes, and templates</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3><a href="/support/messaging/checklist/">Program readiness checklist</a></h3>
+			<p>Pre-flight checklist: brand readiness, consent readiness, campaign-application readiness, and launch readiness — in one place.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3><a href="/support/messaging/qa/">Pre-vetting QA worksheet</a></h3>
+			<p>Worksheet for 10DLC campaign submissions plus suggested KPIs for monitoring SMS program health after launch.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+			<h3><a href="/support/messaging/templates/">Templates</a></h3>
+			<p>Copy-pasteable templates for 10DLC campaign descriptions, opt-in disclosures, STOP/HELP messages, sample messages, and privacy/terms language.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3><a href="/support/messaging/themes/">Passing themes</a></h3>
+			<p>Cross-provider themes from CTIA, GSMA, and Campaign Registry guidance — what every passable A2P SMS program has in common.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>CSP REST API</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
+			<h3><a href="/docs/api/v7.8/csp/playground/">CSP API playground</a></h3>
+			<p>Spec-driven, in-browser playground for the Campaign Service Provider proxy — brand and campaign registration against The Campaign Registry, end-to-end with your account credentials.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "github" %}</span>
+			<h3><a href="/docs/sdks/">VoiceTel SDKs</a></h3>
+			<p>The same SDKs that target the VoiceTel REST API also reach the CSP endpoints — Python, TypeScript, Go, Java, and more.</p>
+		</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="messaging-docs-cta-heading">
+	<h2 id="messaging-docs-cta-heading">Get a 10DLC campaign into vetting.</h2>
+	<p>Start the readiness checklist, work through the strategy-and-consent path, then file a brand and campaign through the CSP API playground.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+		<a class="btn btn-secondary" href="/contact/">Contact us</a>
+	</p>
+</aside>

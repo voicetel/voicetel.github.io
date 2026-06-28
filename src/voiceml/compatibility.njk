@@ -27,12 +27,15 @@ description: "Enterprise developer comparison of Twilio Programmable Voice, Voic
 		<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope on this surface">N/A Out of scope</span>
 	</p>
 	<p>One table per Twilio product. VoiceTel's compatibility surface is grouped the same way Twilio's docs are, so you can pick the product you're migrating and skip to its block.</p>
-	<nav class="compat-product-toc" aria-label="Twilio products">
-		<ul>
+	<nav class="compat-product-toc" aria-label="Jump to Twilio product">
+		<div class="compat-product-toc__grid">
 			{%- for product in compatMatrix.products %}
-			<li><a href="#product-{{ product.name | slugify }}">{{ product.name }}</a></li>
+			<a class="compat-product-toc__card" href="#product-{{ product.name | slugify }}">
+				<span class="compat-product-toc__name">{{ product.name }}</span>
+				<span class="compat-product-toc__meta">{{ product.rowCount }} row{% if product.rowCount != 1 %}s{% endif %} · {{ product.groupCount }} group{% if product.groupCount != 1 %}s{% endif %}</span>
+			</a>
 			{%- endfor %}
-		</ul>
+		</div>
 	</nav>
 
 	{%- for product in compatMatrix.products %}

@@ -692,7 +692,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 36,
+			"rowCount": 62
 		},
 		{
 			"name": "Programmable Messaging",
@@ -756,7 +758,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 3,
+			"rowCount": 6
 		},
 		{
 			"name": "Phone Numbers",
@@ -846,7 +850,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 4,
+			"rowCount": 9
 		},
 		{
 			"name": "BYOC Voice Trunking",
@@ -920,7 +926,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 5,
+			"rowCount": 6
 		},
 		{
 			"name": "Conversations",
@@ -1112,7 +1120,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 9,
+			"rowCount": 20
 		},
 		{
 			"name": "AI Assistants",
@@ -1219,7 +1229,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 6,
+			"rowCount": 10
 		},
 		{
 			"name": "Out of scope",
@@ -1261,7 +1273,9 @@
 						}
 					]
 				}
-			]
+			],
+			"groupCount": 3,
+			"rowCount": 3
 		}
 	]
 }

@@ -1,15 +1,15 @@
 {
-	"updated": "2026-05-22",
-	"specVersion": "VoiceML API v0.8.2",
+	"updated": "2026-06-28",
+	"specVersion": "VoiceML API v0.9.1",
 	"platforms": [
 		{
 			"id": "twilio",
 			"name": "Twilio",
-			"summary": "Reference CPaaS \u2014 full Programmable Voice REST under <code>2010-04-01</code>, hosted voice markup, and the broader Twilio product catalog (Verify, Studio, TaskRouter, etc.).",
+			"summary": "Reference CPaaS — full Programmable Voice REST under <code>2010-04-01</code>, hosted voice markup, and the broader Twilio product catalog (Verify, Studio, TaskRouter, etc.).",
 			"facts": [
 				{
 					"label": "REST base path",
-					"value": "<code>2010-04-01/Accounts/{AccountSid}/\u2026</code>"
+					"value": "<code>2010-04-01/Accounts/{AccountSid}/…</code>"
 				},
 				{
 					"label": "Voice markup",
@@ -17,7 +17,7 @@
 				},
 				{
 					"label": "SDK host override",
-					"value": "N/A \u2014 native platform"
+					"value": "N/A — native platform"
 				},
 				{
 					"label": "Deployment",
@@ -28,15 +28,15 @@
 		{
 			"id": "voicetel",
 			"name": "VoiceTel",
-			"summary": "Wholesale VoiceML runtime \u2014 Twilio-shaped REST and voice markup on VoiceTel infrastructure, with BYO numbers, SMS providers, and storage.",
+			"summary": "Wholesale VoiceML runtime — Twilio-shaped REST and voice markup on VoiceTel infrastructure, with BYO numbers, SMS providers, and storage.",
 			"facts": [
 				{
 					"label": "REST base path",
-					"value": "<code>2010-04-01/Accounts/{AccountSid}/\u2026</code> (same as Twilio)"
+					"value": "<code>2010-04-01/Accounts/{AccountSid}/…</code> (same as Twilio)"
 				},
 				{
 					"label": "Voice markup",
-					"value": "VoiceML \u2014 Twilio-compatible verbs and attributes"
+					"value": "VoiceML — Twilio-compatible verbs and attributes"
 				},
 				{
 					"label": "SDK host override",
@@ -51,15 +51,15 @@
 		{
 			"id": "restcomm",
 			"name": "RestComm",
-			"summary": "Open-source CPaaS stack (Mobius) \u2014 migration-assisted overlap on classic voice/SMS, different API version and RCML markup instead of Twilio voice markup.",
+			"summary": "Open-source CPaaS stack (Mobius) — migration-assisted overlap on classic voice/SMS, different API version and RCML markup instead of Twilio voice markup.",
 			"facts": [
 				{
 					"label": "REST base path",
-					"value": "<code>2012-04-24/Accounts/{AccountSid}/\u2026</code> (not drop-in)"
+					"value": "<code>2012-04-24/Accounts/{AccountSid}/…</code> (not drop-in)"
 				},
 				{
 					"label": "Voice markup",
-					"value": "RCML \u2014 requires XML rewrite from Twilio voice markup"
+					"value": "RCML — requires XML rewrite from Twilio voice markup"
 				},
 				{
 					"label": "SDK host override",
@@ -91,7 +91,7 @@
 					"notes": ""
 				},
 				{
-					"endpoints": "GET /Calls (filters: To, From, Status, ParentCallSid, StartTime\u2265/\u2264, EndTime\u2265/\u2264, Page, PageSize\u22641000)",
+					"endpoints": "GET /Calls (filters: To, From, Status, ParentCallSid, StartTime≥/≤, EndTime≥/≤, Page, PageSize≤1000)",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
@@ -239,7 +239,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
-					"notes": "VoiceTel: card capture enabled per account \u2014 <a href=\"/contact/\">contact support</a> to turn on."
+					"notes": "VoiceTel: card capture enabled per account — <a href=\"/contact/\">contact support</a> to turn on."
 				}
 			]
 		},
@@ -270,7 +270,7 @@
 					"twilio": "supported",
 					"voicetel": "partial",
 					"restcomm": "unsupported",
-					"notes": "VoiceTel single-resource fetch on the same stub \u2014 always 404."
+					"notes": "VoiceTel single-resource fetch on the same stub — always 404."
 				}
 			]
 		},
@@ -422,7 +422,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel extension \u2014 REST dequeue alongside <code>&lt;Dial&gt;&lt;Queue&gt;</code> markup."
+					"notes": "VoiceTel extension — REST dequeue alongside <code>&lt;Dial&gt;&lt;Queue&gt;</code> markup."
 				}
 			]
 		},
@@ -434,7 +434,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: voice-only fields (no SMS). RestComm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> \u2014 not a drop-in field swap."
+					"notes": "VoiceTel: voice-only fields (no SMS). RestComm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> — not a drop-in field swap."
 				}
 			]
 		},
@@ -460,7 +460,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: binary <code>audio/wav</code> \u2014 200 (local), 302 to presigned S3 (archived), or 410 Gone."
+					"notes": "VoiceTel: binary <code>audio/wav</code> — 200 (local), 302 to presigned S3 (archived), or 410 Gone."
 				}
 			]
 		},
@@ -493,7 +493,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: cross-tenant fetches 404 \u2014 no enumeration leak."
+					"notes": "VoiceTel: cross-tenant fetches 404 — no enumeration leak."
 				},
 				{
 					"endpoints": "POST /IncomingPhoneNumbers/{Sid}",
@@ -507,7 +507,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: idempotent release \u2014 204 on success or already gone."
+					"notes": "VoiceTel: idempotent release — 204 on success or already gone."
 				}
 			]
 		},
@@ -527,11 +527,11 @@
 			"name": "OutgoingCallerIds",
 			"rows": [
 				{
-					"endpoints": "full sub-resource",
+					"endpoints": "POST /OutgoingCallerIds, GET /OutgoingCallerIds[/{Sid}], POST /OutgoingCallerIds/{Sid}, DELETE /OutgoingCallerIds/{Sid}",
 					"twilio": "supported",
-					"voicetel": "unsupported",
+					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "Twilio verified caller-ID API. VoiceTel out of scope on compatibility surface."
+					"notes": "VoiceTel: PN-prefixed verified caller-ID resource. Full CRUD; verification flow is provider-side."
 				}
 			]
 		},
@@ -562,7 +562,7 @@
 					"twilio": "supported",
 					"voicetel": "partial",
 					"restcomm": "unsupported",
-					"notes": "VoiceTel single-resource fetch on stub \u2014 always 404."
+					"notes": "VoiceTel single-resource fetch on stub — always 404."
 				}
 			]
 		},
@@ -574,7 +574,7 @@
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
-					"notes": "VoiceTel: SD-prefixed SIP-ingress resource \u2014 full CRUD. See <a href=\"/sip-trunking/\">SIP trunking</a> for inventory provisioning."
+					"notes": "VoiceTel: SD-prefixed SIP-ingress resource — full CRUD. See <a href=\"/sip-trunking/\">SIP trunking</a> for inventory provisioning."
 				}
 			]
 		},
@@ -594,7 +594,7 @@
 			"name": "SIP / CredentialLists / Credentials",
 			"rows": [
 				{
-					"endpoints": "POST /SIP/CredentialLists/{Sid}/Credentials, GET \u2026, POST / DELETE \u2026",
+					"endpoints": "POST /SIP/CredentialLists/{Sid}/Credentials, GET …, POST / DELETE …",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
@@ -606,7 +606,7 @@
 			"name": "SIP / IpAccessControlLists",
 			"rows": [
 				{
-					"endpoints": "POST /SIP/IpAccessControlLists, GET \u2026, POST / DELETE \u2026",
+					"endpoints": "POST /SIP/IpAccessControlLists, GET …, POST / DELETE …",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
@@ -618,7 +618,7 @@
 			"name": "SIP / IpAccessControlLists / IpAddresses",
 			"rows": [
 				{
-					"endpoints": "POST /SIP/IpAccessControlLists/{Sid}/IpAddresses, GET \u2026, POST / DELETE \u2026",
+					"endpoints": "POST /SIP/IpAccessControlLists/{Sid}/IpAddresses, GET …, POST / DELETE …",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "partial",
@@ -630,7 +630,7 @@
 			"name": "SIP / Domains / CredentialListMappings",
 			"rows": [
 				{
-					"endpoints": "POST, GET /SIP/Domains/{Sid}/CredentialListMappings[/{Sid}], DELETE \u2026",
+					"endpoints": "POST, GET /SIP/Domains/{Sid}/CredentialListMappings[/{Sid}], DELETE …",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
@@ -642,7 +642,7 @@
 			"name": "SIP / Domains / IpAccessControlListMappings",
 			"rows": [
 				{
-					"endpoints": "POST, GET /SIP/Domains/{Sid}/IpAccessControlListMappings[/{Sid}], DELETE \u2026",
+					"endpoints": "POST, GET /SIP/Domains/{Sid}/IpAccessControlListMappings[/{Sid}], DELETE …",
 					"twilio": "supported",
 					"voicetel": "supported",
 					"restcomm": "unsupported",
@@ -768,14 +768,450 @@
 			]
 		},
 		{
-			"name": "Verify<br>Lookup<br>Studio<br>TaskRouter<br>Conversations<br>Chat<br>Video<br>Proxy<br>Functions/Assets<br>Wireless<br>Trunking<br>Authy",
+			"name": "Verify<br>Lookup<br>Studio<br>TaskRouter<br>Video<br>Proxy<br>Functions/Assets<br>Wireless<br>Trunking<br>Authy",
 			"rows": [
 				{
 					"endpoints": "full",
 					"twilio": "supported",
 					"voicetel": "na",
 					"restcomm": "unsupported",
-					"notes": "Distinct Twilio platform products \u2014 out of scope for VoiceML and RestComm voice REST parity."
+					"notes": "Distinct Twilio platform products — out of scope for VoiceML and RestComm voice REST parity."
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"rows": [
+				{
+					"endpoints": "GET /Accounts/{Sid}, POST /Accounts/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "partial",
+					"notes": "VoiceTel: self-account fetch/update; <code>FriendlyName</code> / <code>Status</code> mutable on the authenticated account."
+				}
+			]
+		},
+		{
+			"name": "Account / Balance",
+			"rows": [
+				{
+					"endpoints": "GET /Balance",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: account balance + currency. Polling-friendly endpoint mirrors Twilio's shape."
+				}
+			]
+		},
+		{
+			"name": "Account / Exports",
+			"rows": [
+				{
+					"endpoints": "GET /Exports, GET /Exports/{Date}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: daily CDR/messaging export catalog and per-date fetch."
+				}
+			]
+		},
+		{
+			"name": "Account / Transcriptions (top-level)",
+			"rows": [
+				{
+					"endpoints": "GET /Transcriptions, GET /Transcriptions/{Sid}, DELETE /Transcriptions/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: tenant-wide transcription index across Calls and Recordings; idempotent delete."
+				}
+			]
+		},
+		{
+			"name": "Recordings / Transcriptions",
+			"rows": [
+				{
+					"endpoints": "GET /Recordings/{Sid}/Transcriptions, GET /Recordings/{Sid}/Transcriptions/{Sid}, DELETE /Recordings/{Sid}/Transcriptions/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: per-recording transcription sub-resource. STT vendor selected per tenant."
+				}
+			]
+		},
+		{
+			"name": "Messages / Media",
+			"rows": [
+				{
+					"endpoints": "GET /Messages/{Sid}/Media, GET /Messages/{Sid}/Media/{Sid}, DELETE /Messages/{Sid}/Media/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "partial",
+					"notes": "VoiceTel: per-message media list/fetch/delete. Returns MIME type + content-URL."
+				}
+			]
+		},
+		{
+			"name": "Numbers / InboundProcessingRegion",
+			"rows": [
+				{
+					"endpoints": "GET /v2/PhoneNumbers/{E.164}, POST /v2/PhoneNumbers/{E.164}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio Routes v2 surface. VoiceTel: per-DID Inbound Processing Region override keyed by E.164."
+				}
+			]
+		},
+		{
+			"name": "Voice trunking / ByocTrunks",
+			"rows": [
+				{
+					"endpoints": "POST /v1/ByocTrunks, GET /v1/ByocTrunks[/{Sid}], POST /v1/ByocTrunks/{Sid}, DELETE /v1/ByocTrunks/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio Bring-Your-Own-Carrier voice trunk surface. VoiceTel: TR-prefixed trunk attaching a customer SBC to inbound voice routing."
+				}
+			]
+		},
+		{
+			"name": "Voice trunking / ConnectionPolicies",
+			"rows": [
+				{
+					"endpoints": "POST /v1/ConnectionPolicies, GET /v1/ConnectionPolicies[/{Sid}], POST /v1/ConnectionPolicies/{Sid}, DELETE /v1/ConnectionPolicies/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: NY-prefixed connection-policy resource grouping target SIP URIs by priority/weight."
+				},
+				{
+					"endpoints": "POST /v1/ConnectionPolicies/{Sid}/Targets, GET /v1/ConnectionPolicies/{Sid}/Targets[/{Sid}], POST /v1/ConnectionPolicies/{Sid}/Targets/{Sid}, DELETE /v1/ConnectionPolicies/{Sid}/Targets/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Connection-policy target URIs: SIP destinations with priority/weight/enabled flags."
+				}
+			]
+		},
+		{
+			"name": "Voice trunking / IpRecords",
+			"rows": [
+				{
+					"endpoints": "POST /v1/IpRecords, GET /v1/IpRecords[/{Sid}], POST /v1/IpRecords/{Sid}, DELETE /v1/IpRecords/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio IP-record CRUD. VoiceTel: IL-prefixed IP-record entries with optional CIDR mask, attachable to inbound mappings."
+				}
+			]
+		},
+		{
+			"name": "Voice trunking / SourceIpMappings",
+			"rows": [
+				{
+					"endpoints": "POST /v1/SourceIpMappings, GET /v1/SourceIpMappings[/{Sid}], POST /v1/SourceIpMappings/{Sid}, DELETE /v1/SourceIpMappings/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: source IP record → SIP domain binding for inbound trunk routing."
+				}
+			]
+		},
+		{
+			"name": "Voice trunking / DialingPermissions",
+			"rows": [
+				{
+					"endpoints": "GET /v1/Settings, POST /v1/Settings",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio outbound voice dialing-permissions surface. VoiceTel: account-wide outbound voice settings."
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Conversations, GET /v1/Conversations[/{Sid}], POST /v1/Conversations/{Sid}, DELETE /v1/Conversations/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio Conversations API. VoiceTel: CH-prefixed conversation resource; full CRUD."
+				},
+				{
+					"endpoints": "POST /v1/ConversationWithParticipants",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Single-call conversation creation with participants and (optional) initial messages."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Messages",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Conversations/{Sid}/Messages, GET /v1/Conversations/{Sid}/Messages[/{Sid}], POST /v1/Conversations/{Sid}/Messages/{Sid}, DELETE /v1/Conversations/{Sid}/Messages/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: IM-prefixed message resource; supports media attachments and edits."
+				},
+				{
+					"endpoints": "GET /v1/Conversations/{Sid}/Messages/{Sid}/Receipts[/{Sid}]",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-recipient delivery + read receipts for each message."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Participants",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Conversations/{Sid}/Participants, GET /v1/Conversations/{Sid}/Participants[/{Sid}], POST /v1/Conversations/{Sid}/Participants/{Sid}, DELETE /v1/Conversations/{Sid}/Participants/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: MB-prefixed participant resource; supports SMS/MMS/chat bindings."
+				},
+				{
+					"endpoints": "GET /v1/ParticipantConversations",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Reverse index: list every conversation a given participant address belongs to."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Webhooks",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Conversations/{Sid}/Webhooks, GET /v1/Conversations/{Sid}/Webhooks[/{Sid}], POST /v1/Conversations/{Sid}/Webhooks/{Sid}, DELETE /v1/Conversations/{Sid}/Webhooks/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-conversation webhook subscriptions. VoiceTel: signed HMAC-SHA256 delivery, same scheme as voice callbacks."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Roles",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Roles, GET /v1/Roles[/{Sid}], POST /v1/Roles/{Sid}, DELETE /v1/Roles/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: RL-prefixed role resource for conversation-level permissions."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Users",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Users, GET /v1/Users[/{Sid}], POST /v1/Users/{Sid}, DELETE /v1/Users/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: US-prefixed user resource. Tracks identity across conversations."
+				},
+				{
+					"endpoints": "GET /v1/Users/{Sid}/Conversations[/{Sid}], POST /v1/Users/{Sid}/Conversations/{Sid}, DELETE /v1/Users/{Sid}/Conversations/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-user conversation membership and notification-level settings."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Credentials",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Credentials, GET /v1/Credentials[/{Sid}], POST /v1/Credentials/{Sid}, DELETE /v1/Credentials/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Push-notification credentials (APNS / FCM) for Conversations endpoints."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Configuration",
+			"rows": [
+				{
+					"endpoints": "GET /v1/Configuration, POST /v1/Configuration",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Account-default Conversations configuration: default service, role assignments."
+				},
+				{
+					"endpoints": "POST /v1/Configuration/Addresses, GET /v1/Configuration/Addresses[/{Sid}], POST /v1/Configuration/Addresses/{Sid}, DELETE /v1/Configuration/Addresses/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Address-configuration: inbound auto-routing rules per phone-number / SIP address."
+				},
+				{
+					"endpoints": "GET /v1/Configuration/Webhooks, POST /v1/Configuration/Webhooks",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Account-wide Conversations event webhook configuration."
+				}
+			]
+		},
+		{
+			"name": "Conversations / Services",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Services, GET /v1/Services[/{Sid}], DELETE /v1/Services/{Sid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "VoiceTel: IS-prefixed service resource — isolates conversations into a sandbox with its own users/roles/configuration."
+				},
+				{
+					"endpoints": "Service-scoped Conversations: POST /v1/Services/{Sid}/Conversations, GET …, POST …, DELETE …",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Mirrors the unscoped Conversations CRUD inside a chat service."
+				},
+				{
+					"endpoints": "Service-scoped Conversation sub-resources: Messages, Messages/{Sid}/Receipts, Participants, Webhooks",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Full Conversations sub-resource surface scoped to the parent service."
+				},
+				{
+					"endpoints": "Service-scoped Users + ParticipantConversations + Roles + Bindings",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-service identity, role, and binding resources; cross-conversation participant index."
+				},
+				{
+					"endpoints": "Service-scoped Configuration: GET/POST /v1/Services/{Sid}/Configuration, /Configuration/Notifications, /Configuration/Webhooks",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-service defaults, notification settings, and event webhooks."
+				},
+				{
+					"endpoints": "POST /v1/Services/{Sid}/ConversationWithParticipants",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Single-call service-scoped conversation creation with participants."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Assistants, GET /v1/Assistants[/{id}], PUT /v1/Assistants/{id}, DELETE /v1/Assistants/{id}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Twilio AI Assistants. VoiceTel: assistant CRUD; LLM provider + model configurable per assistant."
+				},
+				{
+					"endpoints": "POST /v1/Assistants/{id}/Messages",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Send a chat message to an assistant; returns the assistant's reply (and any tool calls invoked)."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants / Tools",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Tools, GET /v1/Tools[/{id}], PUT /v1/Tools/{id}, DELETE /v1/Tools/{id}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Tool definitions (function-call schemas) that any assistant can reference."
+				},
+				{
+					"endpoints": "GET /v1/Assistants/{id}/Tools, POST /v1/Assistants/{id}/Tools/{toolId}, DELETE /v1/Assistants/{id}/Tools/{toolId}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-assistant tool attachments — bind a tool from the global catalog to an assistant."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants / Knowledge",
+			"rows": [
+				{
+					"endpoints": "POST /v1/Knowledge, GET /v1/Knowledge[/{id}], PUT /v1/Knowledge/{id}, DELETE /v1/Knowledge/{id}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Knowledge-base resources (RAG sources): web, file, or text."
+				},
+				{
+					"endpoints": "GET /v1/Knowledge/{id}/Chunks, GET /v1/Knowledge/{id}/Status",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Inspect ingested chunks and indexing status for a knowledge base."
+				},
+				{
+					"endpoints": "GET /v1/Assistants/{id}/Knowledge, POST /v1/Assistants/{id}/Knowledge/{kid}, DELETE /v1/Assistants/{id}/Knowledge/{kid}",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Per-assistant knowledge attachments."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants / Sessions",
+			"rows": [
+				{
+					"endpoints": "GET /v1/Sessions[/{id}], GET /v1/Sessions/{id}/Messages",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Conversation-session history for an assistant — read-only; messages are the per-turn log."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants / Feedback",
+			"rows": [
+				{
+					"endpoints": "GET /v1/Assistants/{id}/Feedbacks, POST /v1/Assistants/{id}/Feedbacks",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Submit and list per-assistant feedback events for quality scoring."
+				}
+			]
+		},
+		{
+			"name": "AI Assistants / Policies",
+			"rows": [
+				{
+					"endpoints": "GET /v1/Policies",
+					"twilio": "supported",
+					"voicetel": "supported",
+					"restcomm": "unsupported",
+					"notes": "Read-only catalog of guardrail policies available to assistants."
 				}
 			]
 		}

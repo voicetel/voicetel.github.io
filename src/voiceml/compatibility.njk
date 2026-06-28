@@ -26,66 +26,85 @@ description: "Enterprise developer comparison of Twilio Programmable Voice, Voic
 		<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported, returns 404 or 501">✗ Unsupported</span>
 		<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope on this surface">N/A Out of scope</span>
 	</p>
-	<div class="table-container">
-		<table class="data-table compat-table compat-table--platforms">
-			<thead>
-				<tr>
-					<th scope="col">Resource</th>
-					<th scope="col">Endpoints</th>
-					<th scope="col">Twilio</th>
-					<th scope="col">VoiceTel</th>
-					<th scope="col">RestComm</th>
-					<th scope="col">Notes</th>
-				</tr>
-			</thead>
-			<tbody>
-				{%- for group in compatMatrix.groups %}
-				{%- for row in group.rows %}
-				<tr>
-					{%- if loop.first %}
-					<th scope="row" rowspan="{{ group.rows | length }}"><strong>{{ group.name | safe }}</strong></th>
-					{%- endif %}
-					<td class="compat-endpoint">{{ row.endpoints | safe }}</td>
-					<td class="compat-status">
-						{%- if row.twilio == 'supported' -%}
-						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
-						{%- elif row.twilio == 'partial' -%}
-						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
-						{%- elif row.twilio == 'unsupported' -%}
-						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
-						{%- else -%}
-						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
-						{%- endif -%}
-					</td>
-					<td class="compat-status">
-						{%- if row.voicetel == 'supported' -%}
-						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
-						{%- elif row.voicetel == 'partial' -%}
-						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
-						{%- elif row.voicetel == 'unsupported' -%}
-						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
-						{%- else -%}
-						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
-						{%- endif -%}
-					</td>
-					<td class="compat-status">
-						{%- if row.restcomm == 'supported' -%}
-						<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
-						{%- elif row.restcomm == 'partial' -%}
-						<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
-						{%- elif row.restcomm == 'unsupported' -%}
-						<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
-						{%- else -%}
-						<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
-						{%- endif -%}
-					</td>
-					<td class="compat-notes">{{ row.notes | safe }}</td>
-				</tr>
-				{%- endfor %}
-				{%- endfor %}
-			</tbody>
-		</table>
-	</div>
+	<p>One table per Twilio product. VoiceTel's compatibility surface is grouped the same way Twilio's docs are, so you can pick the product you're migrating and skip to its block.</p>
+	<nav class="compat-product-toc" aria-label="Twilio products">
+		<ul>
+			{%- for product in compatMatrix.products %}
+			<li><a href="#product-{{ product.name | slugify }}">{{ product.name }}</a></li>
+			{%- endfor %}
+		</ul>
+	</nav>
+
+	{%- for product in compatMatrix.products %}
+	<section id="product-{{ product.name | slugify }}" class="section-block compat-product">
+		<h3>{{ product.name }}</h3>
+		{%- if product.summary %}
+		<p>{{ product.summary | safe }}{% if product.twilioDocsUrl %} <a href="{{ product.twilioDocsUrl }}" rel="external">Twilio docs &rarr;</a>{% endif %}</p>
+		{%- elif product.twilioDocsUrl %}
+		<p><a href="{{ product.twilioDocsUrl }}" rel="external">Twilio docs &rarr;</a></p>
+		{%- endif %}
+		<div class="table-container">
+			<table class="data-table compat-table compat-table--platforms">
+				<thead>
+					<tr>
+						<th scope="col">Resource</th>
+						<th scope="col">Endpoints</th>
+						<th scope="col">Twilio</th>
+						<th scope="col">VoiceTel</th>
+						<th scope="col">RestComm</th>
+						<th scope="col">Notes</th>
+					</tr>
+				</thead>
+				<tbody>
+					{%- for group in product.groups %}
+					{%- for row in group.rows %}
+					<tr>
+						{%- if loop.first %}
+						<th scope="row" rowspan="{{ group.rows | length }}"><strong>{{ group.name | safe }}</strong></th>
+						{%- endif %}
+						<td class="compat-endpoint">{{ row.endpoints | safe }}</td>
+						<td class="compat-status">
+							{%- if row.twilio == 'supported' -%}
+							<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+							{%- elif row.twilio == 'partial' -%}
+							<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+							{%- elif row.twilio == 'unsupported' -%}
+							<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+							{%- else -%}
+							<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+							{%- endif -%}
+						</td>
+						<td class="compat-status">
+							{%- if row.voicetel == 'supported' -%}
+							<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+							{%- elif row.voicetel == 'partial' -%}
+							<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+							{%- elif row.voicetel == 'unsupported' -%}
+							<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+							{%- else -%}
+							<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+							{%- endif -%}
+						</td>
+						<td class="compat-status">
+							{%- if row.restcomm == 'supported' -%}
+							<span role="img" class="compat-badge compat-supported" aria-label="Supported">✓</span>
+							{%- elif row.restcomm == 'partial' -%}
+							<span role="img" class="compat-badge compat-partial" aria-label="Partial">◐</span>
+							{%- elif row.restcomm == 'unsupported' -%}
+							<span role="img" class="compat-badge compat-unsupported" aria-label="Unsupported">✗</span>
+							{%- else -%}
+							<span role="img" class="compat-badge compat-roadmap" aria-label="Out of scope">N/A</span>
+							{%- endif -%}
+						</td>
+						<td class="compat-notes">{{ row.notes | safe }}</td>
+					</tr>
+					{%- endfor %}
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+	{%- endfor %}
 </section>
 
 <aside class="cta-block">

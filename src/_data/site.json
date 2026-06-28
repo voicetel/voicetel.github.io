@@ -80,6 +80,18 @@
 					"description": "Drop-in compatible voice markup runtime."
 				},
 				{
+					"label": "Conversations",
+					"icon": "chat-square-text",
+					"href": "/conversations/",
+					"description": "Multi-channel chat sessions on one API."
+				},
+				{
+					"label": "AI Agents",
+					"icon": "robot",
+					"href": "/ai-agents/",
+					"description": "Voice and chat AI on the Twilio AI Assistants API."
+				},
+				{
 					"label": "Hosted PBX",
 					"icon": "diagram-3",
 					"href": "/pbx/",
@@ -217,6 +229,8 @@
 				{ "label": "Numbers", "href": "/numbers/" },
 				{ "label": "SIP Trunking", "href": "/sip-trunking/" },
 				{ "label": "VoiceML", "href": "/voiceml/" },
+				{ "label": "Conversations", "href": "/conversations/" },
+				{ "label": "AI Agents", "href": "/ai-agents/" },
 				{ "label": "Hosted PBX", "href": "/pbx/" },
 				{ "label": "Caller Lookup", "href": "/caller-lookup/" },
 				{ "label": "Carrier Lookup", "href": "/carrier-lookup/" },

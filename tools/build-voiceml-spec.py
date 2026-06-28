@@ -49,9 +49,19 @@ def rewrite_branding(value):
 		# Mask SID example literals
 		value = SID_LITERAL.sub(lambda m: m.group(1) + "x" * 32, value)
 		# Trademark: TwiML must not ship on the public site (CLAUDE.md §3). Wire field
-		# names such as Twiml are dict keys and are not walked as values here.
+		# names such as Twiml are dict keys and are not walked as values here, so
+		# rewriting the value-side spelling is safe (request/response field name
+		# survives unchanged).
 		value = re.sub(r"TwiML's", "voice markup's", value)
 		value = re.sub(r"TwiML", "voice markup", value)
+		value = re.sub(r"\bTwiml=<inline>", "inline voice-markup body", value)
+		value = re.sub(r"`Twiml`", "the inline voice-markup body", value)
+		value = re.sub(r"\bTwiml\b", "inline voice markup", value)
+		# Engine vendor names: FreeSWITCH (and the `Fs` shorthand in BYO STT
+		# descriptions) is an implementation detail that should not surface on the
+		# public reference. Field names like `SttFsVendor` are dict keys and not
+		# touched.
+		value = re.sub(r"\bFreeSWITCH\b", "media-engine", value)
 		# PCI / PCI-DSS references must not appear on the public site — they imply
 		# a compliance posture we do not certify externally. Strip leading PCI from
 		# upstream phrases like "PCI Pay session" so they render as "Pay session".
@@ -83,6 +93,7 @@ def rewrite_branding(value):
 # Tag rules: applied in order, first match wins. Patterns match the path
 # template (with the AccountSid prefix stripped for readability).
 TAG_RULES = [
+	# /2010-04-01/Accounts/{Sid}/Calls — voice + sub-resources
 	(re.compile(r"^/Calls/\{[^}]+\}/Recordings"), "Calls / Recordings"),
 	(re.compile(r"^/Calls/\{[^}]+\}/Streams"), "Calls / Streams"),
 	(re.compile(r"^/Calls/\{[^}]+\}/Siprec"), "Calls / Siprec"),
@@ -92,16 +103,24 @@ TAG_RULES = [
 	(re.compile(r"^/Calls/\{[^}]+\}/Payments"), "Calls / Payments"),
 	(re.compile(r"^/Calls/\{[^}]+\}/UserDefinedMessages"), "Calls / UserDefinedMessages"),
 	(re.compile(r"^/Calls"), "Calls"),
+	# /2010-04-01/Accounts/{Sid}/Conferences
 	(re.compile(r"^/Conferences/\{[^}]+\}/Participants"), "Conferences / Participants"),
 	(re.compile(r"^/Conferences/\{[^}]+\}/Recordings"), "Conferences / Recordings"),
 	(re.compile(r"^/Conferences"), "Conferences"),
+	# /2010-04-01/Accounts/{Sid}/Queues
 	(re.compile(r"^/Queues/\{[^}]+\}/Members"), "Queues / Members"),
 	(re.compile(r"^/Queues"), "Queues"),
+	# /2010-04-01/Accounts/{Sid}/...
 	(re.compile(r"^/Applications"), "Applications"),
 	(re.compile(r"^/IncomingPhoneNumbers"), "IncomingPhoneNumbers"),
+	(re.compile(r"^/OutgoingCallerIds"), "Account / OutgoingCallerIds"),
 	(re.compile(r"^/Messages"), "Messages"),
 	(re.compile(r"^/Notifications"), "Notifications"),
 	(re.compile(r"^/Recordings"), "Recordings"),
+	(re.compile(r"^/Transcriptions"), "Account / Transcriptions"),
+	(re.compile(r"^/Balance"), "Account / Balance"),
+	(re.compile(r"^/Exports"), "Account / Exports"),
+	# /2010-04-01/Accounts/{Sid}/SIP
 	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/CredentialListMappings"), "SIP / Auth / Calls / CredentialListMappings"),
 	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/IpAccessControlListMappings"), "SIP / Auth / Calls / IpAccessControlListMappings"),
 	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Registrations/CredentialListMappings"), "SIP / Auth / Registrations / CredentialListMappings"),
@@ -112,7 +131,57 @@ TAG_RULES = [
 	(re.compile(r"^/SIP/CredentialLists"), "SIP / CredentialLists"),
 	(re.compile(r"^/SIP/IpAccessControlLists/\{[^}]+\}/IpAddresses"), "SIP / IpAccessControlLists / IpAddresses"),
 	(re.compile(r"^/SIP/IpAccessControlLists"), "SIP / IpAccessControlLists"),
+]
+
+# Full-path rules: applied against the whole path (no AccountSid strip). Used
+# for endpoints OUTSIDE the /2010-04-01/Accounts/{AccountSid}/ namespace.
+FULL_PATH_RULES = [
+	# Account self
+	(re.compile(r"^/2010-04-01/Accounts/\{[^}]+\}\.json$"), "Account"),
+	# v2 — Inbound Processing Region per resource
 	(re.compile(r"^/v2/SipDomains"), "SIP / Domains / InboundProcessingRegion"),
+	(re.compile(r"^/v2/PhoneNumbers"), "Numbers / InboundProcessingRegion"),
+	# v1 — voice trunking extensions
+	(re.compile(r"^/v1/IpRecords"), "Voice trunking / IpRecords"),
+	(re.compile(r"^/v1/SourceIpMappings"), "Voice trunking / SourceIpMappings"),
+	(re.compile(r"^/v1/ByocTrunks"), "Voice trunking / ByocTrunks"),
+	(re.compile(r"^/v1/ConnectionPolicies"), "Voice trunking / ConnectionPolicies"),
+	(re.compile(r"^/v1/Settings"), "Voice trunking / DialingPermissions"),
+	# v1 — AI Assistants subsystem (check BEFORE Conversations so /Assistants/* doesn't fall through)
+	(re.compile(r"^/v1/Assistants/\{[^}]+\}/Tools"), "AI Assistants / Tools"),
+	(re.compile(r"^/v1/Assistants/\{[^}]+\}/Knowledge"), "AI Assistants / Knowledge"),
+	(re.compile(r"^/v1/Assistants/\{[^}]+\}/Feedbacks"), "AI Assistants / Feedback"),
+	(re.compile(r"^/v1/Assistants/\{[^}]+\}/Messages"), "AI Assistants"),
+	(re.compile(r"^/v1/Assistants"), "AI Assistants"),
+	(re.compile(r"^/v1/Tools"), "AI Assistants / Tools"),
+	(re.compile(r"^/v1/Knowledge"), "AI Assistants / Knowledge"),
+	(re.compile(r"^/v1/Sessions"), "AI Assistants / Sessions"),
+	(re.compile(r"^/v1/Policies"), "AI Assistants / Policies"),
+	# v1 — Conversations subsystem (Twilio v1 surface)
+	# Service-scoped variants first so they don't fall into the unscoped buckets.
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Conversations/\{[^}]+\}/Messages"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Conversations/\{[^}]+\}/Participants"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Conversations/\{[^}]+\}/Webhooks"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Conversations"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Roles"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Users"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Bindings"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/Configuration"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/ConversationWithParticipants"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services/\{[^}]+\}/ParticipantConversations"), "Conversations / Services"),
+	(re.compile(r"^/v1/Services"), "Conversations / Services"),
+	# Unscoped Conversations
+	(re.compile(r"^/v1/Conversations/\{[^}]+\}/Messages/\{[^}]+\}/Receipts"), "Conversations / Messages"),
+	(re.compile(r"^/v1/Conversations/\{[^}]+\}/Messages"), "Conversations / Messages"),
+	(re.compile(r"^/v1/Conversations/\{[^}]+\}/Participants"), "Conversations / Participants"),
+	(re.compile(r"^/v1/Conversations/\{[^}]+\}/Webhooks"), "Conversations / Webhooks"),
+	(re.compile(r"^/v1/Conversations"), "Conversations"),
+	(re.compile(r"^/v1/ConversationWithParticipants"), "Conversations"),
+	(re.compile(r"^/v1/ParticipantConversations"), "Conversations / Participants"),
+	(re.compile(r"^/v1/Roles"), "Conversations / Roles"),
+	(re.compile(r"^/v1/Users"), "Conversations / Users"),
+	(re.compile(r"^/v1/Credentials"), "Conversations / Credentials"),
+	(re.compile(r"^/v1/Configuration"), "Conversations / Configuration"),
 ]
 
 # Paths NOT under /AccountSid/ — diagnostics / service introspection.
@@ -126,8 +195,15 @@ TAG_GROUPS = [
 	{"name": "Conferences", "tags": ["Conferences", "Conferences / Participants", "Conferences / Recordings"]},
 	{"name": "Queues", "tags": ["Queues", "Queues / Members"]},
 	{"name": "Applications", "tags": ["Applications"]},
-	{"name": "Numbers", "tags": ["IncomingPhoneNumbers"]},
+	{"name": "Numbers", "tags": ["IncomingPhoneNumbers", "Numbers / InboundProcessingRegion"]},
 	{"name": "Messaging", "tags": ["Messages"]},
+	{"name": "Account", "tags": [
+		"Account",
+		"Account / Balance",
+		"Account / OutgoingCallerIds",
+		"Account / Transcriptions",
+		"Account / Exports",
+	]},
 	{"name": "Account telemetry", "tags": ["Notifications"]},
 	{"name": "SIP trunking", "tags": [
 		"SIP / Domains",
@@ -141,6 +217,32 @@ TAG_GROUPS = [
 		"SIP / CredentialLists / Credentials",
 		"SIP / IpAccessControlLists",
 		"SIP / IpAccessControlLists / IpAddresses",
+	]},
+	{"name": "Voice trunking", "tags": [
+		"Voice trunking / IpRecords",
+		"Voice trunking / SourceIpMappings",
+		"Voice trunking / ByocTrunks",
+		"Voice trunking / ConnectionPolicies",
+		"Voice trunking / DialingPermissions",
+	]},
+	{"name": "Conversations", "tags": [
+		"Conversations",
+		"Conversations / Messages",
+		"Conversations / Participants",
+		"Conversations / Webhooks",
+		"Conversations / Roles",
+		"Conversations / Users",
+		"Conversations / Credentials",
+		"Conversations / Configuration",
+		"Conversations / Services",
+	]},
+	{"name": "AI Assistants", "tags": [
+		"AI Assistants",
+		"AI Assistants / Tools",
+		"AI Assistants / Knowledge",
+		"AI Assistants / Sessions",
+		"AI Assistants / Feedback",
+		"AI Assistants / Policies",
 	]},
 	{"name": "Recordings (top-level)", "tags": ["Recordings"]},
 	{"name": "Diagnostics", "tags": ["Diagnostics"]},
@@ -169,10 +271,15 @@ OPERATION_OVERRIDES = {
 
 
 def tag_for_path(path):
-	"""Return the tag name for an OpenAPI path. Strip the /AccountSid/ prefix
-	so the rule patterns can be terse."""
+	"""Return the tag name for an OpenAPI path. Full-path rules win first
+	(they target endpoints outside the /AccountSid/ namespace, e.g. /v1/*,
+	/v2/*, and the account-self endpoint). Otherwise strip /AccountSid/ and
+	apply the tail rules."""
 	if path in DIAG_PATHS:
 		return "Diagnostics"
+	for pattern, tag in FULL_PATH_RULES:
+		if pattern.match(path):
+			return tag
 	# Strip /2010-04-01/Accounts/{AccountSid}
 	m = re.match(r"^/[^/]+/Accounts/\{[^}]+\}(/.*)$", path)
 	tail = m.group(1) if m else path

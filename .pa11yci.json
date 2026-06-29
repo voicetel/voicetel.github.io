@@ -28,6 +28,7 @@
 		"http://localhost:8000/docs/messaging/",
 		"http://localhost:8000/conversations/",
 		"http://localhost:8000/ai-agents/",
+		"http://localhost:8000/voiceml/compatibility/",
 		"http://localhost:8000/support/voice/sbc/asterisk/"
 	]
 }

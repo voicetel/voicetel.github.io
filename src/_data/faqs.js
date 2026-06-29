@@ -68,7 +68,7 @@ const categories = [
 			},
 			{
 				q: "Does VoiceTel mark up STT, TTS, or storage vendors?",
-				a: "No. Customers bring their own speech-to-text, text-to-speech, and recording-storage vendors where applicable, and pay those providers directly. VoiceTel does not insert a platform markup on top of third-party speech or storage costs.",
+				a: "No. Free defaults — English speech-to-text and built-in text-to-speech voices — ship with every account at no charge. When you pick a specific vendor for production (Deepgram, AWS, Azure, ElevenLabs, S3, etc.), you sign up with them and pay them directly. VoiceTel does not insert a platform markup on top of those third-party costs.",
 			},
 			{
 				q: "What happens if my prepaid balance reaches zero?",
@@ -147,7 +147,7 @@ const categories = [
 			},
 			{
 				q: "Does VoiceTel provide speech services directly?",
-				a: "No. VoiceTel runs the carrier and call-control layer; you bring your own STT, TTS, and recording-storage vendors and pay them directly. There is no VoiceTel markup on those services.",
+				a: "VoiceTel ships free defaults so prototyping starts immediately — a built-in English speech-to-text engine and a small set of built-in TTS voices. For production, you choose the vendor that fits your accuracy, latency, language, and data-handling requirements; VoiceTel runs the carrier and call-control layer and the vendor bills you directly with no platform markup. The flexibility to pick the right engine is a deliberate platform strength.",
 			},
 			{
 				q: "Can VoiceTel help with calls marked spam or scam likely?",
@@ -208,8 +208,8 @@ const categories = [
 			},
 			{
 				q: "Which speech-to-text providers does VoiceTel support?",
-				a: 'Bring your own speech-to-text provider and pay the vendor directly. Supported integrations: <a href="https://console.deepgram.com/signup" rel="external">Deepgram</a>, <a href="https://cloud.google.com/speech-to-text" rel="external">Google Cloud Speech-to-Text</a>, <a href="https://aws.amazon.com/transcribe/" rel="external">AWS Transcribe</a>, and <a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a>.',
-				plain: "Bring your own speech-to-text provider and pay the vendor directly. Supported integrations: Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, and Azure AI Speech.",
+				a: 'English calls have a free VoiceTel STT default for quick starts. For production — or for any non-English call — pick the vendor that\'s right for your accuracy, latency, language, and data-handling needs, and pay them directly with no VoiceTel markup. Supported integrations: <a href="https://console.deepgram.com/signup" rel="external">Deepgram</a>, <a href="https://cloud.google.com/speech-to-text" rel="external">Google Cloud Speech-to-Text</a>, <a href="https://aws.amazon.com/transcribe/" rel="external">AWS Transcribe</a>, and <a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a>.',
+				plain: "English calls have a free VoiceTel STT default for quick starts. For production — or for any non-English call — pick the vendor that's right for your accuracy, latency, language, and data-handling needs, and pay them directly with no VoiceTel markup. Supported integrations: Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, and Azure AI Speech.",
 			},
 		],
 	},

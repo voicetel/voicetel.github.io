@@ -115,8 +115,8 @@
 			]
 		},
 		{
-			"label": "Speech (BYO)",
-			"description": "Speech-to-text and recording transcription. VoiceTel does not bill for transcription; bring your own speech-to-text vendor (Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, or Azure AI Speech) and pay the vendor directly.",
+			"label": "Speech",
+			"description": "Free defaults ship with every account: an English speech-to-text engine on VoiceTel infrastructure and built-in TTS voices. For production, pick the vendor that fits your accuracy, latency, language, and data-handling needs (Deepgram, Google Cloud Speech-to-Text, AWS Transcribe, Azure AI Speech, etc.) and pay them directly. VoiceTel does not mark up third-party speech costs.",
 			"services": [
 				{
 					"id": "stt-realtime",

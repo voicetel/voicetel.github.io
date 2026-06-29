@@ -2,12 +2,12 @@
 layout: layouts/page.njk
 permalink: /voiceml/speech-recognition/
 title: "Speech recognition with <Gather>"
-description: "Transcribe what a caller says on a VoiceML call using the Twilio-compatible <Gather input=\"speech\"> verb. Bring your own Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp account."
+description: "Transcribe what a caller says on a VoiceML call using the Twilio-compatible <Gather input=\"speech\"> verb. Default VoiceTel STT gets you going for free in English; bring your own Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp account to pick the engine that fits your use case."
 ---
 
 <p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Speech recognition</p>
-<h1>Transcribe caller speech with your own speech-to-text provider.</h1>
-<p class="lede">VoiceML transcribes what a caller says using the Twilio-compatible <code>&lt;Gather&gt;</code> verb and powers live conversation in <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. Speech recognition is <strong>bring your own</strong>: you connect your own provider account in the VoiceML portal, and transcription bills to you under your provider's terms.</p>
+<h1>Pick the speech-to-text engine that fits your use case.</h1>
+<p class="lede">VoiceML transcribes what a caller says using the Twilio-compatible <code>&lt;Gather&gt;</code> verb and powers live conversation in <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. A free English default ships with every account so you can prototype the same hour you sign up. For production, choose the engine that's right for your accuracy, latency, language, and data-handling requirements — Deepgram, AWS, Azure, Google, OpenAI, or your own whisper.cpp server, paid directly with no VoiceTel markup.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/signup/">Free trial</a>
 	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
@@ -104,15 +104,15 @@ else:
 	<h3>Nested prompts</h3>
 	<p>Text inside <code>&lt;Gather&gt;</code> — <code>&lt;Say&gt;</code>, <code>&lt;Play&gt;</code>, or <code>&lt;Pause&gt;</code> — plays while collection is active, just like Twilio. The caller can respond during or after the prompt.</p>
 
-	<div class="alert alert-warning" role="note">
-		<p><strong>Before you go live.</strong> Speech recognition only works after you configure a provider on your Account page (see below). If <code>&lt;Gather input="speech"&gt;</code> runs without a configured provider, the call receives a speech-not-configured error rather than silently skipping transcription.</p>
+	<div class="alert alert-info" role="note">
+		<p><strong>English calls work out of the box.</strong> If you don't pick a provider, English <code>&lt;Gather input="speech"&gt;</code> uses the VoiceTel STT default — free, no credentials. For other languages, or once you've picked a vendor that fits your production needs, configure a provider on the Account page. Calls in a language with no configured provider receive a speech-not-configured error rather than silently skipping transcription.</p>
 	</div>
 </section>
 
 <section class="section-block">
-	<h2>Bring your own speech recognition</h2>
-	<p>VoiceTel does not include a shared speech-recognition account. You choose one provider, enter your credentials in the portal, and pay that provider directly — there is no VoiceTel markup on transcription.</p>
-	<p>The same provider setting applies to:</p>
+	<h2>Speech-recognition providers</h2>
+	<p>VoiceML doesn't lock you into one speech engine. A free English default ships with every account so you can prototype immediately. For production, switch to the vendor that gives you the best result on the dimensions you care about — latency, accuracy on accented audio, language coverage, model selection, where the audio is processed, or just the contract you already have. Vendor flexibility is a deliberate strength of the platform.</p>
+	<p>Whichever provider you pick (or leave on the default) applies to both:</p>
 	<ul>
 		<li><code>&lt;Gather input="speech"&gt;</code> and <code>&lt;Gather input="dtmf speech"&gt;</code></li>
 		<li><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> live conversations</li>
@@ -129,7 +129,8 @@ else:
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td><strong>Deepgram</strong></td><td>Real-time speech, low latency</td><td>API key, optional model</td></tr>
+				<tr><td><strong>VoiceTel STT</strong> <em>(default, English, free)</em></td><td>Getting started on English calls without picking a vendor first</td><td>None — just select it</td></tr>
+				<tr><td><strong>Deepgram</strong></td><td>Real-time speech, low latency, multilingual</td><td>API key, optional model</td></tr>
 				<tr><td><strong>AWS Transcribe</strong></td><td>Real-time speech in AWS environments</td><td>Access key, secret, region</td></tr>
 				<tr><td><strong>Microsoft Azure Speech</strong></td><td>Real-time speech, many languages</td><td>Subscription key, region</td></tr>
 				<tr><td><strong>Google Cloud Speech-to-Text</strong></td><td>Batch transcription after the caller speaks</td><td>Service-account JSON, optional model</td></tr>
@@ -138,7 +139,8 @@ else:
 			</tbody>
 		</table>
 	</div>
-	<p><strong>Real-time vs. batch.</strong> Real-time providers (Deepgram, AWS, Azure) transcribe audio as the caller speaks — best for interactive menus and ConversationRelay. Batch providers (Google, OpenAI, whisper.cpp) receive the recorded clip in one request after the caller finishes — simplest to set up when you already have an OpenAI key or run your own whisper.cpp server. Both work with the same voice markup.</p>
+	<p><strong>Real-time vs. batch.</strong> Real-time providers (VoiceTel STT default, Deepgram, AWS, Azure) transcribe audio as the caller speaks — best for interactive menus and ConversationRelay. Batch providers (Google, OpenAI, whisper.cpp) receive the recorded clip in one request after the caller finishes — useful when you already have an OpenAI key or run your own whisper.cpp server. Both work with the same voice markup.</p>
+	<p><strong>Picking the right engine.</strong> For most production workloads the default is a starting point, not the finish line. A real-time vendor (Deepgram or Azure) typically outperforms it on noisy audio, accented English, or specialized vocabulary; batch vendors win when you already pay them for other work or want self-hosted control. The defaults exist so you don't have to make that decision before your first test call.</p>
 
 	<h3>How to enable a provider</h3>
 	<p>Configure speech recognition from your <strong>Account</strong> page in the VoiceML portal (section <strong>Speech-to-text (STT)</strong>):</p>
@@ -157,6 +159,23 @@ else:
 <section class="section-block">
 	<h2>Provider setup guides</h2>
 	<p>Each guide walks through portal setup with concrete examples. After saving, place a test call that uses <code>&lt;Gather input="speech"&gt;</code>.</p>
+
+	<h3>VoiceTel STT — default for English</h3>
+	<p><strong>What you need:</strong> nothing. This is the default on new accounts so English calls just work while you're prototyping. Real-time streaming, English only, no per-minute charge. Most production deployments eventually swap it for a vendor better suited to their workload — see the picking-the-right-engine note above.</p>
+	<p><strong>Portal fields</strong> (Account → Speech-to-text → <strong>VoiceTel STT (default, English, free)</strong>):</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead><tr><th scope="col">Field</th><th scope="col">Example</th></tr></thead>
+			<tbody>
+				<tr><td colspan="2"><em>No credentials required — select and save.</em></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The default runs on VoiceTel infrastructure and is restricted to English (<code>en-*</code>) <code>&lt;Gather language="…"&gt;</code> values. Calls in other languages need a configured BYO provider, or the call returns a speech-not-configured error.</p>
+	<p><strong>Example voice markup:</strong></p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Gather input="speech" language="en-US" action="/handle-speech" method="POST"&gt;
+    &lt;Say&gt;How can we help you today?&lt;/Say&gt;
+&lt;/Gather&gt;</code></pre>
 
 	<h3>Deepgram</h3>
 	<p><strong>What you need:</strong> a Deepgram account and API key with speech-to-text access.</p>
@@ -358,8 +377,8 @@ else:
 	<p>VoiceML uses the same <code>&lt;Gather&gt;</code> syntax as Twilio:</p>
 	<ul>
 		<li><code>input="speech"</code>, <code>language</code>, <code>hints</code>, <code>speechTimeout</code>, and the action callback fields (<code>SpeechResult</code>, <code>Confidence</code>, <code>Language</code>) match Twilio's shape.</li>
-		<li>Existing voice markup that collects speech works with minimal changes — the main step is configuring your own STT provider in the VoiceML portal.</li>
-		<li>On Twilio, speech often ran on Twilio's shared recognizer. On VoiceML, you connect your own Deepgram, AWS, Azure, Google, OpenAI, or whisper.cpp account so billing and data handling follow <strong>your</strong> provider agreement.</li>
+		<li>Existing voice markup that collects English speech works on day one against the VoiceTel STT default — no provider setup, no credentials. Pick a vendor in the portal when you're ready to tune for production.</li>
+		<li>On Twilio, speech ran on Twilio's shared recognizer with per-minute billing baked into the platform. On VoiceML you choose: free defaults for the common case, or your own Deepgram, AWS, Azure, Google, OpenAI, or whisper.cpp account so billing and data handling follow <strong>your</strong> provider agreement — no VoiceTel platform markup on the BYO route.</li>
 	</ul>
 	<p>For ConversationRelay, the WebSocket message types (<code>setup</code>, <code>prompt</code>, <code>text</code>, <code>end</code>) follow Twilio's ConversationRelay protocol.</p>
 </section>
@@ -375,7 +394,7 @@ else:
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td>Call fails with speech not configured</td><td>Select an STT provider on the Account page <strong>and</strong> save valid credentials in that provider's section.</td></tr>
+				<tr><td>Call fails with speech not configured</td><td>English calls use the VoiceTel STT default automatically. For other languages, select a BYO provider on the Account page <strong>and</strong> save valid credentials in that provider's section.</td></tr>
 				<tr><td>Empty <code>SpeechResult</code> on every call</td><td>Confirm the caller spoke before silence timeout; increase <code>maxSpeechTime</code> or adjust <code>speechTimeout</code>. Check <code>actionOnEmptyResult</code> if you need callbacks on silence.</td></tr>
 				<tr><td>Wrong language recognized</td><td>Set <code>&lt;Gather language="…"&gt;</code> to the locale you expect. For Azure and AWS, the language attribute drives recognition.</td></tr>
 				<tr><td>Azure auth error</td><td>The <strong>Region</strong> in the portal must match the region where your Azure Speech resource was created.</td></tr>
@@ -392,8 +411,8 @@ else:
 </section>
 
 <aside class="cta-block" aria-labelledby="stt-cta-heading">
-	<h2 id="stt-cta-heading">Wire one speech menu against your own STT account.</h2>
-	<p>Start a free trial, paste your Deepgram or OpenAI key in the portal, point a test number at a <code>&lt;Gather input="speech"&gt;</code> document, and confirm the transcript arrives on your action URL.</p>
+	<h2 id="stt-cta-heading">Prototype today on the default, tune for production tomorrow.</h2>
+	<p>Start a free trial, point a test number at a <code>&lt;Gather input="speech"&gt;</code> document, and English calls transcribe immediately on the VoiceTel STT default. When you're ready to pick the engine that fits your accuracy, latency, or language needs, paste your vendor key in the portal — same voice markup, no platform markup.</p>
 	<p class="hero-actions">
 		<a class="btn btn-primary" href="/signup/">Free trial</a>
 		<a class="btn btn-secondary" href="/contact/">Contact us</a>

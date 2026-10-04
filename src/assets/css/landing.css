@@ -147,6 +147,12 @@
 		gap: var(--space-5);
 	}
 
+	/* Visual reorder only: the image is not focusable, so reading and tab
+	   order still follow the copy-first DOM. */
+	.landing-illustration {
+		order: -1;
+	}
+
 	.landing-illustration img {
 		max-width: 400px;
 		margin-inline: auto;

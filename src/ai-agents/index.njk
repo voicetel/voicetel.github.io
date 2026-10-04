@@ -63,6 +63,28 @@ illustration: ai-agents
 </section>
 
 <section class="section-block">
+	<h2>Open-source voice agents to start from</h2>
+	<p>These projects were built for Twilio's ConversationRelay and, by our review of their source, run on VoiceML's <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> as-is. Bring your own model key; VoiceML handles the call, speech recognition, and text-to-speech.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Project</th><th scope="col">Built with</th><th scope="col">From</th></tr>
+			</thead>
+			<tbody>
+				{%- for p in conversationRelay.projects | where("status", "as-is") %}
+				<tr>
+					<td><a href="https://github.com/{{ p.repo }}">{{ p.repo | replace("/", "/<wbr>") | safe }}</a></td>
+					<td>{{ p.stack }}</td>
+					<td>{{ p.source }}</td>
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</div>
+	<p>Projects with limits, setup notes, and exactly which ConversationRelay messages VoiceML supports are on the <a href="/voiceml/conversationrelay/">ConversationRelay projects page</a>. <small>Reviewed {{ conversationRelay.reviewed }}; not tested on live calls.</small></p>
+</section>
+
+<section class="section-block">
 	<h2>What's covered</h2>
 	<ul>
 		<li><strong>Assistants</strong> &mdash; CRUD plus <code>POST /Assistants/{id}/Messages</code> for single-turn or full-session inference.</li>

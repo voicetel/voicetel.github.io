@@ -1,0 +1,117 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/conversationrelay/
+title: "ConversationRelay projects for VoiceML"
+description: "Open-source voice agent projects built for Twilio's ConversationRelay protocol, reviewed against VoiceML's <Connect><ConversationRelay>: which run as-is, which have limits, and what VoiceML supports."
+---
+{%- set cr = conversationRelay %}
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / ConversationRelay</p>
+<h1>Voice agent projects you can run on VoiceML.</h1>
+<p class="lede">VoiceML's <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> speaks the same JSON WebSocket protocol as Twilio's ConversationRelay, so open-source voice agents written for it can run against VoiceML. We read the source of popular projects and compared it with what VoiceML supports; here is what runs as-is and what doesn't carry over.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/voiceml/speech-recognition/#conversationrelay">ConversationRelay guide</a>
+	<a class="btn btn-secondary" href="/ai-agents/">AI Agents</a>
+</p>
+
+<section class="section-block">
+	<h2>Runs as-is</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Project</th><th scope="col">Built with</th><th scope="col">From</th><th scope="col">Notes</th></tr>
+			</thead>
+			<tbody>
+				{%- for p in cr.projects | where("status", "as-is") %}
+				<tr>
+					<td><a href="https://github.com/{{ p.repo }}">{{ p.repo | replace("/", "/<wbr>") | safe }}</a></td>
+					<td>{{ p.stack }}</td>
+					<td>{{ p.source }}</td>
+					<td>{{ p.notes or "—" }}</td>
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Runs with limits</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Project</th><th scope="col">Built with</th><th scope="col">What doesn't carry over</th></tr>
+			</thead>
+			<tbody>
+				{%- for p in cr.projects | where("status", "limited") %}
+				<tr>
+					<td><a href="https://github.com/{{ p.repo }}">{{ p.repo | replace("/", "/<wbr>") | safe }}</a></td>
+					<td>{{ p.stack }}</td>
+					<td>{{ p.notes }}</td>
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Building blocks</h2>
+	<ul>
+		{%- for p in cr.projects | where("status", "building-block") %}
+		<li><a href="https://github.com/{{ p.repo }}">{{ p.repo }}</a> ({{ p.stack }}, {{ p.source }}): {{ p.notes }}</li>
+		{%- endfor %}
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Running a project on VoiceML</h2>
+	<ol>
+		<li>Select a speech-to-text and a text-to-speech provider for your VoiceML account. ConversationRelay needs both; see the <a href="/voiceml/speech-recognition/">speech recognition</a> and <a href="/voiceml/text-to-speech/">text-to-speech</a> guides.</li>
+		<li>Run the project and point your number's voice URL at the endpoint that returns its <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> markup.</li>
+		<li>If the project validates webhook signatures, give it your VoiceTel auth token; VoiceML signs requests with the same scheme.</li>
+		<li>If the project calls the REST API (to place or transfer calls, for example), point the Twilio SDK at <code>voiceml.voicetel.com</code> with your VoiceTel credentials.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>What VoiceML supports</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Direction</th><th scope="col">Message</th><th scope="col">Fields</th></tr>
+			</thead>
+			<tbody>
+				{%- for m in cr.support.toApp %}
+				<tr><td>To your app</td><td><code>{{ m.type }}</code></td><td>{{ m.fields }}</td></tr>
+				{%- endfor %}
+				{%- for m in cr.support.fromApp %}
+				<tr><td>From your app</td><td><code>{{ m.type }}</code></td><td>{{ m.fields }}</td></tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</div>
+	<p><code>&lt;ConversationRelay&gt;</code> attributes VoiceML uses: {% for a in cr.support.attributes %}<code>{{ a }}</code>{% if not loop.last %}, {% endif %}{% endfor %}. {% for a in cr.support.informational %}<code>{{ a }}</code>{% if not loop.last %} and {% endif %}{% endfor %} are accepted, but your account's own speech providers are used.</p>
+	<p>Not supported:</p>
+	<ul>
+		{%- for item in cr.support.unsupported %}
+		<li>{{ item }}</li>
+		{%- endfor %}
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Media Streams frameworks</h2>
+	<p>Frameworks that use Twilio's Media Streams instead of ConversationRelay, including the OpenAI Agents SDK, Pipecat, and LiveKit, connect through <code>&lt;Connect&gt;&lt;Stream&gt;</code>: VoiceML delivers the same Media Streams wire protocol to your WebSocket.</p>
+</section>
+
+<p><small>Reviewed {{ cr.reviewed }} by reading each project's source against VoiceML's ConversationRelay support; not tested on live calls. Projects change after review, so check the repository before you deploy. Project names belong to their owners; listing a project does not imply endorsement by, or affiliation with, its authors or Twilio.</small></p>
+
+<aside class="cta-block" aria-labelledby="cr-projects-cta-heading">
+	<h2 id="cr-projects-cta-heading">Put an agent on a call.</h2>
+	<p>Open a VoiceML account, select your speech providers, and point a number at one of these projects.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Sign up</a>
+		<a class="btn btn-secondary" href="/voiceml/">Explore VoiceML</a>
+	</p>
+</aside>

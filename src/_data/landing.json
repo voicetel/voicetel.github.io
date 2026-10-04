@@ -225,7 +225,7 @@
 			"label": "Numbers",
 			"eyebrow": "Local DIDs, toll-free, and porting",
 			"title": "Numbers",
-			"description": "Wholesale rates on every number type. Per-number e911 provisioning. CNAM and caller-ID services available. Port local, toll-free, and mobile numbers with coordinated cutover support.",
+			"description": "Wholesale rates on every number type. Per-number e911 provisioning. CNAM, LIDB, and caller-ID services available. Port local, toll-free, and mobile numbers with coordinated cutover support.",
 			"cta": "Get numbers",
 			"href": "/numbers/",
 			"illustration": {
@@ -250,8 +250,8 @@
 					},
 					{
 						"icon": "geo-alt",
-						"label": "E911 + CNAM",
-						"meta": "per number"
+						"label": "LIDB + E911",
+						"meta": "CNAM · per number"
 					}
 				],
 				"links": [

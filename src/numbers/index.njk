@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "Numbers"
-description: "Local, toll-free, mobile, and ported numbers with E911 provisioning, CNAM, caller-ID services, and VoiceTel product integration."
+description: "Local, toll-free, mobile, and ported numbers with E911 provisioning, CNAM and LIDB caller name, caller-ID services, and VoiceTel product integration."
 ---
 
 <script type="application/ld+json">
@@ -13,7 +13,7 @@ description: "Local, toll-free, mobile, and ported numbers with E911 provisionin
 	"provider": { "@type": "Organization", "name": "{{ site.brand }}", "url": "{{ site.url }}" },
 	"areaServed": "US",
 	"url": "{{ site.url }}/numbers/",
-	"description": "Local, toll-free, and mobile phone number provisioning and porting with per-number E911 provisioning, CNAM, and caller-ID services."
+	"description": "Local, toll-free, and mobile phone number provisioning and porting with per-number E911 provisioning, CNAM and LIDB caller name, and caller-ID services."
 }
 </script>
 
@@ -45,8 +45,8 @@ description: "Local, toll-free, mobile, and ported numbers with E911 provisionin
 		</li>
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
-			<h3>CNAM and caller ID</h3>
-			<p>Add display-name services and caller identity hygiene where available.</p>
+			<h3>CNAM, LIDB, and caller ID</h3>
+			<p>Set the outbound caller name your numbers display through LIDB: up to 15 alphanumeric characters per number, applied on VoiceTel's switch and submitted to the LIDB network. Turn inbound CNAM lookup on or off per number.</p>
 		</li>
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
@@ -56,7 +56,7 @@ description: "Local, toll-free, mobile, and ported numbers with E911 provisionin
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
 			<h3>Numbering API</h3>
-			<p>Lifecycle control over phone numbers — search, order, provision, port, e911, messaging enablement, lookup, and inbound routing — across voice and messaging workflows without manual carrier coordination.</p>
+			<p>Lifecycle control over phone numbers — search, order, provision, port, e911, LIDB caller name, messaging enablement, lookup, and inbound routing — across voice and messaging workflows without manual carrier coordination.</p>
 		</li>
 	</ul>
 </section>

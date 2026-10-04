@@ -1,0 +1,288 @@
+{
+	"_note": "Desktop builds, sizes, and SHA-256 values copied from each app's release page (baseUrl + releasePage) on 2026-10-04; every hash was re-verified against the S3 object. Store listings verified live the same day. Update version, files, and hashes together on each release.",
+	"baseUrl": "https://voicetel-phone.s3.us-east-1.amazonaws.com/",
+	"apps": [
+		{
+			"key": "voicetel",
+			"name": "VoiceTel Phone",
+			"appName": "VoiceTel",
+			"version": "3.8.4",
+			"built": "2026-08-20",
+			"releasePage": "voicetel-download.html",
+			"audience": "For VoiceTel accounts. Sign in with the SIP credentials provisioned in the VoiceTel customer portal.",
+			"stores": {
+				"ios": "https://apps.apple.com/us/app/voicetel-phone/id6795195725",
+				"android": "https://play.google.com/store/apps/details?id=com.voicetel.mobile"
+			},
+			"desktop": [
+				{
+					"file": "VoiceTel-3.8.4.AppImage",
+					"platform": "linux",
+					"format": "AppImage",
+					"arch": "x86-64",
+					"size": "117.0 MB",
+					"description": "Portable — no install. <code>chmod +x</code> and run on any 64-bit Intel/AMD Linux.",
+					"sha256": "5df2c115c334b14f3f1fb6c7749b70fad1ceefe321fc3490ff880aecf7ee38b3"
+				},
+				{
+					"file": "VoiceTel-3.8.4-arm64.AppImage",
+					"platform": "linux",
+					"format": "AppImage",
+					"arch": "arm64",
+					"size": "117.2 MB",
+					"description": "Portable build for 64-bit ARM Linux (Raspberry Pi 4/5, ARM servers).",
+					"sha256": "23fb2963089083a4c5a8aeaacd4a31de6da8ffa6209fb9fefaa398b49a360c5d"
+				},
+				{
+					"file": "VoiceTel-3.8.4.deb",
+					"platform": "linux",
+					"format": ".deb",
+					"arch": "amd64",
+					"size": "80.6 MB",
+					"description": "Debian / Ubuntu installer. <code>sudo apt install ./VoiceTel-3.8.4.deb</code>.",
+					"sha256": "fbb161f0411146eb9b30ad36560aa0aede254e133984788924b5b870dc7c6bf9"
+				},
+				{
+					"file": "VoiceTel-3.8.4-arm64.deb",
+					"platform": "linux",
+					"format": ".deb",
+					"arch": "arm64",
+					"size": "75.5 MB",
+					"description": "Debian / Ubuntu installer for 64-bit ARM.",
+					"sha256": "44a9116e45ae54bc31489ef7c4d4f0f7de8eb5bae5913879d9a8ab7cec1fc6ab"
+				},
+				{
+					"file": "VoiceTel-3.8.4.rpm",
+					"platform": "linux",
+					"format": ".rpm",
+					"arch": "x86-64",
+					"size": "81.1 MB",
+					"description": "Fedora / RHEL / openSUSE. <code>sudo dnf install ./VoiceTel-3.8.4.rpm</code>.",
+					"sha256": "1276fb5727db77ab17266a5b9f1db85d2bd485b620c639cc00dbed96b8fe70cc"
+				},
+				{
+					"file": "VoiceTel-3.8.4.snap",
+					"platform": "linux",
+					"format": "Snap",
+					"arch": "x86-64",
+					"size": "98.5 MB",
+					"description": "Universal Linux Snap. <code>sudo snap install --dangerous ./VoiceTel-3.8.4.snap</code>.",
+					"sha256": "0b90fb35e9b5c3082a4414ef1343a00d56752bf61839cfb98147a216f43752c6"
+				},
+				{
+					"file": "VoiceTel-3.8.4.flatpak",
+					"platform": "linux",
+					"format": "Flatpak",
+					"arch": "x86-64",
+					"size": "82.5 MB",
+					"description": "Universal Linux Flatpak (freedesktop 24.08). <code>flatpak install ./VoiceTel-3.8.4.flatpak</code>.",
+					"sha256": "63fde0b4a46237fa1d1e429d4b0435d02b1d9ff4ba72fe298c791efdb44afd7d"
+				},
+				{
+					"file": "VoiceTel-3.8.4-Setup.exe",
+					"platform": "windows",
+					"format": "Installer (.exe)",
+					"arch": "x64 · NSIS",
+					"size": "96.1 MB",
+					"description": "Standard Windows installer (setup wizard, Start-menu shortcut).",
+					"sha256": "11bf46cb8aaabea722485f19c8309f2389fd1655c9571247dcf9b350aa4ccb8c"
+				},
+				{
+					"file": "VoiceTel-3.8.4.exe",
+					"platform": "windows",
+					"format": "Portable (.exe)",
+					"arch": "x64 · portable",
+					"size": "95.9 MB",
+					"description": "Portable — no install, run the executable directly.",
+					"sha256": "478f1e3a6a90751b11fe8a30c93fe1b37dba11524bd30e9711a1198a941a1146"
+				},
+				{
+					"file": "VoiceTel-3.8.4.zip",
+					"platform": "windows",
+					"format": ".zip",
+					"arch": "x64 · archive",
+					"size": "132.3 MB",
+					"description": "Extract and run <code>VoiceTel.exe</code> — no installer.",
+					"sha256": "700262833bb9f8d6df8372cf3d0ac2ec30030ed602c5ec6435586b814725d04d"
+				},
+				{
+					"file": "VoiceTel-3.8.4.dmg",
+					"platform": "macos",
+					"format": ".dmg",
+					"arch": "x86-64",
+					"size": "116.8 MB",
+					"description": "Intel Macs — open the disk image and drag VoiceTel to Applications. Also runs on Apple Silicon via Rosetta 2.",
+					"sha256": "99b54d0a92e244be25a285eb8ef876bed5628073536ebc73aea669f3ac0762e5"
+				},
+				{
+					"file": "VoiceTel-3.8.4-arm64.dmg",
+					"platform": "macos",
+					"format": ".dmg",
+					"arch": "arm64",
+					"size": "109.0 MB",
+					"description": "Apple Silicon (M1–M4) — open the disk image and drag VoiceTel to Applications.",
+					"sha256": "c885b3ee8f0b76921d31f2de5e8c199502ab1b5363e5f426f28949b653e356e0"
+				},
+				{
+					"file": "VoiceTel-3.8.4-mac.zip",
+					"platform": "macos",
+					"format": ".zip",
+					"arch": "x86-64 · archive",
+					"size": "117.9 MB",
+					"description": "Intel app archive — unzip and move <code>VoiceTel.app</code> to Applications (scripted installs).",
+					"sha256": "8de840cabb236f819e2f14368a6007ca76b27ddad66ce6321908f1041ad59f77"
+				},
+				{
+					"file": "VoiceTel-3.8.4-arm64-mac.zip",
+					"platform": "macos",
+					"format": ".zip",
+					"arch": "arm64 · archive",
+					"size": "110.0 MB",
+					"description": "Apple Silicon app archive — unzip and move <code>VoiceTel.app</code> to Applications.",
+					"sha256": "1ab086cabd5e4ee5b20d9bd41fde6bce266592151e43c0e62d1d5b4268745466"
+				}
+			]
+		},
+		{
+			"key": "voiceml",
+			"name": "VoiceML Phone",
+			"appName": "VoiceML",
+			"version": "3.8.4",
+			"built": "2026-08-20",
+			"releasePage": "voiceml-download.html",
+			"audience": "For VoiceML accounts. Configure it with a VoiceML activation code under Settings → Auto Provision, or enter SIP credentials manually.",
+			"stores": {
+				"ios": "https://apps.apple.com/us/app/voiceml-phone/id6790400043",
+				"android": "https://play.google.com/store/apps/details?id=com.voicetel.voiceml"
+			},
+			"desktop": [
+				{
+					"file": "VoiceML-3.8.4.AppImage",
+					"platform": "linux",
+					"format": "AppImage",
+					"arch": "x86-64",
+					"size": "117.2 MB",
+					"description": "Portable — no install. <code>chmod +x</code> and run on any 64-bit Intel/AMD Linux.",
+					"sha256": "93c4e67cba854b2198f5c976d35a58de992015ff717f727737dff4b43c2fc787"
+				},
+				{
+					"file": "VoiceML-3.8.4-arm64.AppImage",
+					"platform": "linux",
+					"format": "AppImage",
+					"arch": "arm64",
+					"size": "117.5 MB",
+					"description": "Portable build for 64-bit ARM Linux (Raspberry Pi 4/5, ARM servers).",
+					"sha256": "f4e562a0a6dc63a64846508bb3dc27322570d65b8e7a685a854c60619383ed2d"
+				},
+				{
+					"file": "VoiceML-3.8.4.deb",
+					"platform": "linux",
+					"format": ".deb",
+					"arch": "amd64",
+					"size": "80.9 MB",
+					"description": "Debian / Ubuntu installer. <code>sudo apt install ./VoiceML-3.8.4.deb</code>.",
+					"sha256": "07c9f567ec99b1266d1e551a4061ec652db722805e00006b11687d6078335355"
+				},
+				{
+					"file": "VoiceML-3.8.4-arm64.deb",
+					"platform": "linux",
+					"format": ".deb",
+					"arch": "arm64",
+					"size": "75.7 MB",
+					"description": "Debian / Ubuntu installer for 64-bit ARM.",
+					"sha256": "4b8a5ad16cf2a35fd712240a1839f64484e9ff84f247d0e9af92823967050821"
+				},
+				{
+					"file": "VoiceML-3.8.4.rpm",
+					"platform": "linux",
+					"format": ".rpm",
+					"arch": "x86-64",
+					"size": "81.2 MB",
+					"description": "Fedora / RHEL / openSUSE. <code>sudo dnf install ./VoiceML-3.8.4.rpm</code>.",
+					"sha256": "676bf74146917a9180d7efad851e27c6d3342ebd7825d78531ead0ade2fc9892"
+				},
+				{
+					"file": "VoiceML-3.8.4.snap",
+					"platform": "linux",
+					"format": "Snap",
+					"arch": "x86-64",
+					"size": "98.7 MB",
+					"description": "Universal Linux Snap. <code>sudo snap install --dangerous ./VoiceML-3.8.4.snap</code>.",
+					"sha256": "173311dfcbfdb68f9af89f646a42ee3ebafddc0e7861b614b6302c4d98dec25f"
+				},
+				{
+					"file": "VoiceML-3.8.4.flatpak",
+					"platform": "linux",
+					"format": "Flatpak",
+					"arch": "x86-64",
+					"size": "83.2 MB",
+					"description": "Universal Linux Flatpak (freedesktop 24.08). <code>flatpak install ./VoiceML-3.8.4.flatpak</code>.",
+					"sha256": "764d2b3594338020cda0e87c84b7875a0db148a800d4f618e522a2ad4798535b"
+				},
+				{
+					"file": "VoiceML-3.8.4-Setup.exe",
+					"platform": "windows",
+					"format": "Installer (.exe)",
+					"arch": "x64 · NSIS",
+					"size": "96.3 MB",
+					"description": "Standard Windows installer (setup wizard, Start-menu shortcut).",
+					"sha256": "d19d7ded75289a606ec33c0ed984b322aa843838d7ca244217ab062e0a86a842"
+				},
+				{
+					"file": "VoiceML-3.8.4.exe",
+					"platform": "windows",
+					"format": "Portable (.exe)",
+					"arch": "x64 · portable",
+					"size": "96.0 MB",
+					"description": "Portable — no install, run the executable directly.",
+					"sha256": "1d30714cd2a65810f4d6d1ec018f4728214b5928a8cc394a34145be170aee200"
+				},
+				{
+					"file": "VoiceML-3.8.4.zip",
+					"platform": "windows",
+					"format": ".zip",
+					"arch": "x64 · archive",
+					"size": "132.5 MB",
+					"description": "Extract and run <code>VoiceML Phone.exe</code> — no installer.",
+					"sha256": "19d7d8fe68dc6b0f908885ea103f9f020f1889f0dd487d1e7a1f0fd07b8f2621"
+				},
+				{
+					"file": "VoiceML-3.8.4.dmg",
+					"platform": "macos",
+					"format": ".dmg",
+					"arch": "x86-64",
+					"size": "117.1 MB",
+					"description": "Intel Macs — open the disk image and drag VoiceML to Applications. Also runs on Apple Silicon via Rosetta 2.",
+					"sha256": "0417df17060c68acd83a264ddd9e5faf25dc98f8ce101f867f9ebeb503d371d8"
+				},
+				{
+					"file": "VoiceML-3.8.4-arm64.dmg",
+					"platform": "macos",
+					"format": ".dmg",
+					"arch": "arm64",
+					"size": "109.2 MB",
+					"description": "Apple Silicon (M1–M4) — open the disk image and drag VoiceML to Applications.",
+					"sha256": "59822f817d3318bb5f44ca067693f9ba64dd8a1e080fad87a658bc4dc5cf8bc4"
+				},
+				{
+					"file": "VoiceML-3.8.4-mac.zip",
+					"platform": "macos",
+					"format": ".zip",
+					"arch": "x86-64 · archive",
+					"size": "118.1 MB",
+					"description": "Intel app archive — unzip and move <code>VoiceML.app</code> to Applications (scripted installs).",
+					"sha256": "f315189a694db46562724fb961f1960fff00ed74fba2be1e0bf9bf2aa7346c0e"
+				},
+				{
+					"file": "VoiceML-3.8.4-arm64-mac.zip",
+					"platform": "macos",
+					"format": ".zip",
+					"arch": "arm64 · archive",
+					"size": "110.2 MB",
+					"description": "Apple Silicon app archive — unzip and move <code>VoiceML.app</code> to Applications.",
+					"sha256": "e2dafee75cfe2caef664a6f2906e6688e827590a5768d1220b28255c37dd2627"
+				}
+			]
+		}
+	]
+}

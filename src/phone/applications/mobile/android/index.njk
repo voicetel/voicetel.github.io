@@ -2,51 +2,58 @@
 layout: layouts/page.njk
 permalink: /phone/applications/mobile/android/
 title: "VoiceTel Phone for Android — Install Guide"
-description: "Install VoiceTel Phone on Android using Developer Options and ADB. Step-by-step install guide for the signed APK from S3."
+description: "Install VoiceTel Phone or VoiceML Phone on Android from Google Play, allow microphone and notification access, and sign in to start calling."
 ---
+{%- set voicetel = phoneApps.apps[0] %}
 
 <p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/mobile/">Mobile</a> &middot; Android</p>
 <h1>VoiceTel Phone for Android.</h1>
-<p class="lede">Until the Google Play listing is live, install the signed <code>.apk</code> from S3 via ADB.</p>
+<p class="lede">Install from Google Play, sign in, and keep calls running in the background with a foreground-service notification that carries Mute and Hold controls. VoiceML Phone, the same softphone for VoiceML accounts, is on Google Play too.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.apk">Download .apk</a>
+	<a class="btn btn-primary" href="{{ voicetel.stores.android }}">Get it on Google Play</a>
 	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
 </p>
 
-<section id="developer-options" class="section-block">
-	<h2>1. Enable Developer Options &amp; USB Debugging</h2>
-	<ol>
-		<li>Open <strong>Settings &rarr; About Phone</strong> and tap <strong>Build Number</strong> seven times.</li>
-		<li>Go to <strong>Settings &rarr; System &rarr; Developer Options</strong> and enable <strong>USB Debugging</strong>.</li>
-	</ol>
-</section>
-
-<section id="platform-tools" class="section-block">
-	<h2>2. Install platform tools</h2>
-	<ol>
-		<li>Install <strong>Android SDK Platform Tools</strong> (includes <code>adb</code>) from Google.</li>
-		<li>Connect your device via USB and accept the debugging prompt on the phone.</li>
-	</ol>
-</section>
-
-<section id="download" class="section-block">
-	<h2>3. Download the APK</h2>
-	<ol>
-		<li>Download <a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.apk">VoiceTel-3.5.6.apk</a>.</li>
-		<li>Verify SHA-256: <code>99c49cf9e921662a0978bb4d6bce2c6317bb207858d423b3457e6825c0b0b84c</code></li>
-	</ol>
-</section>
-
 <section id="install" class="section-block">
-	<h2>4. Install with ADB</h2>
-	<ol>
-		<li>Open Terminal or Command Prompt in the download directory.</li>
-		<li>Run <code>adb devices</code> to verify the device is listed.</li>
-		<li>Install: <code>adb install -r VoiceTel-3.5.6.apk</code></li>
-	</ol>
-	<div class="alert alert-info" role="note">
-		<p><strong>Tip:</strong> If you see <em>device offline</em>, run <code>adb kill-server</code> then <code>adb start-server</code>, and reconnect the phone.</p>
+	<h2>1. Install from Google Play</h2>
+	<div class="oss-cards">
+		{%- for app in phoneApps.apps %}
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
+				<h3 class="oss-card__title">{{ app.name }}</h3>
+			</header>
+			<p class="oss-card__description">{{ app.audience }}</p>
+			<p class="oss-card__url"><a href="{{ app.stores.android }}">{{ app.name }} on Google Play</a></p>
+		</article>
+		{%- endfor %}
 	</div>
+</section>
+
+<section id="firstlaunch" class="section-block">
+	<h2>2. First launch</h2>
+	<ol>
+		<li>Allow <strong>microphone</strong> access when prompted; calls need it.</li>
+		<li>Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed.</li>
+		<li>Optionally allow <strong>contacts</strong> access to dial from your address book.</li>
+		<li>Sign in. VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>.</li>
+	</ol>
+</section>
+
+<section id="faq" class="section-block faq-block">
+	<h2>FAQ</h2>
+	<details class="faq-item">
+		<summary>Which app do I need?</summary>
+		<p>VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on Google Play.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Incoming calls don't ring when the app is in the background</summary>
+		<p>Make sure notifications are allowed for the app, and exclude it from battery optimization (<em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Battery</em> &rarr; <em>Unrestricted</em>) so Android doesn't stop it in the background.</p>
+	</details>
+	<details class="faq-item">
+		<summary>The other person can't hear me</summary>
+		<p>Open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions</em> and allow <em>Microphone</em>.</p>
+	</details>
 </section>
 
 <aside class="cta-block" aria-labelledby="phone-android-cta-heading">

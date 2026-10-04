@@ -86,6 +86,10 @@ export default function (eleventyConfig) {
 		(pricing, serviceId, volume) => `$${volumeRateValue(pricing, serviceId, volume).toFixed(4)}`
 	);
 
+	eleventyConfig.addFilter("where", (items, key, value) =>
+		items.filter((item) => item[key] === value)
+	);
+
 	eleventyConfig.addShortcode("year", () => String(new Date().getFullYear()));
 
 	eleventyConfig.addShortcode("yearsSince", (startYear) =>

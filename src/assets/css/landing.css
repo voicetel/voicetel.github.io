@@ -125,19 +125,9 @@
 	margin-top: var(--space-4);
 }
 
-.landing-illustration {
+.landing-panel .illustration {
 	grid-column: 1 / -1;
 	margin: 0;
-	padding: var(--space-4);
-	background: var(--light-bg);
-	border: 1px solid var(--border-color);
-	border-radius: var(--radius-sm);
-}
-
-.landing-illustration img {
-	display: block;
-	width: 100%;
-	height: auto;
 }
 
 @media (width <= 960px) {
@@ -149,13 +139,8 @@
 
 	/* Visual reorder only: the image is not focusable, so reading and tab
 	   order still follow the copy-first DOM. */
-	.landing-illustration {
+	.landing-panel .illustration {
 		order: -1;
-	}
-
-	.landing-illustration img {
-		max-width: 400px;
-		margin-inline: auto;
 	}
 }
 
@@ -168,9 +153,5 @@
 	.landing-tabs button {
 		padding-inline: var(--space-1);
 		font-size: var(--text-sm);
-	}
-
-	.landing-illustration {
-		padding: var(--space-3);
 	}
 }

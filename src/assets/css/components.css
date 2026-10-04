@@ -3982,3 +3982,34 @@ html:not(.js) .code-tabs [role="tabpanel"] {
 		padding: var(--space-2);
 	}
 }
+
+/* ─── Illustration strip ─── */
+
+/* Wide SVG above 960px, stacked narrow SVG below (see illustration-figure.njk);
+   the narrow drawing is capped so its labels don't balloon on tablets. */
+.illustration {
+	margin: var(--space-6) 0;
+	padding: var(--space-4);
+	background: var(--light-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-sm);
+}
+
+.illustration img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+@media (width <= 960px) {
+	.illustration img {
+		max-width: 400px;
+		margin-inline: auto;
+	}
+}
+
+@media (width <= 480px) {
+	.illustration {
+		padding: var(--space-3);
+	}
+}

@@ -2,7 +2,7 @@ import globals from "globals";
 
 export default [
 	{
-		ignores: ["src/assets/js/phone-web.js"],
+		ignores: ["src/assets/js/phone-web.js", "src/assets/js/phone-web-helpers.js"],
 	},
 	{
 		files: ["src/assets/js/**/*.js", "tools/**/*.{js,mjs}", "eleventy.config.js"],

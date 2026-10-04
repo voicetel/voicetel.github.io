@@ -84,6 +84,28 @@ illustration: ai-agents
 	<p>Projects with limits, setup notes, and exactly which ConversationRelay messages VoiceML supports are on the <a href="/voiceml/conversationrelay/">ConversationRelay projects page</a>. <small>Reviewed {{ conversationRelay.reviewed }}; not tested on live calls.</small></p>
 </section>
 
+<section class="section-block" id="voice-ai-frameworks">
+	<h2>Voice AI frameworks</h2>
+	<p>Open-source frameworks for building your own voice agent pipeline reach the phone network through VoiceML's Media Streams (<code>&lt;Connect&gt;&lt;Stream&gt;</code>) or through VoiceTel SIP trunking. How each one connects:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<thead>
+				<tr><th scope="col">Framework</th><th scope="col">Connects through</th><th scope="col">What to configure</th></tr>
+			</thead>
+			<tbody>
+				{%- for f in voiceFrameworks.frameworks %}
+				<tr>
+					<td><a href="https://github.com/{{ f.repo }}">{{ f.name }}</a><br><small>{{ f.license }}</small></td>
+					<td>{{ f.connects | safe }}</td>
+					<td>{{ f.configure | safe }}</td>
+				</tr>
+				{%- endfor %}
+			</tbody>
+		</table>
+	</div>
+	<p><small>Reviewed {{ voiceFrameworks.reviewed }} by reading each framework's telephony code; not tested on live calls. Project names belong to their owners; listing a project does not imply endorsement by, or affiliation with, its authors.</small></p>
+</section>
+
 <section class="section-block">
 	<h2>What's covered</h2>
 	<ul>

@@ -1,0 +1,115 @@
+{
+	"_note": "Open-source projects built for Twilio's ConversationRelay protocol, reviewed by reading each repository's source (at reviewedCommit) against VoiceML's <Connect><ConversationRelay> implementation. Not tested on live calls. Re-review when VoiceML's relay support or a listed project changes, and update `reviewed`.",
+	"reviewed": "2026-10-04",
+	"support": {
+		"toApp": [
+			{ "type": "setup", "fields": "sessionId, callSid, language" },
+			{ "type": "prompt", "fields": "voicePrompt, lang, last" },
+			{ "type": "interrupt", "fields": "utteranceUntilInterrupt, durationUntilInterruptMs" },
+			{ "type": "dtmf", "fields": "digit" }
+		],
+		"fromApp": [
+			{ "type": "text", "fields": "token, interruptible, preemptible, last" },
+			{ "type": "play", "fields": "source, interruptible, preemptible" },
+			{ "type": "end", "fields": "handoffData (returned on the <Connect> action callback)" }
+		],
+		"attributes": ["url", "voice", "language", "welcomeGreeting"],
+		"informational": ["ttsProvider", "transcriptionProvider"],
+		"unsupported": [
+			"sendDigits and language-switch messages from your app (ignored)",
+			"caller details (from, to, direction, callerName) in the setup message",
+			"<Parameter> values (customParameters in setup)",
+			"other <ConversationRelay> attributes, such as dtmfDetection and interruptByDtmf (ignored; DTMF is always forwarded)"
+		]
+	},
+	"projects": [
+		{
+			"repo": "twilio-samples/conversationrelay-elevenlabs-openai",
+			"stack": "Node.js · OpenAI",
+			"source": "Twilio sample",
+			"status": "as-is",
+			"notes": "The ElevenLabs voice ID applies only if your VoiceML account uses ElevenLabs for text-to-speech.",
+			"reviewedCommit": "dde3b85"
+		},
+		{
+			"repo": "twilio-samples/conversationrelay-ai-demo",
+			"stack": "Next.js · OpenAI",
+			"source": "Twilio sample",
+			"status": "as-is",
+			"notes": "The outbound-call button uses the Twilio SDK; point it at voiceml.voicetel.com with your VoiceTel credentials.",
+			"reviewedCommit": "28e48a7"
+		},
+		{
+			"repo": "langflow-ai/langflow-twilio-voice",
+			"stack": "Node.js · Langflow",
+			"source": "Langflow",
+			"status": "as-is",
+			"notes": "",
+			"reviewedCommit": "f717cb3"
+		},
+		{
+			"repo": "pkamp3/cr-anthropic-demo",
+			"stack": "Node.js · Anthropic Claude",
+			"source": "Community",
+			"status": "as-is",
+			"notes": "",
+			"reviewedCommit": "1a181bb"
+		},
+		{
+			"repo": "rishabkumar7/twilio-cr-gemini-python",
+			"stack": "Python · Google Gemini",
+			"source": "Community",
+			"status": "as-is",
+			"notes": "The ElevenLabs voice ID applies only if your VoiceML account uses ElevenLabs for text-to-speech.",
+			"reviewedCommit": "ebc9fa6"
+		},
+		{
+			"repo": "manbearshark/ConversationRelay-LiveChat-Bedrock-Fargate",
+			"stack": "Node.js · Amazon Bedrock on AWS Fargate",
+			"source": "Community",
+			"status": "as-is",
+			"notes": "Its DTMF attributes are ignored (VoiceML always forwards DTMF), and the <Parameter> values it adds are not forwarded; the sample does not read them.",
+			"reviewedCommit": "0d83de6"
+		},
+		{
+			"repo": "danohn/langchain-conversationrelay",
+			"stack": "Python · LangChain",
+			"source": "Community",
+			"status": "limited",
+			"notes": "Memory across calls from the same number does not carry over: it keys memory on a caller number passed as a <Parameter>, which VoiceML does not forward, so each call starts fresh.",
+			"reviewedCommit": "4de7489"
+		},
+		{
+			"repo": "pBread/twilio-agentic-voice-assistant",
+			"stack": "TypeScript · OpenAI",
+			"source": "Community",
+			"status": "limited",
+			"notes": "Sending DTMF and switching language mid-call are ignored, and its custom parameters are not forwarded.",
+			"reviewedCommit": "5fee36c"
+		},
+		{
+			"repo": "midshipman/ConvRelay-LiteLLM",
+			"stack": "Python · LiteLLM",
+			"source": "Community",
+			"status": "limited",
+			"notes": "Needs a one-line change: it reads the caller number from the setup message, which VoiceML does not send. Change message['from'] to message.get('from', '') or the call ends after setup.",
+			"reviewedCommit": "a42703c"
+		},
+		{
+			"repo": "twilio-labs/conversationrelay-bridge-js",
+			"stack": "TypeScript library",
+			"source": "Twilio Labs",
+			"status": "building-block",
+			"notes": "Implements the full protocol; its sendDigits and language helpers have no effect on VoiceML.",
+			"reviewedCommit": "bad1cda"
+		},
+		{
+			"repo": "twilio-samples/cr-flowiseai",
+			"stack": "TypeScript · Flowise",
+			"source": "Twilio sample",
+			"status": "building-block",
+			"notes": "Built on conversationrelay-bridge-js; uses the core prompt-and-reply loop.",
+			"reviewedCommit": "ee4bd7b"
+		}
+	]
+}

@@ -354,7 +354,7 @@ else:
 </section>
 
 <section class="section-block">
-	<h2>ConversationRelay</h2>
+	<h2 id="conversationrelay">ConversationRelay</h2>
 	<p><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> runs a live voice conversation: VoiceML transcribes the caller's speech and sends text to your WebSocket endpoint; your endpoint sends back text for VoiceML to speak.</p>
 	<p>Speech recognition uses the <strong>same STT provider</strong> you configure on the Account page. Text-to-speech uses your <strong>TTS provider</strong> (see the <a href="/voiceml/text-to-speech/">text-to-speech guide</a>).</p>
 	<p>Both must be configured before ConversationRelay can run:</p>
@@ -370,6 +370,7 @@ else:
     &lt;/Connect&gt;
 &lt;/Response&gt;</code></pre>
 	<p>Your WebSocket receives a <code>setup</code> message when the session starts, <code>prompt</code> messages with finalized caller transcripts, and sends <code>text</code> messages with replies for VoiceML to speak.</p>
+	<p>Open-source voice agents built for Twilio's ConversationRelay can run here too; see <a href="/voiceml/conversationrelay/">which projects run as-is</a>.</p>
 </section>
 
 <section class="section-block">

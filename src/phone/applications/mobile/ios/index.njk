@@ -2,52 +2,58 @@
 layout: layouts/page.njk
 permalink: /phone/applications/mobile/ios/
 title: "VoiceTel Phone for iPhone — Install Guide"
-description: "Sideload VoiceTel Phone on iPhone using Developer Mode and Apple Configurator 2 or Xcode. Step-by-step install guide for the signed .ipa from S3."
+description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Store, allow microphone and notification access, and sign in to start calling."
 ---
+{%- set voicetel = phoneApps.apps[0] %}
 
 <p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/mobile/">Mobile</a> &middot; iPhone</p>
 <h1>VoiceTel Phone for iPhone.</h1>
-<p class="lede">Until the App Store listing is live, install the signed <code>.ipa</code> using a Mac with Apple Configurator 2 or Xcode. Developer Mode is required on the device.</p>
+<p class="lede">Install from the App Store, sign in, and incoming calls appear on the native iOS call screen through CallKit. VoiceML Phone, the same softphone for VoiceML accounts, is on the App Store too.</p>
 <p class="hero-actions">
-	<a class="btn btn-primary" href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.ipa">Download .ipa</a>
+	<a class="btn btn-primary" href="{{ voicetel.stores.ios }}">Get it on the App Store</a>
 	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
 </p>
 
-<section id="developer-mode" class="section-block">
-	<h2>1. Enable Developer Mode on iPhone</h2>
-	<ol>
-		<li>Update iOS to the latest version.</li>
-		<li>Go to <strong>Settings &rarr; Privacy &amp; Security</strong>.</li>
-		<li>Scroll to <strong>Developer Mode</strong>, toggle it on, and restart.</li>
-	</ol>
-</section>
-
-<section id="mac-tools" class="section-block">
-	<h2>2. Install required software (Mac)</h2>
-	<ol>
-		<li>Install <strong>Apple Configurator 2</strong> from the Mac App Store (or <strong>Xcode</strong>).</li>
-		<li>Sign in with an Apple ID if prompted.</li>
-	</ol>
-</section>
-
-<section id="download" class="section-block">
-	<h2>3. Download the iOS binary</h2>
-	<ol>
-		<li>Download <a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.ipa">VoiceTel-3.5.6.ipa</a>.</li>
-		<li>Verify SHA-256: <code>7fb52ca52a98c4b1eff67c138d52c933b0d1b8735d953e85a60a57bd036948ba</code></li>
-	</ol>
-</section>
-
 <section id="install" class="section-block">
-	<h2>4. Install the IPA</h2>
-	<ol>
-		<li>Connect the iPhone via USB and unlock it.</li>
-		<li>Open <strong>Apple Configurator 2</strong> and drag the <code>.ipa</code> onto the device. Alternatively, in <strong>Xcode &rarr; Window &rarr; Devices and Simulators</strong>, select your device and press <strong>+</strong> to add the <code>.ipa</code>.</li>
-		<li>On first launch, if prompted, go to <strong>Settings &rarr; General &rarr; VPN &amp; Device Management</strong> and trust the developer app.</li>
-	</ol>
-	<div class="alert alert-info" role="note">
-		<p><strong>Note:</strong> Installing an <code>.ipa</code> requires a valid provisioning profile. If you encounter signing errors, contact your administrator for an enterprise or TestFlight build.</p>
+	<h2>1. Install from the App Store</h2>
+	<div class="oss-cards">
+		{%- for app in phoneApps.apps %}
+		<article class="oss-card">
+			<header class="oss-card__header">
+				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
+				<h3 class="oss-card__title">{{ app.name }}</h3>
+			</header>
+			<p class="oss-card__description">{{ app.audience }}</p>
+			<p class="oss-card__url"><a href="{{ app.stores.ios }}">{{ app.name }} on the App Store</a></p>
+		</article>
+		{%- endfor %}
 	</div>
+</section>
+
+<section id="firstlaunch" class="section-block">
+	<h2>2. First launch</h2>
+	<ol>
+		<li>Allow <strong>microphone</strong> access when prompted; calls need it.</li>
+		<li>Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed.</li>
+		<li>Optionally allow <strong>contacts</strong> access to dial from your address book. Contacts stay on the device.</li>
+		<li>Sign in. VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>.</li>
+	</ol>
+</section>
+
+<section id="faq" class="section-block faq-block">
+	<h2>FAQ</h2>
+	<details class="faq-item">
+		<summary>Which app do I need?</summary>
+		<p>VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on the App Store.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Incoming calls don't ring when the app is closed</summary>
+		<p>Open <em>Settings &rarr; Notifications</em>, select the app, and turn on <em>Allow Notifications</em>. Incoming calls arrive as push notifications and ring on the CallKit call screen.</p>
+	</details>
+	<details class="faq-item">
+		<summary>The other person can't hear me</summary>
+		<p>Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app.</p>
+	</details>
 </section>
 
 <aside class="cta-block" aria-labelledby="phone-ios-cta-heading">

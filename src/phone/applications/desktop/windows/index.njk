@@ -2,12 +2,14 @@
 layout: layouts/page.njk
 permalink: /phone/applications/desktop/windows/
 title: "VoiceTel Phone for Windows — Install Guide & FAQ"
-description: "Download, install, and troubleshoot VoiceTel Phone on Windows (.exe / .msi). Step-by-step setup, SHA-256 checksums, first-launch walkthrough, and FAQ."
+description: "Download, install, and troubleshoot VoiceTel Phone and VoiceML Phone on Windows (installer .exe, portable .exe, or .zip). SHA-256 checksums, first-launch walkthrough, and FAQ."
+platform: windows
 ---
+{%- set voicetel = phoneApps.apps[0] %}
 
 <p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/desktop/">Desktop</a> &middot; Windows</p>
 <h1>VoiceTel Phone for Windows.</h1>
-<p class="lede">Step-by-step guide for downloading, installing, and troubleshooting the Windows app (.exe / .msi).</p>
+<p class="lede">Download, install, and troubleshoot the Windows app: installer, portable executable, or .zip archive. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/signup/">Sign up</a>
 	<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
@@ -15,42 +17,8 @@ description: "Download, install, and troubleshoot VoiceTel Phone on Windows (.ex
 
 <section id="download" class="section-block">
 	<h2>1. Download</h2>
-	<p>Choose the installer that suits your deployment. If you're unsure, select the <strong>.exe</strong> version.</p>
-
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "layers" %}</span>
-				<h3 class="oss-card__title">NSIS Installer (.exe)</h3>
-			</header>
-			<p class="oss-card__description">Best for most users. Wizard-based setup with UI.</p>
-			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6-Setup.exe">Download .exe</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "layers" %}</span>
-				<h3 class="oss-card__title">MSI Installer (.msi)</h3>
-			</header>
-			<p class="oss-card__description">For enterprise deployment (SCCM / Intune / GPO). Supports silent installs.</p>
-			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6-Installer.msi">Download .msi</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "layers" %}</span>
-				<h3 class="oss-card__title">Portable executable (.exe)</h3>
-			</header>
-			<p class="oss-card__description">Runs directly on Windows without an installer — useful for restricted environments.</p>
-			<p class="oss-card__url"><a href="https://voicetel-phone.s3.us-east-1.amazonaws.com/VoiceTel-3.5.6.exe">Download .exe</a></p>
-		</article>
-	</div>
-
-	<p><strong>SHA-256 checksums</strong></p>
-	<pre class="code-block" data-lang="sha256"><code>e9a30a5a68e6f908132b9f0824b80595a320c35b0f1f494f594904e11eabdd70  VoiceTel-3.5.6-Setup.exe
-b7a2ed1066daddb116f41cce50267e8c4089a50fbf6d0237e09cb09fd62fee10  VoiceTel-3.5.6-Installer.msi
-5d8a5699e49d460eee14e24e9fe5e5a97bf007305fac9b85185069933ca7b992  VoiceTel-3.5.6.exe
-a3a4512398965e5c38cff65488393b639bacb4a813d8e1d713f05f3f5f2062b5  VoiceTel-3.5.6-Installer.zip</code></pre>
+	<p>Choose the build that suits your deployment. If you're unsure, use the <strong>installer (.exe)</strong>.</p>
+	{% include "partials/phone-desktop-downloads.njk" %}
 </section>
 
 <section id="verify" class="section-block">
@@ -58,7 +26,7 @@ a3a4512398965e5c38cff65488393b639bacb4a813d8e1d713f05f3f5f2062b5  VoiceTel-3.5.6
 	<p>Validate file integrity by comparing SHA-256 checksums.</p>
 	<ol>
 		<li>Open <strong>Windows PowerShell</strong>.</li>
-		<li>Run: <code>Get-FileHash .\VoiceTel-3.5.6-Setup.exe -Algorithm SHA256</code></li>
+		<li>Run: <code>Get-FileHash .\VoiceTel-{{ voicetel.version }}-Setup.exe -Algorithm SHA256</code></li>
 		<li>Compare the output with the value listed above.</li>
 	</ol>
 </section>
@@ -66,18 +34,19 @@ a3a4512398965e5c38cff65488393b639bacb4a813d8e1d713f05f3f5f2062b5  VoiceTel-3.5.6
 <section id="install" class="section-block">
 	<h2>3. Install</h2>
 	<ol>
-		<li>Double-click the downloaded <strong>.exe</strong> or <strong>.msi</strong> file.</li>
+		<li>Double-click the downloaded <strong>-Setup.exe</strong> file. For the portable build, run the <strong>.exe</strong> directly, or extract the <strong>.zip</strong> and run the app inside it.</li>
 		<li>If Windows SmartScreen appears, click <em>More info</em>, then <em>Run anyway</em>.</li>
 		<li>Follow the installation wizard to complete setup.</li>
 	</ol>
+	<p><strong>Upgrading?</strong> Fully quit the running app from the system tray (right-click &rarr; <em>Quit</em>) before installing; otherwise the single-instance lock re-focuses the old version.</p>
 </section>
 
 <section id="firstlaunch" class="section-block">
 	<h2>4. First launch</h2>
 	<ol>
-		<li>Open <strong>VoiceTel Phone</strong> from the Start Menu.</li>
-		<li>Allow microphone access when prompted. If you missed the prompt, go to <em>Settings &rarr; Privacy &amp; security &rarr; Microphone</em>, enable <em>Microphone access</em>, and allow <em>VoiceTel Phone</em>.</li>
-		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal.</li>
+		<li>Open <strong>VoiceTel</strong> (or <strong>VoiceML Phone</strong>) from the Start Menu.</li>
+		<li>Allow microphone access when prompted. If you missed the prompt, go to <em>Settings &rarr; Privacy &amp; security &rarr; Microphone</em>, enable <em>Microphone access</em>, and allow the app.</li>
+		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal. In VoiceML Phone, enter your VoiceML activation code under <em>Settings &rarr; Auto Provision</em> instead.</li>
 	</ol>
 </section>
 
@@ -85,7 +54,7 @@ a3a4512398965e5c38cff65488393b639bacb4a813d8e1d713f05f3f5f2062b5  VoiceTel-3.5.6
 	<h2>FAQ</h2>
 	<details class="faq-item">
 		<summary>How do I uninstall or repair the app?</summary>
-		<p>Open <em>Settings &rarr; Apps &rarr; Installed apps</em>. Locate <strong>VoiceTel Phone</strong> and choose <em>Uninstall</em> or <em>Modify/Repair</em> if available.</p>
+		<p>Open <em>Settings &rarr; Apps &rarr; Installed apps</em>. Locate <strong>VoiceTel</strong> and choose <em>Uninstall</em> or <em>Modify/Repair</em> if available.</p>
 	</details>
 	<details class="faq-item">
 		<summary>What if audio doesn't work?</summary>
@@ -101,7 +70,7 @@ a3a4512398965e5c38cff65488393b639bacb4a813d8e1d713f05f3f5f2062b5  VoiceTel-3.5.6
 	</details>
 	<details class="faq-item">
 		<summary>Can I install without admin rights?</summary>
-		<p>Yes — use the portable executable (.exe) build above.</p>
+		<p>Yes — use the portable executable (.exe) or the .zip archive above.</p>
 	</details>
 </section>
 

@@ -6,7 +6,7 @@ description: "VoiceTel Phone mobile clients for iPhone and Android. Background c
 
 <p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; Mobile</p>
 <h1>Carry your VoiceTel identity on iOS and Android.</h1>
-<p class="lede">Background calling, Bluetooth audio routing, and adaptive network switching between Wi-Fi and cellular. The same VoiceTel SIP credentials follow you between devices.</p>
+<p class="lede">Background calling, Bluetooth audio routing, and adaptive network switching between Wi-Fi and cellular. Free on the App Store and Google Play, with VoiceML Phone alongside for VoiceML accounts. The same VoiceTel SIP credentials follow you between devices.</p>
 <p class="hero-actions">
 	<a class="btn btn-primary" href="/phone/applications/mobile/ios/">iPhone install guide</a>
 	<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
@@ -22,7 +22,7 @@ description: "VoiceTel Phone mobile clients for iPhone and Android. Background c
 				<h3 class="oss-card__title"><a href="/phone/applications/mobile/ios/">iPhone (iOS)</a></h3>
 			</header>
 			<p class="oss-card__description">Native iOS client with CallKit-style call presentation, background incoming-call wakeup, and Bluetooth audio routing across AirPods, in-car systems, and wired headsets. Adaptive transport falls back gracefully between Wi-Fi and cellular.</p>
-			<p class="oss-card__url"><a href="/phone/applications/mobile/ios/">iPhone install guide &rarr;</a></p>
+			<p class="oss-card__url"><a href="{{ phoneApps.apps[0].stores.ios }}">App Store</a> &middot; <a href="/phone/applications/mobile/ios/">iPhone install guide &rarr;</a></p>
 		</article>
 
 		<article class="oss-card">
@@ -31,7 +31,7 @@ description: "VoiceTel Phone mobile clients for iPhone and Android. Background c
 				<h3 class="oss-card__title"><a href="/phone/applications/mobile/android/">Android</a></h3>
 			</header>
 			<p class="oss-card__description">Native Android client with foreground-service-backed background calling, full Bluetooth headset and in-car audio support, and seamless network switching between Wi-Fi and mobile data.</p>
-			<p class="oss-card__url"><a href="/phone/applications/mobile/android/">Android install guide &rarr;</a></p>
+			<p class="oss-card__url"><a href="{{ phoneApps.apps[0].stores.android }}">Google Play</a> &middot; <a href="/phone/applications/mobile/android/">Android install guide &rarr;</a></p>
 		</article>
 	</div>
 </section>
@@ -39,7 +39,7 @@ description: "VoiceTel Phone mobile clients for iPhone and Android. Background c
 <section class="section-block">
 	<h2>What you'll need</h2>
 	<ul>
-		<li>VoiceTel SIP credentials (provisioned from the customer portal after signup).</li>
+		<li>VoiceTel SIP credentials (provisioned from the customer portal after signup), or a VoiceML activation code for VoiceML Phone.</li>
 		<li>Microphone permission granted to the app.</li>
 		<li>Background-app-refresh / battery-optimization exclusion enabled, so incoming calls reach the device while the app is in the background.</li>
 	</ul>

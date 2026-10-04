@@ -1,0 +1,22 @@
+{#- Desktop download cards and checksums for one platform; set `platform` to
+	"macos", "windows", or "linux" before including. -#}
+{%- for app in phoneApps.apps %}
+{%- set files = app.desktop | where("platform", platform) %}
+<h3 id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
+<p>{{ app.audience }}</p>
+<div class="oss-cards">
+	{%- for file in files %}
+	<article class="oss-card">
+		<header class="oss-card__header">
+			<span class="oss-card__icon">{% icon "layers" %}</span>
+			<h4 class="oss-card__title">{{ file.format }} &mdash; {{ file.arch }}</h4>
+		</header>
+		<p class="oss-card__description">{{ file.description | safe }}</p>
+		<p class="oss-card__url"><a href="{{ phoneApps.baseUrl }}{{ file.file }}">Download {{ file.format }}</a> &middot; {{ file.size }}</p>
+	</article>
+	{%- endfor %}
+</div>
+<p><strong>{{ app.name }} SHA-256 checksums</strong></p>
+<pre class="code-block" data-lang="sha256"><code>{% for file in files %}{{ file.sha256 }}  {{ file.file }}{% if not loop.last %}
+{% endif %}{% endfor %}</code></pre>
+{%- endfor %}

@@ -9,6 +9,7 @@
 	"url": "https://voicetel.com",
 	"portalUrl": "https://www.voicetel.com",
 	"loginUrl": "https://www.voicetel.com/?login",
+	"voicemlDashboardUrl": "https://dash.voiceml.com",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
@@ -78,6 +79,12 @@
 					"icon": "code-slash",
 					"href": "/voiceml/",
 					"description": "Drop-in compatible voice markup runtime."
+				},
+				{
+					"label": "VoiceML Dashboard",
+					"icon": "activity",
+					"href": "/voiceml/dashboard/",
+					"description": "Voicemail, recordings, and a live operator panel."
 				},
 				{
 					"label": "Conversations",
@@ -210,6 +217,12 @@
 					"description": "Programmable voice console for VoiceML applications."
 				},
 				{
+					"label": "VoiceML Dashboard",
+					"icon": "activity",
+					"href": "https://dash.voiceml.com",
+					"description": "Voicemail, recordings, and live calls for VoiceML accounts."
+				},
+				{
 					"label": "Sign up",
 					"icon": "person-plus",
 					"href": "/signup/",
@@ -229,6 +242,7 @@
 				{ "label": "Numbers", "href": "/numbers/" },
 				{ "label": "SIP Trunking", "href": "/sip-trunking/" },
 				{ "label": "VoiceML", "href": "/voiceml/" },
+				{ "label": "VoiceML Dashboard", "href": "/voiceml/dashboard/" },
 				{ "label": "Conversations", "href": "/conversations/" },
 				{ "label": "AI Agents", "href": "/ai-agents/" },
 				{ "label": "Hosted PBX", "href": "/pbx/" },

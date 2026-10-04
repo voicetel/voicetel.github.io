@@ -1,0 +1,100 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/dashboard/
+title: "VoiceML Dashboard"
+description: "Voicemail, recordings, and transcripts from your VoiceML call flows, emailed as secure links, plus a live operator panel with call control and an audit log."
+---
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Dashboard</p>
+<h1>Every call, message, and recording from your VoiceML account.</h1>
+<p class="lede">The VoiceML Dashboard collects the voicemail, recordings, and transcripts your call flows produce, emails each recipient a secure link, and gives operators a live switchboard with call control. Sign in with Google; nothing to install.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="{{ site.voicemlDashboardUrl }}">Sign in to the dashboard</a>
+	<a class="btn btn-secondary" href="/voiceml/">Explore VoiceML</a>
+</p>
+
+<section class="section-block">
+	<h2>How it works</h2>
+	<p>Point a VoiceML callback at the dashboard with the recipient's email address in the URL. The dashboard keeps the complete payload, downloads the recording, and emails the recipient a summary with a link to that one message. Related recording and transcript callbacks are joined into a single message.</p>
+	<pre class="code-block" data-lang="xml"><code>&lt;Response&gt;
+  &lt;Say&gt;Please leave a message after the tone.&lt;/Say&gt;
+  &lt;Record
+    recordingStatusCallback="{{ site.voicemlDashboardUrl }}/voicemail/you%40example.com"
+    recordingStatusCallbackEvent="completed"
+    transcribe="true"
+    transcribeCallback="{{ site.voicemlDashboardUrl }}/transcript/you%40example.com"/&gt;
+&lt;/Response&gt;</code></pre>
+	<p>Use <code>/recording/</code> for call recordings, <code>/voicemail/</code> for voicemail, <code>/transcript/</code> for transcripts, and <code>/status/</code> for call status callbacks. Callback URLs can also carry call context, such as the digits a caller pressed, which the dashboard shows with the message.</p>
+	{% set drawing = "voiceml-dashboard-flow" %}
+	{% include "partials/section-illustration.njk" %}
+</section>
+
+<section class="section-block">
+	<h2>What you get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "envelope" %}</span>
+			<h3>Messages and share links</h3>
+			<p>Voicemail, recordings, and transcripts in one inbox with All, Voicemail, and Recordings tabs, filters by number, transcript search, and a count of what's new since your last visit. Each emailed link opens just that message, without signing in, and expires after 30 days.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3>Live operator panel</h3>
+			<p>Calls in progress with running timers, today's calls, answer rate, missed calls, and account balance, plus which extensions are registered, ringing, or on a call. The board updates as status callbacks arrive.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>Call control</h3>
+			<p>From any live call: hang up, transfer to a number or SIP address, send to voicemail, start or stop recording, and start or stop a live transcript that streams into the call view.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>Transcripts and summaries</h3>
+			<p>Live transcripts are saved as speaker turns. Transcribe a saved recording with the speech provider selected in your VoiceML account (Deepgram, OpenAI Whisper, or whisper.cpp), and optionally add a short post-call summary using your own Anthropic or OpenAI key.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Roles and audit log</h3>
+			<p>Recipients see their own messages; operators see their account's calls; administrators invite users by email and review an audit log of every call-control action, including refusals.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
+			<h3>Softphone in the browser</h3>
+			<p>Operators can open VoiceML Phone in a dashboard window and make and take calls without installing the desktop app. It sets itself up from a VoiceML activation code.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Get started</h2>
+	<ol>
+		<li>Sign in to the <a href="{{ site.voicemlDashboardUrl }}">VoiceML Dashboard</a> with Google.</li>
+		<li>Administrators verify their VoiceML account with its Account SID and API key; the dashboard stores the credentials encrypted and makes the verified email an administrator.</li>
+		<li>Point your call flows' recording, transcript, and status callbacks at the dashboard, then invite operators and other administrators from the Users page. Recipients need no invitation; their email address is in the callback URL.</li>
+	</ol>
+</section>
+
+<section class="section-block faq-block">
+	<h2>VoiceML Dashboard FAQ</h2>
+	<details class="faq-item">
+		<summary>Do recipients need an account?</summary>
+		<p>No. The emailed link opens that one message and its audio without signing in. To browse every message addressed to them, recipients sign in with the Google account that matches the email address in the callback URL.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Who can see a message?</summary>
+		<p>Only someone holding that message's share link, or a signed-in user whose verified email owns it. Knowing a call or recording ID is not enough. Operators and administrators see the messages and calls of their own account.</p>
+	</details>
+	<details class="faq-item">
+		<summary>Why doesn't a call show on the live board?</summary>
+		<p>The board follows your account's status callbacks. A number's status callback reports only completed calls; to show calls while they ring, set a <code>statusCallback</code> with the initiated, ringing, answered, and completed events on the <code>&lt;Dial&gt;</code> noun, or on the API request that starts the call.</p>
+	</details>
+</section>
+
+<aside class="cta-block" aria-labelledby="voiceml-dashboard-cta-heading">
+	<h2 id="voiceml-dashboard-cta-heading">Open the dashboard.</h2>
+	<p>Sign in with Google, verify your VoiceML account, and point your first voicemail callback at it.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="{{ site.voicemlDashboardUrl }}">Sign in</a>
+		<a class="btn btn-secondary" href="/signup/">Create an account</a>
+	</p>
+</aside>

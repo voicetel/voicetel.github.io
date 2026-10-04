@@ -16,12 +16,18 @@
 						"label": "LOA submission",
 						"meta": ["VoiceTel coordinates", "with the losing carrier"]
 					},
-					{ "label": "Test window", "meta": ["calls reach old and", "new endpoints"] },
+					{
+						"label": "Test window",
+						"meta": ["calls reach old and", "new endpoints"]
+					},
 					{
 						"label": "Cutover",
 						"meta": ["defined rollback path,", "inside business hours"]
 					},
-					{ "label": "E911 reissued", "meta": ["before the port", "completes"] }
+					{
+						"label": "E911 reissued",
+						"meta": ["before the port", "completes"]
+					}
 				]
 			}
 		},
@@ -31,8 +37,16 @@
 				"type": "routing",
 				"title": "Three inbound routing modes: Anycast, Geocast, and diverse routing",
 				"panels": [
-					{ "mode": "anycast", "label": "Anycast", "meta": "nearest available node" },
-					{ "mode": "geocast", "label": "Geocast", "meta": "nodes in a specific region" },
+					{
+						"mode": "anycast",
+						"label": "Anycast",
+						"meta": "nearest available node"
+					},
+					{
+						"mode": "geocast",
+						"label": "Geocast",
+						"meta": "nodes in a specific region"
+					},
 					{
 						"mode": "diverse",
 						"label": "Diverse routing",
@@ -60,11 +74,21 @@
 								"label": "Current carrier",
 								"meta": "number stays here"
 							},
-							{ "icon": "telephone", "label": "Caller", "meta": "phone network" }
+							{
+								"icon": "telephone",
+								"label": "Caller",
+								"meta": "phone network"
+							}
 						],
 						"links": [
-							{ "label": "voice", "both": true },
-							{ "label": "", "both": true }
+							{
+								"label": "voice",
+								"both": true
+							},
+							{
+								"label": "",
+								"both": true
+							}
 						]
 					},
 					{
@@ -89,8 +113,14 @@
 							}
 						],
 						"links": [
-							{ "label": "webhook", "both": true },
-							{ "label": "SMS/MMS", "both": true }
+							{
+								"label": "webhook",
+								"both": true
+							},
+							{
+								"label": "SMS/MMS",
+								"both": true
+							}
 						],
 						"loop": {
 							"label": "Delivery receipts: handset delivery results back to your app"
@@ -107,13 +137,39 @@
 				"participants": ["VoiceML", "Your app"],
 				"legend": "Signed callback: HMAC-SHA256, verified with your auth token",
 				"messages": [
-					{ "from": 0, "lines": ["Voice URL", "request"], "signed": true },
-					{ "from": 1, "lines": ["Returns", "<Gather>"] },
-					{ "from": 0, "lines": ["Gather", "action"], "signed": true },
-					{ "from": 1, "lines": ["Returns", "<Dial>"] },
-					{ "from": 0, "lines": ["Dial", "action"], "signed": true },
-					{ "from": 0, "lines": ["Recording", "callback"], "signed": true },
-					{ "from": 0, "lines": ["Status", "callback"], "signed": true }
+					{
+						"from": 0,
+						"lines": ["Voice URL", "request"],
+						"signed": true
+					},
+					{
+						"from": 1,
+						"lines": ["Returns", "<Gather>"]
+					},
+					{
+						"from": 0,
+						"lines": ["Gather", "action"],
+						"signed": true
+					},
+					{
+						"from": 1,
+						"lines": ["Returns", "<Dial>"]
+					},
+					{
+						"from": 0,
+						"lines": ["Dial", "action"],
+						"signed": true
+					},
+					{
+						"from": 0,
+						"lines": ["Recording", "callback"],
+						"signed": true
+					},
+					{
+						"from": 0,
+						"lines": ["Status", "callback"],
+						"signed": true
+					}
 				]
 			}
 		},
@@ -161,7 +217,11 @@
 						"label": "Without the appliance",
 						"meta": "One-way audio, unstable registrations, broad inbound openings.",
 						"nodes": [
-							{ "icon": "telephone", "label": "Phones + PBX", "meta": "behind NAT" },
+							{
+								"icon": "telephone",
+								"label": "Phones + PBX",
+								"meta": "behind NAT"
+							},
 							{
 								"icon": "shield-check",
 								"label": "Firewall / NAT",
@@ -173,13 +233,25 @@
 								"meta": "SIP + RTP inbound"
 							}
 						],
-						"links": [{ "label": "" }, { "label": "pinholes", "fail": true }]
+						"links": [
+							{
+								"label": ""
+							},
+							{
+								"label": "pinholes",
+								"fail": true
+							}
+						]
 					},
 					{
 						"label": "With the SDN appliance",
 						"meta": "One outbound tunnel and a clear demarcation point for support.",
 						"nodes": [
-							{ "icon": "telephone", "label": "Phones + PBX", "meta": "unchanged" },
+							{
+								"icon": "telephone",
+								"label": "Phones + PBX",
+								"meta": "unchanged"
+							},
 							{
 								"icon": "hdd-stack",
 								"label": "SDN appliance",
@@ -191,12 +263,22 @@
 								"label": "Your firewall",
 								"meta": "outbound :443 only"
 							},
-							{ "icon": "diagram-3", "label": "VoiceTel core", "meta": "NYC POP" }
+							{
+								"icon": "diagram-3",
+								"label": "VoiceTel core",
+								"meta": "NYC POP"
+							}
 						],
 						"links": [
-							{ "label": "SIP + RTP" },
-							{ "label": ":443 out" },
-							{ "label": "TLS 1.3" }
+							{
+								"label": "SIP + RTP"
+							},
+							{
+								"label": ":443 out"
+							},
+							{
+								"label": "TLS 1.3"
+							}
 						]
 					}
 				]
@@ -223,11 +305,21 @@
 								"meta": "SIP registration",
 								"accent": true
 							},
-							{ "icon": "telephone", "label": "Phone network", "meta": "PSTN calls" }
+							{
+								"icon": "telephone",
+								"label": "Phone network",
+								"meta": "PSTN calls"
+							}
 						],
 						"links": [
-							{ "label": "SIP · TLS", "both": true },
-							{ "label": "", "both": true }
+							{
+								"label": "SIP · TLS",
+								"both": true
+							},
+							{
+								"label": "",
+								"both": true
+							}
 						]
 					},
 					{
@@ -252,8 +344,14 @@
 							}
 						],
 						"links": [
-							{ "label": "WebRTC", "both": true },
-							{ "label": "", "both": true }
+							{
+								"label": "WebRTC",
+								"both": true
+							},
+							{
+								"label": "",
+								"both": true
+							}
 						]
 					},
 					{
@@ -276,7 +374,14 @@
 								"meta": "native call notification"
 							}
 						],
-						"links": [{ "label": "push" }, { "label": "" }]
+						"links": [
+							{
+								"label": "push"
+							},
+							{
+								"label": ""
+							}
+						]
 					}
 				]
 			}
@@ -318,33 +423,107 @@
 					{
 						"title": "Product hubs",
 						"items": [
-							{ "label": "VoiceML", "meta": "/docs/voiceml/" },
-							{ "label": "Voice", "meta": "/docs/voice/" },
-							{ "label": "Messaging", "meta": "/docs/messaging/" }
+							{
+								"label": "VoiceML",
+								"meta": "/docs/voiceml/"
+							},
+							{
+								"label": "Voice",
+								"meta": "/docs/voice/"
+							},
+							{
+								"label": "Messaging",
+								"meta": "/docs/messaging/"
+							}
 						]
 					},
 					{
 						"title": "API references",
 						"items": [
-							{ "label": "VoiceML API", "spec": "voiceml" },
-							{ "label": "VoiceTel API", "spec": "v2.2" },
-							{ "label": "10DLC CSP API", "spec": "csp" }
+							{
+								"label": "VoiceML API",
+								"spec": "voiceml"
+							},
+							{
+								"label": "VoiceTel API",
+								"spec": "v2.2"
+							},
+							{
+								"label": "10DLC CSP API",
+								"spec": "csp"
+							}
 						]
 					},
 					{
 						"title": "SDKs",
 						"items": [
-							{ "label": "VoiceTel SDKs", "meta": "/docs/sdks/" },
-							{ "label": "VoiceML SDKs", "meta": "/docs/voiceml-sdks/" }
+							{
+								"label": "VoiceTel SDKs",
+								"meta": "/docs/sdks/"
+							},
+							{
+								"label": "VoiceML SDKs",
+								"meta": "/docs/voiceml-sdks/"
+							}
 						]
 					},
 					{
 						"title": "Operations",
 						"items": [
-							{ "label": "Numbers", "meta": "/numbers/" },
-							{ "label": "E911", "meta": "/docs/e911/" },
-							{ "label": "SIP trunking", "meta": "/sip-trunking/" }
+							{
+								"label": "Numbers",
+								"meta": "/numbers/"
+							},
+							{
+								"label": "E911",
+								"meta": "/docs/e911/"
+							},
+							{
+								"label": "SIP trunking",
+								"meta": "/sip-trunking/"
+							}
 						]
+					}
+				]
+			}
+		},
+		{
+			"key": "voiceml-dashboard-flow",
+			"illustration": {
+				"type": "flow",
+				"title": "How a VoiceML Dashboard message reaches its recipient",
+				"nodes": [
+					{
+						"icon": "code-slash",
+						"label": "Your call flow",
+						"meta": "<Record> · callbacks"
+					},
+					{
+						"icon": "activity",
+						"label": "Dashboard",
+						"meta": "message + audio",
+						"accent": true
+					},
+					{
+						"icon": "envelope",
+						"label": "Email",
+						"meta": "secure share link"
+					},
+					{
+						"icon": "person-vcard",
+						"label": "Recipient",
+						"meta": "opens or signs in"
+					}
+				],
+				"links": [
+					{
+						"label": "webhook"
+					},
+					{
+						"label": "notify"
+					},
+					{
+						"label": "link"
 					}
 				]
 			}

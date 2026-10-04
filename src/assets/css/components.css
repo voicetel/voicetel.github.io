@@ -1020,6 +1020,17 @@ textarea {
 	border-bottom: 0;
 }
 
+/* Footer labels sit in the first column only (a spanning <th> reads as a
+   column header to table-header checkers). The label runs on into the empty
+   cell beside it without widening the column, and dropping the divider lets
+   the two read as one band, as the spanning header did. */
+.pricing-calc tfoot th {
+	max-width: 0;
+	overflow: visible;
+	white-space: nowrap;
+	border-right: 0;
+}
+
 .pricing-calc tfoot td.pricing-calc__total {
 	font-size: var(--text-lg);
 	color: var(--primary-color);

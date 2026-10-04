@@ -29,6 +29,23 @@
 		"http://localhost:8000/conversations/",
 		"http://localhost:8000/ai-agents/",
 		"http://localhost:8000/voiceml/compatibility/",
-		"http://localhost:8000/support/voice/sbc/asterisk/"
+		"http://localhost:8000/support/voice/sbc/asterisk/",
+		"http://localhost:8000/pricing/",
+		"http://localhost:8000/voiceml/",
+		"http://localhost:8000/voice/",
+		"http://localhost:8000/messaging/",
+		"http://localhost:8000/numbers/",
+		"http://localhost:8000/integrators/numbers/",
+		"http://localhost:8000/sdn/",
+		"http://localhost:8000/docs/",
+		"http://localhost:8000/phone/",
+		"http://localhost:8000/phone/applications/",
+		"http://localhost:8000/phone/applications/desktop/",
+		"http://localhost:8000/phone/applications/desktop/macos/",
+		"http://localhost:8000/phone/applications/desktop/windows/",
+		"http://localhost:8000/phone/applications/desktop/linux/",
+		"http://localhost:8000/phone/applications/mobile/",
+		"http://localhost:8000/phone/applications/mobile/ios/",
+		"http://localhost:8000/phone/applications/mobile/android/"
 	]
 }

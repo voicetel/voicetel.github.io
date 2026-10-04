@@ -1,0 +1,10 @@
+---
+pagination:
+  data: pageIllustrations.items
+  size: 1
+  alias: item
+permalink: "{{ pageIllustrations.illustrationPath }}{{ item.key }}-narrow.svg"
+eleventyExcludeFromCollections: true
+variant: narrow
+---
+{% include "partials/illustration-svg.njk" %}

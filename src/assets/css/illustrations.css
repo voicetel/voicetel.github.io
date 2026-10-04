@@ -1,4 +1,4 @@
-/* Embedded into each generated landing illustration SVG at build time
+/* Embedded into each generated illustration SVG at build time
    (see src/_data/illustrationStyle.js); not linked from any page. Font
    sizes are viewBox units, so they scale with the drawing. */
 
@@ -53,7 +53,8 @@
 	stroke-linejoin: round;
 }
 
-.li-node {
+.li-node,
+.li-panel {
 	fill: var(--paper);
 	stroke: var(--border-color);
 }
@@ -134,4 +135,85 @@
 .li-key {
 	fill: var(--light-bg);
 	stroke: var(--border-color);
+}
+
+.li-step {
+	fill: var(--paper);
+	stroke: var(--primary-light);
+	stroke-width: 2;
+}
+
+.li-step-num {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	font-weight: var(--weight-semibold);
+	fill: var(--primary-dark);
+}
+
+.li-caller {
+	fill: var(--primary-color);
+}
+
+.li-pnode {
+	fill: var(--paper);
+	stroke: var(--primary-color);
+	stroke-width: 1.5;
+}
+
+.li-pnode--active {
+	fill: var(--primary-light);
+	stroke: var(--primary-light);
+}
+
+.li-pnode--muted {
+	fill: var(--light-bg);
+	stroke: var(--border-color);
+}
+
+.li-line--alt {
+	stroke: var(--border-color);
+	stroke-dasharray: 4 4;
+}
+
+.li-zone {
+	fill: none;
+	stroke: var(--primary-light);
+	stroke-dasharray: 6 4;
+}
+
+.li-waypoint {
+	fill: var(--paper);
+	stroke: var(--text-muted);
+}
+
+.li-line--fail {
+	stroke: var(--error-color);
+	stroke-dasharray: 5 4;
+}
+
+.li-fail-mark {
+	fill: var(--paper);
+	stroke: var(--error-color);
+	stroke-width: 1.5;
+}
+
+.li-fail {
+	font-family: var(--font-mono);
+	font-size: 14px;
+	font-weight: var(--weight-semibold);
+	fill: var(--alert-error-fg);
+}
+
+.li-link--fail {
+	fill: var(--alert-error-fg);
+}
+
+.li-lifeline {
+	stroke: var(--primary-color);
+	stroke-width: 2;
+}
+
+.li-badge {
+	fill: var(--light-bg);
+	stroke: var(--primary-light);
 }

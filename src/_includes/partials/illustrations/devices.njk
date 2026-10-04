@@ -1,0 +1,58 @@
+{%- macro dialpad(cx, top, sx, sy, r) -%}
+{%- for row in range(0, 4) %}{% for col in range(0, 3) %}<circle class="li-key" cx="{{ cx + (col - 1) * sx }}" cy="{{ top + row * sy }}" r="{{ r }}"/>{% endfor %}{% endfor -%}
+<circle class="li-call" cx="{{ cx }}" cy="{{ top + 4 * sy + 4 }}" r="{{ r + 1 }}"/>
+{%- endmacro -%}
+{%- if variant === "wide" %}
+{%- for device in ill.devices %}
+{%- set cx = 180 + loop.index0 * 320 %}
+{%- if device.kind === "browser" %}
+<rect class="li-device" x="{{ cx - 100 }}" y="12" width="200" height="130" rx="6"/>
+<line class="li-device-rule" x1="{{ cx - 100 }}" y1="36" x2="{{ cx + 100 }}" y2="36"/>
+<circle class="li-key" cx="{{ cx - 86 }}" cy="24" r="3"/><circle class="li-key" cx="{{ cx - 76 }}" cy="24" r="3"/><circle class="li-key" cx="{{ cx - 66 }}" cy="24" r="3"/>
+{{ dialpad(cx, 52, 22, 18, 6) }}
+{%- elif device.kind === "desktop" %}
+<rect class="li-device" x="{{ cx - 90 }}" y="12" width="180" height="112" rx="6"/>
+<path class="li-device" d="M{{ cx - 110 }},128 H{{ cx + 110 }} L{{ cx + 100 }},140 H{{ cx - 100 }} Z"/>
+{{ dialpad(cx, 32, 22, 17, 6) }}
+{%- else %}
+<rect class="li-device" x="{{ cx - 36 }}" y="8" width="72" height="136" rx="12"/>
+<line class="li-device-rule" x1="{{ cx - 10 }}" y1="18" x2="{{ cx + 10 }}" y2="18"/>
+<line class="li-device-rule" x1="{{ cx - 14 }}" y1="136" x2="{{ cx + 14 }}" y2="136"/>
+{{ dialpad(cx, 38, 18, 16, 5) }}
+{%- endif %}
+<text class="li-label" x="{{ cx }}" y="168" text-anchor="middle">{{ device.label }}</text>
+<text class="li-meta" x="{{ cx }}" y="188" text-anchor="middle">{{ device.meta }}</text>
+<line class="li-line" x1="{{ cx }}" y1="198" x2="{{ cx }}" y2="208"/>
+{%- endfor %}
+<line class="li-line" x1="180" y1="208" x2="820" y2="208"/>
+<line class="li-line" x1="500" y1="208" x2="500" y2="220"/>
+<rect class="li-node li-node--accent" x="340" y="220" width="320" height="46" rx="4"/>
+<rect class="li-accent" x="340" y="220" width="320" height="3"/>
+<text class="li-label" x="500" y="240" text-anchor="middle">{{ ill.hub.label }}</text>
+<text class="li-meta" x="500" y="258" text-anchor="middle">{{ ill.hub.meta }}</text>
+{%- else %}
+{%- set hubTop = 8 + (ill.devices | length) * 92 %}
+{%- for device in ill.devices %}
+{%- set y = 8 + loop.index0 * 92 %}
+{%- if device.kind === "browser" %}
+<rect class="li-device" x="12" y="{{ y + 6 }}" width="80" height="62" rx="4"/>
+<line class="li-device-rule" x1="12" y1="{{ y + 18 }}" x2="92" y2="{{ y + 18 }}"/>
+{{ dialpad(52, y + 28, 11, 7, 2.5) }}
+{%- elif device.kind === "desktop" %}
+<rect class="li-device" x="20" y="{{ y + 4 }}" width="64" height="50" rx="3"/>
+<path class="li-device" d="M12,{{ y + 58 }} H92 L88,{{ y + 64 }} H16 Z"/>
+{{ dialpad(52, y + 13, 10, 7, 2.5) }}
+{%- else %}
+<rect class="li-device" x="37" y="{{ y + 2 }}" width="30" height="66" rx="6"/>
+{{ dialpad(52, y + 16, 8, 7, 2.5) }}
+{%- endif %}
+<text class="li-label" x="108" y="{{ y + 30 }}">{{ device.label }}</text>
+<text class="li-meta" x="108" y="{{ y + 50 }}">{{ device.meta }}</text>
+<line class="li-line" x1="298" y1="{{ y + 36 }}" x2="308" y2="{{ y + 36 }}"/>
+{%- endfor %}
+<line class="li-line" x1="308" y1="44" x2="308" y2="{{ hubTop }}"/>
+<rect class="li-node li-node--accent" x="8" y="{{ hubTop }}" width="304" height="48" rx="4"/>
+<rect class="li-accent" x="8" y="{{ hubTop }}" width="3" height="48"/>
+<text class="li-label" x="22" y="{{ hubTop + 20 }}">{{ ill.hub.label }}</text>
+<text class="li-meta" x="22" y="{{ hubTop + 39 }}">{{ ill.hub.meta }}</text>
+{%- endif %}

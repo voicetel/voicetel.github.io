@@ -1,6 +1,6 @@
 // The landing illustrations ship as standalone SVG files, which cannot see the
 // page's stylesheets. Each file embeds the :root design tokens plus the rules
-// in landing-illustrations.css at build time so it stays on-brand.
+// in illustrations.css at build time so it stays on-brand.
 
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -20,4 +20,4 @@ if (!tokens) {
 	throw new Error("illustrationStyle: no :root block found in tokens.css");
 }
 
-export default `svg { ${tokens[1].trim()} } ${read("landing-illustrations.css")}`;
+export default `svg { ${tokens[1].trim()} } ${read("illustrations.css")}`;

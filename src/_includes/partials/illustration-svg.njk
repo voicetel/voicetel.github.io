@@ -1,0 +1,14 @@
+{#- Renders one illustration (`item.illustration`) as a standalone SVG file.
+	`variant` is "wide" (desktop strip, 1000 units across) or "narrow"
+	(stacked layout, 320 units across) so labels never shrink below a readable
+	size. The drawing for each type lives in partials/illustrations/. -#}
+{%- from "partials/illustration-macros.njk" import illustrationHeight -%}
+{%- set ill = item.illustration %}
+{%- set W = 1000 if variant === "wide" else 320 %}
+{%- set H = illustrationHeight(ill, variant, colocations | length, cloudRegions | length) | trim %}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ W }} {{ H }}" width="{{ W }}" height="{{ H }}">
+	<title>{{ ill.title }}</title>
+	<style>{{ illustrationStyle | safe }}</style>
+	<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="li-arrow" d="M0,0 L10,5 L0,10 Z"/></marker></defs>
+{% include "partials/illustrations/" + ill.type + ".njk" %}
+</svg>

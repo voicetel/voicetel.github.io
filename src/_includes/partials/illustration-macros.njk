@@ -1,0 +1,63 @@
+{#- Shared by the page <picture> markup and the generated SVG files so the
+	declared image size and the alt text always match the drawing. Height
+	formulas mirror the layout in partials/illustrations/<type>.njk. -#}
+
+{%- macro illustrationHeight(ill, variant, popCount, regionCount) -%}
+{%- set wide = variant === "wide" -%}
+{%- if ill.type === "flow" -%}
+{%- if wide -%}{{ 160 if ill.loop else 116 }}{%- else -%}{{ 68 + ((ill.nodes | length) - 1) * 100 + (34 if ill.loop else 8) }}{%- endif -%}
+{%- elif ill.type === "network" -%}
+{%- if wide -%}300{%- else -%}{{ (6 + 282 * 0.6 + 22 + 26 + ((popCount / 2) | round(0, "ceil")) * 22 + 14 + 20 + regionCount * 22) | round(0, "ceil") }}{%- endif -%}
+{%- elif ill.type === "curve" -%}
+{%- if wide -%}260{%- else -%}{{ 200 + (ill.marks | length) * 30 }}{%- endif -%}
+{%- elif ill.type === "devices" -%}
+{%- if wide -%}272{%- else -%}{{ 64 + (ill.devices | length) * 92 }}{%- endif -%}
+{%- elif ill.type === "timeline" -%}
+{%- if wide -%}140{%- else -%}{{ 83 + ((ill.steps | length) - 1) * 84 }}{%- endif -%}
+{%- elif ill.type === "routing" -%}
+{%- if wide -%}252{%- else -%}{{ (ill.panels | length) * 252 }}{%- endif -%}
+{%- elif ill.type === "lanes" -%}
+{%- set tops = [8] -%}
+{%- for lane in ill.lanes -%}
+{%- if wide -%}
+{%- set _ = tops.push(tops[loop.index0] + 152 + (56 if lane.loop else 0)) -%}
+{%- else -%}
+{%- set metaLines = (lane.meta | wrapText(36) | length) if lane.meta else 0 -%}
+{%- set loopLines = (lane.loop.label | wrapText(36) | length) if lane.loop else 0 -%}
+{%- set _ = tops.push(tops[loop.index0] + 28 + metaLines * 18 + (lane.nodes | length) * 100 - 40 + (16 + loopLines * 17 if lane.loop else 0) + 28) -%}
+{%- endif -%}
+{%- endfor -%}
+{{ (tops | last) - 20 }}
+{%- elif ill.type === "sequence" -%}
+{%- if wide -%}250{%- else -%}{{ 70 + ((ill.messages | length) - 1) * 58 + 30 + 18 + (ill.legend | wrapText(32) | length) * 18 + 6 }}{%- endif -%}
+{%- elif ill.type === "hub" -%}
+{%- if wide -%}{{ (((ill.spokes | length) / 2) | round(0, "ceil")) * 130 }}{%- else -%}{{ 96 + (ill.spokes | length) * 106 }}{%- endif -%}
+{%- elif ill.type === "quote" -%}
+{%- if wide -%}{{ 146 + (ill.rows | length) * 54 }}{%- else -%}{{ 90 + (ill.rows | length) * 80 }}{%- endif -%}
+{%- elif ill.type === "columns" -%}
+{%- if wide -%}{{ 116 + (ill.groups | maxCount("items")) * 56 }}{%- else -%}
+{%- set tops = [56] -%}
+{%- for group in ill.groups -%}{%- set _ = tops.push(tops[loop.index0] + 46 + (group.items | length) * 54 + 12) -%}{%- endfor -%}
+{{ (tops | last) - 12 }}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro illustrationAlt(ill, colocations, cloudRegions, pricing, specs) -%}
+{{ ill.title }}.
+{%- if ill.type === "flow" %} {% for node in ill.nodes %}{{ node.label }} ({{ node.meta }}){% if not loop.last %}, then {% endif %}{% endfor %}.{% if ill.loop %} {{ ill.loop.label }}.{% endif %}
+{%- elif ill.type === "network" %} Colocation POPs: {% for pop in colocations %}{{ pop.city }} ({{ pop.code }}){% if not loop.last %}, {% endif %}{% endfor %}. Cloud regions: {% for region in cloudRegions %}{{ region.awsCode }} ({{ region.geo }}){% if not loop.last %}, {% endif %}{% endfor %}.
+{%- elif ill.type === "curve" %} {% for mark in ill.marks %}{{ mark.label }}: {{ pricing | volumeRate(ill.service, mark.volume) }} per minute{% if not loop.last %}; {% endif %}{% endfor %}.
+{%- elif ill.type === "devices" %} {% for device in ill.devices %}{{ device.label }} ({{ device.meta }}){% if not loop.last %}, {% endif %}{% endfor %}, each signing in with {{ ill.hub.label }} ({{ ill.hub.meta }}).
+{%- elif ill.type === "timeline" %} {% for s in ill.steps %}{{ loop.index }}. {{ s.label }}: {{ s.meta | join(" ") }}.{% if not loop.last %} {% endif %}{% endfor %}
+{%- elif ill.type === "routing" %} {% for panel in ill.panels %}{{ panel.label }} routes to the {{ panel.meta }}{% if not loop.last %}; {% endif %}{% endfor %}.
+{%- elif ill.type === "lanes" %} {% for lane in ill.lanes %}{{ lane.label }}: {% for node in lane.nodes %}{{ node.label }} ({{ node.meta }}){% if not loop.last %}, {% endif %}{% endfor %}.{% if lane.meta %} {{ lane.meta }}{% endif %}{% if lane.loop %} {{ lane.loop.label }}.{% endif %}{% if not loop.last %} {% endif %}{% endfor %}
+{%- elif ill.type === "sequence" %} {% for m in ill.messages %}{{ m.lines | join(" ") }} from {{ ill.participants[m.from] }}{% if m.signed %} (signed){% endif %}{% if not loop.last %}, then {% endif %}{% endfor %}. {{ ill.legend }}.
+{%- elif ill.type === "hub" %} {{ ill.center.label }} ({{ ill.center.meta | join(" ") }}) connects to {% for spoke in ill.spokes %}{{ spoke.label }} ({{ spoke.meta | join(" ") }}){% if not loop.last %}, {% endif %}{% endfor %}.
+{%- elif ill.type === "quote" %}
+{%- set lineTotals = [] %}
+{%- for row in ill.rows %}{% set _ = lineTotals.push((pricing | volumeRateValue(row.service, row.volume)) * row.volume) %}{% endfor %}
+{%- set total = lineTotals | sum %} {% for row in ill.rows %}{{ row.label }}, {{ row.volume | thousands }} {{ row.unit }}: {{ pricing | volumeRate(row.service, 0) }} list, {{ pricing | volumeRate(row.service, row.volume) }} at volume, {{ lineTotals[loop.index0] | usd }}.{% if not loop.last %} {% endif %}{% endfor %} Total with volume rates {{ total | usd }}; monthly minimum ({{ pricing.minimumPercent }}%) {{ (total * pricing.minimumPercent / 100) | usd }}.
+{%- elif ill.type === "columns" %} {% for group in ill.groups %}{{ group.title }}: {% for entry in group.items %}{{ entry.label }}{% if entry.spec %} {{ specs[entry.spec].version }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}.{% if not loop.last %} {% endif %}{% endfor %}
+{%- endif -%}
+{%- endmacro -%}

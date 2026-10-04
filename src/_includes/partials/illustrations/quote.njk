@@ -1,0 +1,55 @@
+{#- Sample-workload quote: list rate → volume rate → line total for each row,
+	then list total, discounted total, and the monthly minimum. Every figure
+	comes from pricingRuntime through the calculator's interpolation. -#}
+{%- set listTotals = [] %}
+{%- set lineTotals = [] %}
+{%- for row in ill.rows %}
+{%- set curve = pricingRuntime | rateCurve(row.service) %}
+{%- set _ = listTotals.push(curve[0][1] * row.volume) %}
+{%- set _ = lineTotals.push((pricingRuntime | volumeRateValue(row.service, row.volume)) * row.volume) %}
+{%- endfor %}
+{%- set listTotal = listTotals | sum %}
+{%- set total = lineTotals | sum %}
+{%- set minimumPercent = pricingRuntime.minimumPercent %}
+{%- set n = ill.rows | length %}
+{%- if variant === "wide" %}
+<text class="li-heading" x="8" y="24">Service · monthly volume</text>
+<text class="li-heading" x="470" y="24" text-anchor="end">List rate</text>
+<text class="li-heading" x="660" y="24" text-anchor="end">Volume rate</text>
+<text class="li-heading" x="992" y="24" text-anchor="end">Line total</text>
+<line class="li-grid" x1="8" y1="36" x2="992" y2="36"/>
+{%- for row in ill.rows %}
+{%- set y = 66 + loop.index0 * 54 %}
+<text class="li-label" x="8" y="{{ y }}">{{ row.label }}</text>
+<text class="li-meta" x="8" y="{{ y + 19 }}">{{ row.volume | thousands }} {{ row.unit }}</text>
+<text class="li-meta" x="470" y="{{ y }}" text-anchor="end">{{ pricingRuntime | volumeRate(row.service, 0) }}</text>
+<line class="li-line" x1="486" y1="{{ y - 5 }}" x2="548" y2="{{ y - 5 }}" marker-end="url(#arrow)"/>
+<text class="li-label" x="660" y="{{ y }}" text-anchor="end">{{ pricingRuntime | volumeRate(row.service, row.volume) }}</text>
+<text class="li-meta" x="680" y="{{ y }}">× {{ row.volume | thousands }}</text>
+<text class="li-label" x="992" y="{{ y }}" text-anchor="end">{{ lineTotals[loop.index0] | usd }}</text>
+<line class="li-grid" x1="8" y1="{{ y + 32 }}" x2="992" y2="{{ y + 32 }}"/>
+{%- endfor %}
+{%- set yT = 66 + n * 54 + 8 %}
+<text class="li-meta" x="8" y="{{ yT }}">At list rates</text>
+<text class="li-meta" x="992" y="{{ yT }}" text-anchor="end">{{ listTotal | usd }}</text>
+<text class="li-label" x="8" y="{{ yT + 30 }}">With volume rates</text>
+<text class="li-label" x="992" y="{{ yT + 30 }}" text-anchor="end">{{ total | usd }}</text>
+<text class="li-meta" x="8" y="{{ yT + 58 }}">Monthly minimum ({{ minimumPercent }}% of the discounted total)</text>
+<text class="li-code" x="992" y="{{ yT + 58 }}" text-anchor="end">{{ (total * minimumPercent / 100) | usd }}</text>
+{%- else %}
+{%- for row in ill.rows %}
+{%- set y = 8 + loop.index0 * 80 %}
+<text class="li-label" x="8" y="{{ y + 16 }}">{{ row.label }}</text>
+<text class="li-meta" x="8" y="{{ y + 35 }}">{{ row.volume | thousands }} {{ row.unit }}</text>
+<text class="li-meta" x="8" y="{{ y + 56 }}">{{ pricingRuntime | volumeRate(row.service, 0) }} → {{ pricingRuntime | volumeRate(row.service, row.volume) }}</text>
+<text class="li-label" x="312" y="{{ y + 56 }}" text-anchor="end">{{ lineTotals[loop.index0] | usd }}</text>
+<line class="li-grid" x1="8" y1="{{ y + 68 }}" x2="312" y2="{{ y + 68 }}"/>
+{%- endfor %}
+{%- set yT = 8 + n * 80 + 16 %}
+<text class="li-meta" x="8" y="{{ yT }}">At list rates</text>
+<text class="li-meta" x="312" y="{{ yT }}" text-anchor="end">{{ listTotal | usd }}</text>
+<text class="li-label" x="8" y="{{ yT + 28 }}">With volume rates</text>
+<text class="li-label" x="312" y="{{ yT + 28 }}" text-anchor="end">{{ total | usd }}</text>
+<text class="li-meta" x="8" y="{{ yT + 54 }}">Monthly minimum ({{ minimumPercent }}%)</text>
+<text class="li-code" x="312" y="{{ yT + 54 }}" text-anchor="end">{{ (total * minimumPercent / 100) | usd }}</text>
+{%- endif %}

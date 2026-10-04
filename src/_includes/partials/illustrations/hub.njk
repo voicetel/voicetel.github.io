@@ -1,0 +1,37 @@
+{#- A central node with spokes: first half of the spokes on the left, the
+	rest on the right when wide; a vertical trunk with branches when narrow. -#}
+{%- macro box(x, y, w, h, node, accent) -%}
+<rect class="li-node{% if accent %} li-node--accent{% endif %}" x="{{ x }}" y="{{ y }}" width="{{ w }}" height="{{ h }}" rx="4"/>
+{%- if accent %}<rect class="li-accent" x="{{ x }}" y="{{ y }}" width="{{ w }}" height="3"/>{% endif %}
+<g class="li-icon" transform="translate({{ x + 14 }} {{ y + 14 }}) scale(1.25)">{% icon node.icon %}</g>
+<text class="li-label" x="{{ x + 44 }}" y="{{ y + 30 }}">{{ node.label }}</text>
+{%- for line in node.meta %}
+<text class="li-meta" x="{{ x + 14 }}" y="{{ y + 58 + loop.index0 * 18 }}">{{ line }}</text>
+{%- endfor %}
+{%- endmacro -%}
+
+{%- set n = ill.spokes | length %}
+{%- set half = (n / 2) | round(0, "ceil") %}
+{%- if variant === "wide" %}
+{%- for spoke in ill.spokes %}
+{%- set left = loop.index0 < half %}
+{%- set row = loop.index0 if left else loop.index0 - half %}
+{%- set y = 20 + row * 130 %}
+{%- if left %}
+<path class="li-line" d="M380,130 H340 V{{ y + 45 }} H300"/>
+{{ box(20, y, 280, 90, spoke) }}
+{%- else %}
+<path class="li-line" d="M620,130 H660 V{{ y + 45 }} H700"/>
+{{ box(700, y, 280, 90, spoke) }}
+{%- endif %}
+{%- endfor %}
+{{ box(380, 85, 240, 90, ill.center, true) }}
+{%- else %}
+<line class="li-line" x1="30" y1="84" x2="30" y2="{{ 104 + (n - 1) * 106 + 45 }}"/>
+{{ box(8, 8, 304, 76, ill.center, true) }}
+{%- for spoke in ill.spokes %}
+{%- set y = 104 + loop.index0 * 106 %}
+<line class="li-line" x1="30" y1="{{ y + 45 }}" x2="52" y2="{{ y + 45 }}"/>
+{{ box(52, y, 260, 90, spoke) }}
+{%- endfor %}
+{%- endif %}

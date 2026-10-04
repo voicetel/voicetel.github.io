@@ -1,0 +1,191 @@
+{%- if item.key === "overview" %}
+<ul class="vt-proof-grid">
+	<li>
+		<span class="vt-proof-label">Operating since</span>
+		<div class="vt-proof-value">1999<span class="sub">· {% yearsSince 1999 %} yrs</span></div>
+		<div class="vt-proof-note">FCC + RMD registered</div>
+	</li>
+	<li>
+		<span class="vt-proof-label">POPs</span>
+		<div class="vt-proof-value">{{ site.pops | length }}<span class="sub">· 2 continents</span></div>
+		<div class="vt-proof-note">{{ site.pops | join(" · ") }}</div>
+	</li>
+	<li>
+		<span class="vt-proof-label">Twilio compat</span>
+		<div class="vt-proof-value">94.1<span class="sub">%</span></div>
+		<div class="vt-proof-note">Every voice markup verb except <code>&lt;Pay&gt;</code></div>
+	</li>
+	<li>
+		<span class="vt-proof-label">Real Volume Discount</span>
+		<div class="vt-proof-value"><span data-savings-counter>30</span><span class="sub">%</span></div>
+		<div class="vt-proof-note">Modeled rates. Confirmed terms.</div>
+	</li>
+</ul>
+{%- elif item.key === "voiceml" %}
+<div class="vt-code">
+	<span class="vt-code-lang">VoiceML</span>
+	<div><span class="c-tag">&lt;Response&gt;</span></div>
+	<div>&nbsp;&nbsp;<span class="c-tag">&lt;Say</span> <span class="c-attr">voice</span>=<span class="c-str">"Polly.Joanna"</span><span class="c-tag">&gt;</span></div>
+	<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-text">Press 1 to be connected.</span></div>
+	<div>&nbsp;&nbsp;<span class="c-tag">&lt;/Say&gt;</span></div>
+	<div>&nbsp;&nbsp;<span class="c-tag">&lt;Gather</span> <span class="c-attr">numDigits</span>=<span class="c-str">"1"</span> <span class="c-attr">action</span>=<span class="c-str">"/dispatch"</span><span class="c-tag">/&gt;</span></div>
+	<div><span class="c-tag">&lt;/Response&gt;</span></div>
+</div>
+<div class="vt-compat">
+	<span class="vt-compat-badge">&lt;Say&gt;</span>
+	<span class="vt-compat-badge">&lt;Gather&gt;</span>
+	<span class="vt-compat-badge">&lt;Dial&gt;</span>
+	<span class="vt-compat-badge">&lt;Record&gt;</span>
+	<span class="vt-compat-badge">+ 12 more</span>
+</div>
+{%- elif item.key === "voice" %}
+<div class="vt-figure">
+	<ul class="vt-status-list">
+		<li>
+			<span class="vt-status-name">STIR/SHAKEN attestation<span class="meta">on every call</span></span>
+			<span class="vt-status-indicator">Signed</span>
+		</li>
+		<li>
+			<span class="vt-status-name">Global footprint<span class="meta">{{ site.pops | length }} POPs &middot; {{ site.cloudRegions | length }} cloud regions</span></span>
+			<span class="vt-status-indicator">Operational</span>
+		</li>
+		<li>
+			<span class="vt-status-name">US-based NOC<span class="meta">24/7</span></span>
+			<span class="vt-status-indicator">Online</span>
+		</li>
+		<li>
+			<span class="vt-status-name">BYO STT · TTS · storage<span class="meta">no markup</span></span>
+			<span class="vt-status-indicator">Passthrough</span>
+		</li>
+	</ul>
+</div>
+{%- elif item.key === "messaging" %}
+<ul class="vt-proof-grid">
+	<li>
+		<span class="vt-proof-label">A2P 10DLC</span>
+		<div class="vt-proof-value">Ready</div>
+		<div class="vt-proof-note">High-volume application messaging</div>
+	</li>
+	<li>
+		<span class="vt-proof-label">Inbound</span>
+		<div class="vt-proof-value">Supported</div>
+		<div class="vt-proof-note">SMS &middot; MMS &middot; webhook or email delivery</div>
+	</li>
+	<li>
+		<span class="vt-proof-label">Webhook delivery</span>
+		<div class="vt-proof-value">200 OK<span class="sub">avg 12 ms</span></div>
+		<div class="vt-proof-note">Direct to your endpoint</div>
+	</li>
+	<li>
+		<span class="vt-proof-label">Platform tax</span>
+		<div class="vt-proof-value">$0.00</div>
+		<div class="vt-proof-note">Just the segment rate</div>
+	</li>
+</ul>
+{%- elif item.key === "numbers" %}
+{%- set localDid = pricingRuntime | volumeRate("did-local", 2000) %}
+{%- set tollFreeDid = pricingRuntime | volumeRate("did-tollfree", 2000) %}
+<div class="vt-figure">
+	<div class="vt-chips">
+		<span class="vt-chip vt-chip--active">Local</span>
+		<span class="vt-chip">Toll-free</span>
+		<span class="vt-chip">Mobile</span>
+		<span class="vt-chip">Area 212</span>
+		<span class="vt-chip">+ port-in</span>
+	</div>
+	<ul class="vt-num-list">
+		<li><span class="n">+1 212 555 0148</span><span class="pop">NYC</span><span class="pr">{{ localDid }}<span class="vt-rates-mark">*</span></span></li>
+		<li><span class="n">+1 212 555 0220</span><span class="pop">NYC</span><span class="pr">{{ localDid }}<span class="vt-rates-mark">*</span></span></li>
+		<li><span class="n">+1 212 555 0391</span><span class="pop">NYC</span><span class="pr">{{ localDid }}<span class="vt-rates-mark">*</span></span></li>
+		<li><span class="n">+1 800 555 3201</span><span class="pop">TF</span><span class="pr">{{ tollFreeDid }}<span class="vt-rates-mark">*</span></span></li>
+	</ul>
+	<p class="vt-rates-note"><span class="vt-rates-mark">*</span> Volume tier: 2K DIDs.</p>
+</div>
+{%- elif item.key === "ai-agents" %}
+<div class="vt-code">
+	<span class="vt-code-lang">VoiceML</span>
+	<div><span class="c-tag">&lt;Response&gt;</span></div>
+	<div>&nbsp;&nbsp;<span class="c-tag">&lt;Connect&gt;</span></div>
+	<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">&lt;ConversationRelay</span> <span class="c-attr">url</span>=<span class="c-str">"wss://your-app.example/conversation"</span></div>
+	<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-attr">language</span>=<span class="c-str">"en-US"</span> <span class="c-tag">/&gt;</span></div>
+	<div>&nbsp;&nbsp;<span class="c-tag">&lt;/Connect&gt;</span></div>
+	<div><span class="c-tag">&lt;/Response&gt;</span></div>
+</div>
+<div class="vt-compat">
+	<span class="vt-compat-badge">Assistants</span>
+	<span class="vt-compat-badge">Tools</span>
+	<span class="vt-compat-badge">Knowledge</span>
+	<span class="vt-compat-badge">Sessions</span>
+	<span class="vt-compat-badge">Feedback</span>
+	<span class="vt-compat-badge">Policies</span>
+</div>
+{%- elif item.key === "sdn" %}
+<img class="landing-photo" src="/assets/img/sdn-rpi.jpg" alt="VoiceTel SDN appliance — a small Raspberry Pi-form-factor device" width="600" height="401" loading="lazy" decoding="async">
+<div class="vt-tunnel">
+	<div class="vt-tunnel-row">
+		<div class="vt-tunnel-node">
+			<span class="k">Your LAN</span>
+			<span class="v">PBX · 10.0.0.0/24</span>
+		</div>
+		<span class="vt-tunnel-arrow">&rarr;</span>
+		<div class="vt-tunnel-node vt-tunnel-node--accent">
+			<span class="k">SDN appliance</span>
+			<span class="v">RPi · sdn-08c4</span>
+		</div>
+		<span class="vt-tunnel-arrow">&rArr;</span>
+		<div class="vt-tunnel-node">
+			<span class="k">VoiceTel core</span>
+			<span class="v">NYC POP</span>
+		</div>
+	</div>
+	<div class="vt-tunnel-legend">
+		<span>Uplink :443 / TLS 1.3</span>
+		<span>No routing changes</span>
+	</div>
+</div>
+{%- elif item.key === "phone" %}
+<div class="vt-feature-grid">
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "code-slash" %}</span><span class="vt-feature-name">Web</span><span class="vt-feature-meta">WebRTC</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">macOS</span><span class="vt-feature-meta">42 MB · .dmg</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Windows</span><span class="vt-feature-meta">38 MB · .msi</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Linux</span><span class="vt-feature-meta">deb · rpm</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">iOS</span><span class="vt-feature-meta">App Store</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">Android</span><span class="vt-feature-meta">Play Store</span></div>
+</div>
+<div class="vt-code">
+	<span class="vt-code-lang">Install</span>
+	<div><span class="c-cmt"># macOS</span></div>
+	<div><span class="c-attr">brew</span> install voicetel/tap/phone</div>
+	<div>&nbsp;</div>
+	<div><span class="c-cmt"># Windows</span></div>
+	<div><span class="c-attr">winget</span> install <span class="c-str">VoiceTel.Phone</span></div>
+	<div>&nbsp;</div>
+	<div><span class="c-cmt"># Debian / Ubuntu</span></div>
+	<div><span class="c-attr">apt</span> install voicetel-phone</div>
+	<div>&nbsp;</div>
+	<div><span class="c-cmt"># Or open the web client &mdash; no install</span></div>
+	<div><span class="c-str">phone.voicetel.com</span></div>
+</div>
+{%- elif item.key === "pricing" %}
+<table class="vt-rates">
+	<thead>
+		<tr><th>Line item</th><th class="r">Rate</th></tr>
+	</thead>
+	<tbody>
+		<tr><td class="label">Outbound voice <span class="sub">US local · /min</span></td><td class="r">{{ pricingRuntime | volumeRate("voice-out-us50", 200000) }}<span class="vt-rates-mark">*</span></td></tr>
+		<tr><td class="label">Inbound voice <span class="sub">US local · /min</span></td><td class="r">{{ pricingRuntime | volumeRate("voice-in-local", 200000) }}<span class="vt-rates-mark">*</span></td></tr>
+		<tr><td class="label">Local DID <span class="sub">/ month</span></td><td class="r">{{ pricingRuntime | volumeRate("did-local", 100) }}<span class="vt-rates-mark">*</span></td></tr>
+		<tr><td class="label">A2P SMS <span class="sub">/ segment</span></td><td class="r">{{ pricingRuntime | volumeRate("sms-out", 200000) }}<span class="vt-rates-mark">*</span></td></tr>
+		<tr><td class="label">STT · TTS · recording storage</td><td class="r">passthrough</td></tr>
+	</tbody>
+</table>
+<p class="vt-rates-note"><span class="vt-rates-mark">*</span> Volume tier: 200K minutes, 200K messages, and 100 DIDs / month.</p>
+{%- elif item.key === "docs" %}
+<ul class="vt-toc">
+	<li><a class="vt-toc-link" href="{{ apiSpecs.voiceml.urlPath }}"><span class="icon">{% icon "code-slash" %}</span><span class="label">VoiceML reference</span><span class="meta">17 verbs</span></a></li>
+	<li><a class="vt-toc-link" href="/docs/api/v2.2/"><span class="icon">{% icon "book" %}</span><span class="label">REST API</span><span class="meta">74 operations</span></a></li>
+	<li><a class="vt-toc-link" href="/voiceml/migrate/#webhook-signatures"><span class="icon">{% icon "shield-check" %}</span><span class="label">Webhook signatures</span><span class="meta">HMAC-SHA256</span></a></li>
+	<li><a class="vt-toc-link" href="/voiceml/migrate/"><span class="icon">{% icon "tag" %}</span><span class="label">Migrate from Twilio</span><span class="meta">5 min</span></a></li>
+	<li><a class="vt-toc-link" href="/support/voice/"><span class="icon">{% icon "plug" %}</span><span class="label">Vendor integration guides</span><span class="meta">PBX &middot; SBC &middot; firewall</span></a></li>
+</ul>
+{%- endif %}

@@ -1,0 +1,66 @@
+---
+layout: layouts/page.njk
+permalink: /voiceml/phone/
+title: "VoiceML Phone"
+description: "VoiceML Phone for VoiceML accounts: desktop apps for macOS, Windows, and Linux, iPhone and Android apps, and a browser softphone in the VoiceML Dashboard, set up with an activation code."
+---
+{%- set app = phoneApps.apps | where("key", "voiceml") | first %}
+{%- set platforms = [
+	{ key: "macos", label: "macOS", icon: "hdd-stack" },
+	{ key: "windows", label: "Windows", icon: "hdd-stack" },
+	{ key: "linux", label: "Linux", icon: "hdd-stack" }
+] %}
+
+<p class="eyebrow"><a href="/voiceml/">VoiceML</a> / Phone</p>
+<h1>VoiceML Phone on desktop, mobile, and the web.</h1>
+<p class="lede">VoiceML Phone is the softphone for VoiceML accounts. Install it on macOS, Windows, Linux, iPhone, or Android, or open it in the VoiceML Dashboard, and set it up with a one-time activation code instead of typing SIP credentials.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="{{ app.stores.ios }}">App Store</a>
+	<a class="btn btn-primary" href="{{ app.stores.android }}">Google Play</a>
+	<a class="btn btn-secondary" href="#desktop">Desktop downloads</a>
+</p>
+
+<section class="section-block" id="desktop">
+	<h2>Desktop</h2>
+	<p>Version {{ app.version }} for Apple Silicon and Intel Macs, Windows, and x86-64 and arm64 Linux. Each install guide lists the VoiceML Phone files with their SHA-256 checksums.</p>
+	<ul class="features-grid">
+		{%- for platform in platforms %}
+		{%- set files = app.desktop | where("platform", platform.key) %}
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon platform.icon %}</span>
+			<h3><a href="/phone/applications/desktop/{{ platform.key }}/#download-voiceml">{{ platform.label }}</a></h3>
+			<p>{% for file in files %}{{ file.format }} ({{ file.arch }}){% if not loop.last %}, {% endif %}{% endfor %}.</p>
+		</li>
+		{%- endfor %}
+	</ul>
+</section>
+
+<section class="section-block" id="mobile">
+	<h2>Mobile</h2>
+	<p>Free on the <a href="{{ app.stores.ios }}">App Store</a> and <a href="{{ app.stores.android }}">Google Play</a>. Incoming calls arrive as push notifications, so the phone rings while the app is in the background. See the <a href="/phone/applications/mobile/ios/">iPhone</a> and <a href="/phone/applications/mobile/android/">Android</a> guides for permissions and troubleshooting.</p>
+</section>
+
+<section class="section-block" id="web">
+	<h2>In the browser</h2>
+	<p>Operators can open VoiceML Phone from the <a href="/voiceml/dashboard/">VoiceML Dashboard</a>. It runs the desktop app in a dashboard window, so calls continue while you work in the dashboard, and sets itself up from the same activation code.</p>
+</section>
+
+<section class="section-block" id="setup">
+	<h2>Set up with an activation code</h2>
+	<ol>
+		<li>In the VoiceML Portal, open <em>Credential lists</em> and generate a provisioning code for the SIP credential the phone should use.</li>
+		<li>In VoiceML Phone, open <em>Settings &rarr; Auto Provision</em> and enter the code (<code>XXXX-XXXX</code>). The app fills in the SIP domain, username, and password and registers.</li>
+		<li>Codes work once and expire after 30 days; generate a new one for each device.</li>
+	</ol>
+	<p>VoiceTel accounts use <a href="/phone/">VoiceTel Phone</a> instead, which signs in with SIP credentials from the VoiceTel customer portal.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="voiceml-phone-cta-heading">
+	<h2 id="voiceml-phone-cta-heading">Get VoiceML Phone.</h2>
+	<p>Install it on every device that should ring, then enter an activation code from the VoiceML Portal.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="{{ app.stores.ios }}">App Store</a>
+		<a class="btn btn-primary" href="{{ app.stores.android }}">Google Play</a>
+		<a class="btn btn-secondary" href="{{ site.voicemlPortalUrl }}">VoiceML Portal</a>
+	</p>
+</aside>

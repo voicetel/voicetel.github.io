@@ -9,6 +9,7 @@
 	"url": "https://voicetel.com",
 	"portalUrl": "https://www.voicetel.com",
 	"loginUrl": "https://www.voicetel.com/?login",
+	"voicemlPortalUrl": "https://voiceml.voicetel.com",
 	"voicemlDashboardUrl": "https://dash.voiceml.com",
 	"voicemlReferenceUrl": "https://voiceml.com",
 	"voicemlPublisherUrl": "https://voiceml.org",

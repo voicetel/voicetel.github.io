@@ -34,6 +34,7 @@
 		"http://localhost:8000/voiceml/",
 		"http://localhost:8000/voiceml/dashboard/",
 		"http://localhost:8000/voiceml/conversationrelay/",
+		"http://localhost:8000/voiceml/phone/",
 		"http://localhost:8000/voice/",
 		"http://localhost:8000/messaging/",
 		"http://localhost:8000/numbers/",

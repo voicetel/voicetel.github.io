@@ -1,0 +1,113 @@
+{
+	"tabs": [
+		{
+			"key": "overview",
+			"label": "Overview",
+			"eyebrow": "Wholesale telecommunications",
+			"title": "Programmable voice. Wholesale infrastructure. Your choice of providers.",
+			"description": "Build voice applications with VoiceML, connect SIP services, and manage messaging and numbers through VoiceTel APIs. Use built-in speech defaults or connect your preferred providers.",
+			"cta": "Sign up",
+			"href": "/signup/",
+			"secondaryCta": "Explore VoiceML",
+			"secondaryHref": "/voiceml/",
+			"previewTitle": "From your application to the phone network",
+			"steps": [
+				"Your application",
+				"VoiceML call control",
+				"VoiceTel voice services",
+				"Phone network"
+			],
+			"note": "Use built-in speech defaults, or bring your own speech providers and recording storage."
+		},
+		{
+			"key": "voiceml",
+			"label": "VoiceML",
+			"eyebrow": "Programmable voice",
+			"title": "Build call flows with familiar voice markup.",
+			"description": "Use XML-based VoiceML to speak to callers, collect keypad input, route calls, and record conversations. Check supported verbs and compatibility details when migrating an existing application.",
+			"cta": "Explore VoiceML",
+			"href": "/voiceml/",
+			"secondaryCta": "Check compatibility",
+			"secondaryHref": "/voiceml/compatibility/",
+			"previewTitle": "A keypad menu in VoiceML",
+			"code": "<Response>\n  <Gather numDigits=\"1\" action=\"/dispatch\">\n    <Say>Press 1 to be connected.</Say>\n  </Gather>\n</Response>",
+			"note": "Your application handles the collected digit at /dispatch and returns the next VoiceML response."
+		},
+		{
+			"key": "voice",
+			"label": "Voice & SIP",
+			"eyebrow": "Origination and termination",
+			"title": "Connect your applications and PBX to the phone network.",
+			"description": "Connect your SIP infrastructure to VoiceTel for inbound and outbound calling. Use the configuration guides to set up your PBX, gateways, and call routing.",
+			"cta": "Explore voice",
+			"href": "/voice/",
+			"secondaryCta": "Read the voice guides",
+			"secondaryHref": "/docs/voice/",
+			"previewTitle": "A SIP calling path",
+			"steps": [
+				"Your PBX or SIP application",
+				"Configured SIP gateway",
+				"VoiceTel voice services",
+				"Phone network"
+			],
+			"note": "Origination brings calls to your application. Termination connects outbound calls to their destination."
+		},
+		{
+			"key": "messaging",
+			"label": "Messaging",
+			"eyebrow": "SMS and MMS",
+			"title": "Send messages. Handle replies in your application.",
+			"description": "Build notifications and two-way messaging with SMS and MMS APIs. Configure inbound delivery to your webhook and manage A2P 10DLC registration for application messaging.",
+			"cta": "Explore messaging",
+			"href": "/messaging/",
+			"secondaryCta": "Read the messaging guides",
+			"secondaryHref": "/docs/messaging/",
+			"previewTitle": "A two-way messaging workflow",
+			"steps": [
+				"Your application sends a message",
+				"VoiceTel delivers SMS or MMS",
+				"Your customer replies",
+				"An inbound webhook reaches your application"
+			],
+			"note": "Illustrative message flow. Delivery depends on registration, destination, and carrier requirements."
+		},
+		{
+			"key": "numbers",
+			"label": "Numbers",
+			"eyebrow": "Provisioning and porting",
+			"title": "Provision numbers and manage their routing.",
+			"description": "Search number inventory, provision numbers, and configure services through VoiceTel APIs. Bring existing numbers through the porting workflow and manage per-number routing.",
+			"cta": "Explore numbers",
+			"href": "/numbers/",
+			"secondaryCta": "Read the API reference",
+			"secondaryHref": "/docs/api/v2.2/",
+			"previewTitle": "From number selection to service",
+			"steps": [
+				"Search available inventory",
+				"Provision a new number or request a port",
+				"Configure routing and services",
+				"Manage the number through the API"
+			],
+			"note": "Porting follows a coordinated cutover process; submitting a request does not immediately move service."
+		},
+		{
+			"key": "ai-agents",
+			"label": "AI Agents",
+			"eyebrow": "Voice and chat",
+			"title": "Connect voice and chat agents to your tools and knowledge.",
+			"description": "Configure assistants with a model, instructions, tools, and knowledge resources. Connect voice sessions through VoiceML and inspect session history through the API.",
+			"cta": "Explore AI Agents",
+			"href": "/ai-agents/",
+			"secondaryCta": "Explore Conversations",
+			"secondaryHref": "/conversations/",
+			"previewTitle": "An assistant connected to your application",
+			"steps": [
+				"Voice or chat session",
+				"Assistant instructions and model",
+				"Your tools and knowledge",
+				"Response and session history"
+			],
+			"note": "Available model providers depend on the integrations enabled on your account."
+		}
+	]
+}

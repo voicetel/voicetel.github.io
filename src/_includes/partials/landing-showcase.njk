@@ -1,0 +1,39 @@
+<section class="landing-showcase" aria-label="Explore VoiceTel" data-landing-showcase>
+	<div class="container">
+		<div class="landing-tabs" data-landing-tabs hidden>
+			{%- for item in landing.tabs %}
+			<button type="button" id="landing-tab-{{ item.key }}" data-landing-tab>{{ item.label }}</button>
+			{%- endfor %}
+		</div>
+		<div class="landing-panels">
+			{%- for item in landing.tabs %}
+			<section class="landing-panel" id="landing-panel-{{ item.key }}" aria-labelledby="landing-heading-{{ item.key }}" data-landing-panel>
+				<div class="landing-copy">
+					<p class="landing-eyebrow">{{ item.eyebrow }}</p>
+					{% if loop.first %}<h1 id="landing-heading-{{ item.key }}">{{ item.title }}</h1>
+					{% else %}<h2 id="landing-heading-{{ item.key }}">{{ item.title }}</h2>{% endif %}
+					<p class="landing-description">{{ item.description }}</p>
+					<p class="landing-actions">
+						<a class="btn btn-primary" href="{{ item.href }}">{{ item.cta }}</a>
+						<a class="btn btn-secondary" href="{{ item.secondaryHref }}">{{ item.secondaryCta }}</a>
+					</p>
+				</div>
+				<figure class="landing-preview">
+					<figcaption>{{ item.previewTitle }}</figcaption>
+					<p class="landing-preview-label">{% if item.code %}VoiceML example{% else %}Illustrative workflow{% endif %}</p>
+					{% if item.code %}
+					<pre tabindex="0" aria-label="VoiceML keypad menu example"><code>{{ item.code | escape }}</code></pre>
+					{% else %}
+					<ol class="landing-flow">
+						{%- for step in item.steps %}
+						<li><span class="landing-flow-number" aria-hidden="true">0{{ loop.index }}</span><span>{{ step }}</span></li>
+						{%- endfor %}
+					</ol>
+					{% endif %}
+					<p class="landing-preview-note">{{ item.note }}</p>
+				</figure>
+			</section>
+			{%- endfor %}
+		</div>
+	</div>
+</section>

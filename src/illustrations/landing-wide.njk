@@ -1,0 +1,10 @@
+---
+pagination:
+  data: landing.tabs
+  size: 1
+  alias: item
+permalink: "{{ landing.illustrationPath }}{{ item.key }}-wide.svg"
+eleventyExcludeFromCollections: true
+variant: wide
+---
+{% include "partials/landing-illustration.njk" %}

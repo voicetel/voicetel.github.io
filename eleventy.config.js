@@ -53,32 +53,38 @@ export default function (eleventyConfig) {
 		return d.toISOString().slice(0, 10);
 	});
 
-	// Same sampled-curve interpolation as rateFromCurve() in
-	// src/assets/js/pricing-calculator.js, so a volume-tier rate quoted
-	// elsewhere on the site matches what the /pricing/ calculator shows.
-	eleventyConfig.addFilter("volumeRate", (pricing, serviceId, volume) => {
+	function rateCurve(pricing, serviceId) {
 		const service = pricing.groups
 			.flatMap((group) => group.services)
 			.find((s) => s.id === serviceId);
 		if (!service?._curve) {
-			throw new Error(`volumeRate: no rate curve for service "${serviceId}"`);
+			throw new Error(`rateCurve: no rate curve for service "${serviceId}"`);
 		}
-		const curve = service._curve;
-		let rate = curve[curve.length - 1][1];
-		if (volume <= curve[0][0]) {
-			rate = curve[0][1];
-		} else {
-			for (let i = 0; i < curve.length - 1; i++) {
-				const [v1, r1] = curve[i];
-				const [v2, r2] = curve[i + 1];
-				if (volume >= v1 && volume <= v2) {
-					rate = r1 + ((r2 - r1) * (volume - v1)) / (v2 - v1);
-					break;
-				}
+		return service._curve;
+	}
+
+	// Same sampled-curve interpolation as rateFromCurve() in
+	// src/assets/js/pricing-calculator.js, so a volume-tier rate quoted
+	// elsewhere on the site matches what the /pricing/ calculator shows.
+	function volumeRateValue(pricing, serviceId, volume) {
+		const curve = rateCurve(pricing, serviceId);
+		if (volume <= curve[0][0]) return curve[0][1];
+		for (let i = 0; i < curve.length - 1; i++) {
+			const [v1, r1] = curve[i];
+			const [v2, r2] = curve[i + 1];
+			if (volume >= v1 && volume <= v2) {
+				return r1 + ((r2 - r1) * (volume - v1)) / (v2 - v1);
 			}
 		}
-		return `$${rate.toFixed(4)}`;
-	});
+		return curve[curve.length - 1][1];
+	}
+
+	eleventyConfig.addFilter("rateCurve", rateCurve);
+	eleventyConfig.addFilter("volumeRateValue", volumeRateValue);
+	eleventyConfig.addFilter(
+		"volumeRate",
+		(pricing, serviceId, volume) => `$${volumeRateValue(pricing, serviceId, volume).toFixed(4)}`
+	);
 
 	eleventyConfig.addShortcode("year", () => String(new Date().getFullYear()));
 

@@ -1,4 +1,5 @@
 {
+	"illustrationPath": "/assets/img/landing/",
 	"tabs": [
 		{
 			"key": "overview",
@@ -9,7 +10,66 @@
 			"cta": "See the rates",
 			"href": "/pricing/",
 			"secondaryCta": "Check compatibility",
-			"secondaryHref": "/voiceml/compatibility/"
+			"secondaryHref": "/voiceml/compatibility/",
+			"illustration": {
+				"type": "network",
+				"title": "Map of VoiceTel colocation POPs and cloud regions",
+				"_note": "Map units: equirectangular projection into a 1000-unit-wide viewBox (x = 20 + (lon + 124.8) * 8.67, y = 16 + (49.4 - lat) * 11). The outline and every point share it; regenerate them together. Points are keyed by colocations.json and cloudRegions.json codes; lx/ly position the label.",
+				"outline": "M20.9,27 L34.7,20.4 L276.6,20.4 L280.1,16 L325.2,31.4 L366.8,46.8 L378.1,54.5 L387.6,86.4 L381.5,97.4 L416.2,83.1 L440.5,73.2 L452.6,64.4 L482.1,64.4 L495.1,45.7 L502.1,38 L514.2,41.3 L521.1,66.6 L493.4,79.8 L488.2,89.7 L495.1,99.6 L478.6,105.1 L460.4,112.8 L459.6,123.8 L452.6,131.5 L450.9,138.1 L443.1,151.3 L447.4,171.1 L438.8,177.7 L421.4,187.6 L409.3,199.7 L396.3,221.7 L403.2,247 L407.5,267.9 L407.5,275.6 L398.9,282.2 L392.8,271.2 L385,256.9 L384.1,241.5 L373.7,228.3 L361.6,232.7 L352.1,225 L339.1,222.8 L325.2,227.2 L327.8,240.4 L313.9,239.3 L288.8,232.7 L278.4,237.1 L263.6,248.1 L259.3,255.8 L257.6,274.5 L239.4,256.9 L222.9,231.6 L209,240.4 L196,233.8 L178.7,209.6 L163.9,215.1 L138.8,215.1 L106.7,201.9 L86.8,201.9 L74.6,185.4 L56.4,178.8 L45.1,156.8 L39.9,144.7 L28.7,121.6 L25.2,98.5 L26.1,78.7 L26.9,51.2 L20.9,27Z",
+				"points": {
+					"SJC": {
+						"x": 45.2,
+						"y": 148.7,
+						"lx": 56,
+						"ly": 168
+					},
+					"DEN": {
+						"x": 191.8,
+						"y": 122.3,
+						"lx": 203,
+						"ly": 127
+					},
+					"DFW": {
+						"x": 262.8,
+						"y": 198.8,
+						"lx": 274,
+						"ly": 204
+					},
+					"ORD": {
+						"x": 342.4,
+						"y": 99,
+						"lx": 342.4,
+						"ly": 84,
+						"anchor": "middle"
+					},
+					"NYC": {
+						"x": 460.3,
+						"y": 111.6,
+						"lx": 472,
+						"ly": 122
+					},
+					"US West 1": {
+						"x": 50.3,
+						"y": 134.8,
+						"lx": 61,
+						"ly": 133
+					},
+					"US East 1": {
+						"x": 430.5,
+						"y": 131.5,
+						"lx": 430.5,
+						"ly": 150,
+						"anchor": "middle"
+					},
+					"US East 2": {
+						"x": 382.4,
+						"y": 119.4,
+						"lx": 372,
+						"ly": 138,
+						"anchor": "end"
+					}
+				}
+			}
 		},
 		{
 			"key": "voiceml",
@@ -20,7 +80,45 @@
 			"cta": "Explore VoiceML",
 			"href": "/voiceml/",
 			"secondaryCta": "Validate VoiceML",
-			"secondaryHref": "/voiceml/validator/"
+			"secondaryHref": "/voiceml/validator/",
+			"illustration": {
+				"type": "flow",
+				"title": "How a VoiceML call flow runs",
+				"nodes": [
+					{
+						"icon": "telephone",
+						"label": "Inbound call",
+						"meta": "caller dials in"
+					},
+					{
+						"icon": "code-slash",
+						"label": "Your app",
+						"meta": "returns VoiceML",
+						"accent": true
+					},
+					{
+						"icon": "hash",
+						"label": "<Gather>",
+						"meta": "Press 1 to connect"
+					},
+					{
+						"icon": "telephone-fill",
+						"label": "<Dial>",
+						"meta": "caller connected"
+					}
+				],
+				"links": [
+					{
+						"label": "webhook"
+					},
+					{
+						"label": "VoiceML"
+					},
+					{
+						"label": "/dispatch"
+					}
+				]
+			}
 		},
 		{
 			"key": "voice",
@@ -29,7 +127,48 @@
 			"title": "Voice",
 			"description": "STIR/SHAKEN attestation. Global colocation footprint and cloud regions. US-based NOC. Bring your own STT, TTS, and recording storage — pay providers directly, no VoiceTel markup.",
 			"cta": "See voice features",
-			"href": "/voice/"
+			"href": "/voice/",
+			"illustration": {
+				"type": "flow",
+				"title": "Voice path between the phone network and your PBX",
+				"nodes": [
+					{
+						"icon": "telephone",
+						"label": "PSTN",
+						"meta": "Tier-1 carriers"
+					},
+					{
+						"icon": "diagram-3",
+						"label": "VoiceTel POP",
+						"meta": "STIR/SHAKEN signed",
+						"accent": true
+					},
+					{
+						"icon": "plug",
+						"label": "SIP trunk",
+						"meta": "inbound + outbound"
+					},
+					{
+						"icon": "buildings",
+						"label": "Your PBX or app",
+						"meta": "SIP or VoiceML"
+					}
+				],
+				"links": [
+					{
+						"label": "",
+						"both": true
+					},
+					{
+						"label": "SIP",
+						"both": true
+					},
+					{
+						"label": "SIP",
+						"both": true
+					}
+				]
+			}
 		},
 		{
 			"key": "messaging",
@@ -38,7 +177,48 @@
 			"title": "Messaging",
 			"description": "A2P 10DLC for high-volume application messaging. Inbound included. Webhook delivery to your endpoint. No per-message platform tax.",
 			"cta": "See messaging",
-			"href": "/messaging/"
+			"href": "/messaging/",
+			"illustration": {
+				"type": "flow",
+				"title": "Two-way messaging between your app and a customer",
+				"nodes": [
+					{
+						"icon": "code-slash",
+						"label": "Your app",
+						"meta": "POST …/Messages"
+					},
+					{
+						"icon": "chat-text",
+						"label": "VoiceTel",
+						"meta": "A2P 10DLC route",
+						"accent": true
+					},
+					{
+						"icon": "broadcast-pin",
+						"label": "Carrier",
+						"meta": "SMS · MMS"
+					},
+					{
+						"icon": "phone-vibrate",
+						"label": "Handset",
+						"meta": "customer replies"
+					}
+				],
+				"links": [
+					{
+						"label": "API"
+					},
+					{
+						"label": "send"
+					},
+					{
+						"label": "deliver"
+					}
+				],
+				"loop": {
+					"label": "Reply → inbound webhook to your endpoint"
+				}
+			}
 		},
 		{
 			"key": "numbers",
@@ -47,7 +227,45 @@
 			"title": "Numbers",
 			"description": "Wholesale rates on every number type. Per-number e911 provisioning. CNAM and caller-ID services available. Port local, toll-free, and mobile numbers with coordinated cutover support.",
 			"cta": "Get numbers",
-			"href": "/numbers/"
+			"href": "/numbers/",
+			"illustration": {
+				"type": "flow",
+				"title": "Number lifecycle from search to service",
+				"nodes": [
+					{
+						"icon": "search",
+						"label": "Search",
+						"meta": "local · toll-free"
+					},
+					{
+						"icon": "hash",
+						"label": "Provision",
+						"meta": "or port in",
+						"accent": true
+					},
+					{
+						"icon": "diagram-3",
+						"label": "Route",
+						"meta": "SIP · VoiceML · SMS"
+					},
+					{
+						"icon": "geo-alt",
+						"label": "E911 + CNAM",
+						"meta": "per number"
+					}
+				],
+				"links": [
+					{
+						"label": ""
+					},
+					{
+						"label": ""
+					},
+					{
+						"label": ""
+					}
+				]
+			}
 		},
 		{
 			"key": "ai-agents",
@@ -58,7 +276,48 @@
 			"cta": "Explore AI Agents",
 			"href": "/ai-agents/",
 			"secondaryCta": "Explore Conversations",
-			"secondaryHref": "/conversations/"
+			"secondaryHref": "/conversations/",
+			"illustration": {
+				"type": "flow",
+				"title": "A voice agent call through ConversationRelay",
+				"nodes": [
+					{
+						"icon": "telephone",
+						"label": "Caller",
+						"meta": "speaks"
+					},
+					{
+						"icon": "code-slash",
+						"label": "VoiceML",
+						"meta": "<ConversationRelay>",
+						"accent": true
+					},
+					{
+						"icon": "plug",
+						"label": "Your WebSocket",
+						"meta": "prompt · text"
+					},
+					{
+						"icon": "robot",
+						"label": "AI Assistant",
+						"meta": "tools · knowledge"
+					}
+				],
+				"links": [
+					{
+						"label": "STT"
+					},
+					{
+						"label": "prompt"
+					},
+					{
+						"label": "Messages"
+					}
+				],
+				"loop": {
+					"label": "text reply → spoken to the caller (TTS)"
+				}
+			}
 		},
 		{
 			"key": "sdn",
@@ -67,7 +326,45 @@
 			"title": "SDN appliance",
 			"description": "Place a Raspberry Pi in your LAN; it tunnels to VoiceTel core. Solves NAT, ALG, UDP timer, and firewall misconfiguration without changing your routing policies.",
 			"cta": "Learn about SDN",
-			"href": "/sdn/"
+			"href": "/sdn/",
+			"illustration": {
+				"type": "flow",
+				"title": "SDN appliance tunnel from your LAN to VoiceTel",
+				"nodes": [
+					{
+						"icon": "telephone",
+						"label": "Phones + PBX",
+						"meta": "10.0.0.0/24"
+					},
+					{
+						"icon": "hdd-stack",
+						"label": "SDN appliance",
+						"meta": "Raspberry Pi",
+						"accent": true
+					},
+					{
+						"icon": "shield-check",
+						"label": "Your firewall",
+						"meta": "no routing changes"
+					},
+					{
+						"icon": "diagram-3",
+						"label": "VoiceTel core",
+						"meta": "NYC POP"
+					}
+				],
+				"links": [
+					{
+						"label": "SIP + RTP"
+					},
+					{
+						"label": ":443 out"
+					},
+					{
+						"label": "TLS 1.3"
+					}
+				]
+			}
 		},
 		{
 			"key": "phone",
@@ -78,7 +375,32 @@
 			"cta": "Get the app",
 			"href": "/phone/",
 			"secondaryCta": "View applications",
-			"secondaryHref": "/phone/applications/"
+			"secondaryHref": "/phone/applications/",
+			"illustration": {
+				"type": "devices",
+				"title": "VoiceTel Phone on web, desktop, and mobile",
+				"devices": [
+					{
+						"kind": "browser",
+						"label": "Web",
+						"meta": "WebRTC · no install"
+					},
+					{
+						"kind": "desktop",
+						"label": "Desktop",
+						"meta": "macOS · Windows · Linux"
+					},
+					{
+						"kind": "mobile",
+						"label": "Mobile",
+						"meta": "iOS · Android"
+					}
+				],
+				"hub": {
+					"label": "Your VoiceTel account",
+					"meta": "SIP credentials"
+				}
+			}
 		},
 		{
 			"key": "pricing",
@@ -87,7 +409,31 @@
 			"title": "Pricing",
 			"description": "Every line item published. No 'contact sales' gates. STT, TTS, and recording storage paid directly to your chosen provider with zero VoiceTel markup.",
 			"cta": "See pricing",
-			"href": "/pricing/"
+			"href": "/pricing/",
+			"illustration": {
+				"type": "curve",
+				"title": "Outbound US voice rate by monthly volume",
+				"service": "voice-out-us50",
+				"maxVolume": 5000000,
+				"marks": [
+					{
+						"volume": 0,
+						"label": "Under 100K min · list"
+					},
+					{
+						"volume": 200000,
+						"label": "200K min"
+					},
+					{
+						"volume": 1000000,
+						"label": "1M min"
+					},
+					{
+						"volume": 5000000,
+						"label": "5M+ min · floor"
+					}
+				]
+			}
 		},
 		{
 			"key": "docs",
@@ -96,7 +442,45 @@
 			"title": "Documentation",
 			"description": "VoiceML reference, REST API, integration guides for major PBX platforms and firewall vendors, and a five-minute migrate-from-Twilio playbook.",
 			"cta": "Read the docs",
-			"href": "/docs/"
+			"href": "/docs/",
+			"illustration": {
+				"type": "flow",
+				"title": "Migrating a Twilio SDK app to VoiceTel",
+				"nodes": [
+					{
+						"icon": "code-slash",
+						"label": "Existing app",
+						"meta": "Twilio SDK"
+					},
+					{
+						"icon": "gear",
+						"label": "Point the host",
+						"meta": "voiceml.voicetel.com",
+						"accent": true
+					},
+					{
+						"icon": "shield-check",
+						"label": "Swap credentials",
+						"meta": "VoiceTel account"
+					},
+					{
+						"icon": "list-check",
+						"label": "Validate",
+						"meta": "VoiceML validator"
+					}
+				],
+				"links": [
+					{
+						"label": ""
+					},
+					{
+						"label": ""
+					},
+					{
+						"label": ""
+					}
+				]
+			}
 		}
 	]
 }

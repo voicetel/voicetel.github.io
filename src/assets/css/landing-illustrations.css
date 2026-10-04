@@ -1,0 +1,137 @@
+/* Embedded into each generated landing illustration SVG at build time
+   (see src/_data/illustrationStyle.js); not linked from any page. Font
+   sizes are viewBox units, so they scale with the drawing. */
+
+.li-label {
+	font-family: var(--font-sans);
+	font-size: 16px;
+	font-weight: var(--weight-semibold);
+	fill: var(--primary-color);
+}
+
+.li-meta,
+.li-code,
+.li-link,
+.li-heading,
+.li-tick {
+	font-family: var(--font-mono);
+}
+
+.li-meta {
+	font-size: 13px;
+	fill: var(--text-muted);
+}
+
+.li-code {
+	font-size: 13px;
+	font-weight: var(--weight-semibold);
+	fill: var(--primary-color);
+}
+
+.li-link {
+	font-size: 12px;
+	fill: var(--primary-dark);
+}
+
+.li-heading {
+	font-size: 12px;
+	letter-spacing: 0.08em;
+	fill: var(--text-muted);
+}
+
+.li-tick {
+	font-size: 11px;
+	fill: var(--text-muted);
+}
+
+/* Paints a background-colored outline under the glyphs so labels stay
+   legible where they cross lines or the map outline. */
+.li-halo {
+	paint-order: stroke;
+	stroke: var(--light-bg);
+	stroke-width: 4px;
+	stroke-linejoin: round;
+}
+
+.li-node {
+	fill: var(--paper);
+	stroke: var(--border-color);
+}
+
+.li-node--accent {
+	stroke: var(--primary-light);
+}
+
+.li-accent,
+.li-arrow,
+.li-pop,
+.li-call {
+	fill: var(--primary-light);
+}
+
+.li-icon {
+	color: var(--primary-light);
+}
+
+.li-line {
+	fill: none;
+	stroke: var(--primary-light);
+	stroke-width: 1.5;
+}
+
+.li-line--return {
+	stroke-dasharray: 5 4;
+}
+
+.li-land {
+	fill: var(--paper);
+	stroke: var(--border-color);
+	stroke-width: 1.5;
+}
+
+.li-pop-ring {
+	fill: none;
+	stroke: var(--primary-light);
+	stroke-opacity: 0.35;
+}
+
+.li-region {
+	fill: var(--paper);
+	stroke: var(--primary-color);
+	stroke-width: 1.5;
+}
+
+.li-grid {
+	stroke: var(--border-color);
+}
+
+.li-axis {
+	stroke: var(--text-muted);
+}
+
+.li-curve {
+	fill: none;
+	stroke: var(--primary-light);
+	stroke-width: 2.5;
+}
+
+.li-dot {
+	fill: var(--paper);
+	stroke: var(--primary-dark);
+	stroke-width: 2;
+}
+
+.li-device {
+	fill: var(--paper);
+	stroke: var(--primary-color);
+	stroke-width: 1.5;
+}
+
+.li-device-rule {
+	stroke: var(--border-color);
+}
+
+.li-key {
+	fill: var(--light-bg);
+	stroke: var(--border-color);
+}

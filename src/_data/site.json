@@ -10,6 +10,8 @@
 	"portalUrl": "https://www.voicetel.com",
 	"loginUrl": "https://www.voicetel.com/?login",
 	"voicemlDashboardUrl": "https://dash.voiceml.com",
+	"voicemlReferenceUrl": "https://voiceml.com",
+	"voicemlPublisherUrl": "https://voiceml.org",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
@@ -142,6 +144,18 @@
 					"description": "VoiceML reference, REST API, integration guides."
 				},
 				{
+					"label": "VoiceML reference",
+					"icon": "book",
+					"href": "https://voiceml.com",
+					"description": "Every VoiceML verb, noun, and attribute."
+				},
+				{
+					"label": "VoiceML publisher",
+					"icon": "layers",
+					"href": "https://voiceml.org",
+					"description": "Publish markup to a permanent webhook URL, free."
+				},
+				{
 					"label": "FAQ",
 					"icon": "question-circle",
 					"href": "/faq/",
@@ -256,6 +270,8 @@
 			"label": "Resources",
 			"items": [
 				{ "label": "Documentation", "href": "/docs/" },
+				{ "label": "VoiceML reference", "href": "https://voiceml.com" },
+				{ "label": "VoiceML publisher", "href": "https://voiceml.org" },
 				{ "label": "FAQ", "href": "/faq/" },
 				{ "label": "Support", "href": "/support/" },
 				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },

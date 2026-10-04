@@ -24,7 +24,7 @@ description: "Voicemail, recordings, and transcripts from your VoiceML call flow
     transcribe="true"
     transcribeCallback="{{ site.voicemlDashboardUrl }}/transcript/you%40example.com"/&gt;
 &lt;/Response&gt;</code></pre>
-	<p>Use <code>/recording/</code> for call recordings, <code>/voicemail/</code> for voicemail, <code>/transcript/</code> for transcripts, and <code>/status/</code> for call status callbacks. Callback URLs can also carry call context, such as the digits a caller pressed, which the dashboard shows with the message.</p>
+	<p>Use <code>/recording/</code> for call recordings, <code>/voicemail/</code> for voicemail, <code>/transcript/</code> for transcripts, and <code>/status/</code> for call status callbacks. Callback URLs can also carry call context, such as the digits a caller pressed, which the dashboard shows with the message; a templated document published on <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> fills it in on each call.</p>
 	{% set drawing = "voiceml-dashboard-flow" %}
 	{% include "partials/section-illustration.njk" %}
 </section>

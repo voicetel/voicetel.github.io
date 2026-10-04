@@ -144,27 +144,34 @@
 	</div>
 </div>
 {%- elif item.key === "phone" %}
+{%- set phoneApp = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set macDmg = phoneApp.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "arm64") | first %}
+{%- set winSetup = phoneApp.desktop | where("platform", "windows") | where("format", "Installer (.exe)") | first %}
+{%- set linuxDeb = phoneApp.desktop | where("platform", "linux") | where("format", ".deb") | where("arch", "amd64") | first %}
+{%- set linuxRpm = phoneApp.desktop | where("platform", "linux") | where("format", ".rpm") | first %}
 <div class="vt-feature-grid">
 	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "code-slash" %}</span><span class="vt-feature-name">Web</span><span class="vt-feature-meta">WebRTC</span></div>
-	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">macOS</span><span class="vt-feature-meta">42 MB · .dmg</span></div>
-	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Windows</span><span class="vt-feature-meta">38 MB · .msi</span></div>
-	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Linux</span><span class="vt-feature-meta">deb · rpm</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">macOS</span><span class="vt-feature-meta">{{ macDmg.size }} · .dmg</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Windows</span><span class="vt-feature-meta">{{ winSetup.size }} · .exe</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "hdd-stack" %}</span><span class="vt-feature-name">Linux</span><span class="vt-feature-meta">AppImage · deb · rpm</span></div>
 	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">iOS</span><span class="vt-feature-meta">App Store</span></div>
-	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">Android</span><span class="vt-feature-meta">Play Store</span></div>
+	<div class="vt-feature-tile"><span class="vt-feature-icon">{% icon "phone-vibrate" %}</span><span class="vt-feature-name">Android</span><span class="vt-feature-meta">Google Play</span></div>
 </div>
 <div class="vt-code">
-	<span class="vt-code-lang">Install</span>
-	<div><span class="c-cmt"># macOS</span></div>
-	<div><span class="c-attr">brew</span> install voicetel/tap/phone</div>
+	<span class="vt-code-lang">Install v{{ phoneApp.version }}</span>
+	<div><span class="c-cmt"># macOS &mdash; open the .dmg, drag VoiceTel to Applications</span></div>
 	<div>&nbsp;</div>
 	<div><span class="c-cmt"># Windows</span></div>
-	<div><span class="c-attr">winget</span> install <span class="c-str">VoiceTel.Phone</span></div>
+	<div><span class="c-str">{{ winSetup.file }}</span></div>
 	<div>&nbsp;</div>
 	<div><span class="c-cmt"># Debian / Ubuntu</span></div>
-	<div><span class="c-attr">apt</span> install voicetel-phone</div>
+	<div><span class="c-attr">sudo apt</span> install ./{{ linuxDeb.file }}</div>
+	<div>&nbsp;</div>
+	<div><span class="c-cmt"># Fedora / RHEL / openSUSE</span></div>
+	<div><span class="c-attr">sudo dnf</span> install ./{{ linuxRpm.file }}</div>
 	<div>&nbsp;</div>
 	<div><span class="c-cmt"># Or open the web client &mdash; no install</span></div>
-	<div><span class="c-str">phone.voicetel.com</span></div>
+	<div><span class="c-str">{{ site.url | replace("https://", "") }}/phone/applications/web/</span></div>
 </div>
 {%- elif item.key === "pricing" %}
 <table class="vt-rates">

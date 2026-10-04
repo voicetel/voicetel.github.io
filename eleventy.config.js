@@ -90,6 +90,29 @@ export default function (eleventyConfig) {
 		items.filter((item) => item[key] === value)
 	);
 
+	eleventyConfig.addFilter("maxCount", (items, key) =>
+		Math.max(...items.map((item) => item[key].length))
+	);
+
+	// SVG <text> does not wrap, so illustration templates break longer
+	// strings into lines of at most `width` characters at word boundaries.
+	eleventyConfig.addFilter("wrapText", (text, width) => {
+		const lines = [];
+		for (const word of String(text).split(/\s+/)) {
+			const last = lines.length - 1;
+			if (last >= 0 && lines[last].length + 1 + word.length <= width) {
+				lines[last] += ` ${word}`;
+			} else {
+				lines.push(word);
+			}
+		}
+		return lines;
+	});
+
+	const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+	eleventyConfig.addFilter("usd", (value) => usd.format(value));
+	eleventyConfig.addFilter("thousands", (value) => new Intl.NumberFormat("en-US").format(value));
+
 	eleventyConfig.addShortcode("year", () => String(new Date().getFullYear()));
 
 	eleventyConfig.addShortcode("yearsSince", (startYear) =>

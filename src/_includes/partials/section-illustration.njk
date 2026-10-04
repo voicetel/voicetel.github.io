@@ -1,0 +1,6 @@
+{#- Shows the section illustration named by `drawing` (a pageIllustrations
+	key) inside a product page section. -#}
+{%- set item = pageIllustrations.items | where("key", drawing) | first %}
+{%- set eager = false %}
+{%- set basePath = pageIllustrations.illustrationPath %}
+{% include "partials/illustration-figure.njk" %}

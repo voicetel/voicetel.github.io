@@ -1,0 +1,27 @@
+{%- set n = ill.steps | length %}
+{%- if variant === "wide" %}
+{%- set step = 940 / n %}
+<line class="li-line" x1="{{ (30 + step / 2) | round(1) }}" y1="40" x2="{{ (30 + step * (n - 0.5)) | round(1) }}" y2="40"/>
+{%- for s in ill.steps %}
+{%- set cx = (30 + step * (loop.index0 + 0.5)) | round(1) %}
+<circle class="li-step" cx="{{ cx }}" cy="40" r="15"/>
+<text class="li-step-num" x="{{ cx }}" y="45" text-anchor="middle">{{ loop.index }}</text>
+<text class="li-label" x="{{ cx }}" y="84" text-anchor="middle">{{ s.label }}</text>
+{%- for line in s.meta %}
+<text class="li-meta" x="{{ cx }}" y="{{ 106 + loop.index0 * 18 }}" text-anchor="middle">{{ line }}</text>
+{%- endfor %}
+{%- endfor %}
+{%- else %}
+{%- for s in ill.steps %}
+{%- set y = 28 + loop.index0 * 84 %}
+{%- if not loop.last %}
+<line class="li-line" x1="30" y1="{{ y + 15 }}" x2="30" y2="{{ y + 69 }}"/>
+{%- endif %}
+<circle class="li-step" cx="30" cy="{{ y }}" r="15"/>
+<text class="li-step-num" x="30" y="{{ y + 5 }}" text-anchor="middle">{{ loop.index }}</text>
+<text class="li-label" x="58" y="{{ y + 5 }}">{{ s.label }}</text>
+{%- for line in s.meta %}
+<text class="li-meta" x="58" y="{{ y + 25 + loop.index0 * 18 }}">{{ line }}</text>
+{%- endfor %}
+{%- endfor %}
+{%- endif %}

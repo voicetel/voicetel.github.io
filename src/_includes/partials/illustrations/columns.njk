@@ -1,0 +1,46 @@
+{#- A root node over grouped columns of items (stacked groups when narrow).
+	Items with `spec` show that API spec's version from apiSpecs. -#}
+{%- macro item(x, y, w, entry) -%}
+<rect class="li-node" x="{{ x }}" y="{{ y }}" width="{{ w }}" height="46" rx="4"/>
+<text class="li-label" x="{{ x + 12 }}" y="{{ y + 21 }}">{{ entry.label }}</text>
+<text class="li-meta" x="{{ x + 12 }}" y="{{ y + 38 }}">{{ apiSpecs[entry.spec].version if entry.spec else entry.meta }}</text>
+{%- endmacro -%}
+
+{%- set n = ill.groups | length %}
+{%- if variant === "wide" %}
+{%- set colW = (984 - 16 * (n - 1)) / n %}
+{%- set firstMid = 8 + colW / 2 %}
+{%- set lastMid = 8 + (n - 1) * (colW + 16) + colW / 2 %}
+<line class="li-line" x1="500" y1="44" x2="500" y2="57"/>
+<line class="li-line" x1="{{ firstMid | round(1) }}" y1="57" x2="{{ lastMid | round(1) }}" y2="57"/>
+<rect class="li-node li-node--accent" x="390" y="8" width="220" height="36" rx="4"/>
+<rect class="li-accent" x="390" y="8" width="220" height="3"/>
+<text class="li-code" x="500" y="31" text-anchor="middle">{{ ill.root }}</text>
+{%- for group in ill.groups %}
+{%- set x = 8 + loop.index0 * (colW + 16) %}
+<line class="li-line" x1="{{ (x + colW / 2) | round(1) }}" y1="57" x2="{{ (x + colW / 2) | round(1) }}" y2="70"/>
+<rect class="li-node li-node--accent" x="{{ x | round(1) }}" y="70" width="{{ colW | round(1) }}" height="36" rx="4"/>
+<rect class="li-accent" x="{{ x | round(1) }}" y="70" width="{{ colW | round(1) }}" height="3"/>
+<text class="li-label" x="{{ (x + 12) | round(1) }}" y="94">{{ group.title }}</text>
+{%- for entry in group.items %}
+{{ item(x | round(1), 118 + loop.index0 * 56, colW | round(1), entry) }}
+{%- endfor %}
+{%- endfor %}
+{%- else %}
+{%- set tops = [56] %}
+{%- for group in ill.groups %}{% set _ = tops.push(tops[loop.index0] + 46 + (group.items | length) * 54 + 12) %}{% endfor %}
+<rect class="li-node li-node--accent" x="8" y="8" width="304" height="34" rx="4"/>
+<rect class="li-accent" x="8" y="8" width="304" height="3"/>
+<text class="li-code" x="160" y="30" text-anchor="middle">{{ ill.root }}</text>
+<line class="li-line" x1="20" y1="42" x2="20" y2="{{ tops[n - 1] + 17 }}"/>
+{%- for group in ill.groups %}
+{%- set y = tops[loop.index0] %}
+<line class="li-line" x1="20" y1="{{ y + 17 }}" x2="36" y2="{{ y + 17 }}"/>
+<rect class="li-node li-node--accent" x="36" y="{{ y }}" width="276" height="34" rx="4"/>
+<rect class="li-accent" x="36" y="{{ y }}" width="3" height="34"/>
+<text class="li-label" x="50" y="{{ y + 23 }}">{{ group.title }}</text>
+{%- for entry in group.items %}
+{{ item(56, y + 46 + loop.index0 * 54, 256, entry) }}
+{%- endfor %}
+{%- endfor %}
+{%- endif %}

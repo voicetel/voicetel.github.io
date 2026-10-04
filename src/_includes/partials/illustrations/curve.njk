@@ -1,0 +1,55 @@
+{%- set curve = pricingRuntime | rateCurve(ill.service) %}
+{%- set maxRate = curve[0][1] %}
+{%- set floorRate = pricingRuntime | volumeRateValue(ill.service, ill.maxVolume) %}
+{%- if variant === "wide" %}
+{%- set floorY = (210 - floorRate / maxRate * 170) | round(1) %}
+<line class="li-grid" x1="80" y1="40" x2="650" y2="40"/>
+<line class="li-grid" x1="80" y1="{{ floorY }}" x2="650" y2="{{ floorY }}"/>
+<line class="li-axis" x1="80" y1="24" x2="80" y2="210"/>
+<line class="li-axis" x1="80" y1="210" x2="650" y2="210"/>
+<text class="li-meta" x="72" y="44" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, 0) }}</text>
+<text class="li-meta" x="72" y="{{ floorY + 4 }}" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, ill.maxVolume) }}</text>
+{%- for i in range(0, 6) %}
+<line class="li-axis" x1="{{ 80 + i * 112 }}" y1="210" x2="{{ 80 + i * 112 }}" y2="215"/>
+<text class="li-meta" x="{{ 80 + i * 112 }}" y="232" text-anchor="middle">{{ i }}{% if i > 0 %}M{% endif %}</text>
+{%- endfor %}
+<text class="li-link" x="650" y="252" text-anchor="end">minutes / month</text>
+<path class="li-curve" d="{% for p in curve %}{% if p[0] <= ill.maxVolume %}{{ 'M' if loop.first else ' L' }}{{ (80 + p[0] / ill.maxVolume * 560) | round(1) }},{{ (210 - p[1] / maxRate * 170) | round(1) }}{% endif %}{% endfor %}"/>
+{%- for mark in ill.marks %}
+{%- set mx = 80 + mark.volume / ill.maxVolume * 560 %}
+{%- set my = 210 - (pricingRuntime | volumeRateValue(ill.service, mark.volume)) / maxRate * 170 %}
+<circle class="li-dot" cx="{{ mx | round(1) }}" cy="{{ my | round(1) }}" r="5"/>
+{%- if mark.volume > 0 %}
+<text class="li-link li-halo" x="{{ (mx - 10 if loop.last else mx + 10) | round(1) }}" y="{{ (my - 10) | round(1) }}" text-anchor="{{ 'end' if loop.last else 'start' }}">{{ pricingRuntime | volumeRate(ill.service, mark.volume) }}</text>
+{%- endif %}
+{%- endfor %}
+<text class="li-heading" x="700" y="44">Rate per minute</text>
+{%- for mark in ill.marks %}
+{%- set y = 82 + loop.index0 * 40 %}
+<text class="li-meta" x="700" y="{{ y }}">{{ mark.label }}</text>
+<text class="li-label" x="990" y="{{ y }}" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, mark.volume) }}</text>
+<line class="li-grid" x1="700" y1="{{ y + 14 }}" x2="990" y2="{{ y + 14 }}"/>
+{%- endfor %}
+{%- else %}
+{%- set floorY = (150 - floorRate / maxRate * 120) | round(1) %}
+<line class="li-grid" x1="58" y1="30" x2="306" y2="30"/>
+<line class="li-grid" x1="58" y1="{{ floorY }}" x2="306" y2="{{ floorY }}"/>
+<line class="li-axis" x1="58" y1="16" x2="58" y2="150"/>
+<line class="li-axis" x1="58" y1="150" x2="306" y2="150"/>
+<text class="li-tick" x="52" y="34" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, 0) }}</text>
+<text class="li-tick" x="52" y="{{ floorY + 4 }}" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, ill.maxVolume) }}</text>
+{%- for i in range(0, 6) %}
+<text class="li-tick" x="{{ 58 + i * 48 }}" y="168" text-anchor="middle">{{ i }}{% if i > 0 %}M{% endif %}</text>
+{%- endfor %}
+<text class="li-tick" x="306" y="184" text-anchor="end">minutes / month</text>
+<path class="li-curve" d="{% for p in curve %}{% if p[0] <= ill.maxVolume %}{{ 'M' if loop.first else ' L' }}{{ (58 + p[0] / ill.maxVolume * 240) | round(1) }},{{ (150 - p[1] / maxRate * 120) | round(1) }}{% endif %}{% endfor %}"/>
+{%- for mark in ill.marks %}
+<circle class="li-dot" cx="{{ (58 + mark.volume / ill.maxVolume * 240) | round(1) }}" cy="{{ (150 - (pricingRuntime | volumeRateValue(ill.service, mark.volume)) / maxRate * 120) | round(1) }}" r="4"/>
+{%- endfor %}
+{%- for mark in ill.marks %}
+{%- set y = 206 + loop.index0 * 30 %}
+<text class="li-meta" x="8" y="{{ y }}">{{ mark.label }}</text>
+<text class="li-label" x="312" y="{{ y }}" text-anchor="end">{{ pricingRuntime | volumeRate(ill.service, mark.volume) }}</text>
+<line class="li-grid" x1="8" y1="{{ y + 12 }}" x2="312" y2="{{ y + 12 }}"/>
+{%- endfor %}
+{%- endif %}

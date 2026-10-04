@@ -1,0 +1,54 @@
+{#- Two participants exchanging messages over time: left to right between
+	horizontal lifelines when wide, top to bottom between vertical ones when
+	narrow. `from` is the sending participant's index; signed messages carry
+	a shield badge explained by the legend. -#}
+{%- set n = ill.messages | length %}
+{%- if variant === "wide" %}
+{%- set col = 882 / n %}
+<text class="li-label" x="8" y="45">{{ ill.participants[0] }}</text>
+<text class="li-label" x="8" y="155">{{ ill.participants[1] }}</text>
+<line class="li-lifeline" x1="110" y1="40" x2="992" y2="40"/>
+<line class="li-lifeline" x1="110" y1="150" x2="992" y2="150"/>
+{%- for m in ill.messages %}
+{%- set cx = (110 + col * (loop.index0 + 0.5)) | round(1) %}
+{%- if m.from === 0 %}
+<line class="li-line" x1="{{ cx }}" y1="46" x2="{{ cx }}" y2="143" marker-end="url(#arrow)"/>
+{%- else %}
+<line class="li-line" x1="{{ cx }}" y1="144" x2="{{ cx }}" y2="47" marker-end="url(#arrow)"/>
+{%- endif %}
+{%- if m.signed %}
+<circle class="li-badge" cx="{{ cx }}" cy="95" r="13"/>
+<g class="li-icon" transform="translate({{ cx - 8 }} 87)">{% icon "shield-check" %}</g>
+{%- endif %}
+{%- for line in m.lines %}
+<text class="{{ 'li-code' if loop.first else 'li-meta' }}" x="{{ cx }}" y="{{ 178 + loop.index0 * 18 }}" text-anchor="middle">{{ line }}</text>
+{%- endfor %}
+{%- endfor %}
+<circle class="li-badge" cx="21" cy="230" r="13"/>
+<g class="li-icon" transform="translate(13 222)">{% icon "shield-check" %}</g>
+<text class="li-meta" x="42" y="235">{{ ill.legend }}</text>
+{%- else %}
+{%- set end = 70 + (n - 1) * 58 + 30 %}
+<text class="li-label" x="60" y="22" text-anchor="middle">{{ ill.participants[0] }}</text>
+<text class="li-label" x="260" y="22" text-anchor="middle">{{ ill.participants[1] }}</text>
+<line class="li-lifeline" x1="60" y1="34" x2="60" y2="{{ end }}"/>
+<line class="li-lifeline" x1="260" y1="34" x2="260" y2="{{ end }}"/>
+{%- for m in ill.messages %}
+{%- set y = 70 + loop.index0 * 58 %}
+{%- if m.from === 0 %}
+<line class="li-line" x1="66" y1="{{ y }}" x2="253" y2="{{ y }}" marker-end="url(#arrow)"/>
+{%- else %}
+<line class="li-line" x1="254" y1="{{ y }}" x2="67" y2="{{ y }}" marker-end="url(#arrow)"/>
+{%- endif %}
+<text class="li-code li-halo" x="160" y="{{ y - 14 }}" text-anchor="middle">{{ m.lines | join(" ") }}</text>
+{%- if m.signed %}
+<circle class="li-badge" cx="160" cy="{{ y + 1 }}" r="11"/>
+<g class="li-icon" transform="translate(153 {{ y - 6 }}) scale(0.875)">{% icon "shield-check" %}</g>
+{%- endif %}
+{%- endfor %}
+<circle class="li-badge" cx="21" cy="{{ end + 22 }}" r="13"/>
+<g class="li-icon" transform="translate(13 {{ end + 14 }})">{% icon "shield-check" %}</g>
+{%- for line in ill.legend | wrapText(32) %}
+<text class="li-meta" x="42" y="{{ end + 18 + loop.index0 * 18 }}">{{ line }}</text>
+{%- endfor %}
+{%- endif %}

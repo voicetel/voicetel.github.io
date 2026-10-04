@@ -1,0 +1,67 @@
+{%- set popRows = ((colocations | length) / 2) | round(0, "ceil") %}
+{%- if variant === "wide" %}
+<path class="li-land" d="{{ ill.outline }}"/>
+{%- for region in cloudRegions %}
+{%- set pt = ill.points[region.code] %}
+{%- if pt %}
+<rect class="li-region" x="{{ pt.x - 5 }}" y="{{ pt.y - 5 }}" width="10" height="10"/>
+<text class="li-meta li-halo" x="{{ pt.lx }}" y="{{ pt.ly }}" text-anchor="{{ pt.anchor or 'start' }}">{{ region.awsCode }}</text>
+{%- endif %}
+{%- endfor %}
+{%- for pop in colocations %}
+{%- set pt = ill.points[pop.code] %}
+{%- if pt %}
+<circle class="li-pop-ring" cx="{{ pt.x }}" cy="{{ pt.y }}" r="12"/>
+<circle class="li-pop" cx="{{ pt.x }}" cy="{{ pt.y }}" r="6"/>
+<text class="li-code li-halo" x="{{ pt.lx }}" y="{{ pt.ly }}" text-anchor="{{ pt.anchor or 'start' }}">{{ pop.code }}</text>
+{%- endif %}
+{%- endfor %}
+<circle class="li-pop" cx="586" cy="34" r="5"/>
+<text class="li-heading" x="600" y="39">Colocation POPs</text>
+{%- for pop in colocations %}
+{%- set x = 580 + (loop.index0 % 2) * 210 %}
+{%- set y = 70 + ((loop.index0 / 2) | int) * 24 %}
+<text class="li-code" x="{{ x }}" y="{{ y }}">{{ pop.code }}</text>
+<text class="li-meta" x="{{ x + 44 }}" y="{{ y }}">{{ pop.city }}{% if pop.country !== "USA" %}, {{ pop.country }}{% endif %}</text>
+{%- endfor %}
+{%- set regionTop = 70 + popRows * 24 + 22 %}
+<rect class="li-region" x="581" y="{{ regionTop - 10 }}" width="10" height="10"/>
+<text class="li-heading" x="600" y="{{ regionTop }}">Cloud regions</text>
+{%- for region in cloudRegions %}
+<text class="li-code" x="580" y="{{ regionTop + 32 + loop.index0 * 24 }}">{{ region.awsCode }}</text>
+<text class="li-meta" x="668" y="{{ regionTop + 32 + loop.index0 * 24 }}">{{ region.geo }}</text>
+{%- endfor %}
+{%- else %}
+{%- set s = 0.6 %}
+{%- set listTop = 6 + 282 * s + 22 %}
+{%- set regionTop = listTop + 26 + popRows * 22 + 14 %}
+<path class="li-land" d="{{ ill.outline }}" transform="translate(10 6) scale({{ s }})" vector-effect="non-scaling-stroke"/>
+{%- for region in cloudRegions %}
+{%- set pt = ill.points[region.code] %}
+{%- if pt %}
+<rect class="li-region" x="{{ (10 + pt.x * s - 3.5) | round(1) }}" y="{{ (6 + pt.y * s - 3.5) | round(1) }}" width="7" height="7"/>
+{%- endif %}
+{%- endfor %}
+{%- for pop in colocations %}
+{%- set pt = ill.points[pop.code] %}
+{%- if pt %}
+<circle class="li-pop-ring" cx="{{ (10 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="8"/>
+<circle class="li-pop" cx="{{ (10 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="4"/>
+<text class="li-code li-halo" x="{{ (10 + pt.lx * s) | round(1) }}" y="{{ (6 + pt.ly * s) | round(1) }}" text-anchor="{{ pt.anchor or 'start' }}">{{ pop.code }}</text>
+{%- endif %}
+{%- endfor %}
+<circle class="li-pop" cx="14" cy="{{ listTop - 4 }}" r="4"/>
+<text class="li-heading" x="26" y="{{ listTop }}">Colocation POPs</text>
+{%- for pop in colocations %}
+{%- set x = 10 + (loop.index0 % 2) * 155 %}
+{%- set y = listTop + 26 + ((loop.index0 / 2) | int) * 22 %}
+<text class="li-code" x="{{ x }}" y="{{ y }}">{{ pop.code }}</text>
+<text class="li-meta" x="{{ x + 38 }}" y="{{ y }}">{{ pop.city }}</text>
+{%- endfor %}
+<rect class="li-region" x="10" y="{{ regionTop - 8 }}" width="8" height="8"/>
+<text class="li-heading" x="26" y="{{ regionTop }}">Cloud regions</text>
+{%- for region in cloudRegions %}
+<text class="li-code" x="10" y="{{ regionTop + 26 + loop.index0 * 22 }}">{{ region.awsCode }}</text>
+<text class="li-meta" x="96" y="{{ regionTop + 26 + loop.index0 * 22 }}">{{ region.geo }}</text>
+{%- endfor %}
+{%- endif %}

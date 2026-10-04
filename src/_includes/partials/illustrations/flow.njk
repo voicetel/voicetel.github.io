@@ -1,0 +1,60 @@
+{%- set n = ill.nodes | length %}
+{%- if variant === "wide" %}
+{%- set gap = 80 %}
+{%- set w = (984 - gap * (n - 1)) / n %}
+{%- set top = 12 %}
+{%- set h = 92 %}
+{%- set mid = top + h / 2 %}
+{%- for node in ill.nodes %}
+{%- set x = 8 + loop.index0 * (w + gap) %}
+<rect class="li-node{% if node.accent %} li-node--accent{% endif %}" x="{{ x | round(1) }}" y="{{ top }}" width="{{ w | round(1) }}" height="{{ h }}" rx="4"/>
+{%- if node.accent %}
+<rect class="li-accent" x="{{ x | round(1) }}" y="{{ top }}" width="{{ w | round(1) }}" height="3"/>
+{%- endif %}
+<g class="li-icon" transform="translate({{ (x + 14) | round(1) }} {{ top + 16 }}) scale(1.375)">{% icon node.icon %}</g>
+<text class="li-label" x="{{ (x + 14) | round(1) }}" y="{{ top + 62 }}">{{ node.label }}</text>
+<text class="li-meta" x="{{ (x + 14) | round(1) }}" y="{{ top + 81 }}">{{ node.meta }}</text>
+{%- if not loop.last %}
+{%- set link = ill.links[loop.index0] %}
+{%- set x1 = x + w + 6 %}
+{%- set x2 = x + w + gap - 6 %}
+<line class="li-line" x1="{{ x1 | round(1) }}" y1="{{ mid }}" x2="{{ x2 | round(1) }}" y2="{{ mid }}" marker-end="url(#arrow)"{% if link.both %} marker-start="url(#arrow)"{% endif %}/>
+{%- if link.label %}
+<text class="li-link li-halo" x="{{ ((x1 + x2) / 2) | round(1) }}" y="{{ mid - 9 }}" text-anchor="middle">{{ link.label }}</text>
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+{%- if ill.loop %}
+{%- set xa = 8 + w / 2 %}
+{%- set xb = 8 + (n - 1) * (w + gap) + w / 2 %}
+<path class="li-line li-line--return" d="M{{ xb | round(1) }},{{ top + h + 4 }} V{{ top + h + 28 }} H{{ xa | round(1) }} V{{ top + h + 6 }}" marker-end="url(#arrow)"/>
+<text class="li-link" x="{{ ((xa + xb) / 2) | round(1) }}" y="{{ top + h + 48 }}" text-anchor="middle">{{ ill.loop.label }}</text>
+{%- endif %}
+{%- else %}
+{%- set nx = 22 %}
+{%- set nw = 290 %}
+{%- set nh = 60 %}
+{%- set vgap = 40 %}
+{%- set lastTop = 8 + (n - 1) * (nh + vgap) %}
+{%- for node in ill.nodes %}
+{%- set y = 8 + loop.index0 * (nh + vgap) %}
+<rect class="li-node{% if node.accent %} li-node--accent{% endif %}" x="{{ nx }}" y="{{ y }}" width="{{ nw }}" height="{{ nh }}" rx="4"/>
+{%- if node.accent %}
+<rect class="li-accent" x="{{ nx }}" y="{{ y }}" width="3" height="{{ nh }}"/>
+{%- endif %}
+<g class="li-icon" transform="translate({{ nx + 14 }} {{ y + 19 }}) scale(1.375)">{% icon node.icon %}</g>
+<text class="li-label" x="{{ nx + 50 }}" y="{{ y + 26 }}">{{ node.label }}</text>
+<text class="li-meta" x="{{ nx + 50 }}" y="{{ y + 45 }}">{{ node.meta }}</text>
+{%- if not loop.last %}
+{%- set link = ill.links[loop.index0] %}
+<line class="li-line" x1="{{ nx + nw / 2 }}" y1="{{ y + nh + 5 }}" x2="{{ nx + nw / 2 }}" y2="{{ y + nh + vgap - 5 }}" marker-end="url(#arrow)"{% if link.both %} marker-start="url(#arrow)"{% endif %}/>
+{%- if link.label %}
+<text class="li-link" x="{{ nx + nw / 2 + 12 }}" y="{{ y + nh + vgap / 2 + 4 }}">{{ link.label }}</text>
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+{%- if ill.loop %}
+<path class="li-line li-line--return" d="M{{ nx }},{{ lastTop + nh / 2 }} H8 V{{ 8 + nh / 2 }} H{{ nx - 3 }}" marker-end="url(#arrow)"/>
+<text class="li-link" x="{{ nx }}" y="{{ lastTop + nh + 24 }}">{{ ill.loop.label }}</text>
+{%- endif %}
+{%- endif %}

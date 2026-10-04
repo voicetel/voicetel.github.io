@@ -24,6 +24,7 @@
 					{% include "partials/landing-figure.njk" %}
 				</div>
 				{%- set eager = loop.first %}
+				{%- set basePath = landing.illustrationPath %}
 				{% include "partials/illustration-figure.njk" %}
 			</section>
 			{%- endfor %}

@@ -1,0 +1,353 @@
+{
+	"_note": "Section illustrations for product pages, rendered to illustrationPath by src/illustrations/page-*.njk. Every label restates a fact already published on the page it illustrates (or in compatMatrix.json / pricing.json / apiSpecs); keep them in step when that copy changes.",
+	"illustrationPath": "/assets/img/illustrations/",
+	"items": [
+		{
+			"key": "numbers-porting",
+			"illustration": {
+				"type": "timeline",
+				"title": "Number porting process, from eligibility check to E911 reissue",
+				"steps": [
+					{
+						"label": "Eligibility check",
+						"meta": ["LERG + losing-carrier", "portability rules"]
+					},
+					{
+						"label": "LOA submission",
+						"meta": ["VoiceTel coordinates", "with the losing carrier"]
+					},
+					{ "label": "Test window", "meta": ["calls reach old and", "new endpoints"] },
+					{
+						"label": "Cutover",
+						"meta": ["defined rollback path,", "inside business hours"]
+					},
+					{ "label": "E911 reissued", "meta": ["before the port", "completes"] }
+				]
+			}
+		},
+		{
+			"key": "voice-routing",
+			"illustration": {
+				"type": "routing",
+				"title": "Three inbound routing modes: Anycast, Geocast, and diverse routing",
+				"panels": [
+					{ "mode": "anycast", "label": "Anycast", "meta": "nearest available node" },
+					{ "mode": "geocast", "label": "Geocast", "meta": "nodes in a specific region" },
+					{
+						"mode": "diverse",
+						"label": "Diverse routing",
+						"meta": "best of several paths and carriers"
+					}
+				]
+			}
+		},
+		{
+			"key": "messaging-sms-enable",
+			"illustration": {
+				"type": "lanes",
+				"title": "SMS-enabling a number whose voice service stays with another carrier",
+				"lanes": [
+					{
+						"label": "Voice — stays with your carrier",
+						"nodes": [
+							{
+								"icon": "telephone-fill",
+								"label": "Your phone system",
+								"meta": "unchanged"
+							},
+							{
+								"icon": "buildings",
+								"label": "Current carrier",
+								"meta": "number stays here"
+							},
+							{ "icon": "telephone", "label": "Caller", "meta": "phone network" }
+						],
+						"links": [
+							{ "label": "voice", "both": true },
+							{ "label": "", "both": true }
+						]
+					},
+					{
+						"label": "Messaging — through VoiceTel",
+						"meta": "Sign an LOA; VoiceTel coordinates with the current carrier.",
+						"nodes": [
+							{
+								"icon": "code-slash",
+								"label": "Your app",
+								"meta": "inbound webhook"
+							},
+							{
+								"icon": "chat-text",
+								"label": "VoiceTel",
+								"meta": "SMS-enabled via LOA",
+								"accent": true
+							},
+							{
+								"icon": "phone-vibrate",
+								"label": "Customer handset",
+								"meta": "SMS · MMS"
+							}
+						],
+						"links": [
+							{ "label": "webhook", "both": true },
+							{ "label": "SMS/MMS", "both": true }
+						],
+						"loop": {
+							"label": "Delivery receipts: handset delivery results back to your app"
+						}
+					}
+				]
+			}
+		},
+		{
+			"key": "voiceml-callbacks",
+			"illustration": {
+				"type": "sequence",
+				"title": "Signed callbacks between VoiceML and your app during one call",
+				"participants": ["VoiceML", "Your app"],
+				"legend": "Signed callback: HMAC-SHA256, verified with your auth token",
+				"messages": [
+					{ "from": 0, "lines": ["Voice URL", "request"], "signed": true },
+					{ "from": 1, "lines": ["Returns", "<Gather>"] },
+					{ "from": 0, "lines": ["Gather", "action"], "signed": true },
+					{ "from": 1, "lines": ["Returns", "<Dial>"] },
+					{ "from": 0, "lines": ["Dial", "action"], "signed": true },
+					{ "from": 0, "lines": ["Recording", "callback"], "signed": true },
+					{ "from": 0, "lines": ["Status", "callback"], "signed": true }
+				]
+			}
+		},
+		{
+			"key": "ai-agents-anatomy",
+			"illustration": {
+				"type": "hub",
+				"title": "What an AI Agents assistant connects to",
+				"center": {
+					"icon": "robot",
+					"label": "Assistant",
+					"meta": ["model + instructions"]
+				},
+				"spokes": [
+					{
+						"icon": "gear",
+						"label": "Tools",
+						"meta": ["function-call schemas;", "outputs return as context"]
+					},
+					{
+						"icon": "book",
+						"label": "Knowledge",
+						"meta": ["web pages, files, raw text", "→ indexed chunks"]
+					},
+					{
+						"icon": "chat-square-text",
+						"label": "Sessions",
+						"meta": ["per-session message", "history, read back"]
+					},
+					{
+						"icon": "graph-up",
+						"label": "Feedback",
+						"meta": ["scores assistant turns", "over time"]
+					}
+				]
+			}
+		},
+		{
+			"key": "sdn-before-after",
+			"illustration": {
+				"type": "lanes",
+				"title": "SIP and media paths without and with the VoiceTel SDN appliance",
+				"lanes": [
+					{
+						"label": "Without the appliance",
+						"meta": "One-way audio, unstable registrations, broad inbound openings.",
+						"nodes": [
+							{ "icon": "telephone", "label": "Phones + PBX", "meta": "behind NAT" },
+							{
+								"icon": "shield-check",
+								"label": "Firewall / NAT",
+								"meta": "ALG · UDP timers"
+							},
+							{
+								"icon": "diagram-3",
+								"label": "VoiceTel",
+								"meta": "SIP + RTP inbound"
+							}
+						],
+						"links": [{ "label": "" }, { "label": "pinholes", "fail": true }]
+					},
+					{
+						"label": "With the SDN appliance",
+						"meta": "One outbound tunnel and a clear demarcation point for support.",
+						"nodes": [
+							{ "icon": "telephone", "label": "Phones + PBX", "meta": "unchanged" },
+							{
+								"icon": "hdd-stack",
+								"label": "SDN appliance",
+								"meta": "on your LAN",
+								"accent": true
+							},
+							{
+								"icon": "shield-check",
+								"label": "Your firewall",
+								"meta": "outbound :443 only"
+							},
+							{ "icon": "diagram-3", "label": "VoiceTel core", "meta": "NYC POP" }
+						],
+						"links": [
+							{ "label": "SIP + RTP" },
+							{ "label": ":443 out" },
+							{ "label": "TLS 1.3" }
+						]
+					}
+				]
+			}
+		},
+		{
+			"key": "phone-call-path",
+			"illustration": {
+				"type": "lanes",
+				"title": "How VoiceTel Phone connects calls: signaling, media, and mobile push",
+				"lanes": [
+					{
+						"label": "Signaling",
+						"meta": "SIP over WebSocket in the browser; SIP over TLS in the apps.",
+						"nodes": [
+							{
+								"icon": "phone-vibrate",
+								"label": "VoiceTel Phone",
+								"meta": "web · desktop · mobile"
+							},
+							{
+								"icon": "diagram-3",
+								"label": "VoiceTel",
+								"meta": "SIP registration",
+								"accent": true
+							},
+							{ "icon": "telephone", "label": "Phone network", "meta": "PSTN calls" }
+						],
+						"links": [
+							{ "label": "SIP · TLS", "both": true },
+							{ "label": "", "both": true }
+						]
+					},
+					{
+						"label": "Media",
+						"meta": "WebRTC media, with DTLS-SRTP where the runtime supports it.",
+						"nodes": [
+							{
+								"icon": "phone-vibrate",
+								"label": "VoiceTel Phone",
+								"meta": "microphone + speaker"
+							},
+							{
+								"icon": "diagram-3",
+								"label": "VoiceTel",
+								"meta": "media path",
+								"accent": true
+							},
+							{
+								"icon": "telephone",
+								"label": "Phone network",
+								"meta": "the other party"
+							}
+						],
+						"links": [
+							{ "label": "WebRTC", "both": true },
+							{ "label": "", "both": true }
+						]
+					},
+					{
+						"label": "Incoming calls on mobile",
+						"nodes": [
+							{
+								"icon": "diagram-3",
+								"label": "VoiceTel",
+								"meta": "call arrives",
+								"accent": true
+							},
+							{
+								"icon": "broadcast-pin",
+								"label": "Push notification",
+								"meta": "app in background"
+							},
+							{
+								"icon": "phone-vibrate",
+								"label": "Phone rings",
+								"meta": "native call notification"
+							}
+						],
+						"links": [{ "label": "push" }, { "label": "" }]
+					}
+				]
+			}
+		},
+		{
+			"key": "pricing-discount",
+			"illustration": {
+				"type": "quote",
+				"title": "How the volume discount applies to a sample monthly workload",
+				"rows": [
+					{
+						"service": "voice-out-us50",
+						"label": "Outbound voice",
+						"volume": 200000,
+						"unit": "min"
+					},
+					{
+						"service": "sms-out",
+						"label": "Outbound SMS",
+						"volume": 200000,
+						"unit": "parts"
+					},
+					{
+						"service": "did-local",
+						"label": "Local DIDs",
+						"volume": 100,
+						"unit": "numbers"
+					}
+				]
+			}
+		},
+		{
+			"key": "docs-map",
+			"illustration": {
+				"type": "columns",
+				"title": "Map of the VoiceTel documentation",
+				"root": "voicetel.com/docs",
+				"groups": [
+					{
+						"title": "Product hubs",
+						"items": [
+							{ "label": "VoiceML", "meta": "/docs/voiceml/" },
+							{ "label": "Voice", "meta": "/docs/voice/" },
+							{ "label": "Messaging", "meta": "/docs/messaging/" }
+						]
+					},
+					{
+						"title": "API references",
+						"items": [
+							{ "label": "VoiceML API", "spec": "voiceml" },
+							{ "label": "VoiceTel API", "spec": "v2.2" },
+							{ "label": "10DLC CSP API", "spec": "csp" }
+						]
+					},
+					{
+						"title": "SDKs",
+						"items": [
+							{ "label": "VoiceTel SDKs", "meta": "/docs/sdks/" },
+							{ "label": "VoiceML SDKs", "meta": "/docs/voiceml-sdks/" }
+						]
+					},
+					{
+						"title": "Operations",
+						"items": [
+							{ "label": "Numbers", "meta": "/numbers/" },
+							{ "label": "E911", "meta": "/docs/e911/" },
+							{ "label": "SIP trunking", "meta": "/sip-trunking/" }
+						]
+					}
+				]
+			}
+		}
+	]
+}

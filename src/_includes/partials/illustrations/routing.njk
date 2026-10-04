@@ -1,0 +1,56 @@
+{#- Three side-by-side panels (stacked when narrow). Mini-diagram coordinates
+	are relative to each panel's origin and fit a 300-unit-wide panel. -#}
+{%- macro node(x, y, state) -%}
+<rect class="li-pnode{% if state %} li-pnode--{{ state }}{% endif %}" x="{{ x - 11 }}" y="{{ y - 11 }}" width="22" height="22" rx="3"/>
+{%- endmacro -%}
+{%- macro caller(x, y) -%}
+<circle class="li-caller" cx="{{ x }}" cy="{{ y }}" r="9"/>
+<text class="li-tick" x="{{ x }}" y="{{ y + 26 }}" text-anchor="middle">call</text>
+{%- endmacro -%}
+
+{%- for panel in ill.panels %}
+{%- if variant === "wide" %}
+{%- set x = 8 + loop.index0 * 337 %}
+{%- set y = 8 %}
+{%- set w = 310 %}
+{%- else %}
+{%- set x = 10 %}
+{%- set y = 8 + loop.index0 * 252 %}
+{%- set w = 300 %}
+{%- endif %}
+<rect class="li-panel" x="{{ x }}" y="{{ y }}" width="{{ w }}" height="236" rx="4"/>
+<text class="li-label" x="{{ x + 16 }}" y="{{ y + 30 }}">{{ panel.label }}</text>
+<text class="li-meta" x="{{ x + 16 }}" y="{{ y + 50 }}">{{ panel.meta }}</text>
+{%- if panel.mode === "anycast" %}
+<line class="li-line li-line--alt" x1="{{ x + 49 }}" y1="{{ y + 147 }}" x2="{{ x + 243 }}" y2="{{ y + 98 }}"/>
+<line class="li-line li-line--alt" x1="{{ x + 49 }}" y1="{{ y + 153 }}" x2="{{ x + 233 }}" y2="{{ y + 202 }}"/>
+<line class="li-line" x1="{{ x + 49 }}" y1="{{ y + 148 }}" x2="{{ x + 116 }}" y2="{{ y + 129 }}" marker-end="url(#arrow)"/>
+{{ caller(x + 40, y + 150) }}
+{{ node(x + 130, y + 125, "active") }}
+{{ node(x + 255, y + 95) }}
+{{ node(x + 245, y + 205) }}
+<text class="li-link li-halo" x="{{ x + 130 }}" y="{{ y + 104 }}" text-anchor="middle">nearest</text>
+{%- elif panel.mode === "geocast" %}
+<rect class="li-zone" x="{{ x + 140 }}" y="{{ y + 80 }}" width="145" height="142" rx="4"/>
+<text class="li-tick" x="{{ x + 150 }}" y="{{ y + 98 }}">region</text>
+<line class="li-line" x1="{{ x + 49 }}" y1="{{ y + 172 }}" x2="{{ x + 177 }}" y2="{{ y + 134 }}" marker-end="url(#arrow)"/>
+<line class="li-line" x1="{{ x + 49 }}" y1="{{ y + 177 }}" x2="{{ x + 237 }}" y2="{{ y + 184 }}" marker-end="url(#arrow)"/>
+{{ caller(x + 40, y + 175) }}
+{{ node(x + 95, y + 100, "muted") }}
+{{ node(x + 190, y + 130, "active") }}
+{{ node(x + 250, y + 185, "active") }}
+{%- else %}
+<path class="li-line li-line--alt" d="M{{ x + 44 }},{{ y + 146 }} L{{ x + 150 }},{{ y + 95 }} L{{ x + 254 }},{{ y + 144 }}"/>
+<path class="li-line li-line--alt" d="M{{ x + 44 }},{{ y + 154 }} L{{ x + 150 }},{{ y + 205 }} L{{ x + 254 }},{{ y + 156 }}"/>
+<line class="li-line" x1="{{ x + 44 }}" y1="{{ y + 150 }}" x2="{{ x + 252 }}" y2="{{ y + 150 }}" marker-end="url(#arrow)"/>
+<circle class="li-waypoint" cx="{{ x + 150 }}" cy="{{ y + 95 }}" r="5"/>
+<circle class="li-waypoint" cx="{{ x + 150 }}" cy="{{ y + 150 }}" r="5"/>
+<circle class="li-waypoint" cx="{{ x + 150 }}" cy="{{ y + 205 }}" r="5"/>
+<text class="li-tick" x="{{ x + 150 }}" y="{{ y + 84 }}" text-anchor="middle">carrier A</text>
+<text class="li-tick li-halo" x="{{ x + 150 }}" y="{{ y + 139 }}" text-anchor="middle">carrier B</text>
+<text class="li-tick" x="{{ x + 150 }}" y="{{ y + 225 }}" text-anchor="middle">carrier C</text>
+<text class="li-link li-halo" x="{{ x + 207 }}" y="{{ y + 168 }}" text-anchor="middle">best route</text>
+{{ caller(x + 35, y + 150) }}
+{{ node(x + 265, y + 150, "active") }}
+{%- endif %}
+{%- endfor %}

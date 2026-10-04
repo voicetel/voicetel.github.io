@@ -2,6 +2,7 @@
 layout: layouts/page.njk
 title: "Pricing"
 description: "VoiceTel pricing for voice, messaging, numbers, and lookups. Spreadsheet-style calculator with volume-tier discounts; published list rates appear in your customer portal."
+illustration: pricing
 ---
 
 <p class="eyebrow">Pricing</p>
@@ -11,6 +12,8 @@ description: "VoiceTel pricing for voice, messaging, numbers, and lookups. Sprea
 	<a class="btn btn-primary" href="/signup/">Sign up</a>
 	<button type="button" class="btn btn-secondary" data-print-quote>Save quote as PDF</button>
 </p>
+
+{% include "partials/page-illustration.njk" %}
 
 <div class="quote-doc quote-doc--header" aria-hidden="true">
 	<div class="quote-doc__company">

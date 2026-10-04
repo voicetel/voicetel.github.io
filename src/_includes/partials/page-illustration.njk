@@ -1,0 +1,5 @@
+{#- Shows the homepage tab illustration named by the page's `illustration`
+	front-matter key, so product pages and the homepage share one drawing. -#}
+{%- set item = landing.tabs | where("key", illustration) | first %}
+{%- set eager = true %}
+{% include "partials/illustration-figure.njk" %}

@@ -28,7 +28,7 @@
 				<figure class="landing-illustration">
 					<picture>
 						<source media="(min-width: 961px)" srcset="{{ landing.illustrationPath }}{{ item.key }}-wide.svg" width="1000" height="{{ illustrationHeight(ill, 'wide', colocations | length, cloudRegions | length) | trim }}">
-						<img src="{{ landing.illustrationPath }}{{ item.key }}-narrow.svg" width="320" height="{{ illustrationHeight(ill, 'narrow', colocations | length, cloudRegions | length) | trim }}" alt="{{ illustrationAlt(ill, colocations, cloudRegions, pricingRuntime) | trim }}" loading="lazy" decoding="async">
+						<img src="{{ landing.illustrationPath }}{{ item.key }}-narrow.svg" width="320" height="{{ illustrationHeight(ill, 'narrow', colocations | length, cloudRegions | length) | trim }}" alt="{{ illustrationAlt(ill, colocations, cloudRegions, pricingRuntime) | trim }}"{% if not loop.first %} loading="lazy"{% endif %} decoding="async">
 					</picture>
 				</figure>
 			</section>

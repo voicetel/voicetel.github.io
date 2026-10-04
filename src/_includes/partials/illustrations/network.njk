@@ -35,19 +35,19 @@
 {%- set s = 0.6 %}
 {%- set listTop = 6 + 282 * s + 22 %}
 {%- set regionTop = listTop + 26 + popRows * 22 + 14 %}
-<path class="li-land" d="{{ ill.outline }}" transform="translate(10 6) scale({{ s }})" vector-effect="non-scaling-stroke"/>
+<path class="li-land" d="{{ ill.outline }}" transform="translate(5 6) scale({{ s }})" vector-effect="non-scaling-stroke"/>
 {%- for region in cloudRegions %}
 {%- set pt = ill.points[region.code] %}
 {%- if pt %}
-<rect class="li-region" x="{{ (10 + pt.x * s - 3.5) | round(1) }}" y="{{ (6 + pt.y * s - 3.5) | round(1) }}" width="7" height="7"/>
+<rect class="li-region" x="{{ (5 + pt.x * s - 3.5) | round(1) }}" y="{{ (6 + pt.y * s - 3.5) | round(1) }}" width="7" height="7"/>
 {%- endif %}
 {%- endfor %}
 {%- for pop in colocations %}
 {%- set pt = ill.points[pop.code] %}
 {%- if pt %}
-<circle class="li-pop-ring" cx="{{ (10 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="8"/>
-<circle class="li-pop" cx="{{ (10 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="4"/>
-<text class="li-code li-halo" x="{{ (10 + pt.lx * s) | round(1) }}" y="{{ (6 + pt.ly * s) | round(1) }}" text-anchor="{{ pt.anchor or 'start' }}">{{ pop.code }}</text>
+<circle class="li-pop-ring" cx="{{ (5 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="8"/>
+<circle class="li-pop" cx="{{ (5 + pt.x * s) | round(1) }}" cy="{{ (6 + pt.y * s) | round(1) }}" r="4"/>
+<text class="li-code li-halo" x="{{ (5 + pt.lx * s) | round(1) }}" y="{{ (6 + pt.ly * s) | round(1) }}" text-anchor="{{ pt.anchor or 'start' }}">{{ pop.code }}</text>
 {%- endif %}
 {%- endfor %}
 <circle class="li-pop" cx="14" cy="{{ listTop - 4 }}" r="4"/>

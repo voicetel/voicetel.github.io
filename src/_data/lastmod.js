@@ -17,9 +17,8 @@ const CHROME_PREFIXES = ["layouts/", "icons/", "partials/nav.njk", "partials/foo
 // Data files that carry cross-cutting chrome (URLs, nav config, social,
 // footer copy). Almost every page references at least one site.* token, so
 // auto-detecting site.json as a dep would bump every URL whenever any
-// chrome field changes. Content-bearing fields (e.g. site.menuCarousel)
-// are only consumed through partials with their own commit history, so
-// excluding site.json here loses no real signal.
+// chrome field changes. Homepage content lives in landing.json so its
+// changes are tracked independently.
 const CHROME_DATA = new Set(["site"]);
 
 const TEMPLATE_EXT = /\.(njk|md|11ty\.js|html)$/;

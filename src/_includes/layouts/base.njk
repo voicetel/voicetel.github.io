@@ -28,6 +28,7 @@
 		<link rel="stylesheet" href="/assets/css/tokens.css">
 		<link rel="stylesheet" href="/assets/css/base.css">
 		<link rel="stylesheet" href="/assets/css/components.css">
+		{% if page.url === "/" %}<link rel="stylesheet" href="/assets/css/landing.css">{% endif %}
 		<script type="application/ld+json">
 			{
 				"@context": "https://schema.org",
@@ -91,7 +92,7 @@
 		</main>
 		{% include "partials/footer.njk" %}
 		<script type="module" src="/assets/js/nav.js"></script>
-		<script type="module" src="/assets/js/menu-carousel.js"></script>
+		{% if page.url === "/" %}<script type="module" src="/assets/js/landing-showcase.js"></script>{% endif %}
 		<script type="module" src="/assets/js/code-tabs.js"></script>
 		<script type="module" src="/assets/js/copy-to-clipboard.js"></script>
 		<script type="module" src="/assets/js/signup.js"></script>
@@ -101,7 +102,6 @@
 		<script type="module" src="/assets/js/voiceml-validator/main.js"></script>
 		<script type="module" src="/assets/js/credentials-bootstrap/main.js"></script>
 		<script type="module" src="/assets/js/features-rotator.js"></script>
-		<script type="module" src="/assets/js/savings-counter.js"></script>
 		<script type="module" src="/assets/js/status-updated.js"></script>
 	</body>
 </html>

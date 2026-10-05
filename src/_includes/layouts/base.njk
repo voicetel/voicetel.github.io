@@ -30,21 +30,21 @@
 			which sets design: v2) load the v2 component sheet. Every other page still loads
 			the legacy base overrides and the v1 components until it is migrated. -#}
 		{%- set v2 = page.url === "/" or design === "v2" %}
-		<link rel="stylesheet" href="/assets/css/tokens.css">
-		<link rel="stylesheet" href="/assets/css/base.css">
+		<link rel="stylesheet" href="/assets/css/tokens.css?v={{ assetVersion }}">
+		<link rel="stylesheet" href="/assets/css/base.css?v={{ assetVersion }}">
 		{%- if v2 %}
-		<link rel="stylesheet" href="/assets/css/components-v2.css">
+		<link rel="stylesheet" href="/assets/css/components-v2.css?v={{ assetVersion }}">
 		{%- if article %}
-		<link rel="stylesheet" href="/assets/css/article.css">
+		<link rel="stylesheet" href="/assets/css/article.css?v={{ assetVersion }}">
 		{%- endif %}
 		{%- if tools %}
-		<link rel="stylesheet" href="/assets/css/tools.css">
+		<link rel="stylesheet" href="/assets/css/tools.css?v={{ assetVersion }}">
 		{%- endif %}
 		{%- else %}
-		<link rel="stylesheet" href="/assets/css/legacy.css">
-		<link rel="stylesheet" href="/assets/css/components.css">
+		<link rel="stylesheet" href="/assets/css/legacy.css?v={{ assetVersion }}">
+		<link rel="stylesheet" href="/assets/css/components.css?v={{ assetVersion }}">
 		{%- endif %}
-		<link rel="stylesheet" href="/assets/css/shell.css">
+		<link rel="stylesheet" href="/assets/css/shell.css?v={{ assetVersion }}">
 		<script type="application/ld+json">
 			{
 				"@context": "https://schema.org",
@@ -107,15 +107,15 @@
 			{{ content | safe }}
 		</main>
 		{% include "partials/footer.njk" %}
-		<script type="module" src="/assets/js/nav.js"></script>
-		<script type="module" src="/assets/js/code-tabs.js"></script>
-		<script type="module" src="/assets/js/copy-to-clipboard.js"></script>
-		<script type="module" src="/assets/js/signup.js"></script>
-		<script type="module" src="/assets/js/pricing-calculator.js"></script>
-		<script type="module" src="/assets/js/faq.js"></script>
-		<script type="module" src="/assets/js/api-playground/main.js"></script>
-		<script type="module" src="/assets/js/voiceml-validator/main.js"></script>
-		<script type="module" src="/assets/js/credentials-bootstrap/main.js"></script>
-		<script type="module" src="/assets/js/status-updated.js"></script>
+		<script type="module" src="/assets/js/nav.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/code-tabs.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/copy-to-clipboard.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/signup.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/pricing-calculator.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/faq.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/api-playground/main.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/voiceml-validator/main.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/credentials-bootstrap/main.js?v={{ assetVersion }}"></script>
+		<script type="module" src="/assets/js/status-updated.js?v={{ assetVersion }}"></script>
 	</body>
 </html>

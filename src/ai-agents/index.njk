@@ -116,6 +116,28 @@ description: "Twilio-compatible AI Assistants API — build voice and chat agent
 				</div>
 			</div>
 		</div>
+
+		<h3 class="subsection-heading" id="voice-ai-frameworks">Voice AI frameworks</h3>
+		<div class="prose">
+			<p>Open-source frameworks for building your own voice agent pipeline reach the phone network through VoiceML's Media Streams (<code>&lt;Connect&gt;&lt;Stream&gt;</code>) or through VoiceTel SIP trunking. How each one connects:</p>
+		</div>
+		<div class="table-container">
+			<table class="data-table">
+				<thead>
+					<tr><th scope="col">Framework</th><th scope="col">Connects through</th><th scope="col">What to configure</th></tr>
+				</thead>
+				<tbody>
+					{%- for f in voiceFrameworks.frameworks %}
+					<tr>
+						<td><a href="https://github.com/{{ f.repo }}">{{ f.name }}</a><span class="data-table__meta">{{ f.license }}</span></td>
+						<td>{{ f.connects | safe }}</td>
+						<td>{{ f.configure | safe }}</td>
+					</tr>
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+		<p class="row__links">Reviewed {{ voiceFrameworks.reviewed }} by reading each framework's telephony code; not tested on live calls. Project names belong to their owners; listing a project does not imply endorsement by, or affiliation with, its authors.</p>
 	</div>
 </section>
 

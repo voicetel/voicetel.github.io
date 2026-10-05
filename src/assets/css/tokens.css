@@ -16,7 +16,9 @@
 	--bg-2: #fff;
 	--bg-3: #fafbfc;
 	--bg-tint: #eef3f7;
-	--header: #1b2a38;
+
+	/* Matches the menu bar on voiceml.com, voiceml.org, and the VoiceML Portal + Dashboard. */
+	--header: #2c3e50;
 	--header-2: #22384a;
 	--terminal: #0e171d;
 	--terminal-2: #131f27;

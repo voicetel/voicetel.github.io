@@ -89,8 +89,10 @@ class PageReport(NamedTuple):
 
 EYEBROW_RE = re.compile(r'class="eyebrow"')
 LEDE_RE = re.compile(r'class="lede"')
-HERO_RE = re.compile(r'class="hero-actions"')
-CTA_BLOCK_RE = re.compile(r'class="cta-block"')
+# v1 pages use hero-actions / cta-block; v2 pages (layouts/product.njk) use the
+# design-guide names cta-row / cta-band. Both satisfy the shape rules.
+HERO_RE = re.compile(r'class="(?:[^"]*\s)?(?:hero-actions|cta-row)(?:\s[^"]*)?"')
+CTA_BLOCK_RE = re.compile(r'class="(?:[^"]*\s)?(?:cta-block|cta-band)(?:\s[^"]*)?"')
 H1_PERIOD_RE = re.compile(r'<h1[^>]*>.*?\.</h1>', re.DOTALL)
 
 

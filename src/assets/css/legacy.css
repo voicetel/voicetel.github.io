@@ -1,0 +1,144 @@
+/*
+ * Legacy (v1) base rules for pages not yet migrated to the v2 design.
+ *
+ * Loaded after base.css on those pages only (see layouts/base.njk), so these
+ * rules win over the v2 defaults. A page leaves this file behind when it is
+ * rebuilt on the v2 components; once no page needs it, delete it.
+ */
+
+body {
+	font-size: var(--text-base);
+	line-height: var(--leading-normal);
+	color: var(--text-default);
+	background: var(--page-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: var(--primary-color);
+	line-height: var(--leading-tight);
+	margin: 0 0 var(--space-3);
+	font-weight: var(--weight-semibold);
+	letter-spacing: -0.015em;
+}
+
+h1 {
+	font-size: var(--text-3xl);
+}
+
+h2 {
+	font-size: var(--text-xl);
+	margin-top: var(--space-6);
+}
+
+h3 {
+	font-size: var(--text-lg);
+	margin-top: var(--space-5);
+}
+
+h4 {
+	font-size: var(--text-md);
+	margin-top: var(--space-5);
+}
+
+p {
+	margin: 0 0 var(--space-3);
+}
+
+a {
+	color: var(--primary-light);
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+	text-decoration-thickness: 1px;
+}
+
+a:hover {
+	color: var(--primary-dark);
+}
+
+a:focus-visible {
+	border-radius: var(--radius-sm);
+}
+
+code {
+	font-family: var(--font-mono);
+	font-size: 0.92em;
+	background: var(--light-bg);
+	padding: 2px 6px;
+	border-radius: var(--radius-sm);
+}
+
+pre {
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	line-height: 1.65;
+	background: var(--light-bg);
+	color: var(--text-default);
+	padding: var(--space-4);
+	border-radius: var(--radius);
+	border: 1px solid var(--border-color);
+	overflow-x: auto;
+	margin: 0 0 var(--space-4);
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	border-radius: 0;
+	font-size: inherit;
+}
+
+/* Sub-pages: page.njk wraps content in <div class="container"> directly under
+ * <main>. Give that wrapper top and bottom breathing room. */
+main > .container:first-child {
+	padding-top: var(--space-7);
+	padding-bottom: var(--space-7);
+}
+
+.eyebrow {
+	margin: 0 0 var(--space-2);
+}
+
+.lede {
+	font-size: var(--text-md);
+	line-height: var(--leading-relaxed);
+	max-width: 72ch;
+	margin: 0 0 var(--space-3);
+}
+
+.hero {
+	padding-top: var(--space-7);
+	padding-bottom: var(--space-7);
+}
+
+.hero h1 {
+	font-size: var(--text-4xl);
+	margin-bottom: var(--space-4);
+	max-width: 18ch;
+}
+
+.hero-actions {
+	margin-top: var(--space-5);
+	display: flex;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+}
+
+.hero-actions--center {
+	justify-content: center;
+}
+
+@media (width <= 720px) {
+	.hero {
+		padding-top: var(--space-5);
+		padding-bottom: var(--space-5);
+	}
+
+	.hero h1 {
+		font-size: var(--text-2xl);
+	}
+}

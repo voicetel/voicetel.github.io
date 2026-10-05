@@ -1,9 +1,10 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "VoiceML"
 description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for compatible call control, signed webhooks, recordings, conferences, queues, and SDK migration paths."
-illustration: voiceml
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set years %}{% yearsSince 1999 %}{% endset %}
 
 <script type="application/ld+json">
 {
@@ -18,192 +19,171 @@ illustration: voiceml
 }
 </script>
 
-<p class="eyebrow">Programmable Voice, VoiceML</p>
-<h1>Move compatible Programmable Voice workloads without rewriting call logic.</h1>
-<p class="lede">VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel.</p>
-<p class="lede">Build voice workflows on VoiceTel without paying retail markup on every layer of the call. Use API-driven calling, SIP access, recordings, conferences, streams, transcriptions, queues, and status callbacks on a platform built for telecom teams.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/voiceml/migrate/">Start migration</a>
-	<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
-</p>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block code-block-section">
-	<h2>VoiceML example</h2>
-	<p>The markup stays readable, inspectable, and easy to test before cutover. A small inbound IVR — gather a digit, route to a queue, fall back to voicemail:</p>
-	<pre class="code-block" data-lang="xml"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;Response&gt;
-    &lt;Say voice="Polly.Joanna"&gt;Welcome to Acme Support. Press 1 for billing, 2 for technical support.&lt;/Say&gt;
-    &lt;Gather numDigits="1" action="/route" method="POST" timeout="6"&gt;
-        &lt;Say&gt;You can also stay on the line to reach the next available agent.&lt;/Say&gt;
-    &lt;/Gather&gt;
-    &lt;Dial timeout="20"&gt;
-        &lt;Queue&gt;support&lt;/Queue&gt;
-    &lt;/Dial&gt;
-    &lt;Record maxLength="120" transcribe="false" action="/voicemail" /&gt;
-    &lt;Say&gt;Thanks. We'll follow up within one business day.&lt;/Say&gt;
-&lt;/Response&gt;</code></pre>
-	<p>Webhook signatures, parameter names, and verb behavior match Twilio's voice markup, so an existing handler at <code>/route</code> or <code>/voicemail</code> works unchanged once you point your application's host at <code>voiceml.voicetel.com</code>.</p>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">VoiceML</p>
+			<h1 id="hero-heading">Move compatible Programmable Voice workloads without rewriting call logic.</h1>
+			<p class="lede">VoiceML is VoiceTel's XML-based voice runtime for teams that already have voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Keep the interaction model; move the economics and support path to VoiceTel.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/voiceml/migrate/">Start migration {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/voiceml/compatibility/">Compatibility matrix</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set code %}{% highlight "xml" %}<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Joanna">Welcome to Acme Support. Press 1 for billing, 2 for technical support.</Say>
+  <Gather numDigits="1" action="/route" method="POST" timeout="6">
+    <Say>You can also stay on the line to reach the next available agent.</Say>
+  </Gather>
+  <Dial timeout="20">
+    <Queue>support</Queue>
+  </Dial>
+  <Record maxLength="120" transcribe="false" action="/voicemail" />
+  <Say>Thanks. We'll follow up within one business day.</Say>
+</Response>{% endhighlight %}{% endset %}
+			{%- set terminal = { label: "inbound-ivr.xml", pill: "VoiceML · 200 OK", code: code } %}
+			{% include "partials/v2/terminal.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Compatible voice surface</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
-			<h3>Calls</h3>
-			<p>Create, fetch, update, list, and end calls using the supported voice-call lifecycle surface.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-			<h3>VoiceML call control</h3>
-			<p>Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls using XML-based voice markup.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3>Recordings</h3>
-			<p>Start, pause, resume, stop, list, retrieve, and delete supported recordings.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Conferences and queues</h3>
-			<p>Use conference resources, participants, recordings, queue CRUD, and queue members where supported.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Streams, transcriptions, and SIP recording</h3>
-			<p>Start and inspect supported live media, transcription, and SIP recording resources with documented caveats.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3>AI voice agents</h3>
-			<p>Bridge live calls to your speech-to-text + LLM + text-to-speech pipeline with <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> — a Twilio-compatible WebSocket relay that handles barge-in, DTMF forwarding, and graceful handoff. See the <a href="/voiceml/conversationrelay/">open-source projects that run on it</a>.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
-			<h3>Applications</h3>
-			<p>Save voice-only application defaults and resolve them from call creation where supported.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
-			<h3>Signed webhooks</h3>
-			<p>Status, recording, gather, dial, conference, AMD, and action callbacks use signed webhook delivery for request verification.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "plug" %}</span>
-			<h3>Free defaults, full vendor choice</h3>
-			<p>Free English speech-to-text and built-in text-to-speech ship with every account so you can prototype the same hour. For production, pick the STT, TTS, and storage vendor that fits your accuracy, latency, language, and data-handling needs — VoiceTel does not mark up third-party costs.</p>
-		</li>
-	</ul>
-	{% set drawing = "voiceml-callbacks" %}
-	{% include "partials/section-illustration.njk" %}
+<section class="section section--tint" id="compatibility" aria-labelledby="compatibility-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Compatibility</p>
+				<h2 id="compatibility-heading">Webhook signatures, parameter names, and verb behavior match.</h2>
+				<p class="lede">An existing handler at <code>/route</code> or <code>/voicemail</code> works unchanged once you point your application's host at <code>voiceml.voicetel.com</code>. The markup stays readable, inspectable, and easy to test before cutover.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/compatibility/">Compatibility matrix</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set kpis = [
+					{ label: "Twilio compat", value: "94.1", suffix: "%", sub: "Every voice verb except <Pay>" },
+					{ label: "VoiceML verbs", value: "17", sub: "Say, Gather, Dial, Record, and more" },
+					{ label: "REST operations", value: "74", sub: "VoiceTel API v2.2" },
+					{ label: "Webhook signing", value: "HMAC", suffix: "SHA-256", sub: "Same validator, same header" }
+				] %}
+				{% include "partials/v2/kpi-grid.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Compatible voice surface</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "telephone", title: "Calls", body: "Create, fetch, update, list, and end calls using the supported voice-call lifecycle surface." },
+			{ icon: "code-slash", title: "VoiceML call control", body: "Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls using XML-based voice markup." },
+			{ icon: "activity", title: "Recordings", body: "Start, pause, resume, stop, list, retrieve, and delete supported recordings." },
+			{ icon: "diagram-3", title: "Conferences and queues", body: "Use conference resources, participants, recordings, queue CRUD, and queue members where supported." },
+			{ icon: "broadcast-pin", title: "Streams, transcriptions, and SIP recording", body: "Start and inspect supported live media, transcription, and SIP recording resources with documented caveats." },
+			{ icon: "chat-text", title: "AI voice agents", body: "Bridge live calls to your speech-to-text + LLM + text-to-speech pipeline with <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> &mdash; a Twilio-compatible WebSocket relay that handles barge-in, DTMF forwarding, and graceful handoff. See the <a href=\"/voiceml/conversationrelay/\">open-source projects that run on it</a>." },
+			{ icon: "gear", title: "Applications", body: "Save voice-only application defaults and resolve them from call creation where supported." },
+			{ icon: "arrow-right-circle", title: "Signed webhooks", body: "Status, recording, gather, dial, conference, AMD, and action callbacks use signed webhook delivery for request verification." },
+			{ icon: "plug", title: "Free defaults, full vendor choice", body: "Free English speech-to-text and built-in text-to-speech ship with every account so you can prototype the same hour. For production, pick the STT, TTS, and storage vendor that fits your accuracy, latency, language, and data-handling needs &mdash; VoiceTel does not mark up third-party costs." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Detailed guides</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3><a href="/voiceml/recording/">Call recording and SIPREC</a></h3>
-			<p>Capture WAV files to your own Amazon S3 bucket via <code>&lt;Record&gt;</code> / <code>&lt;Dial&gt;</code> / <code>&lt;Conference&gt;</code>, or fork live media to your SIPREC-compatible Session Recording Server with <code>&lt;Start&gt;&lt;Siprec&gt;</code>.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3><a href="/voiceml/speech-recognition/">Speech recognition with &lt;Gather&gt;</a></h3>
-			<p>Free English default for quick prototyping, then switch to Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp when you're ready to tune for production. Same selection powers <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3><a href="/voiceml/text-to-speech/">Text-to-speech with &lt;Say&gt;</a></h3>
-			<p>Built-in voices in English, Spanish, French, and German, or bring your own Amazon Polly, Azure, ElevenLabs, Deepgram Aura, or Cartesia Sonic account for studio-quality speech.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3><a href="/voiceml/dashboard/">VoiceML Dashboard</a></h3>
-			<p>Voicemail, recordings, and transcripts from your call flows, emailed as secure links, plus a live operator panel with call control.</p>
-		</li>
-	</ul>
+<section class="section section--white" id="guides" aria-labelledby="guides-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Guides</p>
+			<h2 id="guides-heading">Recording, speech, and the dashboard, documented.</h2>
+			<p class="lede">Each guide covers the verbs involved, the vendors you can bring, and what ships free with every account.</p>
+		</div>
+		{%- set featureHeading = "h3" %}
+		{%- set features = [
+			{ icon: "activity", title: "Call recording and SIPREC", body: "Capture WAV files to your own Amazon S3 bucket via <code>&lt;Record&gt;</code> / <code>&lt;Dial&gt;</code> / <code>&lt;Conference&gt;</code>, or fork live media to your SIPREC-compatible Session Recording Server with <code>&lt;Start&gt;&lt;Siprec&gt;</code>.", href: "/voiceml/recording/", cta: "Recording guide" },
+			{ icon: "chat-text", title: "Speech recognition with &lt;Gather&gt;", body: "Free English default for quick prototyping, then switch to Deepgram, AWS Transcribe, Azure Speech, Google, OpenAI, or whisper.cpp when you're ready to tune for production. Same selection powers <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>.", href: "/voiceml/speech-recognition/", cta: "Speech recognition guide" },
+			{ icon: "broadcast-pin", title: "Text-to-speech with &lt;Say&gt;", body: "Built-in voices in English, Spanish, French, and German, or bring your own Amazon Polly, Azure, ElevenLabs, Deepgram Aura, or Cartesia Sonic account for studio-quality speech.", href: "/voiceml/text-to-speech/", cta: "Text-to-speech guide" },
+			{ icon: "envelope", title: "VoiceML Dashboard", body: "Voicemail, recordings, and transcripts from your call flows, emailed as secure links, plus a live operator panel with call control.", href: "/voiceml/dashboard/", cta: "About the dashboard" }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>More VoiceML tools</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "book" %}</span>
-			<h3><a href="{{ site.voicemlReferenceUrl }}">VoiceML reference</a></h3>
-			<p>voiceml.com documents every verb, noun, and attribute, with defaults, callbacks, and working examples. Machine-readable copies (<code>voiceml-spec.json</code>, <code>llms.txt</code>, <code>llms-full.txt</code>) are there for AI agents and tooling.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3><a href="{{ site.voicemlPublisherUrl }}">VoiceML publisher</a></h3>
-			<p>voiceml.org checks your markup against the VoiceML schema and publishes it to a permanent URL you can point a voice webhook at. Free, no account required. {% raw %}<code>{{Name}}</code>{% endraw %} placeholders fill in live call data on each request.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3><a href="/voiceml/phone/">VoiceML Phone</a></h3>
-			<p>The softphone for VoiceML accounts on macOS, Windows, Linux, iPhone, and Android, plus a browser softphone in the VoiceML Dashboard. Set it up with a one-time activation code.</p>
-		</li>
-	</ul>
+<section class="section section--tint" id="tools" aria-labelledby="tools-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Tools</p>
+				<h2 id="tools-heading">Reference, publisher, calculator, validator, and a softphone.</h2>
+				<p class="lede">voiceml.com documents every verb, noun, and attribute, with machine-readable copies for AI agents and tooling. voiceml.org checks your markup against the schema and publishes it to a permanent webhook URL, free, with no account required.</p>
+			</div>
+			<div class="row__visual">
+				{%- set docs = [
+					{ icon: "book", title: "VoiceML reference", meta: "voiceml.com", href: site.voicemlReferenceUrl },
+					{ icon: "layers", title: "VoiceML publisher", meta: "free · no account", href: site.voicemlPublisherUrl },
+					{ icon: "calculator", title: "VoiceML calculator", meta: "model a call flow", href: "/voiceml/calculator/" },
+					{ icon: "list-check", title: "VoiceML validator", meta: "schema check", href: "/voiceml/validator/" },
+					{ icon: "phone-vibrate", title: "VoiceML Phone", meta: "macOS · Windows · Linux · iOS · Android", href: "/voiceml/phone/" }
+				] %}
+				{% include "partials/v2/docs-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section class="section-block" data-section-type="honest-differences">
-	<h2>What's different</h2>
-	<ul>
-		<li><strong>Voice-first compatibility</strong> — The compatible surface centers on voice: <code>Calls</code>, <code>Conferences</code>, <code>Queues</code>, <code>Applications</code>, <code>Recordings</code>, <code>IncomingPhoneNumbers</code>, and the full <code>SIP/Domains</code>, <code>SIP/CredentialLists</code>, and <code>SIP/IpAccessControlLists</code> trunking surface (including domain ↔ list mappings and the <code>v2/SipDomains</code> Inbound Processing Region resource). Basic SMS send / list / fetch / delete is also available via <code>/Messages</code> when a per-tenant provider is configured. MMS, number provisioning, pricing APIs, and other CPaaS products use native VoiceTel product APIs or portal workflows.</li>
-		<li><strong>Payment verb gated</strong> — The payment verb is fully compatible. Card capture is enabled per account — <a href="/contact/">contact support</a> to turn it on.</li>
-		<li><strong>Number provisioning path</strong> — DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
-	</ul>
+<section class="section section--white" id="scope" aria-labelledby="scope-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Scope</p>
+			<h2 id="scope-heading">What's different, and what's better.</h2>
+		</div>
+		<div class="prose-grid">
+			<div class="prose-card">
+				<h3>What's different</h3>
+				<div class="prose">
+					<ul>
+						<li><strong>Voice-first compatibility</strong> &mdash; The compatible surface centers on voice: <code>Calls</code>, <code>Conferences</code>, <code>Queues</code>, <code>Applications</code>, <code>Recordings</code>, <code>IncomingPhoneNumbers</code>, and the full <code>SIP/Domains</code>, <code>SIP/CredentialLists</code>, and <code>SIP/IpAccessControlLists</code> trunking surface (including domain &harr; list mappings and the <code>v2/SipDomains</code> Inbound Processing Region resource). Basic SMS send / list / fetch / delete is also available via <code>/Messages</code> when a per-tenant provider is configured. MMS, number provisioning, pricing APIs, and other CPaaS products use native VoiceTel product APIs or portal workflows.</li>
+						<li><strong>Payment verb gated</strong> &mdash; The payment verb is fully compatible. Card capture is enabled per account &mdash; <a href="/contact/">contact support</a> to turn it on.</li>
+						<li><strong>Number provisioning path</strong> &mdash; DIDs are managed through VoiceTel number workflows, not through the compatible customer-facing voice API surface.</li>
+					</ul>
+				</div>
+			</div>
+			<div class="prose-card">
+				<h3>What's better</h3>
+				<div class="prose">
+					<ul>
+						<li><strong>Line-item pricing.</strong> Every rate published on the <a href="/pricing/">pricing page</a>. Speech, recording storage, and TTS billed by you directly to your chosen provider &mdash; VoiceTel does not mark up third parties.</li>
+						<li><strong>Operating since 1999.</strong> {{ years }} years in business &mdash; ISP origins, now full-stack carrier with engineers who read SIP traces, not qualification scripts.</li>
+						<li><strong>No platform tax.</strong> Inbound messaging included. The published per-minute rate is what gets billed &mdash; no per-minute platform fee on top.</li>
+						<li><strong>Honest compatibility.</strong> Every supported verb and attribute labelled in the <a href="/voiceml/compatibility/">compatibility matrix</a>. No silent feature gaps mid-migration.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
-<section class="section-block faq-block">
-	<h2>VoiceML FAQ</h2>
-	<details class="faq-item">
-		<summary>Can existing Twilio voice applications migrate?</summary>
-		<p>Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Which text-to-speech providers does VoiceTel support?</summary>
-		<p>Supported text-to-speech integrations. Open-source engines run on VoiceTel infrastructure; cloud vendors are billed by you directly.</p>
-		<ul>
-			<li><a href="https://github.com/rhasspy/piper" rel="external">Piper</a> (open-source, self-hosted)</li>
-			<li><a href="https://github.com/coqui-ai/TTS" rel="external">Coqui TTS</a> (open-source, self-hosted)</li>
-			<li><a href="https://platform.openai.com/signup" rel="external">OpenAI TTS</a></li>
-			<li><a href="https://aws.amazon.com/polly/" rel="external">Amazon Polly</a></li>
-			<li><a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a></li>
-		</ul>
-	</details>
-	<details class="faq-item">
-		<summary>Which speech-to-text providers does VoiceTel support?</summary>
-		<p>English calls have a free VoiceTel STT default for quick starts. For production — or for any non-English call — pick the vendor that's right for your accuracy, latency, language, and data-handling needs, and pay them directly with no VoiceTel markup. Supported integrations:</p>
-		<ul>
-			<li><a href="https://console.deepgram.com/signup" rel="external">Deepgram</a></li>
-			<li><a href="https://cloud.google.com/speech-to-text" rel="external">Google Cloud Speech-to-Text</a></li>
-			<li><a href="https://aws.amazon.com/transcribe/" rel="external">AWS Transcribe</a></li>
-			<li><a href="https://azure.microsoft.com/products/ai-services/ai-speech" rel="external">Azure AI Speech</a></li>
-		</ul>
-	</details>
-	<details class="faq-item">
-		<summary>How are rates displayed?</summary>
-		<p>Current public rates are on the <a href="/pricing/">pricing page</a>, with a calculator that applies volume-tier discounts. Your customer portal displays the same rates plus any account-specific contract pricing.</p>
-	</details>
-</section>
+<section class="section section--tint" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about VoiceML.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Can existing Twilio voice applications migrate?", a: "Yes, when they stay within the supported VoiceML-compatible voice surface. Review the compatibility matrix before production cutover." },
+			{ q: "Which text-to-speech providers does VoiceTel support?", a: "<p>Supported text-to-speech integrations. Open-source engines run on VoiceTel infrastructure; cloud vendors are billed by you directly.</p><ul><li><a href=\"https://github.com/rhasspy/piper\" rel=\"external\">Piper</a> (open-source, self-hosted)</li><li><a href=\"https://github.com/coqui-ai/TTS\" rel=\"external\">Coqui TTS</a> (open-source, self-hosted)</li><li><a href=\"https://platform.openai.com/signup\" rel=\"external\">OpenAI TTS</a></li><li><a href=\"https://aws.amazon.com/polly/\" rel=\"external\">Amazon Polly</a></li><li><a href=\"https://azure.microsoft.com/products/ai-services/ai-speech\" rel=\"external\">Azure AI Speech</a></li></ul>" },
+			{ q: "Which speech-to-text providers does VoiceTel support?", a: "<p>English calls have a free VoiceTel STT default for quick starts. For production &mdash; or for any non-English call &mdash; pick the vendor that's right for your accuracy, latency, language, and data-handling needs, and pay them directly with no VoiceTel markup. Supported integrations:</p><ul><li><a href=\"https://console.deepgram.com/signup\" rel=\"external\">Deepgram</a></li><li><a href=\"https://cloud.google.com/speech-to-text\" rel=\"external\">Google Cloud Speech-to-Text</a></li><li><a href=\"https://aws.amazon.com/transcribe/\" rel=\"external\">AWS Transcribe</a></li><li><a href=\"https://azure.microsoft.com/products/ai-services/ai-speech\" rel=\"external\">Azure AI Speech</a></li></ul>" },
+			{ q: "How are rates displayed?", a: "Current public rates are on the <a href=\"/pricing/\">pricing page</a>, with a calculator that applies volume-tier discounts. Your customer portal displays the same rates plus any account-specific contract pricing." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
 
-<section class="section-block" data-section-type="advantages">
-	<h2>What's better</h2>
-	<ul>
-		<li><strong>Line-item pricing.</strong> Every rate published on the <a href="/pricing/">pricing page</a>. Speech, recording storage, and TTS billed by you directly to your chosen provider — VoiceTel does not mark up third parties.</li>
-		<li><strong>Operating since 1999.</strong> {% yearsSince 1999 %} years in business — ISP origins, now full-stack carrier with engineers who read SIP traces, not qualification scripts.</li>
-		<li><strong>No platform tax.</strong> Inbound messaging included. The published per-minute rate is what gets billed — no per-minute platform fee on top.</li>
-		<li><strong>Honest compatibility.</strong> Every supported verb and attribute labelled in the <a href="/voiceml/compatibility/">compatibility matrix</a>. No silent feature gaps mid-migration.</li>
-	</ul>
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Start with one production call flow.</h3>
+				<p class="cta-band__body">Pick a known call path, paste the markup into the compatibility checker, run a test call, then compare the bill line by line.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/voiceml/migrate/">Migrate from Twilio {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/voiceml/calculator/">Open calculator</a>
+			</div>
+		</div>
+	</div>
 </section>
-
-<aside class="cta-block">
-	<h2>Start with one production call flow.</h2>
-	<p>Pick a known call path, paste the markup into the compatibility checker, run a test call, then compare the bill line by line.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/voiceml/migrate/">Migrate from Twilio</a>
-		<a class="btn btn-secondary" href="/voiceml/calculator/">Open calculator</a>
-	</p>
-</aside>

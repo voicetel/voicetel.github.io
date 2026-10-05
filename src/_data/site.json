@@ -51,7 +51,6 @@
 			"label": "Products",
 			"id": "nav-products",
 			"type": "mega",
-			"layout": "two-column",
 			"items": [
 				{
 					"label": "Voice",
@@ -131,7 +130,8 @@
 					"href": "/sdn/",
 					"description": "Plug-and-play SIP traversal."
 				}
-			]
+			],
+			"columns": 3
 		},
 		{
 			"label": "Resources",
@@ -180,8 +180,10 @@
 					"href": "/status/",
 					"description": "Real-time status of voice, messaging, API, portal."
 				}
-			]
+			],
+			"columns": 2
 		},
+		{ "label": "Pricing", "id": "nav-pricing", "href": "/pricing/" },
 		{
 			"label": "Company",
 			"id": "nav-company",
@@ -211,7 +213,8 @@
 					"href": "/legal/",
 					"description": "Terms, privacy, AUP, e911 limitations."
 				}
-			]
+			],
+			"columns": 2
 		},
 		{
 			"label": "Sign in",
@@ -243,14 +246,14 @@
 					"href": "/signup/",
 					"description": "Create a VoiceTel account."
 				}
-			]
+			],
+			"columns": 1
 		}
 	],
 	"footerNav": [
 		{
 			"label": "Products",
 			"columns": 2,
-			"cta": { "label": "PRICING", "href": "/pricing/", "icon": "tag" },
 			"items": [
 				{ "label": "Voice", "href": "/voice/" },
 				{ "label": "Messaging", "href": "/messaging/" },
@@ -265,6 +268,17 @@
 				{ "label": "Carrier Lookup", "href": "/carrier-lookup/" },
 				{ "label": "Applications", "href": "/phone/" },
 				{ "label": "SDN Appliance", "href": "/sdn/" }
+			]
+		},
+		{
+			"label": "Pricing",
+			"items": [
+				{ "label": "Pricing calculator", "href": "/pricing/" },
+				{ "label": "Voice rates", "href": "/pricing/#voice-out-us50" },
+				{ "label": "Messaging rates", "href": "/pricing/#sms-out" },
+				{ "label": "Numbers & E911", "href": "/pricing/#did-local" },
+				{ "label": "Lookups", "href": "/pricing/#lookup-cnam" },
+				{ "label": "VoiceML calculator", "href": "/voiceml/calculator/" }
 			]
 		},
 		{
@@ -299,5 +313,6 @@
 		"resellerInquiry": "/reseller-inquiry",
 		"contact": "/contact"
 	},
-	"_note": "site.formEndpoints.signup is the AJAX endpoint on portalUrl that the /signup/ form posts to. Site navigation links to /signup/ (the marketing page), not directly to formEndpoints.signup."
+	"_note": "site.formEndpoints.signup is the AJAX endpoint on portalUrl that the /signup/ form posts to. Site navigation links to /signup/ (the marketing page), not directly to formEndpoints.signup.",
+	"navCta": { "label": "Get started", "href": "/signup/" }
 }

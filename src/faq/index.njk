@@ -1,5 +1,5 @@
 ---
-layout: layouts/page.njk
+layout: layouts/tool.njk
 title: "Frequently asked questions"
 description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messaging, hosted PBX, emergency service, compatibility, and support."
 ---
@@ -37,9 +37,8 @@ description: "Practical VoiceTel FAQ covering accounts, pricing, voice, messagin
 			<details class="faq-item" id="{{ qid }}">
 				<summary>
 					<span class="faq-item__question">{{ item.q }}</span>
-					<a class="faq-item__anchor" href="#{{ qid }}" aria-label="Permalink to this question">#</a>
 				</summary>
-				<div class="faq-item__answer">{{ item.a | safe }}</div>
+				<div class="faq-item__answer">{{ item.a | safe }}<p class="faq-item__permalink"><a href="#{{ qid }}">Link to this question</a></p></div>
 			</details>
 			{%- endfor %}
 		</section>

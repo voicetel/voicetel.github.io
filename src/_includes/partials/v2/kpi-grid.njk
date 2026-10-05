@@ -1,0 +1,12 @@
+{#- Four facts (design guide § Metric & KPI cards).
+	Expects `kpis`: [{ label, value, suffix?, sub?, trend? }]. -#}
+<div class="kpi-grid">
+	{%- for k in kpis %}
+	<div class="kpi">
+		{%- if k.trend %}<span class="kpi__trend"><span class="dot" aria-hidden="true"></span>{{ k.trend }}</span>{% endif %}
+		<div class="kpi__label">{{ k.label }}</div>
+		<div class="kpi__value">{{ k.value }}{% if k.suffix %}<span class="suffix">{{ k.suffix }}</span>{% endif %}</div>
+		{%- if k.sub %}<div class="kpi__sub">{{ k.sub }}</div>{% endif %}
+	</div>
+	{%- endfor %}
+</div>

@@ -1,0 +1,15 @@
+{#- Tabbed data list (design guide § Lists & tabs). The chips are illustrative.
+	Expects `panel`: { title, tabs: [string], active: index, items: [{ num, tag, price, star? }], footnote? } -#}
+<div class="list-panel" role="group" aria-label="{{ panel.title }}">
+	<div class="tab-row" aria-hidden="true">
+		{%- for t in panel.tabs %}
+		<span class="tab{% if loop.index0 == (panel.active or 0) %} is-active{% endif %}">{{ t }}</span>
+		{%- endfor %}
+	</div>
+	<ul class="list">
+		{%- for i in panel.items %}
+		<li class="list__row"><span class="num">{{ i.num }}</span><span class="tag">{{ i.tag }}</span><span class="price">{{ i.price }}{% if i.star %}<span class="star">{{ i.star }}</span>{% endif %}</span></li>
+		{%- endfor %}
+	</ul>
+	{%- if panel.footnote %}<span class="list__footnote">{{ panel.footnote }}</span>{% endif %}
+</div>

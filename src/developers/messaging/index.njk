@@ -1,59 +1,111 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /developers/messaging/
 title: "Messaging for developers"
 description: "Production SMS and MMS traffic for application workflows — A2P 10DLC support, inbound handling, delivery visibility, and clear rates."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow"><a href="/developers/">For developers</a> / Messaging</p>
-<h1>Add SMS and MMS to application workflows.</h1>
-<p class="lede"><a href="/messaging/">VoiceTel Messaging</a> supports production SMS and MMS traffic for teams that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and practical carrier support.</p>
-<p>Use messaging for appointment reminders, verification flows, customer notifications, dispatch updates, support follow-ups, alerts, and application-to-person traffic. Inbound and outbound workflows can be connected to customer systems through webhook or email delivery.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Start building</a>
-	<a class="btn btn-secondary" href="/messaging/">Messaging overview</a>
-</p>
-
-<section class="section-block">
-	<h2>Messaging use cases</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "envelope" %}</span>
-			<h3>Product notifications</h3>
-			<p>Send account alerts, workflow updates, service reminders, and operational messages.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3>Two-way customer communication</h3>
-			<p>Receive inbound messages and route them into your CRM, ticketing system, or application backend.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "graph-up" %}</span>
-			<h3>High-volume messaging</h3>
-			<p>Plan throughput, campaign requirements, carrier fees, and routing before production cutover.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "telephone-fill" %}</span>
-			<h3>SMS-enable existing numbers</h3>
-			<p>VoiceTel can SMS-enable numbers that remain with another carrier for voice, using a Letter of Authorization.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Developers · Messaging</p>
+			<h1 id="hero-heading">Add SMS and MMS to application workflows.</h1>
+			<p class="lede">VoiceTel Messaging supports production SMS and MMS traffic for teams that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and practical carrier support.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Start building {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/messaging/">Messaging overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "Message path from your application through VoiceTel to the handset and back",
+				nodes: [
+					{ label: "Your application", value: "Outbound sends", meta: "inbound via webhook or email", icon: "code-slash" },
+					{ label: "VoiceTel", value: "A2P 10DLC transport", meta: "SMS · MMS", icon: "chat-text", accent: true },
+					{ label: "Handset", value: "Customer replies", icon: "phone-vibrate" }
+				],
+				links: [
+					{ label: "API", both: true, accent: true },
+					{ label: "carrier", both: true }
+				],
+				meta: [
+					{ k: "Inbound", v: "webhook or email delivery" },
+					{ k: "Visibility", v: "delivery events" },
+					{ k: "10DLC", v: "register and vet under one credential" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>10DLC, vetting, and compliance</h2>
-	<p>A2P traffic in the US requires brand registration, campaign vetting, and ongoing compliance with CTIA and carrier rules. VoiceTel publishes the operational guides and proxies the Campaign Registry API so you can register and vet campaigns under one credential.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/support/messaging/10dlc/">10DLC vetting guide</a>
-		<a class="btn btn-secondary" href="/support/messaging/compliance/">Compliance reference</a>
-	</p>
+<section class="section section--tint" id="production" aria-labelledby="production-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Production traffic</p>
+				<h2 id="production-heading">Clear rates, inbound handling, and delivery visibility on every message.</h2>
+				<p class="lede">Use messaging for appointment reminders, verification flows, customer notifications, dispatch updates, support follow-ups, alerts, and application-to-person traffic. Inbound and outbound workflows connect to customer systems through webhook or email delivery.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/pricing/#sms-out">Compare messaging rates</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rates = [
+					{ name: "Outbound SMS", unit: "/ message part", id: "sms-out", star: true },
+					{ name: "Inbound SMS", unit: "/ message part", id: "sms-in", star: true },
+					{ name: "Outbound MMS", unit: "/ message part", id: "mms-out", star: true },
+					{ name: "Inbound MMS", unit: "/ message part", id: "mms-in", star: true }
+				] %}
+				{%- set rateFootnote = "List rates. Volume tiers apply automatically in the <a href=\"/pricing/#sms-out\">pricing calculator</a>." %}
+				{% include "partials/v2/price-table.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Messaging use cases</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "envelope", title: "Product notifications", body: "Send account alerts, workflow updates, service reminders, and operational messages." },
+			{ icon: "chat-text", title: "Two-way customer communication", body: "Receive inbound messages and route them into your CRM, ticketing system, or application backend." },
+			{ icon: "graph-up", title: "High-volume messaging", body: "Plan throughput, campaign requirements, carrier fees, and routing before production cutover." },
+			{ icon: "telephone-fill", title: "SMS-enable existing numbers", body: "VoiceTel can SMS-enable numbers that remain with another carrier for voice, using a Letter of Authorization." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="dev-msg-cta">
-	<h2 id="dev-msg-cta">Start sending production messages.</h2>
-	<p>Clear rates, A2P 10DLC support, and carrier-level visibility on inbound and outbound traffic.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/messaging/">Messaging overview</a>
-	</p>
-</aside>
+<section class="section section--white" id="compliance" aria-labelledby="compliance-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">10DLC and compliance</p>
+				<h2 id="compliance-heading">Register and vet campaigns under one credential.</h2>
+				<p class="lede">A2P traffic in the US requires brand registration, campaign vetting, and ongoing compliance with CTIA and carrier rules. VoiceTel publishes the operational guides and proxies the Campaign Registry API so you can register and vet campaigns under one credential.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC vetting guide</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set steps = [
+					{ title: "Brand registration", body: "Required for A2P traffic in the US. Register through the Campaign Registry API that VoiceTel proxies." },
+					{ title: "Campaign vetting", body: "Vet campaigns under the same credential, following the published operational guides." },
+					{ title: "Ongoing compliance", body: "CTIA and carrier rules continue to apply after approval; the compliance reference covers them." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Start sending production messages.</h3>
+				<p class="cta-band__body">Clear rates, A2P 10DLC support, and carrier-level visibility on inbound and outbound traffic.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/messaging/compliance/">Compliance reference</a>
+			</div>
+		</div>
+	</div>
+</section>

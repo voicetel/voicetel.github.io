@@ -1,0 +1,22 @@
+---
+layout: layouts/base.njk
+design: v2
+article: true
+---
+{#- v2 article layout for prose pages (support guides, docs, legal, changelog).
+	The page body keeps its v1 markup (eyebrow, h1, lede, hero-actions, section-blocks,
+	cta-block); splitHero lifts the opening block into a hero band and article.css
+	restyles the rest. See VoiceTel-Design/page-migration-plan.md § Tier 2. -#}
+{%- set parts = content | splitHero %}
+<section class="hero hero--page hero--article">
+	<div class="container container--article">
+		<div class="hero__copy">
+			{{- parts.hero | safe }}
+		</div>
+	</div>
+</section>
+<article class="article">
+	<div class="container container--article">
+		{{- parts.body | safe }}
+	</div>
+</article>

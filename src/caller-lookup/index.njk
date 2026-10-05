@@ -1,8 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Caller Lookup"
 description: "CNAM and caller-ID lookup services for inbound screening, customer-service display, routing, and fraud controls."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -17,64 +18,71 @@ description: "CNAM and caller-ID lookup services for inbound screening, customer
 }
 </script>
 
-<p class="eyebrow">Caller identity</p>
-<h1>Caller-name data for routing, display, and screening.</h1>
-<p class="lede">Caller Lookup gives applications and operators a way to enrich phone numbers with CNAM and caller-ID information before a call is answered, routed, or presented to an agent.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/pricing/">See pricing</a>
-	<a class="btn btn-secondary" href="/docs/api/">Read API docs</a>
-</p>
-
-<section class="section-block">
-	<h2>Why CNAM-enriched lookup, not just LERG</h2>
-	<p>A LERG-only lookup tells you which carrier the number routes through. CNAM tells you the business name on the caller-ID record — which is what the agent or the application actually needs. VoiceTel blends CNAM, LERG, and portability data into a single query so you don't have to make three calls per inbound.</p>
-</section>
-
-<section class="section-block">
-	<h2>Use cases</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
-			<h3>Agent screen pop</h3>
-			<p>Display a caller name in CRM or helpdesk workflows before the conversation starts.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>Inbound screening</h3>
-			<p>Use caller identity as one signal in spam, fraud, and escalation decisions.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Routing context</h3>
-			<p>Route known business callers, customers, or anonymous callers into different queues or workflows.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3>Batch hygiene</h3>
-			<p>Run lists through batch lookup before a campaign, migration, or data-cleanup project.</p>
-		</li>
-	</ul>
-</section>
-
-<section class="section-block code-block-section">
-	<h2>API example</h2>
-	<p>Look up the caller-ID name for a phone number:</p>
-	<pre class="code-block" data-lang="bash"><code>curl -X POST https://api.voicetel.com/v2.1/info/cnam/ \
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Caller Lookup</p>
+			<h1 id="hero-heading">Caller-name data for routing, display, and screening.</h1>
+			<p class="lede">Caller Lookup gives applications and operators a way to enrich phone numbers with CNAM and caller-ID information before a call is answered, routed, or presented to an agent.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/pricing/#lookup-cnam">See pricing {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/docs/api/">Read API docs</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set code %}{% highlight "bash" %}curl -X POST https://api.voicetel.com/v2.1/info/cnam/ \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "apikey": "YOUR_API_KEY",
     "cid": 2015551234
-  }'</code></pre>
-	<p>Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/cnamLookup">VoiceTel API v2.2 &rsaquo; CNAM lookup</a>.</p>
+  }'{% endhighlight %}{% endset %}
+			{%- set terminal = { label: "cnam-lookup.sh", pill: "POST /v2.1/info/cnam", code: code } %}
+			{% include "partials/v2/terminal.njk" %}
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="caller-lookup-cta-heading">
-	<h2 id="caller-lookup-cta-heading">Run 100 numbers through it.</h2>
-	<p>Send a batch of test numbers through the API. See the data quality, latency, and unit cost on your own real numbers before integrating.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/docs/api/">Read API docs</a>
-	</p>
-</aside>
+<section class="section section--tint" id="cnam" aria-labelledby="cnam-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Why CNAM</p>
+				<h2 id="cnam-heading">CNAM-enriched lookup, not just LERG.</h2>
+				<p class="lede">A LERG-only lookup tells you which carrier the number routes through. CNAM tells you the business name on the caller-ID record, which is what the agent or the application actually needs. VoiceTel blends CNAM, LERG, and portability data into a single query so you don't have to make three calls per inbound.</p>
+				<p class="row__links">Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/cnamLookup">VoiceTel API v2.2 &rsaquo; CNAM lookup</a>.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "CNAM", meta: "business name on the caller-ID record", state: "Included" },
+					{ title: "LERG", meta: "which carrier the number routes through", state: "Included" },
+					{ title: "Portability", meta: "ported-number context", state: "Included" },
+					{ title: "Queries per inbound call", meta: "one blended lookup, not three", state: "1", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
 
+		<h3 class="subsection-heading">Use cases</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "person-vcard", title: "Agent screen pop", body: "Display a caller name in CRM or helpdesk workflows before the conversation starts." },
+			{ icon: "shield-check", title: "Inbound screening", body: "Use caller identity as one signal in spam, fraud, and escalation decisions." },
+			{ icon: "diagram-3", title: "Routing context", body: "Route known business callers, customers, or anonymous callers into different queues or workflows." },
+			{ icon: "layers", title: "Batch hygiene", body: "Run lists through batch lookup before a campaign, migration, or data-cleanup project." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Run 100 numbers through it.</h3>
+				<p class="cta-band__body">Send a batch of test numbers through the API. See the data quality, latency, and unit cost on your own real numbers before integrating.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/docs/api/">Read API docs</a>
+			</div>
+		</div>
+	</div>
+</section>

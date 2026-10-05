@@ -1,9 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "AI Agents"
 description: "Twilio-compatible AI Assistants API — build voice and chat agents with tool-calling, retrieval-augmented knowledge bases, per-session history, and feedback loops."
-illustration: ai-agents
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -18,139 +18,177 @@ illustration: ai-agents
 }
 </script>
 
-<p class="eyebrow">AI Agents</p>
-<h1>Voice and chat AI on a Twilio-compatible API.</h1>
-<p class="lede">VoiceTel AI Agents implements the Twilio AI Assistants surface so application teams can ship voice and chat agents — with tool calls, knowledge bases, and per-session memory — without rewriting client code for a new vendor.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="{{ apiSpecs.voiceml.urlPath }}#tag/AI-Assistants">AI Assistants API reference</a>
-	<a class="btn btn-secondary" href="/signup/">Sign up</a>
-</p>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block">
-	<h2>What you get</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "robot" %}</span>
-			<h3>Assistants you configure, not train</h3>
-			<p>Each assistant points at an LLM provider and model, carries a system prompt, and attaches the tools and knowledge bases it can use. No fine-tune cycle — change the prompt, change the behaviour.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "plug" %}</span>
-			<h3>Tool calls into your application</h3>
-			<p>Define function-call schemas as Tools, attach them to assistants, and the runtime invokes them when the model decides to. Outputs feed back into the conversation as model context.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "book" %}</span>
-			<h3>Retrieval-augmented knowledge</h3>
-			<p>Knowledge resources ingest web pages, files, or raw text. Status and per-chunk inspection endpoints surface what's in the index. Attach knowledge to specific assistants for grounded answers.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3>Sessions, messages, and feedback</h3>
-			<p>Per-session message history is read-back-able for auditing. Feedback events score assistant turns so quality can be tracked over time without bolt-on logging.</p>
-		</li>
-	</ul>
-	{% set drawing = "ai-agents-anatomy" %}
-	{% include "partials/section-illustration.njk" %}
-</section>
-
-<section class="section-block">
-	<h2>Voice agents on VoiceML</h2>
-	<p>Pair an assistant with <a href="/voiceml/"><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code></a> to put it on a live call. VoiceML handles call control, media, STT, and TTS; the assistant handles turn-by-turn reasoning, tool calls, and knowledge retrieval. The Twilio compatibility surface lets existing voice-agent clients re-host with a hostname swap.</p>
-	<p>For a side-by-side endpoint map, see the <a href="/voiceml/compatibility/#ai-assistants">AI Assistants section of the compatibility matrix</a>.</p>
-</section>
-
-<section class="section-block">
-	<h2>Open-source voice agents to start from</h2>
-	<p>These projects were built for Twilio's ConversationRelay and, by our review of their source, run on VoiceML's <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> as-is. Bring your own model key; VoiceML handles the call, speech recognition, and text-to-speech.</p>
-	<div class="table-container">
-		<table class="data-table">
-			<thead>
-				<tr><th scope="col">Project</th><th scope="col">Built with</th><th scope="col">From</th></tr>
-			</thead>
-			<tbody>
-				{%- for p in conversationRelay.projects | where("status", "as-is") %}
-				<tr>
-					<td><a href="https://github.com/{{ p.repo }}">{{ p.repo | replace("/", "/<wbr>") | safe }}</a></td>
-					<td>{{ p.stack }}</td>
-					<td>{{ p.source }}</td>
-				</tr>
-				{%- endfor %}
-			</tbody>
-		</table>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">AI Agents</p>
+			<h1 id="hero-heading">Voice and chat AI on a Twilio-compatible API.</h1>
+			<p class="lede">VoiceTel AI Agents implements the Twilio AI Assistants surface so application teams can ship voice and chat agents &mdash; with tool calls, knowledge bases, and per-session memory &mdash; without rewriting client code for a new vendor.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="{{ apiSpecs.voiceml.urlPath }}#tag/AI-Assistants">AI Assistants API reference {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/signup/">Sign up</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set code %}{% highlight "xml" %}<Response>
+  <Connect>
+    <ConversationRelay url="wss://your-app.example/conversation"
+        language="en-US"/>
+  </Connect>
+</Response>{% endhighlight %}{% endset %}
+			{%- set terminal = { label: "voice-agent.xml", pill: "ConversationRelay", code: code } %}
+			{% include "partials/v2/terminal.njk" %}
+		</div>
 	</div>
-	<p>Projects with limits, setup notes, and exactly which ConversationRelay messages VoiceML supports are on the <a href="/voiceml/conversationrelay/">ConversationRelay projects page</a>. <small>Reviewed {{ conversationRelay.reviewed }}; not tested on live calls.</small></p>
 </section>
 
-<section class="section-block" id="voice-ai-frameworks">
-	<h2>Voice AI frameworks</h2>
-	<p>Open-source frameworks for building your own voice agent pipeline reach the phone network through VoiceML's Media Streams (<code>&lt;Connect&gt;&lt;Stream&gt;</code>) or through VoiceTel SIP trunking. How each one connects:</p>
-	<div class="table-container">
-		<table class="data-table">
-			<thead>
-				<tr><th scope="col">Framework</th><th scope="col">Connects through</th><th scope="col">What to configure</th></tr>
-			</thead>
-			<tbody>
-				{%- for f in voiceFrameworks.frameworks %}
-				<tr>
-					<td><a href="https://github.com/{{ f.repo }}">{{ f.name }}</a><br><small>{{ f.license }}</small></td>
-					<td>{{ f.connects | safe }}</td>
-					<td>{{ f.configure | safe }}</td>
-				</tr>
-				{%- endfor %}
-			</tbody>
-		</table>
+<section class="section section--tint" id="anatomy" aria-labelledby="anatomy-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Anatomy</p>
+				<h2 id="anatomy-heading">Assistants you configure, not train.</h2>
+				<p class="lede">Each assistant points at an LLM provider and model, carries a system prompt, and attaches the tools and knowledge bases it can use. Tool calls run against your application; knowledge is retrieved from what you ingested; every session keeps its history.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/compatibility/#ai-assistants">Endpoint map</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set diagram = {
+					title: "A caller reaches an assistant over ConversationRelay; the assistant calls your tools",
+					nodes: [
+						{ label: "Caller or chat", value: "Voice via VoiceML", meta: "or any chat client", icon: "telephone" },
+						{ label: "Assistant", value: "Model + system prompt", meta: "sessions · feedback", icon: "robot", accent: true },
+						{ label: "Your tools", value: "Function calls", meta: "results feed the next turn", icon: "plug" }
+					],
+					links: [
+						{ label: "relay", both: true, accent: true },
+						{ label: "webhook", both: true }
+					],
+					meta: [
+						{ k: "Knowledge", v: "web · files · text" },
+						{ k: "History", v: "per-session, read back" },
+						{ k: "Policies", v: "guardrail catalog" }
+					]
+				} %}
+				{% include "partials/v2/diagram.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">What you get</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "robot", title: "Assistants you configure, not train", body: "Each assistant points at an LLM provider and model, carries a system prompt, and attaches the tools and knowledge bases it can use. No fine-tune cycle &mdash; change the prompt, change the behaviour." },
+			{ icon: "plug", title: "Tool calls into your application", body: "Define function-call schemas as Tools, attach them to assistants, and the runtime invokes them when the model decides to. Outputs feed back into the conversation as model context." },
+			{ icon: "book", title: "Retrieval-augmented knowledge", body: "Knowledge resources ingest web pages, files, or raw text. Status and per-chunk inspection endpoints surface what's in the index. Attach knowledge to specific assistants for grounded answers." },
+			{ icon: "activity", title: "Sessions, messages, and feedback", body: "Per-session message history is read-back-able for auditing. Feedback events score assistant turns so quality can be tracked over time without bolt-on logging." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
 	</div>
-	<p><small>Reviewed {{ voiceFrameworks.reviewed }} by reading each framework's telephony code; not tested on live calls. Project names belong to their owners; listing a project does not imply endorsement by, or affiliation with, its authors.</small></p>
 </section>
 
-<section class="section-block">
-	<h2>What's covered</h2>
-	<ul>
-		<li><strong>Assistants</strong> &mdash; CRUD plus <code>POST /Assistants/{id}/Messages</code> for single-turn or full-session inference.</li>
-		<li><strong>Tools</strong> &mdash; global tool catalog and per-assistant attachments.</li>
-		<li><strong>Knowledge</strong> &mdash; CRUD over knowledge resources; chunk and indexing-status inspection; per-assistant attachments.</li>
-		<li><strong>Sessions</strong> &mdash; read-only session and per-turn message history.</li>
-		<li><strong>Feedback</strong> &mdash; submit and list per-assistant feedback events for quality scoring.</li>
-		<li><strong>Policies</strong> &mdash; read-only catalog of guardrail policies available to assistants.</li>
-	</ul>
+<section class="section section--white" id="voice-agents" aria-labelledby="voice-agents-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Voice agents on VoiceML</p>
+				<h2 id="voice-agents-heading">Put an assistant on a live call with ConversationRelay.</h2>
+				<p class="lede">Pair an assistant with <a href="/voiceml/"><code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code></a> to put it on a live call. VoiceML handles call control, media, STT, and TTS; the assistant handles turn-by-turn reasoning, tool calls, and knowledge retrieval. Existing voice-agent clients re-host with a hostname swap.</p>
+				<p class="row__links">These open-source projects were built for Twilio's ConversationRelay and, by our review of their source, run on VoiceML as-is. Bring your own model key. Limits, setup notes, and the ConversationRelay messages VoiceML supports are on the <a href="/voiceml/conversationrelay/">ConversationRelay projects page</a>. Reviewed {{ conversationRelay.reviewed }}; not tested on live calls.</p>
+			</div>
+			<div class="row__visual">
+				<div class="table-container">
+					<table class="data-table">
+						<thead>
+							<tr><th scope="col">Project</th><th scope="col">Built with</th><th scope="col">From</th></tr>
+						</thead>
+						<tbody>
+							{%- for p in conversationRelay.projects | where("status", "as-is") %}
+							<tr>
+								<td><a href="https://github.com/{{ p.repo }}">{{ p.repo | replace("/", "/<wbr>") | safe }}</a></td>
+								<td>{{ p.stack }}</td>
+								<td>{{ p.source }}</td>
+							</tr>
+							{%- endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<h3 class="subsection-heading" id="voice-ai-frameworks">Voice AI frameworks</h3>
+		<div class="prose">
+			<p>Open-source frameworks for building your own voice agent pipeline reach the phone network through VoiceML's Media Streams (<code>&lt;Connect&gt;&lt;Stream&gt;</code>) or through VoiceTel SIP trunking. How each one connects:</p>
+		</div>
+		<div class="table-container">
+			<table class="data-table">
+				<thead>
+					<tr><th scope="col">Framework</th><th scope="col">Connects through</th><th scope="col">What to configure</th></tr>
+				</thead>
+				<tbody>
+					{%- for f in voiceFrameworks.frameworks %}
+					<tr>
+						<td><a href="https://github.com/{{ f.repo }}">{{ f.name }}</a><span class="data-table__meta">{{ f.license }}</span></td>
+						<td>{{ f.connects | safe }}</td>
+						<td>{{ f.configure | safe }}</td>
+					</tr>
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+		<p class="row__links">Reviewed {{ voiceFrameworks.reviewed }} by reading each framework's telephony code; not tested on live calls. Project names belong to their owners; listing a project does not imply endorsement by, or affiliation with, its authors.</p>
+	</div>
 </section>
 
-<section class="section-block faq-block">
-	<h2>AI Agents FAQ</h2>
-	<details class="faq-item">
-		<summary>Which LLM providers can an assistant point at?</summary>
-		<p>Provider and model are configured per assistant. Available providers depend on which integrations are enabled on your account — contact support to confirm the model you want to use is wired up.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Do Twilio AI Assistants client SDKs work against VoiceTel?</summary>
-		<p>Yes — the v1 paths, field names, and SID shapes match the upstream Twilio surface. Point your client at <code>voiceml.voicetel.com</code>, swap credentials, and the existing SDK works.</p>
-	</details>
-	<details class="faq-item">
-		<summary>How do I put an assistant on a live phone call?</summary>
-		<p>Use VoiceML's <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> verb in your call-control response. VoiceML handles call control, media, STT, and TTS; the assistant handles model reasoning, tool calls, and retrieval. See the <a href="/voiceml/">VoiceML docs</a> for the wiring.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Where do tool calls actually execute?</summary>
-		<p>Tools are function-call schemas the assistant invokes. The runtime serialises the call to your endpoint or webhook — your application performs the work and returns the result, which feeds back into the model's next turn.</p>
-	</details>
-	<details class="faq-item">
-		<summary>How are knowledge bases indexed?</summary>
-		<p>Knowledge resources ingest web URLs, uploaded files, or raw text. The indexing pipeline chunks and embeds content; <code>GET /Knowledge/{id}/Status</code> and <code>GET /Knowledge/{id}/Chunks</code> let you inspect ingestion progress and what's in the index.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can I run multiple assistants for different use cases?</summary>
-		<p>Yes &mdash; assistants are per-account resources. Spin up one per use case (support triage, sales qualifier, voice IVR replacement, etc.), attach the tools and knowledge each needs, and route inbound conversations to the right one from your application code.</p>
-	</details>
+<section class="section section--tint" id="surface" aria-labelledby="surface-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">API surface</p>
+				<h2 id="surface-heading">Assistants, tools, knowledge, sessions, feedback, and policies.</h2>
+				<p class="lede">The v1 paths, field names, and SID shapes match the upstream Twilio surface. Point your client at <code>voiceml.voicetel.com</code>, swap credentials, and the existing SDK works.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Assistants", meta: "plus POST /Assistants/{id}/Messages for inference", state: "CRUD", neutral: true },
+					{ title: "Tools", meta: "global catalog and per-assistant attachments", state: "CRUD", neutral: true },
+					{ title: "Knowledge", meta: "chunk and indexing-status inspection", state: "CRUD", neutral: true },
+					{ title: "Sessions", meta: "session and per-turn message history", state: "Read-only", neutral: true },
+					{ title: "Feedback", meta: "per-assistant feedback events", state: "Submit · list", neutral: true },
+					{ title: "Policies", meta: "guardrail policies available to assistants", state: "Read-only", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="ai-agents-cta-heading">
-	<h2 id="ai-agents-cta-heading">Ship your first agent.</h2>
-	<p>Open an account, create an assistant, attach a tool and a knowledge base, and put it on a call with <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. The Twilio AI Assistants SDK works as-is against <code>voiceml.voicetel.com</code>.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="{{ apiSpecs.voiceml.urlPath }}#tag/AI-Assistants">API reference</a>
-	</p>
-</aside>
+<section class="section section--white" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about AI Agents.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Which LLM providers can an assistant point at?", a: "Provider and model are configured per assistant. Available providers depend on which integrations are enabled on your account &mdash; contact support to confirm the model you want to use is wired up." },
+			{ q: "Do Twilio AI Assistants client SDKs work against VoiceTel?", a: "Yes &mdash; the v1 paths, field names, and SID shapes match the upstream Twilio surface. Point your client at <code>voiceml.voicetel.com</code>, swap credentials, and the existing SDK works." },
+			{ q: "How do I put an assistant on a live phone call?", a: "Use VoiceML's <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code> verb in your call-control response. VoiceML handles call control, media, STT, and TTS; the assistant handles model reasoning, tool calls, and retrieval. See the <a href=\"/voiceml/\">VoiceML docs</a> for the wiring." },
+			{ q: "Where do tool calls actually execute?", a: "Tools are function-call schemas the assistant invokes. The runtime serialises the call to your endpoint or webhook &mdash; your application performs the work and returns the result, which feeds back into the model's next turn." },
+			{ q: "How are knowledge bases indexed?", a: "Knowledge resources ingest web URLs, uploaded files, or raw text. The indexing pipeline chunks and embeds content; <code>GET /Knowledge/{id}/Status</code> and <code>GET /Knowledge/{id}/Chunks</code> let you inspect ingestion progress and what's in the index." },
+			{ q: "Can I run multiple assistants for different use cases?", a: "Yes &mdash; assistants are per-account resources. Spin up one per use case (support triage, sales qualifier, voice IVR replacement, etc.), attach the tools and knowledge each needs, and route inbound conversations to the right one from your application code." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Ship your first agent.</h3>
+				<p class="cta-band__body">Open an account, create an assistant, attach a tool and a knowledge base, and put it on a call with <code>&lt;Connect&gt;&lt;ConversationRelay&gt;</code>. The Twilio AI Assistants SDK works as-is against <code>voiceml.voicetel.com</code>.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="{{ apiSpecs.voiceml.urlPath }}#tag/AI-Assistants">API reference</a>
+			</div>
+		</div>
+	</div>
+</section>

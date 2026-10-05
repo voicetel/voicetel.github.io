@@ -57,6 +57,9 @@
 	--font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	--font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
+	/* Wordmark face: the pre-v2 system stack, still used by the brand on voiceml.org. */
+	--font-brand: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+
 	/* ─── Radii ─── */
 	--r-1: 4px;
 	--r-2: 6px;

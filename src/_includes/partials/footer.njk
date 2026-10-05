@@ -13,10 +13,10 @@
 	<div class="container">
 		<div class="footer__grid">
 			<div class="footer__brand-col">
-				<a class="brand" href="/">
-					<span class="brand__mark" aria-hidden="true">{% icon "phone-square" %}</span>
-					{{ site.brand }}
-				</a>
+				<div class="footer-brand">
+					<span class="footer-brand-icon" aria-hidden="true">{% icon "phone-square" %}</span>
+					<span class="footer-brand-text">{{ site.brand }}</span>
+				</div>
 				<p class="footer__tag">{{ site.tagline }}.<br>POPs in {% for c in colocations %}{% if not loop.first %}{% if loop.last %}, and {% else %}, {% endif %}{% endif %}{{ c.city }}{% endfor %}.</p>
 				<div class="footer__actions">
 					<a class="btn btn--primary btn--sm" href="/signup/">Sign up</a>

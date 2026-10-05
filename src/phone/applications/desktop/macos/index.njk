@@ -1,80 +1,135 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /phone/applications/desktop/macos/
 title: "VoiceTel Phone for macOS — Install Guide & FAQ"
 description: "Download, install, and troubleshoot VoiceTel Phone and VoiceML Phone on macOS (.dmg / .zip) for Apple Silicon and Intel Macs. Signed and notarized builds, SHA-256 checksums, and FAQ."
 platform: macos
 ---
-{%- set voicetel = phoneApps.apps[0] %}
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set macArm = voicetel.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "arm64") | first %}
+{%- set macIntel = voicetel.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "x86-64") | first %}
 
-<p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/desktop/">Desktop</a> &middot; macOS</p>
-<h1>VoiceTel Phone for macOS.</h1>
-<p class="lede">Download, install, and troubleshoot the macOS app (.dmg or .zip) on Apple Silicon and Intel Macs. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Sign up</a>
-	<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
-</p>
-
-<section id="download" class="section-block">
-	<h2>1. Download</h2>
-	<p>Choose the build that matches your Mac: <strong>arm64</strong> for Apple Silicon (M1&ndash;M4), <strong>x86-64</strong> for Intel. If unsure, use the <strong>.dmg</strong>. All macOS builds are signed and notarized by Apple, so Gatekeeper opens them without warnings.</p>
-	{% include "partials/phone-desktop-downloads.njk" %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Desktop &middot; macOS</p>
+			<h1 id="hero-heading">VoiceTel Phone for macOS.</h1>
+			<p class="lede">Download, install, and troubleshoot the macOS app (.dmg or .zip) on Apple Silicon and Intel Macs. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="#download">Download for macOS {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/desktop/">All desktop clients</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "Version", value: voicetel.version, sub: "Built " ~ voicetel.built },
+				{ label: "Apple Silicon", value: macArm.size, sub: ".dmg · arm64 · M1–M4" },
+				{ label: "Intel", value: macIntel.size, sub: ".dmg · x86-64 · also runs on Apple Silicon via Rosetta 2" },
+				{ label: "Gatekeeper", value: "Notarized", sub: "Signed and notarized by Apple; opens without warnings" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
+	</div>
 </section>
 
-<section id="verify" class="section-block">
-	<h2>2. Verify checksum (optional)</h2>
-	<p>Validate file integrity by comparing SHA-256 checksums.</p>
-	<ol>
-		<li>Open <code>Terminal</code>.</li>
-		<li>Run: <code>shasum -a 256 VoiceTel-{{ voicetel.version }}-arm64.dmg</code> (or whichever file you downloaded).</li>
-		<li>Compare the output with the value listed above.</li>
-	</ol>
+<section class="section section--tint" id="download" aria-labelledby="download-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">1 &middot; Download</p>
+			<h2 id="download-heading">Choose the build that matches your Mac.</h2>
+			<p class="lede"><strong>arm64</strong> for Apple Silicon (M1&ndash;M4), <strong>x86-64</strong> for Intel; the Intel build also runs on Apple Silicon via Rosetta 2. If unsure, use the <strong>.dmg</strong>; the .zip is the same app as an archive for scripted installs. All macOS builds are signed and notarized by Apple, so Gatekeeper opens them without warnings.</p>
+		</div>
+		{%- for app in phoneApps.apps %}
+		{%- set files = app.desktop | where("platform", platform) %}
+		<h3 class="subsection-heading" id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
+		<div class="prose"><p>{{ app.audience }}</p></div>
+		<div class="table-container">
+			<table class="data-table">
+				<thead>
+					<tr><th scope="col">Build</th><th scope="col">SHA-256</th></tr>
+				</thead>
+				<tbody>
+					{%- for file in files %}
+					<tr>
+						<td>{{ file.format }} &middot; {{ file.arch }}<br><a href="{{ phoneApps.baseUrl }}{{ file.file }}">{{ file.file }}</a> &middot; {{ file.size }}</td>
+						<td><code class="mono">{{ file.sha256 | replace(r/^(.{32})/, "$1<wbr>") | safe }}</code></td>
+					</tr>
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+		{%- endfor %}
+	</div>
 </section>
 
-<section id="install" class="section-block">
-	<h2>3. Install</h2>
-	<ol>
-		<li>Open the downloaded <strong>.dmg</strong>.</li>
-		<li>Drag <strong>VoiceTel</strong> (or <strong>VoiceML</strong>) to the <strong>Applications</strong> folder. Eject the disk image when finished.</li>
-		<li>For scripted installs, unzip the <strong>.zip</strong> and move <code>VoiceTel.app</code> (or <code>VoiceML.app</code>) to Applications.</li>
-	</ol>
-	<p><strong>Upgrading?</strong> Fully quit the running app from the menu-bar icon (right-click &rarr; <em>Quit</em>) before installing; otherwise the single-instance lock re-focuses the old version.</p>
+<section class="section section--white" id="verify" aria-labelledby="verify-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">2 &middot; Verify checksum</p>
+				<h2 id="verify-heading">Compare the SHA-256 before you install.</h2>
+				<p class="lede">Optional: validate file integrity by comparing SHA-256 checksums. Open Terminal, run the command against the file you downloaded, and compare the output with the value listed above.</p>
+			</div>
+			<div class="row__visual">
+				{%- set code %}{% highlight "bash" %}shasum -a 256 VoiceTel-{{ voicetel.version }}-arm64.dmg
+# substitute whichever file you downloaded;
+# the output must match the checksum listed above{% endhighlight %}{% endset %}
+				{%- set terminal = { label: "Terminal", pill: "SHA-256", code: code } %}
+				{% include "partials/v2/terminal.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="firstlaunch" class="section-block">
-	<h2>4. First launch</h2>
-	<ol>
-		<li>Open <strong>VoiceTel</strong> from Applications.</li>
-		<li>Allow microphone access when prompted. If you missed the prompt, go to <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app.</li>
-		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal. In VoiceML Phone, enter your VoiceML activation code under <em>Settings &rarr; Auto Provision</em> instead.</li>
-	</ol>
+<section class="section section--tint" id="install" aria-labelledby="install-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">3 &middot; Install and first launch</p>
+				<h2 id="install-heading">Drag to Applications, allow the microphone, sign in.</h2>
+				<p class="lede">Open the disk image and drag the app to Applications, or unzip the archive for scripted installs. On first launch, allow microphone access and enter the credentials for your account.</p>
+			</div>
+			<div class="row__visual" id="firstlaunch">
+				{%- set steps = [
+					{ title: "Open the .dmg", body: "Open the downloaded <strong>.dmg</strong>." },
+					{ title: "Drag to Applications", body: "Drag <strong>VoiceTel</strong> (or <strong>VoiceML</strong>) to the <strong>Applications</strong> folder. Eject the disk image when finished." },
+					{ title: "Scripted installs", body: "Unzip the <strong>.zip</strong> instead and move <code>VoiceTel.app</code> (or <code>VoiceML.app</code>) to Applications." },
+					{ title: "Open the app", body: "Open <strong>VoiceTel</strong> from Applications." },
+					{ title: "Allow microphone access", body: "Allow access when prompted. If you missed the prompt, go to <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app." },
+					{ title: "Sign in", body: "Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal. In VoiceML Phone, enter your VoiceML activation code under <em>Settings &rarr; Auto Provision</em> instead." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="faq" class="section-block faq-block">
-	<h2>FAQ</h2>
-	<details class="faq-item">
-		<summary>How do I uninstall VoiceTel Phone?</summary>
-		<p>Quit the app, open <em>Applications</em>, and drag <strong>VoiceTel.app</strong> (or <strong>VoiceML.app</strong>) to the Trash.</p>
-	</details>
-	<details class="faq-item">
-		<summary>The app won't open after installation</summary>
-		<p>The builds are notarized, so Gatekeeper should open them directly. If your Mac's security policy still blocks the app, right-click it and choose <em>Open</em>, or go to <em>System Settings &rarr; Privacy &amp; Security</em> and click <em>Open Anyway</em>.</p>
-	</details>
-	<details class="faq-item">
-		<summary>The microphone isn't working</summary>
-		<p>Ensure the app has permission under <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em>. Also check <em>System Settings &rarr; Sound</em> for the correct input device.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can I pre-configure the app for my users?</summary>
-		<p>Yes. Place <code>voicetel.json</code> under <code>~/Library/Application Support/VoiceTelPhone/</code> for user-level deployment, or <code>/Library/Application Support/VoiceTelPhone/</code> for system-wide deployment.</p>
-	</details>
-</section>
+<section class="section section--white" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about VoiceTel Phone on macOS.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "How do I uninstall VoiceTel Phone?", a: "Quit the app, open <em>Applications</em>, and drag <strong>VoiceTel.app</strong> (or <strong>VoiceML.app</strong>) to the Trash." },
+			{ q: "The app won’t open after installation", a: "The builds are notarized, so Gatekeeper should open them directly. If your Mac’s security policy still blocks the app, right-click it and choose <em>Open</em>, or go to <em>System Settings &rarr; Privacy &amp; Security</em> and click <em>Open Anyway</em>." },
+			{ q: "The microphone isn’t working", a: "Ensure the app has permission under <em>System Settings &rarr; Privacy &amp; Security &rarr; Microphone</em>. Also check <em>System Settings &rarr; Sound</em> for the correct input device." },
+			{ q: "Can I pre-configure the app for my users?", a: "Yes. Place <code>voicetel.json</code> under <code>~/Library/Application Support/VoiceTelPhone/</code> for user-level deployment, or <code>/Library/Application Support/VoiceTelPhone/</code> for system-wide deployment." },
+			{ q: "Upgrading from an earlier version?", a: "Fully quit the running app from the menu-bar icon (right-click &rarr; <em>Quit</em>) before installing; otherwise the single-instance lock re-focuses the old version." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
 
-<aside class="cta-block" aria-labelledby="phone-macos-cta-heading">
-	<h2 id="phone-macos-cta-heading">Need credentials first?</h2>
-	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Mac that needs to make calls.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
-	</p>
-</aside>
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need credentials first?</h3>
+				<p class="cta-band__body">Sign up to provision SIP credentials, then install VoiceTel Phone on every Mac that needs to make calls.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/desktop/">All desktop clients</a>
+			</div>
+		</div>
+	</div>
+</section>

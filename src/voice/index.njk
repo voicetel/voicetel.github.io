@@ -1,9 +1,10 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Voice"
 description: "Wholesale Voice Calling with origination, termination, VoiceML call control, STIR/SHAKEN, recordings, conferences, queues, and signed webhooks."
-illustration: voice
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set years %}{% yearsSince 1999 %}{% endset %}
 
 <script type="application/ld+json">
 {
@@ -18,81 +19,127 @@ illustration: voice
 }
 </script>
 
-<p class="eyebrow">Voice Calling</p>
-<h1>Wholesale voice for managed service providers, carriers, and operators.</h1>
-<p class="lede">Fast, reliable, and uninterrupted voice delivery for business-critical traffic. Calls route to the nearest available node (Anycast), to nodes in a specific region (Geocast), or across multiple paths and carriers when last-mile connectivity flaps (diverse routing) &mdash; so call quality, continuity, and deliverability hold up under real-world conditions.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/pricing/">See pricing</a>
-	<a class="btn btn-secondary" href="/voiceml/">Explore VoiceML</a>
-</p>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block">
-	<h2>Voice capabilities</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
-			<h3>Origination and Termination</h3>
-			<p>Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Anycast</h3>
-			<p>Anycast routes outbound traffic to the nearest or best available node among multiple nodes advertising the same address — commonly used for DNS, CDNs, and resilient network services.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
-			<h3>Geocast</h3>
-			<p>Geocast routes outbound traffic to nodes within a specific geographic area, helping deliver ultra-low-latency, high-quality voice by keeping media paths local and efficient.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Diverse Routing</h3>
-			<p>Diverse inbound routing tests multiple network paths or carriers, automatically selecting the best route and maintaining stability to the last hop.</p>
-		</li>
-	</ul>
-	{% set drawing = "voice-routing" %}
-	{% include "partials/section-illustration.njk" %}
+{#- ───────────────────────── Hero ───────────────────────── -#}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Voice</p>
+			<h1 id="hero-heading">Wholesale voice for managed service providers, carriers, and operators.</h1>
+			<p class="lede">Fast, reliable, and uninterrupted voice delivery for business-critical traffic. Anycast, Geocast, and diverse last-mile routing keep call quality, continuity, and deliverability up under real-world conditions.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/pricing/#voice-out-us50">See pricing {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/voiceml/">Explore VoiceML</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "Voice path between the phone network and your PBX or application",
+				nodes: [
+					{ label: "PSTN", value: "Tier-1 carriers", icon: "telephone" },
+					{ label: "VoiceTel POP", value: "STIR/SHAKEN signed", icon: "diagram-3", accent: true },
+					{ label: "Your network", value: "PBX or app", meta: "SIP or VoiceML", icon: "buildings" }
+				],
+				links: [
+					{ label: "Tier-1", both: true },
+					{ label: "SIP trunk", both: true, accent: true }
+				],
+				meta: [
+					{ k: "Routing", v: "Anycast · Geocast · diverse" },
+					{ k: "Footprint", v: (site.pops | length) ~ " POPs · " ~ (site.cloudRegions | length) ~ " cloud regions" },
+					{ k: "Direction", v: "inbound + outbound" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Operational proof points</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>STIR/SHAKEN aware</h3>
-			<p>Caller identity and attestation are part of the voice story, not an afterthought.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
-			<h3>Global colocation footprint</h3>
-			<p>NYC, ORD, DEN, DFW, SJC, and AMS — plus US East 1, US East 2, and US West 1 cloud regions — are the published network locations.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
-			<h3>Operator support</h3>
-			<p>Escalations reach people who can read SIP traces, carrier responses, and webhook logs.</p>
-		</li>
-	</ul>
+{#- ───────────────────────── Routing ───────────────────────── -#}
+<section class="section section--tint" id="routing" aria-labelledby="routing-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Routing</p>
+				<h2 id="routing-heading">Anycast, Geocast, and diverse routing.</h2>
+				<p class="lede">Outbound calls go to the nearest or best available node (Anycast) or to nodes in a specific region (Geocast). Inbound routing tests multiple paths and carriers and keeps the best one to the last hop.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/voice/sip-trunking/">SIP trunking guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Anycast", meta: "nearest or best available node", state: "Outbound", neutral: true },
+					{ title: "Geocast", meta: "nodes in a specific region", state: "Outbound", neutral: true },
+					{ title: "Diverse routing", meta: "best of several paths and carriers", state: "Inbound", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Voice capabilities</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "telephone", title: "Origination and termination", body: "Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths." },
+			{ icon: "broadcast-pin", title: "Anycast", body: "Routes outbound traffic to the nearest or best available node among nodes advertising the same address, the pattern behind DNS, CDNs, and resilient network services." },
+			{ icon: "geo-alt", title: "Geocast", body: "Routes outbound traffic to nodes within a specific geographic area, keeping media paths local for low latency and high call quality." },
+			{ icon: "diagram-3", title: "Diverse routing", body: "Tests multiple network paths or carriers for inbound traffic, automatically selecting the best route and holding it stable to the last hop." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Fully licensed and compliant operations</h2>
-	<ul>
-		<li><strong>FCC Non-Interconnected VoIP Provider</strong> — Form 499 registered.</li>
-		<li><strong>Competitive Local Exchange Carrier (CLEC)</strong> status.</li>
-		<li><strong>Robocall Mitigation Database</strong> registered per FCC requirements.</li>
-		<li><strong>STIR/SHAKEN attestation</strong> on every call.</li>
-		<li><strong>Operating continuously since 1999</strong> &mdash; {% yearsSince 1999 %} years in business, originally as an ISP, now a full-stack carrier.</li>
-	</ul>
+{#- ───────────────────────── Operational proof points ───────────────────────── -#}
+<section class="section section--white" id="operations" aria-labelledby="operations-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Operations</p>
+			<h2 id="operations-heading">Signed calls, a published footprint, and operators who read SIP traces.</h2>
+			<p class="lede">Caller identity and attestation on every call, network locations published on two continents, and escalations that reach people who can read SIP traces, carrier responses, and webhook logs.</p>
+		</div>
+		{%- set featureHeading = "h3" %}
+		{%- set features = [
+			{ icon: "shield-check", title: "STIR/SHAKEN aware", body: "Caller identity and attestation are part of the voice story, not an afterthought." },
+			{ icon: "geo-alt", title: "Global colocation footprint", body: (site.pops | join(", ")) ~ ", plus " ~ (site.cloudRegions | join(", ")) ~ " cloud regions, are the published network locations.", href: "/infrastructure/", cta: "See the infrastructure" },
+			{ icon: "headset", title: "Operator support", body: "Escalations reach people who can read SIP traces, carrier responses, and webhook logs.", href: "/support/", cta: "Open a ticket" }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="voice-cta-heading">
-	<h2 id="voice-cta-heading">Send the first call.</h2>
-	<p>Open an account and send us call traffic. If it doesn't outperform your current carrier, we'll want to see the trace.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/pricing/#voice">See voice pricing</a>
-	</p>
-</aside>
+{#- ───────────────────────── Compliance + closing CTA ───────────────────────── -#}
+<section class="section section--tint" id="compliance" aria-labelledby="compliance-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Compliance</p>
+				<h2 id="compliance-heading">Fully licensed and compliant operations.</h2>
+				<p class="lede">FCC-registered, operating as a CLEC, and listed in the Robocall Mitigation Database, with STIR/SHAKEN attestation on every call. Operating continuously since 1999 &mdash; {% yearsSince 1999 %} years in business, originally as an ISP, now a full-stack carrier.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/legal/">Legal and e911 notices</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "FCC Form 499 filer", meta: "non-interconnected VoIP · ID 829231", state: "Registered" },
+					{ title: "Robocall Mitigation Database", meta: "RMD0004909", state: "Registered" },
+					{ title: "Competitive Local Exchange Carrier", meta: "OCN 470J", state: "Active" },
+					{ title: "STIR/SHAKEN attestation", meta: "on every call", state: "Signed" },
+					{ title: "In business since 1999", meta: "ISP roots · full-stack carrier", state: years ~ " yrs", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Send the first call.</h3>
+				<p class="cta-band__body">Open an account and send us call traffic. If it doesn't outperform your current carrier, we'll want to see the trace.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/pricing/#voice-out-us50">See voice pricing</a>
+			</div>
+		</div>
+	</div>
+</section>

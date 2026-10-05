@@ -1,8 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Conversations"
 description: "Multi-channel chat sessions — SMS, MMS, WhatsApp, and in-app chat — under one Twilio-compatible REST API, with participants, messages, webhooks, and per-tenant Services."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -17,88 +18,108 @@ description: "Multi-channel chat sessions — SMS, MMS, WhatsApp, and in-app cha
 }
 </script>
 
-<p class="eyebrow">Conversations</p>
-<h1>Multi-channel chat sessions on one Twilio-compatible API.</h1>
-<p class="lede">VoiceTel Conversations gives application teams a single REST surface for SMS, MMS, WhatsApp, and in-app chat — same participant, same thread, same history — without re-implementing channel-specific glue for every project.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="{{ apiSpecs.voiceml.urlPath }}#tag/Conversations">Conversations API reference</a>
-	<a class="btn btn-secondary" href="/signup/">Sign up</a>
-</p>
-
-<section class="section-block">
-	<h2>What Conversations gives you</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-square-text" %}</span>
-			<h3>Threaded multi-channel chat</h3>
-			<p>One conversation resource collects every message a participant sends — SMS, MMS, WhatsApp, or in-app — so application state stays consistent regardless of which channel a user replies on.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Participants, roles, and users</h3>
-			<p>Add participants by phone number, WhatsApp ID, or chat user. Per-conversation roles assign permissions; reusable users carry identity across conversations.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Signed webhook events</h3>
-			<p>Per-conversation or account-wide webhook subscriptions deliver message, participant, and read-receipt events to your endpoint. Same HMAC-SHA256 signature scheme as voice callbacks.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3>Service sandboxes</h3>
-			<p>Need to isolate workloads — staging from production, customer A from customer B? Conversations Services scope an entire chat environment under one parent service resource.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Conversations</p>
+			<h1 id="hero-heading">Multi-channel chat sessions on one Twilio-compatible API.</h1>
+			<p class="lede">VoiceTel Conversations gives application teams a single REST surface for SMS, MMS, WhatsApp, and in-app chat &mdash; same participant, same thread, same history &mdash; without re-implementing channel-specific glue for every project.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="{{ apiSpecs.voiceml.urlPath }}#tag/Conversations">Conversations API reference {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/signup/">Sign up</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "A participant on any channel, one conversation thread, your application over the API",
+				nodes: [
+					{ label: "Participant", value: "SMS · MMS · WhatsApp · chat", icon: "phone-vibrate" },
+					{ label: "Conversation", value: "One thread, shared history", meta: "CH · IM · MB · IS", icon: "chat-square-text", accent: true },
+					{ label: "Your app", value: "REST + signed webhooks", icon: "code-slash" }
+				],
+				links: [
+					{ label: "channel", both: true },
+					{ label: "API", both: true, accent: true }
+				],
+				meta: [
+					{ k: "Host", v: "voiceml.voicetel.com" },
+					{ k: "Webhooks", v: "HMAC-SHA256 signed" },
+					{ k: "Sandboxes", v: "per-tenant Services" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Twilio-compatible by design</h2>
-	<p>The Conversations endpoints mirror the Twilio v1 surface — same paths, same field names, same SID prefixes (<code>CH</code> for conversations, <code>IM</code> for messages, <code>MB</code> for participants, <code>IS</code> for services). Twilio's official client libraries work against <code>voiceml.voicetel.com</code> with a hostname + credential swap.</p>
-	<p>For a side-by-side endpoint map, see the <a href="/voiceml/compatibility/#conversations">VoiceML compatibility matrix</a>.</p>
+<section class="section section--tint" id="features" aria-labelledby="features-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">What Conversations gives you</p>
+			<h2 id="features-heading">One thread per participant, across every channel.</h2>
+		</div>
+		{%- set features = [
+			{ icon: "chat-square-text", title: "Threaded multi-channel chat", body: "One conversation resource collects every message a participant sends &mdash; SMS, MMS, WhatsApp, or in-app &mdash; so application state stays consistent regardless of which channel a user replies on." },
+			{ icon: "diagram-3", title: "Participants, roles, and users", body: "Add participants by phone number, WhatsApp ID, or chat user. Per-conversation roles assign permissions; reusable users carry identity across conversations." },
+			{ icon: "broadcast-pin", title: "Signed webhook events", body: "Per-conversation or account-wide webhook subscriptions deliver message, participant, and read-receipt events to your endpoint. Same HMAC-SHA256 signature scheme as voice callbacks." },
+			{ icon: "layers", title: "Service sandboxes", body: "Need to isolate workloads &mdash; staging from production, customer A from customer B? Conversations Services scope an entire chat environment under one parent service resource." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>What's covered</h2>
-	<ul>
-		<li><strong>Conversations</strong> &mdash; CRUD + single-call create-with-participants.</li>
-		<li><strong>Messages</strong> &mdash; CRUD, media attachments, per-recipient receipts.</li>
-		<li><strong>Participants</strong> &mdash; SMS, MMS, WhatsApp, and chat bindings; reverse-lookup index by participant address.</li>
-		<li><strong>Webhooks</strong> &mdash; per-conversation and account-wide event subscriptions, signed.</li>
-		<li><strong>Roles, Users, Credentials</strong> &mdash; identity, permissions, and push-notification keys (APNS / FCM).</li>
-		<li><strong>Configuration</strong> &mdash; defaults, auto-routing rules per inbound address, account-wide webhooks.</li>
-		<li><strong>Services</strong> &mdash; scoped sandboxes with their own users, roles, conversations, and configuration.</li>
-	</ul>
+<section class="section section--white" id="compatibility" aria-labelledby="compatibility-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Compatibility</p>
+				<h2 id="compatibility-heading">Twilio-compatible by design.</h2>
+				<p class="lede">The Conversations endpoints mirror the Twilio v1 surface &mdash; same paths, same field names, same SID prefixes (<code>CH</code> for conversations, <code>IM</code> for messages, <code>MB</code> for participants, <code>IS</code> for services). Twilio's official client libraries work against <code>voiceml.voicetel.com</code> with a hostname + credential swap.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/compatibility/#conversations">Endpoint map</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Conversations", meta: "CRUD + create-with-participants", state: "Covered" },
+					{ title: "Messages", meta: "CRUD · media · per-recipient receipts", state: "Covered" },
+					{ title: "Participants", meta: "SMS · MMS · WhatsApp · chat bindings", state: "Covered" },
+					{ title: "Webhooks", meta: "per-conversation and account-wide, signed", state: "Covered" },
+					{ title: "Roles, Users, Credentials", meta: "identity · permissions · APNS / FCM keys", state: "Covered" },
+					{ title: "Configuration", meta: "defaults · auto-routing per inbound address", state: "Covered" },
+					{ title: "Services", meta: "scoped sandboxes with their own users and roles", state: "Covered" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section class="section-block faq-block">
-	<h2>Conversations FAQ</h2>
-	<details class="faq-item">
-		<summary>Do my existing Twilio Conversations SDK clients work against VoiceTel?</summary>
-		<p>Yes — the v1 surface mirrors Twilio's. Point the client at <code>voiceml.voicetel.com</code> and use your VoiceTel account credentials. Paths, field names, and SID prefixes match.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Which channels does VoiceTel Conversations support?</summary>
-		<p>SMS and MMS today via the same providers as <a href="/messaging/">VoiceTel Messaging</a>. WhatsApp and in-app chat bindings follow the Twilio participant model; channel availability depends on which provider integrations are enabled on your account — contact support to confirm coverage for your use case.</p>
-	</details>
-	<details class="faq-item">
-		<summary>How do Conversations and Messaging differ?</summary>
-		<p><a href="/messaging/">Messaging</a> is the per-message API — send one SMS, get a delivery receipt. Conversations is the per-thread API — group every message a participant sends across channels into one resource, with shared history and participant state. Use Messaging for transactional fan-out; use Conversations when you need stateful multi-turn application chat.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Are Conversations webhooks signed the same way as voice webhooks?</summary>
-		<p>Yes. HMAC-SHA256 over the canonicalised request body and URL, signed with your account auth token. See the <a href="/voiceml/migrate/#webhook-signatures">webhook signatures guide</a>.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can I run staging and production traffic in the same account?</summary>
-		<p>Yes &mdash; create separate Conversations Services. Each service is a sandbox with its own users, roles, conversations, configuration, and webhooks under one parent account.</p>
-	</details>
-</section>
+<section class="section section--tint" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about Conversations.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Do my existing Twilio Conversations SDK clients work against VoiceTel?", a: "Yes &mdash; the v1 surface mirrors Twilio's. Point the client at <code>voiceml.voicetel.com</code> and use your VoiceTel account credentials. Paths, field names, and SID prefixes match." },
+			{ q: "Which channels does VoiceTel Conversations support?", a: "SMS and MMS today via the same providers as <a href=\"/messaging/\">VoiceTel Messaging</a>. WhatsApp and in-app chat bindings follow the Twilio participant model; channel availability depends on which provider integrations are enabled on your account &mdash; contact support to confirm coverage for your use case." },
+			{ q: "How do Conversations and Messaging differ?", a: "<a href=\"/messaging/\">Messaging</a> is the per-message API &mdash; send one SMS, get a delivery receipt. Conversations is the per-thread API &mdash; group every message a participant sends across channels into one resource, with shared history and participant state. Use Messaging for transactional fan-out; use Conversations when you need stateful multi-turn application chat." },
+			{ q: "Are Conversations webhooks signed the same way as voice webhooks?", a: "Yes. HMAC-SHA256 over the canonicalised request body and URL, signed with your account auth token. See the <a href=\"/voiceml/migrate/#webhook-signatures\">webhook signatures guide</a>." },
+			{ q: "Can I run staging and production traffic in the same account?", a: "Yes &mdash; create separate Conversations Services. Each service is a sandbox with its own users, roles, conversations, configuration, and webhooks under one parent account." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
 
-<aside class="cta-block" aria-labelledby="conversations-cta-heading">
-	<h2 id="conversations-cta-heading">Start your first conversation.</h2>
-	<p>Open an account, swap your Twilio Conversations client to <code>voiceml.voicetel.com</code>, and send your first multi-channel thread the same hour. The official Twilio SDKs work as-is once the hostname and credentials are swapped.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="{{ apiSpecs.voiceml.urlPath }}#tag/Conversations">API reference</a>
-	</p>
-</aside>
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Start your first conversation.</h3>
+				<p class="cta-band__body">Open an account, swap your Twilio Conversations client to <code>voiceml.voicetel.com</code>, and send your first multi-channel thread the same hour. The official Twilio SDKs work as-is once the hostname and credentials are swapped.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="{{ apiSpecs.voiceml.urlPath }}#tag/Conversations">API reference</a>
+			</div>
+		</div>
+	</div>
+</section>

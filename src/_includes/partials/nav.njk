@@ -1,8 +1,12 @@
-<nav class="navbar" aria-label="Primary">
-	<div class="nav-container">
-		<a class="nav-brand" href="/">
-			<span class="nav-brand-icon" aria-hidden="true">{% icon "phone-square" %}</span>
-			<span class="nav-brand-text">{{ site.brand }}</span>
+{#- Site header: brand, Products / Resources / Pricing / Company, Sign in, Get started.
+	Menus come from site.nav; dropdown width follows item.columns. -#}
+<header class="header">
+	<div class="header__inner container">
+		<a class="brand" href="/">
+			<span class="brand__mark" aria-hidden="true">
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 5.5v5M5.5 3v10M8 1.5v13M10.5 4v8M13.5 6v4" stroke="#9cc3e3" stroke-width="1.4" stroke-linecap="round"/></svg>
+			</span>
+			{{ site.brand }}
 		</a>
 		<button
 			class="nav-toggle"
@@ -12,41 +16,39 @@
 			data-nav-toggle
 		>
 			<span class="visually-hidden">Toggle navigation</span>
-			<span class="nav-toggle-bar" aria-hidden="true"></span>
+			<span class="nav-toggle__bar" aria-hidden="true"></span>
 		</button>
-		<ul id="primary-nav" class="nav-menu" data-nav-menu>
-			{%- for item in site.nav %}
+		<nav class="nav" aria-label="Primary">
+			<ul id="primary-nav" class="nav__list" data-nav-menu>
+				{%- for item in site.nav %}
+				{%- if item.alignment == "right" %}
+				<li class="nav__divider" aria-hidden="true"></li>
+				{%- endif %}
 				{%- if item.items %}
-				{%- set isMega = item.type == "mega" %}
-				{%- set isRight = item.alignment == "right" %}
-				<li class="nav-item nav-item--has-menu{% if isRight %} nav-item--right{% endif %}" data-nav-dropdown>
+				<li class="nav__group" data-nav-dropdown>
 					<button
 						type="button"
-						class="nav-link nav-link--button"
+						class="nav__item"
 						aria-haspopup="true"
 						aria-expanded="false"
 						aria-controls="{{ item.id }}"
 						data-nav-trigger
 					>
 						{{ item.label }}
-						<svg class="nav-chevron" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false"><path d="M2 4 L6 8 L10 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						<svg class="caret" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" focusable="false"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
 					</button>
-					<div
-						id="{{ item.id }}"
-						class="nav-dropdown{% if isMega %} nav-dropdown--mega{% endif %}{% if item.layout == 'two-column' %} nav-dropdown--two-col{% endif %}{% if isRight %} nav-dropdown--right{% endif %}"
-						hidden
-					>
-						<ul class="nav-dropdown-grid">
+					<div id="{{ item.id }}" class="dropdown dropdown--cols-{{ item.columns or 2 }}" hidden>
+						<ul class="dropdown__grid">
 							{%- for sub in item.items %}
 							<li>
-								<a class="nav-dropdown-link" href="{{ sub.href }}">
+								<a class="dropdown__item" href="{{ sub.href }}">
 									{%- if sub.icon %}
-									<span class="nav-dropdown-icon" aria-hidden="true">{% icon sub.icon %}</span>
+									<span class="dropdown__icon" aria-hidden="true">{% icon sub.icon %}</span>
 									{%- endif %}
-									<span class="nav-dropdown-text">
-										<span class="nav-dropdown-label">{{ sub.label }}</span>
+									<span class="dropdown__text">
+										<span class="dropdown__title">{{ sub.label }}</span>
 										{%- if sub.description %}
-										<span class="nav-dropdown-description">{{ sub.description }}</span>
+										<span class="dropdown__desc">{{ sub.description }}</span>
 										{%- endif %}
 									</span>
 								</a>
@@ -56,11 +58,17 @@
 					</div>
 				</li>
 				{%- else %}
-				<li class="nav-item">
-					<a class="nav-link{% if page.url === item.href %} active{% endif %}" href="{{ item.href }}"{% if page.url === item.href %} aria-current="page"{% endif %}>{{ item.label }}</a>
+				<li class="nav__group">
+					<a class="nav__item{% if page.url === item.href %} is-active{% endif %}" href="{{ item.href }}"{% if page.url === item.href %} aria-current="page"{% endif %}>{{ item.label }}</a>
 				</li>
 				{%- endif %}
-			{%- endfor %}
-		</ul>
+				{%- endfor %}
+				{%- if site.navCta %}
+				<li class="nav__group">
+					<a class="nav__cta" href="{{ site.navCta.href }}">{{ site.navCta.label }}</a>
+				</li>
+				{%- endif %}
+			</ul>
+		</nav>
 	</div>
-</nav>
+</header>

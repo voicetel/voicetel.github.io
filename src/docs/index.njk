@@ -1,8 +1,7 @@
 ---
-layout: layouts/page.njk
+layout: layouts/article.njk
 title: "Documentation"
 description: "VoiceTel documentation for VoiceML, Voice, Messaging, REST APIs, SDKs, SIP integrations, number workflows, and operational runbooks."
-illustration: docs
 ---
 
 <p class="eyebrow">Documentation</p>
@@ -13,12 +12,9 @@ illustration: docs
 	<a class="btn btn-secondary" href="/docs/api/">API reference</a>
 </p>
 
-{% include "partials/page-illustration.njk" %}
 
 <section class="section-block">
 	<h2>Product hubs</h2>
-	{% set drawing = "docs-map" %}
-	{% include "partials/section-illustration.njk" %}
 	<ul class="features-grid">
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>

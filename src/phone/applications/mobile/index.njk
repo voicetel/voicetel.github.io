@@ -1,55 +1,92 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "VoiceTel Phone — Mobile clients"
 description: "VoiceTel Phone mobile clients for iPhone and Android. Background calling, Bluetooth audio, adaptive network switching, and SIP-over-TLS security."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set voiceml = phoneApps.apps | where("key", "voiceml") | first %}
 
-<p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; Mobile</p>
-<h1>Carry your VoiceTel identity on iOS and Android.</h1>
-<p class="lede">Background calling, Bluetooth audio routing, and adaptive network switching between Wi-Fi and cellular. Free on the App Store and Google Play, with VoiceML Phone alongside for VoiceML accounts. The same VoiceTel SIP credentials follow you between devices.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/phone/applications/mobile/ios/">iPhone install guide</a>
-	<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
-</p>
-
-<section class="section-block">
-	<h2>Mobile clients</h2>
-
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
-				<h3 class="oss-card__title"><a href="/phone/applications/mobile/ios/">iPhone (iOS)</a></h3>
-			</header>
-			<p class="oss-card__description">Native iOS client with CallKit-style call presentation, background incoming-call wakeup, and Bluetooth audio routing across AirPods, in-car systems, and wired headsets. Adaptive transport falls back gracefully between Wi-Fi and cellular.</p>
-			<p class="oss-card__url"><a href="{{ phoneApps.apps[0].stores.ios }}">App Store</a> &middot; <a href="/phone/applications/mobile/ios/">iPhone install guide &rarr;</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
-				<h3 class="oss-card__title"><a href="/phone/applications/mobile/android/">Android</a></h3>
-			</header>
-			<p class="oss-card__description">Native Android client with foreground-service-backed background calling, full Bluetooth headset and in-car audio support, and seamless network switching between Wi-Fi and mobile data.</p>
-			<p class="oss-card__url"><a href="{{ phoneApps.apps[0].stores.android }}">Google Play</a> &middot; <a href="/phone/applications/mobile/android/">Android install guide &rarr;</a></p>
-		</article>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">VoiceTel Phone &middot; Mobile</p>
+			<h1 id="hero-heading">Carry your VoiceTel identity on iOS and Android.</h1>
+			<p class="lede">Background calling, Bluetooth audio routing, and adaptive network switching between Wi-Fi and cellular. Free on the App Store and Google Play, with VoiceML Phone alongside for VoiceML accounts.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/phone/applications/mobile/ios/">iPhone install guide {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/">All applications</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set platforms = [
+				{ icon: "book", name: "iPhone", meta: "Install guide", href: "/phone/applications/mobile/ios/" },
+				{ icon: "phone-vibrate", name: "VoiceTel Phone", meta: "App Store", href: voicetel.stores.ios },
+				{ icon: "phone-vibrate", name: "VoiceML Phone", meta: "App Store", href: voiceml.stores.ios },
+				{ icon: "book", name: "Android", meta: "Install guide", href: "/phone/applications/mobile/android/" },
+				{ icon: "phone-vibrate", name: "VoiceTel Phone", meta: "Google Play", href: voicetel.stores.android },
+				{ icon: "phone-vibrate", name: "VoiceML Phone", meta: "Google Play", href: voiceml.stores.android }
+			] %}
+			{% include "partials/v2/platform-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<section class="section-block">
-	<h2>What you'll need</h2>
-	<ul>
-		<li>VoiceTel SIP credentials (provisioned from the customer portal after signup), or a VoiceML activation code for VoiceML Phone.</li>
-		<li>Microphone permission granted to the app.</li>
-		<li>Background-app-refresh / battery-optimization exclusion enabled, so incoming calls reach the device while the app is in the background.</li>
-	</ul>
+<section class="section section--tint" id="clients" aria-labelledby="clients-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Mobile clients</p>
+			<h2 id="clients-heading">Native clients for iPhone and Android.</h2>
+			<p class="lede">The same VoiceTel SIP credentials follow you between devices.</p>
+		</div>
+		<div class="prose-grid">
+			<div class="prose-card">
+				<h3>iPhone (iOS)</h3>
+				<div class="prose">
+					<p>Native iOS client with CallKit-style call presentation, background incoming-call wakeup, and Bluetooth audio routing across AirPods, in-car systems, and wired headsets. Adaptive transport falls back gracefully between Wi-Fi and cellular.</p>
+					<p><a href="{{ voicetel.stores.ios }}">App Store</a> &middot; <a href="/phone/applications/mobile/ios/">iPhone install guide</a></p>
+				</div>
+			</div>
+			<div class="prose-card">
+				<h3>Android</h3>
+				<div class="prose">
+					<p>Native Android client with foreground-service-backed background calling, full Bluetooth headset and in-car audio support, and seamless network switching between Wi-Fi and mobile data.</p>
+					<p><a href="{{ voicetel.stores.android }}">Google Play</a> &middot; <a href="/phone/applications/mobile/android/">Android install guide</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="phone-mobile-cta-heading">
-	<h2 id="phone-mobile-cta-heading">Need credentials first?</h2>
-	<p>Sign up to provision SIP credentials, then install the mobile client on every device that needs to receive calls.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Try for free</a>
-		<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
-	</p>
-</aside>
+<section class="section section--white" id="requirements" aria-labelledby="requirements-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">What you'll need</p>
+				<h2 id="requirements-heading">Credentials, a microphone, and permission to run in the background.</h2>
+				<p class="lede">VoiceTel SIP credentials come from the customer portal after signup, or a VoiceML activation code for VoiceML Phone. Grant microphone permission, and keep background app refresh on or exclude the app from battery optimization so incoming calls reach the device while the app is in the background.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "VoiceTel SIP credentials", meta: "provisioned from the customer portal after signup", state: "Required" },
+					{ title: "VoiceML activation code", meta: "for VoiceML Phone, in place of SIP credentials", state: "VoiceML Phone", neutral: true },
+					{ title: "Microphone permission", meta: "granted to the app", state: "Required" },
+					{ title: "Background app refresh", meta: "or a battery-optimization exclusion, so incoming calls reach the device", state: "Required" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need credentials first?</h3>
+				<p class="cta-band__body">Sign up to provision SIP credentials, then install the mobile client on every device that needs to receive calls.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/">All applications</a>
+			</div>
+		</div>
+	</div>
+</section>

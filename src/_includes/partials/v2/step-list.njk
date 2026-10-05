@@ -1,0 +1,13 @@
+{#- Numbered process (porting steps, onboarding).
+	Expects `steps`: [{ title, body (HTML) }]. -#}
+<ol class="step-list">
+	{%- for s in steps %}
+	<li class="step">
+		<span class="step__num" aria-hidden="true">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span>
+		<div class="step__text">
+			<div class="step__title">{{ s.title }}</div>
+			<p class="step__body">{{ s.body | safe }}</p>
+		</div>
+	</li>
+	{%- endfor %}
+</ol>

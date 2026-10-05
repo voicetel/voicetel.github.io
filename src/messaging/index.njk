@@ -1,9 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Messaging"
 description: "SMS and MMS for application messaging, A2P 10DLC, inbound webhooks, delivery events, and high-volume production workloads."
-illustration: messaging
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -18,78 +18,123 @@ illustration: messaging
 }
 </script>
 
-<p class="eyebrow">SMS &amp; MMS</p>
-<h1>Messaging for production application traffic.</h1>
-<p class="lede">VoiceTel Messaging gives teams a practical path for SMS and MMS workloads that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and support from people who understand carrier behavior.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/pricing/">Compare messaging rates</a>
-	<a class="btn btn-secondary" href="/messaging/getting-started/">Get started guide</a>
-</p>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block">
-	<h2>What messaging customers get</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
-			<h3>A2P 10DLC support</h3>
-			<p>VoiceTel is the messaging transport. Customers handle their own A2P 10DLC brand and campaign registration through TCR; we route the traffic and surface delivery events.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
-			<h3>Inbound and outbound SMS/MMS</h3>
-			<p>Support application messaging flows with inbound message handling, outbound sends, and webhook or email delivery to customer systems.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3>Delivery visibility</h3>
-			<p>Expose delivery receipts and message status events to reconcile application state with handset delivery results.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "graph-up" %}</span>
-			<h3>High-volume review</h3>
-			<p>For large workloads, route planning, throughput, carrier fees, and campaign constraints are reviewed before cutover.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Messaging</p>
+			<h1 id="hero-heading">Messaging for production application traffic.</h1>
+			<p class="lede">VoiceTel Messaging gives teams a practical path for SMS and MMS workloads that need clear rates, A2P 10DLC support, inbound handling, delivery visibility, and support from people who understand carrier behavior.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/pricing/#sms-out">Compare messaging rates {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/messaging/getting-started/">Get started guide</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "Message path from your application through VoiceTel to the handset",
+				nodes: [
+					{ label: "Your app", value: "POST /Messages", icon: "code-slash" },
+					{ label: "VoiceTel", value: "A2P 10DLC route", meta: "SMS · MMS", icon: "chat-text", accent: true },
+					{ label: "Handset", value: "Customer replies", icon: "phone-vibrate" }
+				],
+				links: [
+					{ label: "API", both: true, accent: true },
+					{ label: "carrier", both: true }
+				],
+				meta: [
+					{ k: "Inbound", v: "webhook or email" },
+					{ k: "Receipts", v: "delivery events" },
+					{ k: "Platform tax", v: "$0.00" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>SMS-enable any number — even one you didn't get from us</h2>
-	<p>If you (or your customer) own a phone number on a different carrier, VoiceTel can SMS-enable it. Sign a Letter of Authorization, we handle the carrier coordination, and the number stays where it is for voice. Useful when a customer can't move their voice service but wants application messaging on the same DID.</p>
-	{% set drawing = "messaging-sms-enable" %}
-	{% include "partials/section-illustration.njk" %}
+<section class="section section--tint" id="production" aria-labelledby="production-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Production traffic</p>
+				<h2 id="production-heading">A2P 10DLC transport, two-way SMS and MMS, and delivery events you can reconcile.</h2>
+				<p class="lede">VoiceTel is the messaging transport. You register your own A2P 10DLC brand and campaign through TCR; we route the traffic, deliver inbound to your systems, and surface every delivery event.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/messaging/">Messaging guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set kpis = [
+					{ label: "A2P 10DLC", value: "Ready", sub: "High-volume application messaging" },
+					{ label: "Inbound", value: "Supported", sub: "SMS · MMS · webhook or email delivery" },
+					{ label: "Webhook delivery", value: "12", suffix: "ms avg", sub: "Direct to your endpoint", trend: "200 OK" },
+					{ label: "Platform tax", value: "$0.00", sub: "Just the segment rate" }
+				] %}
+				{% include "partials/v2/kpi-grid.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">What messaging customers get</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "list-check", title: "A2P 10DLC support", body: "VoiceTel is the messaging transport. Customers handle their own A2P 10DLC brand and campaign registration through TCR; we route the traffic and surface delivery events." },
+			{ icon: "chat-text", title: "Inbound and outbound SMS/MMS", body: "Support application messaging flows with inbound message handling, outbound sends, and webhook or email delivery to customer systems." },
+			{ icon: "activity", title: "Delivery visibility", body: "Expose delivery receipts and message status events to reconcile application state with handset delivery results." },
+			{ icon: "graph-up", title: "High-volume review", body: "For large workloads, route planning, throughput, carrier fees, and campaign constraints are reviewed before cutover." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block faq-block">
-	<h2>Messaging FAQ</h2>
-	<details class="faq-item">
-		<summary>Does VoiceTel handle A2P 10DLC?</summary>
-		<p>Yes. VoiceTel supports A2P 10DLC workflows. Registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms. The 10DLC application and any associated fees are the sole responsibility of the customer.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Are carrier fees included?</summary>
-		<p>Carrier pass-through fees are listed separately from base message prices unless pricing data explicitly includes them.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can high-volume senders get dedicated SMPP binds for increased capacity?</summary>
-		<p>Yes. Speak with your messaging specialist to discuss your use case.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can VoiceTel handle traffic for phone numbers it doesn't own?</summary>
-		<p>Yes. With a Letter of Authorization (LOA), we can SMS-enable any phone number.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Who pays for compliance?</summary>
-		<p>10DLC brand registration, campaign filing, and any associated fees are the sole responsibility of the customer. VoiceTel supports A2P 10DLC workflows as the messaging transport — registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms.</p>
-	</details>
+<section class="section section--white" id="sms-enable" aria-labelledby="sms-enable-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">SMS-enable any number</p>
+				<h2 id="sms-enable-heading">SMS-enable any number, even one you didn't get from us.</h2>
+				<p class="lede">If you (or your customer) own a phone number on a different carrier, VoiceTel can SMS-enable it. Sign a Letter of Authorization, we handle the carrier coordination, and the number stays where it is for voice. Useful when a customer can't move their voice service but wants application messaging on the same DID.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Voice service", meta: "stays on the current carrier", state: "Unchanged", neutral: true },
+					{ title: "Letter of Authorization", meta: "signed by the number owner", state: "You sign", neutral: true },
+					{ title: "Carrier coordination", meta: "handled end to end", state: "VoiceTel", neutral: true },
+					{ title: "Application messaging", meta: "SMS · MMS on the same DID", state: "Enabled" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="messaging-cta-heading">
-	<h2 id="messaging-cta-heading">Send the first message.</h2>
-	<p>Spin up an account, register a 10DLC campaign with the templates we publish, send a test message inside the same hour. Customers file and own the 10DLC submission; VoiceTel publishes templates and guidance designed to reduce common rejection patterns. The registry and carriers control approval.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/support/messaging/10dlc/">10DLC vetting guide</a>
-	</p>
-</aside>
+<section class="section section--tint" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about messaging.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Does VoiceTel handle A2P 10DLC?", a: "Yes. VoiceTel supports A2P 10DLC workflows. Registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms. The 10DLC application and any associated fees are the sole responsibility of the customer." },
+			{ q: "Are carrier fees included?", a: "Carrier pass-through fees are listed separately from base message prices unless pricing data explicitly includes them." },
+			{ q: "Can high-volume senders get dedicated SMPP binds for increased capacity?", a: "Yes. Speak with your messaging specialist to discuss your use case." },
+			{ q: "Can VoiceTel handle traffic for phone numbers it doesn't own?", a: "Yes. With a Letter of Authorization (LOA), we can SMS-enable any phone number." },
+			{ q: "Who pays for compliance?", a: "10DLC brand registration, campaign filing, and any associated fees are the sole responsibility of the customer. VoiceTel supports A2P 10DLC workflows as the messaging transport &mdash; registration, vetting, campaign approval, fees, and ownership are described precisely in onboarding and service terms." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Send the first message.</h3>
+				<p class="cta-band__body">Spin up an account, register a 10DLC campaign with the templates we publish, and send a test message inside the same hour. Customers file and own the 10DLC submission; the registry and carriers control approval.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC vetting guide</a>
+			</div>
+		</div>
+	</div>
+</section>

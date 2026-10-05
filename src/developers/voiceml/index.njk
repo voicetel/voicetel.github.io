@@ -1,59 +1,105 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /developers/voiceml/
 title: "VoiceML for developers"
 description: "VoiceTel's XML-based voice runtime for teams that already use voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Move the economics without rewriting call logic."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow"><a href="/developers/">For developers</a> / VoiceML</p>
-<h1>Move programmable voice workloads without rewriting call logic.</h1>
-<p class="lede"><a href="/voiceml/">VoiceML</a> is VoiceTel's XML-based voice runtime for teams that already use voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Preserve the interaction model you already built while moving the economics, support path, and carrier layer to VoiceTel.</p>
-<p>Use VoiceML to answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe calls. Signed webhooks help your application verify callbacks, and existing handlers can be pointed toward VoiceTel when they stay within the supported VoiceML-compatible surface.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Start building</a>
-	<a class="btn btn-secondary" href="/voiceml/">VoiceML overview</a>
-</p>
-
-<section class="section-block">
-	<h2>What developers can build</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3>Inbound IVRs and call routing</h3>
-			<p>Create phone menus, route callers by input, forward to queues, record voicemails, and send callbacks into your application.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Outbound calling workflows</h3>
-			<p>Trigger calls from your product, control call behavior with markup, and connect users, agents, customers, or automated systems.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
-			<h3>Call recording and transcription</h3>
-			<p>Free defaults get you transcribing English calls on day one. Swap in your preferred STT, TTS, or recording-storage vendor when you're ready to tune for production — billed directly, no VoiceTel markup.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Queues, conferences, live call control</h3>
-			<p>Build support, sales, dispatch, appointment, and contact-center workflows without starting from scratch.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Developers · VoiceML</p>
+			<h1 id="hero-heading">Move programmable voice workloads without rewriting call logic.</h1>
+			<p class="lede">VoiceML is VoiceTel's XML-based voice runtime for teams that already use voice markup, callbacks, recordings, conferences, queues, and API-driven call flows. Preserve the interaction model you built while moving the economics, support path, and carrier layer to VoiceTel.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Start building {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/voiceml/">VoiceML overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set code %}{% highlight "xml" %}<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Gather numDigits="1" action="/route" method="POST" timeout="6">
+    <Say>Press 1 for sales or 2 for support.</Say>
+  </Gather>
+  <Dial timeout="20">
+    <Queue>support</Queue>
+  </Dial>
+  <Record maxLength="120" transcribe="true" action="/voicemail" />
+</Response>{% endhighlight %}{% endset %}
+			{%- set terminal = { label: "inbound.xml", pill: "VoiceML · 200 OK", code: code } %}
+			{% include "partials/v2/terminal.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Verify your markup before you ship</h2>
-	<p>Paste any VoiceML response into the validator and confirm every element is well-formed XML and matches the verb / noun schema. Pure client-side; nothing uploaded.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/voiceml/validator/">Open the validator</a>
-		<a class="btn btn-secondary" href="/voiceml/compatibility/">Compatibility matrix</a>
-	</p>
+<section class="section section--tint" id="call-control" aria-labelledby="call-control-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Call control</p>
+				<h2 id="call-control-heading">Answer, route, record, gather, dial, queue, conference, redirect, stream, and transcribe.</h2>
+				<p class="lede">Signed webhooks help your application verify callbacks, and existing handlers can be pointed toward VoiceTel when they stay within the supported VoiceML-compatible surface.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/compatibility/">Compatibility matrix</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Signed webhooks", meta: "verify every callback", state: "Signed" },
+					{ title: "Existing handlers", meta: "point them at VoiceTel", state: "Unchanged", neutral: true },
+					{ title: "English speech-to-text", meta: "free default from day one", state: "Included" },
+					{ title: "Production STT, TTS, and storage", meta: "your preferred vendor, billed directly", state: "No markup" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">What developers can build</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "phone-vibrate", title: "Inbound IVRs and call routing", body: "Create phone menus, route callers by input, forward to queues, record voicemails, and send callbacks into your application." },
+			{ icon: "broadcast-pin", title: "Outbound calling workflows", body: "Trigger calls from your product, control call behavior with markup, and connect users, agents, customers, or automated systems." },
+			{ icon: "record-circle", title: "Call recording and transcription", body: "Free defaults get you transcribing English calls on day one. Swap in your preferred STT, TTS, or recording-storage vendor when you're ready to tune for production &mdash; billed directly, no VoiceTel markup." },
+			{ icon: "diagram-3", title: "Queues, conferences, live call control", body: "Build support, sales, dispatch, appointment, and contact-center workflows without starting from scratch." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="dev-voiceml-cta">
-	<h2 id="dev-voiceml-cta">Start building with VoiceTel.</h2>
-	<p>Update your existing voice URL to <code>voiceml.voicetel.com</code> and your markup works unchanged.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/voiceml/migrate/">Migration guide</a>
-	</p>
-</aside>
+<section class="section section--white" id="validator" aria-labelledby="validator-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Validator</p>
+				<h2 id="validator-heading">Verify your markup before you ship.</h2>
+				<p class="lede">Paste any VoiceML response into the validator and confirm every element is well-formed XML and matches the verb / noun schema. Pure client-side; nothing uploaded.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/validator/">Open the validator</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set docs = [
+					{ icon: "list-check", title: "VoiceML validator", meta: "schema check · client-side", href: "/voiceml/validator/" },
+					{ icon: "layers", title: "Compatibility matrix", meta: "supported verbs and attributes", href: "/voiceml/compatibility/" },
+					{ icon: "arrow-right-circle", title: "Migration guide", meta: "voiceml.voicetel.com", href: "/voiceml/migrate/" },
+					{ icon: "book", title: "VoiceML overview", meta: "product page", href: "/voiceml/" }
+				] %}
+				{% include "partials/v2/docs-list.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Start building with VoiceTel.</h3>
+				<p class="cta-band__body">Update your existing voice URL to <code>voiceml.voicetel.com</code> and your markup works unchanged.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/voiceml/migrate/">Migration guide</a>
+			</div>
+		</div>
+	</div>
+</section>

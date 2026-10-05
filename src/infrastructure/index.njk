@@ -1,68 +1,102 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Infrastructure & uptime"
 description: "VoiceTel network infrastructure: colocation facilities, cloud regions, carrier handoffs, redundancy, status visibility, and the voice availability target."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow">Infrastructure</p>
-<h1>Network facts without inflated claims.</h1>
-<p class="lede">Six colocation POPs across North America and Europe, plus three cloud regions. Anycast and Geocast routing options. STIR/SHAKEN signing at the edge. 99.99% availability target measured monthly, with the SLA written in plain English.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/status/">View status</a>
-	<a class="btn btn-secondary" href="/signup/">Free trial</a>
-</p>
-
-<section class="section-block">
-	<h2>Colocation facilities</h2>
-	<div class="oss-cards">
-		{%- for c in colocations %}
-		<article class="oss-card oss-card--colo">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "buildings" %}</span>
-				<h3 class="oss-card__title">{{ c.code }} &mdash; {{ c.city }}{% if c.region %}, {{ c.region }}{% endif %}</h3>
-			</header>
-			<p class="oss-card__description">
-				{%- if c.street %}{{ c.street }} &middot; {% endif -%}
-				{{ c.city }}{% if c.region %}, {{ c.region }}{% endif %}{% if c.country %}, {{ c.country }}{% endif %}
-			</p>
-			{%- if c.compliance and c.compliance.length %}
-			<p class="oss-card__meta"><strong>Compliance:</strong> {{ c.compliance | join(", ") }}</p>
-			{%- endif %}
-			{%- if c.statuscakeTrack %}
-			<p class="oss-card__uptime"><img src="https://app.statuscake.com/button/index.php?Track={{ c.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ c.code }} 1000-day uptime"></p>
-			{%- endif %}
-		</article>
-		{%- endfor %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Infrastructure</p>
+			<h1 id="hero-heading">Network facts without inflated claims.</h1>
+			<p class="lede">Six colocation POPs across North America and Europe, plus three cloud regions. Anycast and Geocast routing options. STIR/SHAKEN signing at the edge. 99.99% availability target measured monthly, with the SLA written in plain English.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/status/">View status {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/signup/">Free trial</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "Colocation POPs", value: (colocations | length), sub: (site.pops | join(" · ")) },
+				{ label: "Cloud regions", value: (cloudRegions | length), sub: (site.cloudRegions | join(" · ")) },
+				{ label: "Availability target", value: "99.99", suffix: "%", sub: "Measured monthly. SLA written in plain English." },
+				{ label: "Edge signing", value: "STIR/SHAKEN", sub: "Anycast and Geocast routing options" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<section class="section-block">
-	<h2>Cloud regions</h2>
-	<div class="oss-cards">
-		{%- for r in cloudRegions %}
-		<article class="oss-card oss-card--cloud">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "cloud-fill" %}</span>
-				<div class="oss-card__heading">
-					<h3 class="oss-card__title">{{ r.label }}</h3>
-					<p class="oss-card__subtitle"><code>{{ r.awsCode }}</code> &middot; {{ r.geo }}</p>
+<section class="section section--tint" id="colocation" aria-labelledby="colocation-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Colocation facilities</p>
+			<h2 id="colocation-heading">Six colocation POPs across North America and Europe, with published compliance and uptime per facility.</h2>
+			<p class="lede">Facility addresses, compliance programs, and the 1000-day uptime measured for every POP.</p>
+		</div>
+		<div class="table-container">
+			<table class="data-table">
+				<thead>
+					<tr><th scope="col">POP</th><th scope="col">Facility</th><th scope="col">Compliance</th><th scope="col">Uptime, 1000 days</th></tr>
+				</thead>
+				<tbody>
+					{%- for c in colocations %}
+					<tr>
+						<td>{{ c.code }}</td>
+						<td>{% if c.street %}{{ c.street }}, {% endif %}{{ c.city }}{% if c.region %}, {{ c.region }}{% endif %}{% if c.country %}, {{ c.country }}{% endif %}</td>
+						<td>{% if c.compliance and c.compliance.length %}{{ c.compliance | join(", ") }}{% endif %}</td>
+						<td>{% if c.statuscakeTrack %}<img src="https://app.statuscake.com/button/index.php?Track={{ c.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ c.code }} 1000-day uptime" loading="lazy">{% endif %}</td>
+					</tr>
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<section class="section section--white" id="cloud" aria-labelledby="cloud-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Cloud regions</p>
+				<h2 id="cloud-heading">Three cloud regions extend the colocation footprint.</h2>
+				<p class="lede">Two East Coast regions and one West Coast region back the colocation POPs: a primary, a secondary for redundancy and Midwest backhaul, and a Pacific-time disaster-recovery anchor adjacent to SJC.</p>
+				<p class="row__links">Uptime percentages are calculated and displayed by <a href="https://www.statuscake.com/" rel="external">StatusCake</a>.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/status/">Network status</a>
 				</div>
-			</header>
-			<p class="oss-card__description">{{ r.description }}</p>
-			{%- if r.statuscakeTrack %}
-			<p class="oss-card__uptime"><img src="https://app.statuscake.com/button/index.php?Track={{ r.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ r.code }} 1000-day uptime"></p>
-			{%- endif %}
-		</article>
-		{%- endfor %}
+			</div>
+			<div class="row__visual">
+				<div class="table-container">
+					<table class="data-table">
+						<thead>
+							<tr><th scope="col">Region</th><th scope="col">Location</th><th scope="col">Uptime, 1000 days</th></tr>
+						</thead>
+						<tbody>
+							{%- for r in cloudRegions %}
+							<tr>
+								<td>{{ r.label }}<span class="data-table__meta">{{ r.awsCode }}</span></td>
+								<td>{{ r.geo }}</td>
+								<td>{% if r.statuscakeTrack %}<img src="https://app.statuscake.com/button/index.php?Track={{ r.statuscakeTrack }}&amp;Days=1000&amp;Design=1" width="200" height="40" alt="{{ r.label }} 1000-day uptime" loading="lazy">{% endif %}</td>
+							</tr>
+							{%- endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need procurement-ready details?</h3>
+				<p class="cta-band__body">Route security, redundancy, SLA, and network-design questions through the contact path so support can provide account-appropriate documentation.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/contact/">Contact us</a>
+			</div>
+		</div>
 	</div>
 </section>
-
-<aside class="cta-block">
-	<h2>Need procurement-ready details?</h2>
-	<p>Route security, redundancy, SLA, and network-design questions through the contact path so support can provide account-appropriate documentation.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Try for free</a>
-	</p>
-</aside>
-
-<p class="uptime-source">Uptime percentages are calculated and displayed by <a href="https://www.statuscake.com/" rel="external">StatusCake</a>.</p>

@@ -1,5 +1,5 @@
 ---
-layout: layouts/page.njk
+layout: layouts/tool.njk
 permalink: /voiceml/validator/
 title: "VoiceML validator"
 description: "Paste your VoiceML markup and validate it against the verb / noun schema. The validator runs entirely in your browser — nothing is uploaded."
@@ -15,8 +15,8 @@ description: "Paste your VoiceML markup and validate it against the verb / noun 
 
 <section class="section-block validator" data-voiceml-validator>
 	<h2>Markup</h2>
-	<p class="form-note">Press <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Enter</kbd> in the textarea to validate.</p>
-	<textarea class="validator-input" data-validator-input rows="14" spellcheck="false" autocomplete="off" placeholder="&lt;Response&gt;
+	<p class="form-note">Press <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>Enter</kbd> in the textarea to validate.</p>
+	<textarea class="validator-input" data-validator-input aria-label="VoiceML markup to validate" rows="14" spellcheck="false" autocomplete="off" placeholder="&lt;Response&gt;
 	&lt;Say&gt;Hello&lt;/Say&gt;
 &lt;/Response&gt;"></textarea>
 	<div class="validator-actions">

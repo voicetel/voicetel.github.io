@@ -1,5 +1,5 @@
 ---
-layout: layouts/page.njk
+layout: layouts/tool.njk
 permalink: /docs/api/v2.2/playground/
 title: "API playground"
 description: "Browser-based playground for the VoiceTel API v2.2. Set your API key once — encrypted to this device — and run live requests against api.voicetel.com without leaving the page."
@@ -50,10 +50,10 @@ description: "Browser-based playground for the VoiceTel API v2.2. Set your API k
 					<p class="playground-op-summary" data-op-summary></p>
 				</header>
 
-				<form class="playground-op-form" data-op-form onsubmit="return false;"></form>
+				<form id="playground-op-form" class="playground-op-form" data-op-form onsubmit="return false;"></form>
 
 				<div class="playground-actions">
-					<button type="button" class="btn btn-primary" data-op-send>Send</button>
+					<button type="submit" form="playground-op-form" class="btn btn-primary" data-op-send>Send</button>
 				</div>
 
 				<section class="playground-response" aria-label="Response">

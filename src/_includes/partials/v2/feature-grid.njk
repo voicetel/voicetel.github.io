@@ -1,0 +1,17 @@
+{#- Feature cards (design guide § Cards · .feature).
+	Expects `features`: [{ icon, title, body, href?, cta? }].
+	Set `featureHeading` to "h4" when the grid sits under an h3 subsection heading. -#}
+{%- set h = featureHeading or "h3" %}
+{%- set cols3 = features.length == 3 or features.length == 5 or features.length == 6 or features.length == 9 %}
+<ul class="feature-grid{% if cols3 %} feature-grid--3{% endif %}">
+	{%- for f in features %}
+	<li class="feature">
+		<div class="feature__icon">{% icon f.icon %}</div>
+		<{{ h }} class="feature__title">{{ f.title }}</{{ h }}>
+		<p class="feature__body">{{ f.body | safe }}</p>
+		{%- if f.href %}
+		<p class="feature__link"><a class="btn-link" href="{{ f.href }}">{{ f.cta or "Learn more" }} <svg class="arrow" width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+		{%- endif %}
+	</li>
+	{%- endfor %}
+</ul>

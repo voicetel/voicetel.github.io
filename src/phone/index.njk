@@ -1,9 +1,12 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "VoiceTel Phone"
 description: "VoiceTel Phone provides web, desktop, and mobile VoIP calling backed by VoiceTel SIP credentials with WebRTC media, call history, DTMF, and diagnostics."
-illustration: phone
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set phoneApp = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set macDmg = phoneApp.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "arm64") | first %}
+{%- set winSetup = phoneApp.desktop | where("platform", "windows") | where("format", "Installer (.exe)") | first %}
 
 <script type="application/ld+json">
 {
@@ -18,64 +21,93 @@ illustration: phone
 }
 </script>
 
-<p class="eyebrow">Phone applications</p>
-<h1>One calling experience across web, desktop, and mobile.</h1>
-<p class="lede">One app, three form factors — same crystal-clear calling. VoiceTel Phone gives users a clean calling surface for web, Windows, macOS, Linux, iOS, and Android while keeping provisioning tied to VoiceTel SIP credentials and account controls.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/phone/applications/web/">Open web phone</a>
-	<a class="btn btn-secondary" href="/phone/applications/">All applications</a>
-</p>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block">
-	<h2>App features</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
-			<h3>Web calling</h3>
-			<p>Start calls from the browser without a desktop install where WebRTC is supported.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3>Desktop apps</h3>
-			<p>Support Windows, macOS, and Linux users with the same VoiceTel identity.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3>Mobile apps</h3>
-			<p>Keep users reachable on iOS and Android. Free on the <a href="{{ phoneApps.apps[0].stores.ios }}">App Store</a> and <a href="{{ phoneApps.apps[0].stores.android }}">Google Play</a>.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>WebRTC media</h3>
-			<p>Modern browser media via WebRTC, with DTLS-SRTP for the media path where supported by the runtime.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
-			<h3>Call recording</h3>
-			<p>Record calls for compliance, training, or QA.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
-			<h3>Diagnostics</h3>
-			<p>Expose call history, DTMF behavior, and SIP message logging for troubleshooting.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
-			<h3>Private Label</h3>
-			<p>Custom branding and licensing opportunities for resellers and integrators.</p>
-		</li>
-	</ul>
-	{% set drawing = "phone-call-path" %}
-	{% include "partials/section-illustration.njk" %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Phone apps</p>
+			<h1 id="hero-heading">One calling experience across web, desktop, and mobile.</h1>
+			<p class="lede">One app, three form factors, the same crystal-clear calling. VoiceTel Phone gives users a clean calling surface for web, Windows, macOS, Linux, iOS, and Android while keeping provisioning tied to VoiceTel SIP credentials and account controls.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/phone/applications/web/">Open web phone {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/">All applications</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set platforms = [
+				{ icon: "code-slash", name: "Web", meta: "WebRTC · no install", href: "/phone/applications/web/" },
+				{ icon: "hdd-stack", name: "macOS", meta: macDmg.size ~ " · .dmg", href: "/phone/applications/desktop/macos/" },
+				{ icon: "hdd-stack", name: "Windows", meta: winSetup.size ~ " · .exe", href: "/phone/applications/desktop/windows/" },
+				{ icon: "hdd-stack", name: "Linux", meta: "AppImage · deb · rpm", href: "/phone/applications/desktop/linux/" },
+				{ icon: "phone-vibrate", name: "iOS", meta: "App Store", href: "/phone/applications/mobile/ios/" },
+				{ icon: "phone-vibrate", name: "Android", meta: "Google Play", href: "/phone/applications/mobile/android/" }
+			] %}
+			{% include "partials/v2/platform-grid.njk" %}
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="phone-cta-heading">
-	<h2 id="phone-cta-heading">Get the apps.</h2>
-	<p>Sign up to provision and obtain SIP credentials, then grab the apps for every platform. For private-label, white-label, or partner-licensing inquiries, contact us.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/contact/">Contact us</a>
-	</p>
-</aside>
+<section class="section section--tint" id="features" aria-labelledby="features-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">App features</p>
+			<h2 id="features-heading">Web, desktop, and mobile calling on one VoiceTel identity.</h2>
+			<p class="lede">Version {{ phoneApp.version }} across every platform, provisioned from the SIP credentials on your account.</p>
+		</div>
+		{%- set features = [
+			{ icon: "telephone", title: "Web calling", body: "Start calls from the browser without a desktop install where WebRTC is supported." },
+			{ icon: "layers", title: "Desktop apps", body: "Support Windows, macOS, and Linux users with the same VoiceTel identity." },
+			{ icon: "phone-vibrate", title: "Mobile apps", body: "Keep users reachable on iOS and Android. Free on the <a href=\"" ~ phoneApp.stores.ios ~ "\">App Store</a> and <a href=\"" ~ phoneApp.stores.android ~ "\">Google Play</a>." },
+			{ icon: "shield-check", title: "WebRTC media", body: "Modern browser media via WebRTC, with DTLS-SRTP for the media path where supported by the runtime." },
+			{ icon: "record-circle", title: "Call recording", body: "Record calls for compliance, training, or QA." },
+			{ icon: "activity", title: "Diagnostics", body: "Expose call history, DTMF behavior, and SIP message logging for troubleshooting." },
+			{ icon: "tag", title: "Private label", body: "Custom branding and licensing opportunities for resellers and integrators." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--white" id="call-path" aria-labelledby="call-path-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Call path</p>
+				<h2 id="call-path-heading">SIP over TLS to VoiceTel, WebRTC media in the browser.</h2>
+				<p class="lede">Every client registers with the SIP credentials on your account and reaches the PSTN through VoiceTel, with DTMF, caller ID, call history, and real-time SIP logging on every platform.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/voice/softphone/">Softphone guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set diagram = {
+					title: "VoiceTel Phone registers to VoiceTel and reaches the PSTN",
+					nodes: [
+						{ label: "VoiceTel Phone", value: "Web · desktop · mobile", meta: "SIP credentials", icon: "phone-vibrate" },
+						{ label: "VoiceTel", value: "SIP over TLS", meta: "WebRTC media", icon: "diagram-3", accent: true },
+						{ label: "PSTN", value: "Calls in and out", icon: "telephone" }
+					],
+					links: [
+						{ label: "register", both: true, accent: true },
+						{ label: "Tier-1", both: true }
+					],
+					meta: [
+						{ k: "Media", v: "WebRTC · DTLS-SRTP where supported" },
+						{ k: "Diagnostics", v: "SIP logging · call history · DTMF" }
+					]
+				} %}
+				{% include "partials/v2/diagram.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Get the apps.</h3>
+				<p class="cta-band__body">Sign up to provision and obtain SIP credentials, then grab the apps for every platform. For private-label, white-label, or partner-licensing inquiries, contact us.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/contact/">Contact us</a>
+			</div>
+		</div>
+	</div>
+</section>

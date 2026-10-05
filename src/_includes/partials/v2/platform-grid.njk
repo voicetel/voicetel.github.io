@@ -1,0 +1,7 @@
+{#- Platform cards (design guide § Platform card).
+	Expects `platforms`: [{ icon, name, meta, href? }]. -#}
+<ul class="platform-grid">
+	{%- for p in platforms %}
+	<li>{% if p.href %}<a class="platform-card" href="{{ p.href }}">{% else %}<div class="platform-card">{% endif %}<div class="platform-card__icon">{% icon p.icon %}</div><div class="platform-card__name">{{ p.name }}</div><div class="platform-card__meta">{{ p.meta }}</div>{% if p.href %}</a>{% else %}</div>{% endif %}</li>
+	{%- endfor %}
+</ul>

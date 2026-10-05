@@ -1,9 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "VoiceTel SDN appliance"
 description: "A small on-prem VoiceTel SDN appliance creates a secure tunnel for SIP traversal through NAT, ALG, UDP timer, and firewall constraints."
-illustration: sdn
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -18,49 +18,125 @@ illustration: sdn
 }
 </script>
 
-<p class="eyebrow">Software-defined networking</p>
-<h1>A small appliance for difficult SIP networks.</h1>
-<p class="lede">The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Try for free</a>
-	<a class="btn btn-secondary" href="/sdn/technical-specification/">Technical specification</a>
-</p>
-
-<figure class="product-figure product-figure--left product-figure--sm">
-	<img src="/assets/img/sdn-rpi.jpg" alt="VoiceTel SDN appliance — a small Raspberry Pi-form-factor device" width="600" height="401" loading="lazy">
-	<figcaption>The VoiceTel SDN appliance — compact enough to deploy alongside any PBX or SBC.</figcaption>
-</figure>
-
-{% include "partials/page-illustration.njk" %}
-
-<section class="section-block" data-section-type="problem-solution">
-	<h2>What it solves</h2>
-	<ul>
-		<li><strong>No audio or one-way audio</strong> — Media-path issues often come from NAT, firewall, or RTP pinhole behavior. The appliance gives VoiceTel a controlled path.</li>
-		<li><strong>Registration instability</strong> — Keep local PBX registration behavior stable while the appliance handles the upstream secure path.</li>
-		<li><strong>Firewall policy friction</strong> — Reduce the need to open broad inbound SIP and RTP exposure at the customer edge.</li>
-		<li><strong>Support visibility</strong> — Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior.</li>
-	</ul>
-	{% set drawing = "sdn-before-after" %}
-	{% include "partials/section-illustration.njk" %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">SDN appliance</p>
+			<h1 id="hero-heading">A small appliance for difficult SIP networks.</h1>
+			<p class="lede">The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/sdn/technical-specification/">Technical specification</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "Your LAN to the SDN appliance to VoiceTel core",
+				nodes: [
+					{ label: "Your LAN", value: "PBX + phones", meta: "10.0.0.0/24" },
+					{ label: "SDN appliance", value: "Raspberry Pi", meta: "sdn-08c4", accent: true },
+					{ label: "VoiceTel core", value: "NYC POP", meta: "TLS 1.3 tunnel" }
+				],
+				links: [{}, { accent: true }],
+				meta: [
+					{ k: "Uplink", v: ":443 outbound" },
+					{ k: "Firewall", v: "no routing changes" },
+					{ k: "Media", v: "SIP + RTP inside" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Integrations</h2>
-	<p>The SDN appliance is PBX-agnostic and works with any standards-compliant SIP endpoint. See <a href="/support/voice/pbx/">PBX configuration guides</a> for Asterisk, FreePBX, FreeSWITCH, FusionPBX, and 3CX setup, or <a href="/support/voice/sbc/">SBC interop notes</a> for AudioCodes, Cisco CUBE, and FreeSWITCH-as-SBC deployments.</p>
+<section class="section section--tint" id="solves" aria-labelledby="solves-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">What it solves</p>
+				<h2 id="solves-heading">No audio, flapping registrations, firewall friction, and blind spots.</h2>
+				<p class="lede">The appliance gives VoiceTel a controlled path for signaling and media, keeps local PBX registration behavior stable, reduces the need for broad inbound SIP and RTP exposure at the customer edge, and gives support a clear demarcation point.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/sdn/technical-specification/">Technical specification</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<figure class="photo-card">
+					<img src="/assets/img/sdn-rpi.jpg" alt="VoiceTel SDN appliance, a small Raspberry Pi-form-factor device" width="600" height="401" loading="lazy">
+					<figcaption>The VoiceTel SDN appliance, compact enough to deploy alongside any PBX or SBC.</figcaption>
+				</figure>
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Problems it removes</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "broadcast-pin", title: "No audio or one-way audio", body: "Media-path issues often come from NAT, firewall, or RTP pinhole behavior. The appliance gives VoiceTel a controlled path." },
+			{ icon: "activity", title: "Registration instability", body: "Keep local PBX registration behavior stable while the appliance handles the upstream secure path." },
+			{ icon: "shield-check", title: "Firewall policy friction", body: "Reduce the need to open broad inbound SIP and RTP exposure at the customer edge." },
+			{ icon: "headset", title: "Support visibility", body: "Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>For integrators and resellers</h2>
-	<p>Ship the appliance to the customer's office. Their SIP problems disappear behind a controlled tunnel to VoiceTel — no firewall reconfiguration, no broad inbound exposure, no multi-day diagnosis cycles. You bill the customer; we bill you per appliance per month.</p>
+<section class="section section--white" id="integrations" aria-labelledby="integrations-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Integrations</p>
+				<h2 id="integrations-heading">PBX-agnostic, with any standards-compliant SIP endpoint.</h2>
+				<p class="lede">Configuration guides cover FreePBX, FusionPBX, and 3CX, with SBC interop notes for Asterisk, FreeSWITCH, Cisco CUBE, and AudioCodes.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/support/voice/">All voice guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set docs = [
+					{ icon: "diagram-3", title: "FreePBX", meta: "PBX", href: "/support/voice/pbx/freepbx/" },
+					{ icon: "diagram-3", title: "FusionPBX", meta: "PBX", href: "/support/voice/pbx/fusionpbx/" },
+					{ icon: "diagram-3", title: "3CX", meta: "PBX", href: "/support/voice/pbx/3cx/" },
+					{ icon: "hdd-stack", title: "Asterisk", meta: "SBC", href: "/support/voice/sbc/asterisk/" },
+					{ icon: "hdd-stack", title: "FreeSWITCH", meta: "SBC", href: "/support/voice/sbc/freeswitch/" },
+					{ icon: "hdd-stack", title: "Cisco CUBE", meta: "SBC", href: "/support/voice/sbc/cisco-cube/" },
+					{ icon: "hdd-stack", title: "AudioCodes", meta: "SBC", href: "/support/voice/sbc/audiocodes/" }
+				] %}
+				{% include "partials/v2/docs-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="sdn-cta-heading">
-	<h2 id="sdn-cta-heading">Ready to deploy?</h2>
-	<p>The SDN appliance is <strong>$10 per appliance per month</strong>, with volume discounts that bring the rate down toward $5 at scale. Billed alongside your VoiceTel account; ships pre-configured for your tenant. It's a very small price to pay for total business continuity.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/pricing/">See pricing</a>
-	</p>
-</aside>
+<section class="section section--tint" id="resellers" aria-labelledby="resellers-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">For integrators and resellers</p>
+				<h2 id="resellers-heading">Ship the appliance; the SIP problems stay behind the tunnel.</h2>
+				<p class="lede">Ship the appliance to the customer's office. Their SIP problems disappear behind a controlled tunnel to VoiceTel, with no firewall reconfiguration, no broad inbound exposure, and no multi-day diagnosis cycles. You bill the customer; we bill you per appliance per month.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/integrators/">Partner with VoiceTel</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rates = [
+					{ name: "SDN appliance", unit: "/ appliance / month", id: "sdn", star: true }
+				] %}
+				{%- set rateFootnote = "Volume discounts bring the rate down toward $5 at scale. Billed alongside your VoiceTel account; ships pre-configured for your tenant." %}
+				{% include "partials/v2/price-table.njk" %}
+			</div>
+		</div>
 
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Ready to deploy?</h3>
+				<p class="cta-band__body">A very small price to pay for total business continuity.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/pricing/#sdn">See pricing</a>
+			</div>
+		</div>
+	</div>
+</section>

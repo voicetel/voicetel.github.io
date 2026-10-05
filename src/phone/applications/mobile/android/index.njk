@@ -1,66 +1,100 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /phone/applications/mobile/android/
 title: "VoiceTel Phone for Android — Install Guide"
 description: "Install VoiceTel Phone or VoiceML Phone on Android from Google Play, allow microphone and notification access, and sign in to start calling."
 ---
-{%- set voicetel = phoneApps.apps[0] %}
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set voiceml = phoneApps.apps | where("key", "voiceml") | first %}
 
-<p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/mobile/">Mobile</a> &middot; Android</p>
-<h1>VoiceTel Phone for Android.</h1>
-<p class="lede">Install from Google Play, sign in, and keep calls running in the background with a foreground-service notification that carries Mute and Hold controls. VoiceML Phone, the same softphone for VoiceML accounts, is on Google Play too.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="{{ voicetel.stores.android }}">Get it on Google Play</a>
-	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
-</p>
-
-<section id="install" class="section-block">
-	<h2>1. Install from Google Play</h2>
-	<div class="oss-cards">
-		{%- for app in phoneApps.apps %}
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
-				<h3 class="oss-card__title">{{ app.name }}</h3>
-			</header>
-			<p class="oss-card__description">{{ app.audience }}</p>
-			<p class="oss-card__url"><a href="{{ app.stores.android }}">{{ app.name }} on Google Play</a></p>
-		</article>
-		{%- endfor %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Mobile &middot; Android</p>
+			<h1 id="hero-heading">VoiceTel Phone for Android.</h1>
+			<p class="lede">Install from Google Play, sign in, and keep calls running in the background with a foreground-service notification that carries Mute and Hold controls. VoiceML Phone, for VoiceML accounts, is on Google Play too.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="{{ voicetel.stores.android }}">Get it on Google Play {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/mobile/">All mobile clients</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "Version", value: voicetel.version, sub: "Google Play · built " ~ voicetel.built },
+				{ label: "Price", value: "Free", sub: "VoiceTel Phone and VoiceML Phone" },
+				{ label: "In the background", value: "Foreground", suffix: "service", sub: "The notification carries Mute and Hold controls" },
+				{ label: "Battery optimization", value: "Excluded", sub: "Settings → Apps → the app → Battery → Unrestricted" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<section id="firstlaunch" class="section-block">
-	<h2>2. First launch</h2>
-	<ol>
-		<li>Allow <strong>microphone</strong> access when prompted; calls need it.</li>
-		<li>Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed.</li>
-		<li>Optionally allow <strong>contacts</strong> access to dial from your address book.</li>
-		<li>Sign in. VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>.</li>
-	</ol>
+<section class="section section--tint" id="install" aria-labelledby="install-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">1 &middot; Install from Google Play</p>
+				<h2 id="install-heading">Two apps on Google Play; pick the one for your account.</h2>
+				<p class="lede">VoiceTel Phone for VoiceTel accounts, VoiceML Phone for VoiceML accounts. Both are free on Google Play.</p>
+				<p class="row__links">VoiceTel Phone signs in with the SIP credentials provisioned in the VoiceTel customer portal. VoiceML Phone takes a VoiceML activation code under Settings &rarr; Auto Provision, or SIP credentials entered manually.</p>
+			</div>
+			<div class="row__visual">
+				{%- set docs = [
+					{ icon: "phone-vibrate", title: voicetel.name ~ " on Google Play", meta: "VoiceTel accounts", href: voicetel.stores.android },
+					{ icon: "phone-vibrate", title: voiceml.name ~ " on Google Play", meta: "VoiceML accounts", href: voiceml.stores.android }
+				] %}
+				{% include "partials/v2/docs-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="faq" class="section-block faq-block">
-	<h2>FAQ</h2>
-	<details class="faq-item">
-		<summary>Which app do I need?</summary>
-		<p>VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on Google Play.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Incoming calls don't ring when the app is in the background</summary>
-		<p>Make sure notifications are allowed for the app, and exclude it from battery optimization (<em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Battery</em> &rarr; <em>Unrestricted</em>) so Android doesn't stop it in the background.</p>
-	</details>
-	<details class="faq-item">
-		<summary>The other person can't hear me</summary>
-		<p>Open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions</em> and allow <em>Microphone</em>.</p>
-	</details>
+<section class="section section--white" id="firstlaunch" aria-labelledby="firstlaunch-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">2 &middot; First launch</p>
+				<h2 id="firstlaunch-heading">Allow the microphone and notifications, then sign in.</h2>
+				<p class="lede">Calls need the microphone; notifications carry incoming calls while the app is in the background or closed. Contacts access is optional.</p>
+			</div>
+			<div class="row__visual">
+				{%- set steps = [
+					{ title: "Allow microphone access", body: "Allow <strong>microphone</strong> access when prompted; calls need it." },
+					{ title: "Allow notifications", body: "Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed." },
+					{ title: "Optionally allow contacts", body: "Allow <strong>contacts</strong> access to dial from your address book." },
+					{ title: "Sign in", body: "VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="phone-android-cta-heading">
-	<h2 id="phone-android-cta-heading">Need credentials first?</h2>
-	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Android device that needs to make calls.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
-	</p>
-</aside>
+<section class="section section--tint" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about VoiceTel Phone on Android.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Which app do I need?", a: "VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on Google Play." },
+			{ q: "Incoming calls don’t ring when the app is in the background", a: "Make sure notifications are allowed for the app, and exclude it from battery optimization (<em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Battery</em> &rarr; <em>Unrestricted</em>) so Android doesn’t stop it in the background." },
+			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions</em> and allow <em>Microphone</em>." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need credentials first?</h3>
+				<p class="cta-band__body">Sign up to provision SIP credentials, then install VoiceTel Phone on every Android device that needs to make calls.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/mobile/">All mobile clients</a>
+			</div>
+		</div>
+	</div>
+</section>

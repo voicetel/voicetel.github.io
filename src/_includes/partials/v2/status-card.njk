@@ -1,0 +1,12 @@
+{#- Status rows (design guide § Status rows & pills).
+	Expects `rows`: [{ title, meta?, state, live?, neutral? }].
+	`live` pulses the dot (only for live-fed state); `neutral` renders a plain tag
+	without a dot, for labels that are not a status. -#}
+<ul class="status-card">
+	{%- for row in rows %}
+	<li class="status-row">
+		<span class="status-row__main"><span class="status-row__title">{{ row.title }}</span>{% if row.meta %}<span class="status-row__meta">{{ row.meta }}</span>{% endif %}</span>
+		<span class="status-row__state{% if row.neutral %} status-row__state--neutral{% endif %}">{% if not row.neutral %}<span class="dot{% if row.live %} dot--pulse{% endif %}" aria-hidden="true"></span>{% endif %}{{ row.state }}</span>
+	</li>
+	{%- endfor %}
+</ul>

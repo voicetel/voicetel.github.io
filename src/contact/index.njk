@@ -1,5 +1,5 @@
 ---
-layout: layouts/page.njk
+layout: layouts/tool.njk
 title: "Contact"
 description: "Contact VoiceTel for sales, support, billing, porting, partnerships, legal, press, and technical integration questions."
 ---
@@ -19,7 +19,7 @@ description: "Contact VoiceTel for sales, support, billing, porting, partnership
 		{%- for office in site.offices %}
 		<div class="office">
 			<h3 id="office-{{ loop.index }}">{{ office.label }}</h3>
-			<address aria-labelledby="office-{{ loop.index }}">
+			<address>
 				<p>
 					{{ office.street }}<br>
 					{{ office.city }}, {{ office.region }} {{ office.postalCode }}

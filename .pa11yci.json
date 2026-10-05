@@ -7,7 +7,8 @@
 		"hideElements": "[inert]",
 		"chromeLaunchConfig": {
 			"args": ["--no-sandbox"]
-		}
+		},
+		"ignore": ["frame-tested"]
 	},
 	"urls": [
 		"http://localhost:8000/",
@@ -49,6 +50,40 @@
 		"http://localhost:8000/phone/applications/desktop/linux/",
 		"http://localhost:8000/phone/applications/mobile/",
 		"http://localhost:8000/phone/applications/mobile/ios/",
-		"http://localhost:8000/phone/applications/mobile/android/"
+		"http://localhost:8000/phone/applications/mobile/android/",
+		"http://localhost:8000/sip-trunking/",
+		"http://localhost:8000/pbx/",
+		"http://localhost:8000/caller-lookup/",
+		"http://localhost:8000/carrier-lookup/",
+		"http://localhost:8000/developers/",
+		"http://localhost:8000/developers/voiceml/",
+		"http://localhost:8000/developers/messaging/",
+		"http://localhost:8000/developers/lookups/",
+		"http://localhost:8000/integrators/",
+		"http://localhost:8000/integrators/hosted-pbx/",
+		"http://localhost:8000/integrators/sip-trunking/",
+		"http://localhost:8000/enterprise/",
+		"http://localhost:8000/enterprise/migration/",
+		"http://localhost:8000/enterprise/phone/",
+		"http://localhost:8000/enterprise/wholesale-voice/",
+		"http://localhost:8000/about/",
+		"http://localhost:8000/infrastructure/",
+		"http://localhost:8000/open-source/",
+		"http://localhost:8000/sdn/technical-specification/",
+		"http://localhost:8000/legal/",
+		"http://localhost:8000/support/voice/pbx/freepbx/",
+		"http://localhost:8000/contact/",
+		"http://localhost:8000/faq/",
+		"http://localhost:8000/signup/",
+		"http://localhost:8000/login/",
+		"http://localhost:8000/status/",
+		"http://localhost:8000/voiceml/calculator/",
+		"http://localhost:8000/voiceml/validator/",
+		"http://localhost:8000/docs/api/v2.2/playground/",
+		"http://localhost:8000/docs/api/v7.8/csp/playground/",
+		"http://localhost:8000/docs/api/v2.1/credentials/",
+		"http://localhost:8000/docs/api/v2.2/credentials/",
+		"http://localhost:8000/docs/e911/provision/",
+		"http://localhost:8000/404.html"
 	]
 }

@@ -1,44 +1,44 @@
-<footer class="footer">
+{#- Customer logo strip sits directly above the footer on every page. -#}
+<section class="logos-strip" aria-label="Customers">
 	<div class="container">
-		<div class="footer-grid">
-			<div class="footer-col">
-				<div class="footer-brand">
-					<span class="footer-brand-icon" aria-hidden="true">{% icon "phone-square" %}</span>
-					<span class="footer-brand-text">{{ site.brand }}</span>
-				</div>
-				<p class="footer-tagline">{{ site.tagline }}</p>
-				<p class="footer-actions">
-					<a class="btn btn-primary" href="{{ site.loginUrl }}">Sign in</a>
-					<a class="btn btn-secondary" href="/signup/">Sign up</a>
-				</p>
-			</div>
-			{%- for group in site.footerNav %}
-				<div class="footer-col{% if group.columns == 2 %} footer-col--wide{% endif %}">
-					<div class="footer-heading-row">
-						<h2 class="footer-heading">{{ group.label }}</h2>
-						{%- if group.cta %}
-						<a class="footer-heading-cta" href="{{ group.cta.href }}">
-							{%- if group.cta.icon %}<span class="footer-quick-icon" aria-hidden="true">{% icon group.cta.icon %}</span>{%- endif %}
-							{{ group.cta.label }}
-						</a>
-						{%- endif %}
-					</div>
-					<ul class="footer-links{% if group.columns == 2 %} footer-links--two-col{% endif %}">
-						{%- for item in group.items %}
-						<li><a href="{{ item.href }}">{{ item.label }}</a></li>
-						{%- endfor %}
-					</ul>
-				</div>
-			{%- endfor %}
-		</div>
-		<ul class="trusted-by trusted-by--footer">
+		<p class="logos-strip__label">Trusted by</p>
+		<ul class="logos-strip__row">
 			{%- for c in customers %}
-			<li class="trusted-by__item"><img class="trusted-by__logo" src="/assets/logos/{{ c.logo }}" alt="{{ c.name }}" loading="lazy"></li>
+			<li><img class="logos-strip__logo" src="/assets/logos/{{ c.logo }}" alt="{{ c.name }}" loading="lazy"></li>
 			{%- endfor %}
 		</ul>
-		<div class="footer-meta">
-			<small>&copy; 1999&ndash;{% year %} <a class="footer-legal-link" href="/about/">{{ site.legalName }}</a>. All rights reserved.</small>
-			<small><a class="footer-pops-link" href="/status/">POPs: {{ site.pops | join(" · ") }}</a></small>
+	</div>
+</section>
+<footer class="footer">
+	<div class="container">
+		<div class="footer__grid">
+			<div class="footer__brand-col">
+				<a class="brand" href="/">
+					<span class="brand__mark" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 5.5v5M5.5 3v10M8 1.5v13M10.5 4v8M13.5 6v4" stroke="#9cc3e3" stroke-width="1.4" stroke-linecap="round"/></svg>
+					</span>
+					{{ site.brand }}
+				</a>
+				<p class="footer__tag">{{ site.tagline }}.<br>POPs in {% for c in colocations %}{% if not loop.first %}{% if loop.last %}, and {% else %}, {% endif %}{% endif %}{{ c.city }}{% endfor %}.</p>
+				<div class="footer__actions">
+					<a class="btn btn--primary btn--sm" href="/signup/">Sign up</a>
+					<a class="btn btn--ghost btn--sm" href="{{ site.loginUrl }}">Sign in</a>
+				</div>
+			</div>
+			{%- for group in site.footerNav %}
+			<div class="footer__col">
+				<h2 class="footer__col-title">{{ group.label }}</h2>
+				<ul class="footer__list{% if group.columns == 2 %} footer__list--two-col{% endif %}">
+					{%- for item in group.items %}
+					<li><a href="{{ item.href }}">{{ item.label }}</a></li>
+					{%- endfor %}
+				</ul>
+			</div>
+			{%- endfor %}
+		</div>
+		<div class="footer__bottom">
+			<span>&copy; 1999&ndash;{% year %} <a href="/about/">{{ site.legalName }}</a>. All rights reserved.</span>
+			<a class="footer__status" href="/status/">POPs: {{ site.pops | join(" · ") }}</a>
 		</div>
 	</div>
 </footer>

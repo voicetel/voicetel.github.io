@@ -1,65 +1,122 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /integrators/sip-trunking/
 title: "SIP trunking and SDN appliance for integrators"
 description: "Carrier SIP trunks for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and contact centers — plus the SDN appliance for difficult customer networks."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set sdnRate = pricingRuntime | listRate("sdn") %}
 
-<p class="eyebrow"><a href="/integrators/">For integrators</a> / SIP trunking</p>
-<h1>Carrier SIP trunks for systems your customers already run.</h1>
-<p class="lede"><a href="/sip-trunking/">VoiceTel SIP Trunking</a> connects PBX, UC, contact-center, and SBC environments to VoiceTel for PSTN origination, termination, numbers, emergency-service support, and route controls — without replacing the customer's existing call platform.</p>
-<p>Built for practical SIP deployments including Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, hosted PBX platforms, and contact centers. VoiceTel supports Digest and IP authentication methods, along with Anycast and Geocast network access.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Become a partner</a>
-	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking overview</a>
-</p>
-
-<section class="section-block">
-	<h2>Why integrators choose VoiceTel SIP Trunking</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Deploy with what customers already have</h3>
-			<p>Connect existing PBX, UC, SBC, and contact-center environments without forcing a full platform replacement.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>Registration or IP-auth designs</h3>
-			<p>Choose the SIP authentication method that fits the customer architecture.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3>Redundancy and rollback</h3>
-			<p>Primary trunks, failover trunks, POP preference, number routing, and cutover rollback before migration.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
-			<h3>Emergency calling support</h3>
-			<p>Tie emergency-service configuration to numbers, service addresses, and clear limitations.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
-			<h3>Bring your own SBC</h3>
-			<p>Use customer-owned SBCs when architecture, security, or compliance requirements call for it.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Integrators · SIP trunking</p>
+			<h1 id="hero-heading">Carrier SIP trunks for systems your customers already run.</h1>
+			<p class="lede">VoiceTel SIP Trunking connects PBX, UC, contact-center, and SBC environments to VoiceTel for PSTN origination, termination, numbers, emergency-service support, and route controls, without replacing the customer's existing call platform.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/contact/">Become a partner {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/sip-trunking/">SIP trunking overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "SIP trunk from the customer's PBX, UC, SBC, or contact center through a VoiceTel POP to the PSTN",
+				nodes: [
+					{ label: "Customer platform", value: "PBX · UC · SBC · contact center", meta: "Asterisk · FreePBX · FreeSWITCH · FusionPBX", icon: "buildings" },
+					{ label: "VoiceTel POP", value: "Anycast · Geocast", meta: "Digest or IP auth", icon: "diagram-3", accent: true },
+					{ label: "PSTN", value: "Origination + termination", icon: "telephone" }
+				],
+				links: [
+					{ label: "SIP trunk", both: true, accent: true },
+					{ label: "carrier", both: true }
+				],
+				meta: [
+					{ k: "Numbers", v: "DIDs · emergency-service support" },
+					{ k: "Routes", v: "primary + failover · POP preference · rollback" },
+					{ k: "Platform", v: "the customer's existing call platform" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Solve difficult customer networks with the SDN appliance</h2>
-	<p>Many SIP deployments fail because of customer-edge network problems: NAT behavior, SIP ALG, UDP timers, firewall restrictions, one-way audio, registration instability, or RTP pinhole issues.</p>
-	<p>The <a href="/sdn/">VoiceTel SDN appliance</a> sits inside the customer LAN and establishes a secure tunnel to VoiceTel, helping PBX registrations and media flows avoid common NAT, ALG, UDP timer, and firewall problems.</p>
-	<p>For integrators and resellers, this means fewer multi-day troubleshooting cycles. Ship the appliance to the customer office, connect it to the LAN, and give VoiceTel a controlled path for SIP and media. VoiceTel bills the partner per appliance per month; the partner bills the customer.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/sdn/">SDN appliance details</a>
-	</p>
+<section class="section section--tint" id="deployments" aria-labelledby="deployments-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Deployments</p>
+				<h2 id="deployments-heading">Digest or IP authentication, Anycast or Geocast access, on the platforms your customers run.</h2>
+				<p class="lede">Built for practical SIP deployments including Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, hosted PBX platforms, and contact centers. VoiceTel supports Digest and IP authentication methods, along with Anycast and Geocast network access.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Digest authentication", meta: "registration-based trunks", state: "Supported" },
+					{ title: "IP authentication", meta: "IP-auth trunk designs", state: "Supported" },
+					{ title: "Anycast", meta: "network access", state: "Supported" },
+					{ title: "Geocast", meta: "network access", state: "Supported" },
+					{ title: "Customer-owned SBC", meta: "where architecture, security, or compliance call for it", state: "Supported" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Why integrators choose VoiceTel SIP Trunking</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "diagram-3", title: "Deploy with what customers already have", body: "Connect existing PBX, UC, SBC, and contact-center environments without forcing a full platform replacement." },
+			{ icon: "shield-check", title: "Registration or IP-auth designs", body: "Choose the SIP authentication method that fits the customer architecture." },
+			{ icon: "layers", title: "Redundancy and rollback", body: "Primary trunks, failover trunks, POP preference, number routing, and cutover rollback before migration." },
+			{ icon: "geo-alt", title: "Emergency calling support", body: "Tie emergency-service configuration to numbers, service addresses, and clear limitations." },
+			{ icon: "hdd-stack", title: "Bring your own SBC", body: "Use customer-owned SBCs when architecture, security, or compliance requirements call for it." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="int-sip-cta">
-	<h2 id="int-sip-cta">Configure your first SIP trunk.</h2>
-	<p>Open a partner account, choose registration or IP-auth, and route a test call.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/contact/">Contact partner sales</a>
-		<a class="btn btn-secondary" href="/support/voice/">Voice support guides</a>
-	</p>
-</aside>
+<section class="section section--white" id="sdn" aria-labelledby="sdn-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">SDN appliance</p>
+				<h2 id="sdn-heading">Solve difficult customer networks with the SDN appliance.</h2>
+				<p class="lede">Many SIP deployments fail at the customer edge: NAT behavior, SIP ALG, UDP timers, firewall restrictions, one-way audio, registration instability, or RTP pinhole issues. The VoiceTel SDN appliance sits inside the customer LAN and establishes a secure tunnel to VoiceTel, so PBX registrations and media flows avoid them, with fewer multi-day troubleshooting cycles for you.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/sdn/">SDN appliance details</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set diagram = {
+					title: "The SDN appliance in the customer LAN tunnels SIP and media to VoiceTel",
+					nodes: [
+						{ label: "Customer LAN", value: "PBX + phones", meta: "NAT · ALG · firewall", icon: "buildings" },
+						{ label: "SDN appliance", value: "Secure tunnel", meta: "ships to the customer office", icon: "hdd-stack", accent: true },
+						{ label: "VoiceTel", value: "Controlled path", meta: "SIP + media", icon: "diagram-3" }
+					],
+					links: [
+						{ label: "LAN" },
+						{ label: "tunnel", accent: true }
+					],
+					meta: [
+						{ k: "Billing", v: "$" ~ sdnRate ~ " list / appliance / month to the partner" },
+						{ k: "You bill", v: "the customer" },
+						{ k: "Avoids", v: "NAT · ALG · UDP timer · firewall problems" }
+					]
+				} %}
+				{% include "partials/v2/diagram.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Configure your first SIP trunk.</h3>
+				<p class="cta-band__body">Open a partner account, choose registration or IP-auth, and route a test call.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/contact/">Contact partner sales {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/voice/">Voice support guides</a>
+			</div>
+		</div>
+	</div>
+</section>

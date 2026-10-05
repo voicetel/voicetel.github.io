@@ -1,82 +1,92 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Open Source"
 description: "VoiceTel open-source projects: the voicetel/sdks index of 12 VoiceTel REST API libraries, the voicetel/voiceml-sdks index of 8 VoiceML voice + AMD libraries, VoiceTel Phone cross-platform SIP softphone, memdb in-RAM SQLite with PostgreSQL wire protocol, mod_siprec RFC 7866 recording client for FreeSWITCH, and freeswitch-security event-driven threat detection."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow">Open Source</p>
-<h1>Reference tools for the communications problems we solve in production.</h1>
-<p class="lede">VoiceTel publishes libraries, modules, and security tools we build to run our own platform. Each project is dual-purpose: it solves a problem we have, and it's useful to anyone running similar infrastructure.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="https://github.com/voicetel">Browse GitHub</a>
-	<a class="btn btn-secondary" href="/signup/">Free trial</a>
-</p>
-
-<section class="section-block">
-	<h2>Our Projects</h2>
-
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/sdks">VoiceTel SDKs</a></h3>
-			</header>
-			<p class="oss-card__description">Index of the official VoiceTel client libraries — twelve language SDKs (<a href="https://github.com/voicetel/python-sdk">Python</a>, <a href="https://github.com/voicetel/typescript-sdk">TypeScript</a>, <a href="https://github.com/voicetel/go-sdk">Go</a>, <a href="https://github.com/voicetel/java-sdk">Java</a>, <a href="https://github.com/voicetel/kotlin-sdk">Kotlin</a>, <a href="https://github.com/voicetel/scala-sdk">Scala</a>, <a href="https://github.com/voicetel/php-sdk">PHP</a>, <a href="https://github.com/voicetel/ruby-sdk">Ruby</a>, <a href="https://github.com/voicetel/csharp-sdk">C#</a>, <a href="https://github.com/voicetel/rust-sdk">Rust</a>, <a href="https://github.com/voicetel/swift-sdk">Swift</a>, <a href="https://github.com/voicetel/lua-sdk">Lua</a>) plus the interactive <a href="https://github.com/voicetel/cli">CLI</a> and <a href="https://github.com/voicetel/api-collections">Postman + Bruno API collections</a>. Each entry links to its standalone repo with install instructions and release tags. See also <a href="/docs/sdks/">/docs/sdks/</a>.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/sdks">github.com/voicetel/sdks</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/voiceml-sdks">VoiceML SDKs</a></h3>
-			</header>
-			<p class="oss-card__description">Index of the official VoiceML client libraries — eight language SDKs (<a href="https://github.com/voicetel/voiceml-python-sdk">Python</a>, <a href="https://github.com/voicetel/voiceml-node-sdk">TypeScript</a>, <a href="https://github.com/voicetel/voiceml-go-sdk">Go</a>, <a href="https://github.com/voicetel/voiceml-java-sdk">Java</a>, <a href="https://github.com/voicetel/voiceml-csharp-sdk">C#</a>, <a href="https://github.com/voicetel/voiceml-php-sdk">PHP</a>, <a href="https://github.com/voicetel/voiceml-ruby-sdk">Ruby</a>, <a href="https://github.com/voicetel/voiceml-swift">Swift</a>) for VoiceTel's outbound voice and answering-machine-detection service. Twilio-compatible wire format, hand-written, MIT-licensed, all targeting VoiceML API v0.9.1. See also <a href="/docs/voiceml-sdks/">/docs/voiceml-sdks/</a>.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/voiceml-sdks">github.com/voicetel/voiceml-sdks</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/phone">VoiceTel Phone</a></h3>
-			</header>
-			<p class="oss-card__description">Cross-platform SIP softphone that runs in the browser, as a desktop application on Windows, macOS, and Linux, and as a mobile app on iOS and Android. Built on SIP.js over WebRTC with SIP over TLS, RFC 2833 DTMF with SIP INFO fallback, call recording with inline playback, call history, contacts integration, NAT-friendly ICE/STUN, and a real-time SIP message log for debugging. The same code that powers <a href="https://phone.voicetel.com/">phone.voicetel.com</a>.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/phone">github.com/voicetel/phone</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/memdb">memdb</a></h3>
-			</header>
-			<p class="oss-card__description">Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library — so existing Postgres clients connect to an in-memory store without code changes.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/memdb">github.com/voicetel/memdb</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/mod_siprec">mod_siprec</a></h3>
-			</header>
-			<p class="oss-card__description">RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server for compliance recording, supervisor monitoring, or analytics — without vendor-specific RTP forking.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/mod_siprec">github.com/voicetel/mod_siprec</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "github" %}</span>
-				<h3 class="oss-card__title"><a href="https://github.com/voicetel/freeswitch-security">freeswitch-security</a></h3>
-			</header>
-			<p class="oss-card__description">Event-driven security layer for FreeSWITCH. Subscribes to the Event Socket Layer (ESL) and watches live signaling for registration floods, call-volume anomalies, and other malicious patterns; an integrated cache keeps detection paths fast without re-querying the dialplan.</p>
-			<p class="oss-card__url"><a href="https://github.com/voicetel/freeswitch-security">github.com/voicetel/freeswitch-security</a></p>
-		</article>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Open source</p>
+			<h1 id="hero-heading">Reference tools for the communications problems we solve in production.</h1>
+			<p class="lede">VoiceTel publishes libraries, modules, and security tools we build to run our own platform. Each project is dual-purpose: it solves a problem we have, and it's useful to anyone running similar infrastructure.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="https://github.com/voicetel">Browse GitHub {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/signup/">Free trial</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "VoiceTel SDKs", value: (sdks.sdks | length), suffix: "languages", sub: "Plus the interactive CLI and Postman + Bruno API collections" },
+				{ label: "VoiceML SDKs", value: (voicemlSdks.sdks | length), suffix: "languages", sub: "Twilio-compatible wire format · MIT-licensed · " ~ voicemlSdks.targetApi },
+				{ label: "memdb", value: "3×", suffix: "writes", sub: "Roughly 3× faster writes and 2× faster reads than disk-backed SQLite" },
+				{ label: "mod_siprec", value: "RFC 7866", sub: "SIPREC Session Recording Client for FreeSWITCH" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="oss-cta-heading">
-	<h2 id="oss-cta-heading">Want to use our code at carrier scale?</h2>
-	<p>These projects power the VoiceTel platform. Same code, same support paths — open an account and the same engineering team that wrote them is one ticket away.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Try for free</a>
-		<a class="btn btn-secondary" href="https://github.com/voicetel">Browse GitHub</a>
-	</p>
-</aside>
+<section class="section section--tint" id="projects" aria-labelledby="projects-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Our projects</p>
+			<h2 id="projects-heading">Six projects, from client SDKs to a FreeSWITCH recording module and an in-RAM SQLite.</h2>
+			<p class="lede">Each repository is the same code that runs inside the VoiceTel platform.</p>
+		</div>
+		{%- set features = [
+			{ icon: "github", title: "VoiceTel SDKs", body: "Index of the official VoiceTel client libraries: twelve language SDKs plus the interactive <a href=\"https://github.com/voicetel/cli\">CLI</a> and <a href=\"https://github.com/voicetel/api-collections\">Postman + Bruno API collections</a>. Each entry links to its standalone repo with install instructions and release tags. See also <a href=\"/docs/sdks/\">/docs/sdks/</a>.", href: "https://github.com/voicetel/sdks", cta: "View on GitHub" },
+			{ icon: "github", title: "VoiceML SDKs", body: "Index of the official VoiceML client libraries: eight language SDKs for VoiceTel's outbound voice and answering-machine-detection service. Twilio-compatible wire format, hand-written, MIT-licensed, all targeting VoiceML API v0.9.1. See also <a href=\"/docs/voiceml-sdks/\">/docs/voiceml-sdks/</a>.", href: "https://github.com/voicetel/voiceml-sdks", cta: "View on GitHub" },
+			{ icon: "github", title: "VoiceTel Phone", body: "Cross-platform SIP softphone for the browser, Windows, macOS, and Linux desktops, and iOS and Android. Built on SIP.js over WebRTC with SIP over TLS, RFC 2833 DTMF with SIP INFO fallback, call recording with inline playback, call history, contacts integration, NAT-friendly ICE/STUN, and a real-time SIP message log for debugging. The same code that powers <a href=\"https://phone.voicetel.com/\">phone.voicetel.com</a>.", href: "https://github.com/voicetel/phone", cta: "View on GitHub" },
+			{ icon: "github", title: "memdb", body: "Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library, so existing Postgres clients connect to an in-memory store without code changes.", href: "https://github.com/voicetel/memdb", cta: "View on GitHub" },
+			{ icon: "github", title: "mod_siprec", body: "RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server for compliance recording, supervisor monitoring, or analytics, without vendor-specific RTP forking.", href: "https://github.com/voicetel/mod_siprec", cta: "View on GitHub" },
+			{ icon: "github", title: "freeswitch-security", body: "Event-driven security layer for FreeSWITCH. Subscribes to the Event Socket Layer (ESL) and watches live signaling for registration floods, call-volume anomalies, and other malicious patterns; an integrated cache keeps detection paths fast without re-querying the dialplan.", href: "https://github.com/voicetel/freeswitch-security", cta: "View on GitHub" }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--white" id="sdks" aria-labelledby="sdks-heading">
+	<div class="container">
+		<div class="row row--wide-visual">
+			<div class="row__text">
+				<p class="eyebrow">SDKs</p>
+				<h2 id="sdks-heading">Twelve VoiceTel SDKs and eight VoiceML SDKs, each in its own repository.</h2>
+				<p class="lede">Every language SDK has a standalone repo with install instructions and release tags. The VoiceTel SDKs target the {{ sdks.targetApi }}; the VoiceML SDKs target {{ voicemlSdks.targetApi }} with a Twilio-compatible wire format, hand-written and MIT-licensed.</p>
+				<p class="row__links">Indexes: <a href="/docs/sdks/">/docs/sdks/</a> &middot; <a href="/docs/voiceml-sdks/">/docs/voiceml-sdks/</a>. Tooling: <a href="https://github.com/voicetel/cli">CLI</a> &middot; <a href="https://github.com/voicetel/api-collections">API collections</a>.</p>
+			</div>
+			<div class="row__visual">
+				<div class="table-container">
+					<table class="data-table">
+						<thead>
+							<tr><th scope="col">Language</th><th scope="col">VoiceTel SDK</th><th scope="col">VoiceML SDK</th></tr>
+						</thead>
+						<tbody>
+							{%- for s in sdks.sdks %}
+							{%- set v = voicemlSdks.sdks | where("slug", s.slug) | first %}
+							<tr>
+								<td>{{ s.name }}</td>
+								<td><a href="{{ s.repo }}">{{ s.repo | replace("https://github.com/", "") | replace("/", "/<wbr>") | safe }}</a></td>
+								<td>{% if v %}<a href="{{ v.repo }}">{{ v.repo | replace("https://github.com/", "") | replace("/", "/<wbr>") | safe }}</a>{% else %}&mdash;{% endif %}</td>
+							</tr>
+							{%- endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Want to use our code at carrier scale?</h3>
+				<p class="cta-band__body">These projects power the VoiceTel platform. Same code, same support paths: open an account and the same engineering team that wrote them is one ticket away.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="https://github.com/voicetel">Browse GitHub</a>
+			</div>
+		</div>
+	</div>
+</section>

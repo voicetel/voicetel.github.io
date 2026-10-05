@@ -1,0 +1,10 @@
+{#- FAQ accordion. Keeps the .faq-item class so faq.js can open #q- permalinks.
+	Expects `faqs`: [{ q, a (HTML) }]. -#}
+<div class="faq-list">
+	{%- for f in faqs %}
+	<details class="faq-item">
+		<summary>{{ f.q }}</summary>
+		<div class="faq-item__body">{{ f.a | safe }}</div>
+	</details>
+	{%- endfor %}
+</div>

@@ -1,56 +1,91 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /integrators/
 title: "For integrators and resellers"
 description: "Wholesale SIP trunking, multi-tenant Hosted PBX, and numbers + porting — a telecom platform for partners who own the customer relationship."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow">For integrators and resellers</p>
-<h1>Sell voice, SIP, PBX, and business calling services without building the carrier stack yourself.</h1>
-<p class="lede">VoiceTel gives integrators and resellers a practical telecom platform for deploying SIP trunks, Hosted PBX tenants, phone applications, numbers, emergency-service records, and network workarounds under one carrier relationship.</p>
-<p>You keep the customer relationship. VoiceTel provides the wholesale infrastructure, routing, applications, support depth, and operational tools to help you deploy faster and support more accounts with less friction.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Become a partner</a>
-	<a class="btn btn-secondary" href="/sip-trunking/">SIP trunking</a>
-</p>
-
-<section class="section-block">
-	<h2>Pick a service</h2>
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "diagram-3" %}</span>
-				<h3 class="oss-card__title"><a href="/integrators/sip-trunking/">SIP trunking and SDN</a></h3>
-			</header>
-			<p class="oss-card__description">Carrier SIP trunks for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and contact centers — plus the SDN appliance for difficult customer networks.</p>
-			<p class="oss-card__action"><a href="/integrators/sip-trunking/">Read more &rarr;</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "buildings" %}</span>
-				<h3 class="oss-card__title"><a href="/integrators/hosted-pbx/">Hosted PBX and Phone</a></h3>
-			</header>
-			<p class="oss-card__description">Multi-tenant Hosted PBX with per-tenant portal scope, caller IDs, e911 records, and CDRs. Pair with VoiceTel Phone for web, desktop, and mobile calling.</p>
-			<p class="oss-card__action"><a href="/integrators/hosted-pbx/">Read more &rarr;</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "telephone-fill" %}</span>
-				<h3 class="oss-card__title"><a href="/integrators/numbers/">Numbers and porting</a></h3>
-			</header>
-			<p class="oss-card__description">Local DIDs, toll-free, mobile numbers where available, CNAM, e911, and a porting process built around eligibility checks, LOA prep, and rollback planning.</p>
-			<p class="oss-card__action"><a href="/integrators/numbers/">Read more &rarr;</a></p>
-		</article>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">For integrators and resellers</p>
+			<h1 id="hero-heading">Sell voice, SIP, PBX, and business calling services without building the carrier stack yourself.</h1>
+			<p class="lede">VoiceTel gives integrators and resellers a practical telecom platform for deploying SIP trunks, Hosted PBX tenants, phone applications, numbers, emergency-service records, and network workarounds under one carrier relationship.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/contact/">Become a partner {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/sip-trunking/">SIP trunking</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "VoiceTel supplies the wholesale carrier stack; you keep the customer relationship",
+				nodes: [
+					{ label: "VoiceTel", value: "Wholesale carrier", meta: "infrastructure · routing · support", icon: "diagram-3" },
+					{ label: "Your company", value: "The customer relationship", meta: "MSP · installer · UC provider", icon: "buildings", accent: true },
+					{ label: "Your customers", value: "Offices · tenants · users", icon: "person-plus" }
+				],
+				links: [
+					{ label: "wholesale", both: true, accent: true },
+					{ label: "your brand", both: true }
+				],
+				meta: [
+					{ k: "You keep", v: "the customer relationship" },
+					{ k: "VoiceTel provides", v: "infrastructure · routing · applications · tools" },
+					{ k: "Relationship", v: "one carrier" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
 	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="int-cta-heading">
-	<h2 id="int-cta-heading">A wholesale partner that does not compete for your customer.</h2>
-	<p>A strong fit for MSPs, telecom consultants, PBX installers, UC providers, IT service firms, and communications resellers who need dependable carrier services without giving up the end-customer relationship.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/contact/">Contact partner sales</a>
-		<a class="btn btn-secondary" href="/pricing/">Wholesale pricing</a>
-	</p>
-</aside>
+<section class="section section--tint" id="model" aria-labelledby="model-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Partner model</p>
+				<h2 id="model-heading">You keep the customer relationship; VoiceTel provides the carrier stack.</h2>
+				<p class="lede">VoiceTel provides the wholesale infrastructure, routing, applications, support depth, and operational tools to help you deploy faster and support more accounts with less friction.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "SIP trunks", meta: "PBX · UC · SBC · contact center", state: "SIP trunking", neutral: true },
+					{ title: "Hosted PBX tenants", meta: "per-tenant portal scope · caller IDs · e911 · CDRs", state: "Hosted PBX", neutral: true },
+					{ title: "Phone applications", meta: "web · desktop · mobile", state: "VoiceTel Phone", neutral: true },
+					{ title: "Numbers and e911 records", meta: "local · toll-free · mobile · porting · CNAM", state: "Numbers", neutral: true },
+					{ title: "Network workarounds", meta: "difficult customer networks", state: "SDN appliance", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section section--white" id="services" aria-labelledby="services-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Services</p>
+			<h2 id="services-heading">Pick a service: SIP trunking and SDN, Hosted PBX and Phone, or numbers and porting.</h2>
+			<p class="lede">Three service lines, each deployed and supported under the same carrier relationship.</p>
+		</div>
+		{%- set features = [
+			{ icon: "diagram-3", title: "SIP trunking and SDN", body: "Carrier SIP trunks for Asterisk, FreePBX, FreeSWITCH, FusionPBX, SBCs, and contact centers, plus the SDN appliance for difficult customer networks.", href: "/integrators/sip-trunking/", cta: "Read more" },
+			{ icon: "buildings", title: "Hosted PBX and Phone", body: "Multi-tenant Hosted PBX with per-tenant portal scope, caller IDs, e911 records, and CDRs. Pair with VoiceTel Phone for web, desktop, and mobile calling.", href: "/integrators/hosted-pbx/", cta: "Read more" },
+			{ icon: "telephone-fill", title: "Numbers and porting", body: "Local DIDs, toll-free, mobile numbers where available, CNAM, e911, and a porting process built around eligibility checks, LOA prep, and rollback planning.", href: "/integrators/numbers/", cta: "Read more" }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">A wholesale partner that does not compete for your customer.</h3>
+				<p class="cta-band__body">A strong fit for MSPs, telecom consultants, PBX installers, UC providers, IT service firms, and communications resellers who need dependable carrier services without giving up the end-customer relationship.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/contact/">Contact partner sales {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/pricing/">Wholesale pricing</a>
+			</div>
+		</div>
+	</div>
+</section>

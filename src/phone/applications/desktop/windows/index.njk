@@ -1,84 +1,137 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /phone/applications/desktop/windows/
 title: "VoiceTel Phone for Windows — Install Guide & FAQ"
 description: "Download, install, and troubleshoot VoiceTel Phone and VoiceML Phone on Windows (installer .exe, portable .exe, or .zip). SHA-256 checksums, first-launch walkthrough, and FAQ."
 platform: windows
 ---
-{%- set voicetel = phoneApps.apps[0] %}
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set winSetup = voicetel.desktop | where("platform", "windows") | where("format", "Installer (.exe)") | first %}
+{%- set winPortable = voicetel.desktop | where("platform", "windows") | where("format", "Portable (.exe)") | first %}
+{%- set winZip = voicetel.desktop | where("platform", "windows") | where("format", ".zip") | first %}
 
-<p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/desktop/">Desktop</a> &middot; Windows</p>
-<h1>VoiceTel Phone for Windows.</h1>
-<p class="lede">Download, install, and troubleshoot the Windows app: installer, portable executable, or .zip archive. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Sign up</a>
-	<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
-</p>
-
-<section id="download" class="section-block">
-	<h2>1. Download</h2>
-	<p>Choose the build that suits your deployment. If you're unsure, use the <strong>installer (.exe)</strong>.</p>
-	{% include "partials/phone-desktop-downloads.njk" %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Desktop &middot; Windows</p>
+			<h1 id="hero-heading">VoiceTel Phone for Windows.</h1>
+			<p class="lede">Download, install, and troubleshoot the Windows app: installer, portable executable, or .zip archive. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="#download">Download for Windows {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/desktop/">All desktop clients</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "Version", value: voicetel.version, sub: "Built " ~ voicetel.built },
+				{ label: "Installer", value: winSetup.size, sub: ".exe · setup wizard and Start-menu shortcut" },
+				{ label: "Portable", value: winPortable.size, sub: ".exe · no install, run the executable directly" },
+				{ label: "Archive", value: winZip.size, sub: ".zip · extract and run VoiceTel.exe, no installer" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
+	</div>
 </section>
 
-<section id="verify" class="section-block">
-	<h2>2. Verify checksum (optional)</h2>
-	<p>Validate file integrity by comparing SHA-256 checksums.</p>
-	<ol>
-		<li>Open <strong>Windows PowerShell</strong>.</li>
-		<li>Run: <code>Get-FileHash .\VoiceTel-{{ voicetel.version }}-Setup.exe -Algorithm SHA256</code></li>
-		<li>Compare the output with the value listed above.</li>
-	</ol>
+<section class="section section--tint" id="download" aria-labelledby="download-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">1 &middot; Download</p>
+			<h2 id="download-heading">Choose the build that suits your deployment.</h2>
+			<p class="lede">If you're unsure, use the <strong>installer (.exe)</strong>: a standard setup wizard that adds a Start-menu shortcut. The <strong>portable .exe</strong> runs with no install, and the <strong>.zip</strong> extracts with no installer; run <code>VoiceTel.exe</code> inside it.</p>
+		</div>
+		{%- for app in phoneApps.apps %}
+		{%- set files = app.desktop | where("platform", platform) %}
+		<h3 class="subsection-heading" id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
+		<div class="prose"><p>{{ app.audience }}</p></div>
+		<div class="table-container">
+			<table class="data-table">
+				<thead>
+					<tr><th scope="col">Build</th><th scope="col">SHA-256</th></tr>
+				</thead>
+				<tbody>
+					{%- for file in files %}
+					<tr>
+						<td>{{ file.format }} &middot; {{ file.arch }}<br><a href="{{ phoneApps.baseUrl }}{{ file.file }}">{{ file.file }}</a> &middot; {{ file.size }}</td>
+						<td><code class="mono">{{ file.sha256 | replace(r/^(.{32})/, "$1<wbr>") | safe }}</code></td>
+					</tr>
+					{%- endfor %}
+				</tbody>
+			</table>
+		</div>
+		{%- endfor %}
+	</div>
 </section>
 
-<section id="install" class="section-block">
-	<h2>3. Install</h2>
-	<ol>
-		<li>Double-click the downloaded <strong>-Setup.exe</strong> file. For the portable build, run the <strong>.exe</strong> directly, or extract the <strong>.zip</strong> and run the app inside it.</li>
-		<li>If Windows SmartScreen appears, click <em>More info</em>, then <em>Run anyway</em>.</li>
-		<li>Follow the installation wizard to complete setup.</li>
-	</ol>
-	<p><strong>Upgrading?</strong> Fully quit the running app from the system tray (right-click &rarr; <em>Quit</em>) before installing; otherwise the single-instance lock re-focuses the old version.</p>
+<section class="section section--white" id="verify" aria-labelledby="verify-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">2 &middot; Verify checksum</p>
+				<h2 id="verify-heading">Compare the SHA-256 before you install.</h2>
+				<p class="lede">Optional: validate file integrity by comparing SHA-256 checksums. Open Windows PowerShell, run the command against the file you downloaded, and compare the output with the value listed above.</p>
+			</div>
+			<div class="row__visual">
+				{%- set code %}{% highlight "powershell" %}Get-FileHash .\VoiceTel-{{ voicetel.version }}-Setup.exe -Algorithm SHA256
+# substitute whichever file you downloaded;
+# the Hash must match the checksum listed above{% endhighlight %}{% endset %}
+				{%- set terminal = { label: "Windows PowerShell", pill: "SHA-256", code: code } %}
+				{% include "partials/v2/terminal.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="firstlaunch" class="section-block">
-	<h2>4. First launch</h2>
-	<ol>
-		<li>Open <strong>VoiceTel</strong> (or <strong>VoiceML Phone</strong>) from the Start Menu.</li>
-		<li>Allow microphone access when prompted. If you missed the prompt, go to <em>Settings &rarr; Privacy &amp; security &rarr; Microphone</em>, enable <em>Microphone access</em>, and allow the app.</li>
-		<li>Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal. In VoiceML Phone, enter your VoiceML activation code under <em>Settings &rarr; Auto Provision</em> instead.</li>
-	</ol>
+<section class="section section--tint" id="install" aria-labelledby="install-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">3 &middot; Install and first launch</p>
+				<h2 id="install-heading">Run the installer, allow the microphone, sign in.</h2>
+				<p class="lede">The installer walks through a setup wizard; the portable .exe and the .zip run in place. On first launch, allow microphone access and enter the credentials for your account.</p>
+			</div>
+			<div class="row__visual" id="firstlaunch">
+				{%- set steps = [
+					{ title: "Run the installer", body: "Double-click the downloaded <strong>-Setup.exe</strong> file. For the portable build, run the <strong>.exe</strong> directly, or extract the <strong>.zip</strong> and run the app inside it." },
+					{ title: "Pass SmartScreen", body: "If Windows SmartScreen appears, click <em>More info</em>, then <em>Run anyway</em>." },
+					{ title: "Finish the wizard", body: "Follow the installation wizard to complete setup." },
+					{ title: "Open the app", body: "Open <strong>VoiceTel</strong> (or <strong>VoiceML Phone</strong>) from the Start Menu." },
+					{ title: "Allow microphone access", body: "Allow access when prompted. If you missed the prompt, go to <em>Settings &rarr; Privacy &amp; security &rarr; Microphone</em>, enable <em>Microphone access</em>, and allow the app." },
+					{ title: "Sign in", body: "Enter your VoiceTel SIP credentials (username, password, display name) as provisioned in the customer portal. In VoiceML Phone, enter your VoiceML activation code under <em>Settings &rarr; Auto Provision</em> instead." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="faq" class="section-block faq-block">
-	<h2>FAQ</h2>
-	<details class="faq-item">
-		<summary>How do I uninstall or repair the app?</summary>
-		<p>Open <em>Settings &rarr; Apps &rarr; Installed apps</em>. Locate <strong>VoiceTel</strong> and choose <em>Uninstall</em> or <em>Modify/Repair</em> if available.</p>
-	</details>
-	<details class="faq-item">
-		<summary>What if audio doesn't work?</summary>
-		<p>Check input/output devices in Windows Sound settings and verify microphone permissions are enabled.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Where can I find logs?</summary>
-		<p>Logs are stored in <code>%APPDATA%\VoiceTelPhone\logs</code>. You can share them with support if needed.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Why does the installer request admin rights?</summary>
-		<p>Admin privileges are required to register audio components and add VoiceTel Phone to the Start Menu.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can I install without admin rights?</summary>
-		<p>Yes — use the portable executable (.exe) or the .zip archive above.</p>
-	</details>
-</section>
+<section class="section section--white" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about VoiceTel Phone on Windows.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "How do I uninstall or repair the app?", a: "Open <em>Settings &rarr; Apps &rarr; Installed apps</em>. Locate <strong>VoiceTel</strong> and choose <em>Uninstall</em> or <em>Modify/Repair</em> if available." },
+			{ q: "What if audio doesn’t work?", a: "Check input/output devices in Windows Sound settings and verify microphone permissions are enabled." },
+			{ q: "Where can I find logs?", a: "Logs are stored in <code>%APPDATA%\\VoiceTelPhone\\logs</code>. You can share them with support if needed." },
+			{ q: "Why does the installer request admin rights?", a: "Admin privileges are required to register audio components and add VoiceTel Phone to the Start Menu." },
+			{ q: "Can I install without admin rights?", a: "Yes &mdash; use the portable executable (.exe) or the .zip archive above." },
+			{ q: "Upgrading from an earlier version?", a: "Fully quit the running app from the system tray (right-click &rarr; <em>Quit</em>) before installing; otherwise the single-instance lock re-focuses the old version." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
 
-<aside class="cta-block" aria-labelledby="phone-windows-cta-heading">
-	<h2 id="phone-windows-cta-heading">Need credentials first?</h2>
-	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every Windows workstation that needs to make calls.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/phone/applications/desktop/">All desktop clients</a>
-	</p>
-</aside>
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need credentials first?</h3>
+				<p class="cta-band__body">Sign up to provision SIP credentials, then install VoiceTel Phone on every Windows workstation that needs to make calls.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/desktop/">All desktop clients</a>
+			</div>
+		</div>
+	</div>
+</section>

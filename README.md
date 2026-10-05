@@ -78,7 +78,18 @@ Re-fetch specs from `api.voicetel.com/doc/*.json` when the API changes (the URLs
 
 ## Design system
 
-The unified design standard for all VoiceTel surfaces lives in `directives/design-system.md` (private workspace). The implementation ships at `src/assets/css/tokens.css` and `components.css`. Other VoiceTel projects copy/sync those two CSS files when they migrate to the standard.
+The site is moving to the v2 design (VoiceTel Design Guide, kept alongside this repo in `VoiceTel-Design/`). Stylesheets:
+
+- `tokens.css` — v2 tokens (canonical names `--ink`, `--blue`, `--bg`, …) plus v1 aliases so unmigrated pages render in the new palette. Fonts: Geist and Geist Mono, self-hosted under `src/assets/fonts/geist/`.
+- `base.css` — v2 reset, type scale, `.container`, `.section`, `.row`, `.eyebrow`, `.lede`.
+- `shell.css` — header, navigation, buttons, customer logo strip, footer (every page).
+- `components-v2.css` — v2 components (hero, cards, terminal, tables, docs list, diagram, CTA band). Loaded by the homepage and by pages on `layouts/product.njk`, which sets `design: v2`.
+- `article.css` — v2 styling for prose pages on `layouts/article.njk` (support guides, docs, legal, changelog). Those pages keep their v1 markup; the layout lifts the opening block into a hero band and this sheet restyles the rest.
+- `legacy.css` + `components.css` — the v1 base overrides and v1 components, loaded only by pages not yet migrated. `layouts/base.njk` picks the stack per page.
+
+To migrate a landing page, switch it to `layout: layouts/product.njk` and rebuild it from the v2 vocabulary; to migrate a prose page, switch it to `layout: layouts/article.njk` (see `VoiceTel-Design/page-migration-plan.md`).
+
+The earlier standard (`directives/design-system.md`, private workspace) is superseded by the v2 guide. Other VoiceTel surfaces copy `tokens.css` when they adopt the standard.
 
 ## DNS
 

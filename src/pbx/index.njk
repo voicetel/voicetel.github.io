@@ -1,8 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Hosted PBX"
 description: "Hosted PBX on VoiceTel for extensions, voicemail, ring groups, business hours, attendant menus, SIP devices, and VoiceTel Phone users."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -17,83 +18,98 @@ description: "Hosted PBX on VoiceTel for extensions, voicemail, ring groups, bus
 }
 </script>
 
-<p class="eyebrow">Hosted voice</p>
-<h1>A business phone system on VoiceTel infrastructure.</h1>
-<p class="lede">VoiceTel Hosted PBX gives organizations a fully managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and expert support. Built on top of VoiceML, our PBX solution delivers maximum flexibility and carrier-grade resiliency.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Try for free</a>
-	<a class="btn btn-secondary" href="/phone/applications/">Get phone apps</a>
-</p>
-
-<section class="section-block">
-	<h2>PBX features</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "person-plus" %}</span>
-			<h3>Extensions and users</h3>
-			<p>Manage users, extensions, caller ID, and device credentials from the VoiceTel account workflow.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "envelope" %}</span>
-			<h3>Voicemail</h3>
-			<p>Provide business voicemail workflows with routing and notification behavior defined during onboarding.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Ring groups</h3>
-			<p>Route calls to teams, departments, or on-call groups without custom application code.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
-			<h3>Business hours</h3>
-			<p>Use schedules to route calls differently during open, closed, holiday, and emergency modes.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
-			<h3>Attendant menus</h3>
-			<p>Build simple IVR front doors for sales, support, billing, and after-hours routing.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3>VoiceTel Phone</h3>
-			<p>Pair hosted users with web, desktop, and mobile calling where enabled.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "clock" %}</span>
-			<h3>Call queues</h3>
-			<p>Hold callers in line for the next available agent with position announcements, hold music, and overflow routing.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Conference bridges</h3>
-			<p>Multi-party rooms with dial-in numbers, optional PIN, moderator controls, and recording on demand.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Hosted PBX</p>
+			<h1 id="hero-heading">A business phone system on VoiceTel infrastructure.</h1>
+			<p class="lede">VoiceTel Hosted PBX gives organizations a fully managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and expert support. Built on top of VoiceML, it delivers maximum flexibility and carrier-grade resiliency.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/">Get phone apps</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "VoiceTel numbers into a hosted PBX tenant and out to users and devices",
+				nodes: [
+					{ label: "Numbers", value: "DIDs · E911 records", icon: "hash" },
+					{ label: "Hosted PBX", value: "One tenant per organization", meta: "VoiceML runtime", icon: "diagram-3", accent: true },
+					{ label: "Users", value: "Extensions · devices", meta: "VoiceTel Phone", icon: "person-plus" }
+				],
+				links: [
+					{ label: "inbound", accent: true },
+					{ label: "SIP", both: true }
+				],
+				meta: [
+					{ k: "Billing", v: "per tenant · per extension · per minute" },
+					{ k: "Tenancy", v: "multi-tenant, per-tenant portal scope" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Multi-tenant from the ground up</h2>
-	<p>Every tenant in a partner account has its own portal scope, caller IDs, emergency-service records, users, and CDRs. Whether supporting one office or a hundred, the workflow stays the same: add the tenant, assign numbers, register devices, and enable extension-to-extension calling across diverse data centers and locations.</p>
-	<p>Hosted PBX is billed per tenant, per extension, and per minute — line-item rates published on the <a href="/pricing/#pbx">pricing page</a>. Designed for organizations and for the integrators who resell to them.</p>
+<section class="section section--tint" id="features" aria-labelledby="features-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">PBX features</p>
+			<h2 id="features-heading">Extensions, voicemail, ring groups, queues, menus, and bridges.</h2>
+		</div>
+		{%- set features = [
+			{ icon: "person-plus", title: "Extensions and users", body: "Manage users, extensions, caller ID, and device credentials from the VoiceTel account workflow." },
+			{ icon: "envelope", title: "Voicemail", body: "Provide business voicemail workflows with routing and notification behavior defined during onboarding." },
+			{ icon: "diagram-3", title: "Ring groups", body: "Route calls to teams, departments, or on-call groups without custom application code." },
+			{ icon: "list-check", title: "Business hours", body: "Use schedules to route calls differently during open, closed, holiday, and emergency modes." },
+			{ icon: "gear", title: "Attendant menus", body: "Build simple IVR front doors for sales, support, billing, and after-hours routing." },
+			{ icon: "phone-vibrate", title: "VoiceTel Phone", body: "Pair hosted users with web, desktop, and mobile calling where enabled." },
+			{ icon: "clock", title: "Call queues", body: "Hold callers in line for the next available agent with position announcements, hold music, and overflow routing." },
+			{ icon: "broadcast-pin", title: "Conference bridges", body: "Multi-party rooms with dial-in numbers, optional PIN, moderator controls, and recording on demand." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<section class="section-block faq-block">
-	<h2>PBX FAQ</h2>
-	<details class="faq-item">
-		<summary>Can we keep existing desk phones?</summary>
-		<p>Device compatibility depends on SIP support, firmware, provisioning, and security policy. Bring your own device is allowed, but its management, configuration, and support are solely the customer's responsibility. We highly recommend using VoiceTel devices and software applications.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Can hosted PBX use VoiceTel numbers?</summary>
-		<p>Yes, numbers and emergency-service records are managed through the VoiceTel number workflow. The PBX product requires at least one emergency number per physical address.</p>
-	</details>
-</section>
+<section class="section section--white" id="multi-tenant" aria-labelledby="tenant-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Multi-tenant</p>
+				<h2 id="tenant-heading">Multi-tenant from the ground up.</h2>
+				<p class="lede">Every tenant in a partner account has its own portal scope, caller IDs, emergency-service records, users, and CDRs. Whether supporting one office or a hundred, the workflow stays the same: add the tenant, assign numbers, register devices, and enable extension-to-extension calling across diverse data centers and locations.</p>
+				<p class="row__links">Billed per tenant, per extension, and per minute, with line-item rates on the <a href="/pricing/#pbx-tenant">pricing page</a>. Designed for organizations and for the integrators who resell to them.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rates = [
+					{ name: "PBX tenant", unit: "/ tenant / month", id: "pbx-tenant" },
+					{ name: "PBX extension", unit: "/ extension / month", id: "pbx-extension" },
+					{ name: "Outbound minutes", unit: "US local · / min", id: "voice-out-us50", star: true },
+					{ name: "Inbound minutes", unit: "US local · / min", id: "voice-in-local", star: true },
+					{ name: "E911 record", unit: "/ record / month", id: "e911" }
+				] %}
+				{%- set rateFootnote = "List rates. Volume tiers apply automatically in the <a href=\"/pricing/\">pricing calculator</a>." %}
+				{% include "partials/v2/price-table.njk" %}
+			</div>
+		</div>
 
-<aside class="cta-block" aria-labelledby="pbx-cta-heading">
-	<h2 id="pbx-cta-heading">Configure and deploy a tenant in minutes with our AI-assisted workflow.</h2>
-	<p>Open an account, add the tenant, assign a number, use the AI Assistant to generate the VoiceML call routing, register, and place a call. The same workflow scales from one office to a hundred.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Sign up</a>
-		<a class="btn btn-secondary" href="/pricing/#pbx">See PBX pricing</a>
-	</p>
-</aside>
+		<h3 class="subsection-heading">PBX FAQ</h3>
+		{%- set faqs = [
+			{ q: "Can we keep existing desk phones?", a: "Device compatibility depends on SIP support, firmware, provisioning, and security policy. Bring your own device is allowed, but its management, configuration, and support are solely the customer's responsibility. We highly recommend using VoiceTel devices and software applications." },
+			{ q: "Can hosted PBX use VoiceTel numbers?", a: "Yes, numbers and emergency-service records are managed through the VoiceTel number workflow. The PBX product requires at least one emergency number per physical address." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Deploy a tenant in minutes with the AI-assisted workflow.</h3>
+				<p class="cta-band__body">Open an account, add the tenant, assign a number, use the AI Assistant to generate the VoiceML call routing, register, and place a call. The same workflow scales from one office to a hundred.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/pricing/#pbx-tenant">See PBX pricing</a>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,94 +1,56 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /developers/lookups/
 title: "Caller and Carrier Lookup for developers"
 description: "CNAM, caller-ID, LRN, and carrier-of-record intelligence — make smarter routing, screening, and rating decisions before a call is answered."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow"><a href="/developers/">For developers</a> / Lookups</p>
-<h1>Enrich your application with caller and carrier intelligence.</h1>
-<p class="lede">VoiceTel's lookup services help developers make smarter decisions before a call is answered, routed, rated, or risk-scored. Combine caller identity and carrier routing data into screen pops, fraud checks, and rating workflows.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Start building</a>
-	<a class="btn btn-secondary" href="/docs/api/">API documentation</a>
-</p>
-
-<section class="section-block">
-	<h2><a href="/caller-lookup/">Caller Lookup</a></h2>
-	<p>Caller Lookup enriches phone numbers with CNAM and caller-ID information so applications can display caller names, inform routing decisions, screen inbound traffic, or prepare CRM screen pops before a conversation begins. Returns the Caller ID Name registered for the given 10-digit number. Billed per lookup; requires CNAM service to be enabled.</p>
-
-	<h3>Use cases</h3>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
-			<h3>Agent screen pops</h3>
-			<p>Display caller identity before the conversation starts.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>Inbound screening</h3>
-			<p>Use caller identity as one signal in spam, fraud, and escalation decisions.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Routing context</h3>
-			<p>Route known business callers, customers, anonymous callers, or high-priority contacts into different workflows.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
-			<h3>Batch hygiene</h3>
-			<p>Clean lists before campaigns, migrations, or CRM updates.</p>
-		</li>
-	</ul>
-
-	<h3>Request</h3>
-	<pre class="code-block"><code>curl -X GET 'https://api.voicetel.com/v2.2/cnam/2025551234' \
-  -H 'Authorization: Bearer YOUR_API_KEY'</code></pre>
-
-	<h3>Response</h3>
-	<pre class="code-block"><code>{
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Developers · Lookups</p>
+			<h1 id="hero-heading">Enrich your application with caller and carrier intelligence.</h1>
+			<p class="lede">VoiceTel's lookup services help developers make smarter decisions before a call is answered, routed, rated, or risk-scored. Combine caller identity and carrier routing data into screen pops, fraud checks, and rating workflows.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Start building {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/docs/api/">API documentation</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			<div class="terminal-tabs" data-tabs>
+				<div class="tab-row" role="tablist" aria-label="Lookup API requests and responses">
+					<button type="button" class="tab" role="tab" id="tab-cnam-request" aria-controls="panel-cnam-request" aria-selected="true">CNAM request</button>
+					<button type="button" class="tab" role="tab" id="tab-cnam-response" aria-controls="panel-cnam-response" aria-selected="false" tabindex="-1">CNAM response</button>
+					<button type="button" class="tab" role="tab" id="tab-lrn-request" aria-controls="panel-lrn-request" aria-selected="false" tabindex="-1">LRN request</button>
+					<button type="button" class="tab" role="tab" id="tab-lrn-response" aria-controls="panel-lrn-response" aria-selected="false" tabindex="-1">LRN response</button>
+				</div>
+				<div role="tabpanel" id="panel-cnam-request" aria-labelledby="tab-cnam-request">
+					{%- set code %}{% highlight "bash" %}curl -X GET 'https://api.voicetel.com/v2.2/cnam/2025551234' \
+  -H 'Authorization: Bearer YOUR_API_KEY'{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "cnam.sh", pill: "GET /v2.2/cnam/{number}", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+				<div role="tabpanel" id="panel-cnam-response" aria-labelledby="tab-cnam-response" hidden>
+					{%- set code %}{% highlight "json" %}{
   "status": "success",
   "data": {
     "number": "2025551234",
     "cnam": "VOICETEL"
   }
-}</code></pre>
-</section>
-
-<section class="section-block">
-	<h2><a href="/carrier-lookup/">Carrier Lookup</a></h2>
-	<p>Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context. Use that data during signup, fraud checks, call setup, support workflows, or routing decisions. The path takes the destination number followed by the calling ANI; both are required to compute jurisdiction and LATA correctly.</p>
-
-	<h3>Use cases</h3>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Real-time call setup</h3>
-			<p>Query numbers before routing traffic.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>Fraud and risk checks</h3>
-			<p>Compare carrier and portability signals against user behavior.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
-			<h3>Support troubleshooting</h3>
-			<p>Give operations teams a portal-based lookup path for manual investigation.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
-			<h3>Routing and rating decisions</h3>
-			<p>Use carrier-of-record and portability signals as inputs to telecom workflows.</p>
-		</li>
-	</ul>
-
-	<h3>Request</h3>
-	<pre class="code-block"><code>curl -X GET 'https://api.voicetel.com/v2.2/lrn/2025551234/4155550100' \
-  -H 'Authorization: Bearer YOUR_API_KEY'</code></pre>
-
-	<h3>Response</h3>
-	<pre class="code-block"><code>{
+}{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "cnam.json", pill: "200 OK", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+				<div role="tabpanel" id="panel-lrn-request" aria-labelledby="tab-lrn-request" hidden>
+					{%- set code %}{% highlight "bash" %}curl -X GET 'https://api.voicetel.com/v2.2/lrn/2025551234/4155550100' \
+  -H 'Authorization: Bearer YOUR_API_KEY'{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "lrn.sh", pill: "GET /v2.2/lrn/{destination}/{ani}", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+				<div role="tabpanel" id="panel-lrn-response" aria-labelledby="tab-lrn-response" hidden>
+					{%- set code %}{% highlight "json" %}{
   "status": "success",
   "data": {
     "destination": "2025551234",
@@ -103,14 +65,93 @@ description: "CNAM, caller-ID, LRN, and carrier-of-record intelligence — make 
       "CITY": "NEW YORK"
     }
   }
-}</code></pre>
+}{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "lrn.json", pill: "200 OK", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="dev-lookup-cta">
-	<h2 id="dev-lookup-cta">Make smarter decisions before the call connects.</h2>
-	<p>Caller identity plus carrier-of-record context, queried in real time or in batch. Once you have an API key, run <code>cnamLookup</code> and <code>lrnLookup</code> live from the browser in the <a href="/docs/api/v2.2/playground/">API playground</a> — the key stays encrypted to your device, never readable from the page.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Try for free</a>
-		<a class="btn btn-secondary" href="/docs/api/v2.2/playground/">Open the playground</a>
-	</p>
-</aside>
+<section class="section section--tint" id="caller-lookup" aria-labelledby="caller-lookup-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Caller Lookup</p>
+				<h2 id="caller-lookup-heading">CNAM and caller-ID data before the conversation begins.</h2>
+				<p class="lede">Caller Lookup enriches phone numbers with CNAM and caller-ID information so applications can display caller names, inform routing decisions, screen inbound traffic, or prepare CRM screen pops. It returns the Caller ID Name registered for the given 10-digit number. Billed per lookup; requires CNAM service to be enabled.</p>
+				<p class="row__links">Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/cnamLookup">VoiceTel API v2.2 &rsaquo; CNAM lookup</a>.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/caller-lookup/">Caller Lookup overview</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set kpis = [
+					{ label: "Returns", value: "CNAM", sub: "Caller ID Name registered for the number" },
+					{ label: "Input", value: "10", suffix: "digits", sub: "e.g. 2025551234" },
+					{ label: "Billing", value: "Per lookup", sub: "Requires CNAM service enabled" },
+					{ label: "Sample result", value: "VOICETEL", sub: "cnam for 2025551234" }
+				] %}
+				{% include "partials/v2/kpi-grid.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Caller Lookup use cases</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "person-vcard", title: "Agent screen pops", body: "Display caller identity before the conversation starts." },
+			{ icon: "shield-check", title: "Inbound screening", body: "Use caller identity as one signal in spam, fraud, and escalation decisions." },
+			{ icon: "diagram-3", title: "Routing context", body: "Route known business callers, customers, anonymous callers, or high-priority contacts into different workflows." },
+			{ icon: "list-check", title: "Batch hygiene", body: "Clean lists before campaigns, migrations, or CRM updates." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--white" id="carrier-lookup" aria-labelledby="carrier-lookup-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Carrier Lookup</p>
+				<h2 id="carrier-lookup-heading">LRN, portability, and carrier-of-record context for routing and rating.</h2>
+				<p class="lede">Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context. Use that data during signup, fraud checks, call setup, support workflows, or routing decisions. The path takes the destination number followed by the calling ANI; both are required to compute jurisdiction and LATA correctly.</p>
+				<p class="row__links">Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/lrnLookup">VoiceTel API v2.2 &rsaquo; LRN lookup</a>.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/carrier-lookup/">Carrier Lookup overview</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "LRN", meta: "location routing number", state: "Returned" },
+					{ title: "Mobile portability", meta: "ported-number context", state: "Returned" },
+					{ title: "Carrier of record", meta: "OCN and state", state: "Returned" },
+					{ title: "Jurisdiction and LATA", meta: "computed from destination and ANI", state: "Returned" },
+					{ title: "Inputs", meta: "destination number, then calling ANI", state: "Both required", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Carrier Lookup use cases</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "broadcast-pin", title: "Real-time call setup", body: "Query numbers before routing traffic." },
+			{ icon: "shield-check", title: "Fraud and risk checks", body: "Compare carrier and portability signals against user behavior." },
+			{ icon: "headset", title: "Support troubleshooting", body: "Give operations teams a portal-based lookup path for manual investigation." },
+			{ icon: "tag", title: "Routing and rating decisions", body: "Use carrier-of-record and portability signals as inputs to telecom workflows." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Make smarter decisions before the call connects.</h3>
+				<p class="cta-band__body">Caller identity plus carrier-of-record context, queried in real time or in batch. Once you have an API key, run <code>cnamLookup</code> and <code>lrnLookup</code> live from the browser in the API playground; the key stays encrypted to your device, never readable from the page.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Try for free {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/docs/api/v2.2/playground/">Open the playground</a>
+			</div>
+		</div>
+	</div>
+</section>

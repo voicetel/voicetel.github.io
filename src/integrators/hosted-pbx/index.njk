@@ -1,98 +1,137 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /integrators/hosted-pbx/
 title: "Hosted PBX and VoiceTel Phone for integrators"
 description: "Multi-tenant Hosted PBX and branded calling apps across web, desktop, and mobile — scale from one office to many customer locations."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow"><a href="/integrators/">For integrators</a> / Hosted PBX</p>
-<h1>Hosted PBX for one office or one hundred tenants.</h1>
-<p class="lede"><a href="/pbx/">VoiceTel Hosted PBX</a> gives organizations a fully managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and support. Built on VoiceML, designed for flexibility and carrier-grade resiliency.</p>
-<p>For partners, Hosted PBX is multi-tenant from the ground up. Each tenant in a partner account has its own portal scope, caller IDs, emergency-service records, users, and CDRs. Scale from one office to many customer locations.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Become a partner</a>
-	<a class="btn btn-secondary" href="/pbx/">Hosted PBX overview</a>
-</p>
-
-<section class="section-block">
-	<h2>Hosted PBX features partners can package</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
-			<h3>Extensions and users</h3>
-			<p>Manage users, extensions, caller ID, and device credentials.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "envelope" %}</span>
-			<h3>Voicemail</h3>
-			<p>Business voicemail workflows with notification and routing behavior.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Ring groups</h3>
-			<p>Route calls to departments, teams, on-call groups, or shared business functions.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "clock" %}</span>
-			<h3>Business hours</h3>
-			<p>Schedules for open, closed, holiday, emergency, and after-hours routing.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
-			<h3>Attendant menus</h3>
-			<p>Simple IVR front doors for sales, support, billing, and general inquiries.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3>VoiceTel Phone</h3>
-			<p>Pair hosted users with web, desktop, and mobile calling where enabled.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Integrators · Hosted PBX</p>
+			<h1 id="hero-heading">Hosted PBX for one office or one hundred tenants.</h1>
+			<p class="lede">VoiceTel Hosted PBX gives organizations a fully managed phone system tied directly to VoiceTel numbers, SIP routing, emergency-service configuration, and support. Built on VoiceML, designed for flexibility and carrier-grade resiliency.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/contact/">Become a partner {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/pbx/">Hosted PBX overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "A partner account holds many tenants; each tenant serves its own users and devices",
+				nodes: [
+					{ label: "Partner account", value: "One carrier relationship", meta: "many tenants", icon: "buildings" },
+					{ label: "Tenant", value: "Portal scope · caller IDs", meta: "e911 records · users · CDRs", icon: "diagram-3", accent: true },
+					{ label: "Users", value: "Extensions · devices", meta: "VoiceTel Phone", icon: "person-plus" }
+				],
+				links: [
+					{ label: "per tenant", accent: true },
+					{ label: "SIP", both: true }
+				],
+				meta: [
+					{ k: "Tenancy", v: "multi-tenant from the ground up" },
+					{ k: "Scale", v: "one office to many customer locations" },
+					{ k: "Runtime", v: "VoiceML" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Give users business calling across web, desktop, and mobile</h2>
-	<p><a href="/phone/">VoiceTel Phone</a> gives users a consistent calling experience across browser, Windows, macOS, Linux, iOS, and Android. Provisioning remains tied to VoiceTel SIP credentials and account controls.</p>
-	<p>A clean way to support remote workers, hybrid teams, deskless employees, mobile users, and customers who don't want to rely only on desk phones.</p>
-
-	<h3>Application features</h3>
-	<ul class="features-grid">
-		<li class="feature">
-			<h3>Web calling</h3>
-			<p>Place calls from the browser where WebRTC is supported.</p>
-		</li>
-		<li class="feature">
-			<h3>Desktop apps</h3>
-			<p>Windows, macOS, and Linux users with the same VoiceTel identity.</p>
-		</li>
-		<li class="feature">
-			<h3>Mobile apps</h3>
-			<p>iOS and Android where mobile deployment is enabled.</p>
-		</li>
-		<li class="feature">
-			<h3>WebRTC media</h3>
-			<p>Modern browser media with DTLS-SRTP where supported by the runtime.</p>
-		</li>
-		<li class="feature">
-			<h3>Call recording</h3>
-			<p>Recording for training, quality assurance, or compliance workflows.</p>
-		</li>
-		<li class="feature">
-			<h3>Diagnostics</h3>
-			<p>Call history, DTMF behavior, and SIP message logging for troubleshooting.</p>
-		</li>
-		<li class="feature">
-			<h3>Private-label opportunities</h3>
-			<p>Custom branding and licensing for resellers and integrators.</p>
-		</li>
-	</ul>
+<section class="section section--tint" id="tenants" aria-labelledby="tenants-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Multi-tenant</p>
+				<h2 id="tenants-heading">Multi-tenant from the ground up, billed per tenant and per extension.</h2>
+				<p class="lede">Each tenant in a partner account has its own portal scope, caller IDs, emergency-service records, users, and CDRs. Scale from one office to many customer locations.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/pricing/#pbx-tenant">See PBX pricing</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rates = [
+					{ name: "PBX tenant", unit: "/ tenant / month", id: "pbx-tenant" },
+					{ name: "PBX extension", unit: "/ extension / month", id: "pbx-extension" },
+					{ name: "E911 record", unit: "/ record / month", id: "e911" },
+					{ name: "Outbound minutes", unit: "US local · / min", id: "voice-out-us50", star: true },
+					{ name: "Inbound minutes", unit: "US local · / min", id: "voice-in-local", star: true }
+				] %}
+				{%- set rateFootnote = "List rates. Volume tiers apply automatically in the <a href=\"/pricing/\">pricing calculator</a>." %}
+				{% include "partials/v2/price-table.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="int-pbx-cta">
-	<h2 id="int-pbx-cta">Roll out PBX tenants under one carrier relationship.</h2>
-	<p>Per-tenant portal scope, caller IDs, e911 records, users, and CDRs.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/contact/">Contact partner sales</a>
-		<a class="btn btn-secondary" href="/pbx/">Hosted PBX overview</a>
-	</p>
-</aside>
+<section class="section section--white" id="features" aria-labelledby="features-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">PBX features</p>
+			<h2 id="features-heading">Hosted PBX features partners can package.</h2>
+			<p class="lede">Extensions, voicemail, ring groups, business hours, attendant menus, and VoiceTel Phone users, managed per tenant.</p>
+		</div>
+		{%- set features = [
+			{ icon: "person-vcard", title: "Extensions and users", body: "Manage users, extensions, caller ID, and device credentials." },
+			{ icon: "envelope", title: "Voicemail", body: "Business voicemail workflows with notification and routing behavior." },
+			{ icon: "diagram-3", title: "Ring groups", body: "Route calls to departments, teams, on-call groups, or shared business functions." },
+			{ icon: "clock", title: "Business hours", body: "Schedules for open, closed, holiday, emergency, and after-hours routing." },
+			{ icon: "list-check", title: "Attendant menus", body: "Simple IVR front doors for sales, support, billing, and general inquiries." },
+			{ icon: "phone-vibrate", title: "VoiceTel Phone", body: "Pair hosted users with web, desktop, and mobile calling where enabled." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--tint" id="phone" aria-labelledby="phone-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">VoiceTel Phone</p>
+				<h2 id="phone-heading">Business calling across web, desktop, and mobile on one VoiceTel identity.</h2>
+				<p class="lede">VoiceTel Phone gives users a consistent calling experience across browser, Windows, macOS, Linux, iOS, and Android, with provisioning tied to VoiceTel SIP credentials and account controls. A clean way to support remote workers, hybrid teams, deskless employees, mobile users, and customers who don't want to rely only on desk phones.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/phone/">VoiceTel Phone overview</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set platforms = [
+					{ icon: "code-slash", name: "Web", meta: "WebRTC · browser", href: "/phone/applications/web/" },
+					{ icon: "hdd-stack", name: "Windows", meta: "Desktop app", href: "/phone/applications/desktop/windows/" },
+					{ icon: "hdd-stack", name: "macOS", meta: "Desktop app", href: "/phone/applications/desktop/macos/" },
+					{ icon: "hdd-stack", name: "Linux", meta: "Desktop app", href: "/phone/applications/desktop/linux/" },
+					{ icon: "phone-vibrate", name: "iOS", meta: "Mobile app", href: "/phone/applications/mobile/ios/" },
+					{ icon: "phone-vibrate", name: "Android", meta: "Mobile app", href: "/phone/applications/mobile/android/" }
+				] %}
+				{% include "partials/v2/platform-grid.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Application features</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "telephone", title: "Web calling", body: "Place calls from the browser where WebRTC is supported." },
+			{ icon: "layers", title: "Desktop apps", body: "Windows, macOS, and Linux users with the same VoiceTel identity." },
+			{ icon: "phone-vibrate", title: "Mobile apps", body: "iOS and Android where mobile deployment is enabled." },
+			{ icon: "shield-check", title: "WebRTC media", body: "Modern browser media with DTLS-SRTP where supported by the runtime." },
+			{ icon: "record-circle", title: "Call recording", body: "Recording for training, quality assurance, or compliance workflows." },
+			{ icon: "activity", title: "Diagnostics", body: "Call history, DTMF behavior, and SIP message logging for troubleshooting." },
+			{ icon: "tag", title: "Private-label opportunities", body: "Custom branding and licensing for resellers and integrators." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Roll out PBX tenants under one carrier relationship.</h3>
+				<p class="cta-band__body">Per-tenant portal scope, caller IDs, e911 records, users, and CDRs.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/contact/">Contact partner sales {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/pbx/">Hosted PBX overview</a>
+			</div>
+		</div>
+	</div>
+</section>

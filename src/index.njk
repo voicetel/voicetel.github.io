@@ -3,58 +3,424 @@ layout: layouts/base.njk
 title: ""
 description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatible webhook signatures. Volume discounts your finance team will notice."
 ---
-{% include "partials/landing-showcase.njk" %}
+{%- macro arrow(size) -%}
+<svg class="arrow" width="{{ size }}" height="{{ size }}" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro -%}
+{%- set localDid = pricingRuntime | volumeRate("did-local", 2000) %}
+{%- set tollFreeDid = pricingRuntime | volumeRate("did-tollfree", 2000) %}
+{%- set phoneApp = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set macDmg = phoneApp.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "arm64") | first %}
+{%- set winSetup = phoneApp.desktop | where("platform", "windows") | where("format", "Installer (.exe)") | first %}
 
-<div class="features-rotator" data-features-rotator>
-	<section id="audiences" class="features-section features-rotator__panel is-active" data-rotator-panel aria-label="Audience">
-		<div class="container">
-			<ul class="features-grid">
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-					<h3>For developers</h3>
-					<p>Run your Twilio voice application on VoiceTel without rewriting call logic. Line-item pricing. Test call in five minutes.</p>
-					<p><a href="/developers/">Start building &rarr;</a></p>
-				</li>
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-					<h3>For integrators and resellers</h3>
-					<p>Wholesale carrier access that doesn't compete with you for your customer. Multi-tenant billing and the SDN appliance for plug-and-play SIP traversal.</p>
-					<p><a href="/integrators/">Partner with VoiceTel &rarr;</a></p>
-				</li>
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "buildings" %}</span>
-					<h3>For larger organizations</h3>
-					<p>{% yearsSince 1999 %} years in business — ISP roots, now a full-stack carrier. CLEC + FCC + Robocall Mitigation Database registered. Migration playbook for cutover from your current provider.</p>
-					<p><a href="/enterprise/">Talk to VoiceTel &rarr;</a></p>
-				</li>
-			</ul>
+{#- ───────────────────────── Hero ───────────────────────── -#}
+<section class="hero" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Wholesale telecommunications</p>
+			<h1 id="hero-heading">Twilio-compatible voice on <span class="accent">wholesale carrier infrastructure.</span></h1>
+			<p class="lede">Run compatible Programmable Voice workloads without rewriting call logic. Bring your own speech, storage, and AI vendors. Pay published carrier rates without platform markup.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/pricing/">View pricing {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/voiceml/compatibility/">Check compatibility</a>
+				<a class="btn btn--ghost btn--lg" href="/signup/">Open an account</a>
+			</div>
+			<a class="hero__annotation" href="/status/"><span class="live-dot" aria-hidden="true"></span>Network status · {{ site.pops | length }} POPs · {{ site.cloudRegions | length }} cloud regions</a>
 		</div>
-	</section>
+		<dl class="hero__metrics">
+			<div class="metric-card">
+				<dt class="metric-card__label">Operating since</dt>
+				<dd class="metric-card__value">1999<span class="unit">· {% yearsSince 1999 %} yrs</span></dd>
+				<dd class="metric-card__sub">FCC + RMD registered</dd>
+			</div>
+			<div class="metric-card">
+				<dt class="metric-card__label">POPs</dt>
+				<dd class="metric-card__value">{{ site.pops | length }}<span class="unit">· 2 continents</span></dd>
+				<dd class="metric-card__sub">{{ site.pops | join(" · ") }}</dd>
+			</div>
+			<div class="metric-card">
+				<dt class="metric-card__label">Twilio compat</dt>
+				<dd class="metric-card__value">94.1<span class="unit">%</span></dd>
+				<dd class="metric-card__sub">every voice verb except &lt;Pay&gt;</dd>
+			</div>
+			<div class="metric-card">
+				<dt class="metric-card__label">Real volume discount</dt>
+				<dd class="metric-card__value">30<span class="unit">%</span></dd>
+				<dd class="metric-card__sub">Modeled rates. Confirmed terms.</dd>
+			</div>
+		</dl>
+	</div>
+</section>
 
-	<section id="features" class="features-section features-rotator__panel" data-rotator-panel aria-label="Platform features">
-		<div class="container">
-			<ul class="features-grid">
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-					<h3>Verified Calling</h3>
-					<p>STIR/SHAKEN attestation on every call, backed by real-time threat detection and fraud mitigation.</p>
-				</li>
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
-					<h3>Wholesale Economics</h3>
-					<p>Published rates, scalable volume discounts, and direct access without contact-sales gates or hidden markups.</p>
-				</li>
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-					<h3>Resilient Network</h3>
-					<p>Geographically diverse POPs with redundant Tier-1 carrier interconnects for dependable performance.</p>
-				</li>
-				<li class="feature">
-					<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
-					<h3>Operator Support</h3>
-					<p>US-based NOC support from engineers who understand carrier-grade voice, messaging, and IP services.</p>
-				</li>
-			</ul>
+{#- ───────────────────────── Network map ───────────────────────── -#}
+<section class="map-band" aria-label="Network footprint">
+	<div class="container">
+		<div class="map-band__head">
+			<p class="eyebrow">Network footprint</p>
+			<a class="btn-link" href="/infrastructure/">See the infrastructure {{ arrow(12) }}</a>
 		</div>
-	</section>
-</div>
+		{%- set item = landing.tabs | where("key", "overview") | first %}
+		{%- set eager = true %}
+		{%- set basePath = landing.illustrationPath %}
+		{% include "partials/illustration-figure.njk" %}
+	</div>
+</section>
+
+{#- ───────────────────────── Audience strip ───────────────────────── -#}
+<section class="audience" aria-labelledby="audience-heading">
+	<div class="container">
+		<h2 id="audience-heading" class="visually-hidden">Who VoiceTel is built for</h2>
+		<div class="audience__grid">
+			<div class="audience__col">
+				<div class="audience__icon">{% icon "code-slash" %}</div>
+				<h3 class="audience__title">For developers</h3>
+				<p class="audience__body">Run your Twilio voice application on VoiceTel without rewriting call logic. Line-item pricing. Test call in five minutes.</p>
+				<a class="btn-link" href="/developers/">Start building {{ arrow(12) }}</a>
+			</div>
+			<div class="audience__col">
+				<div class="audience__icon">{% icon "diagram-3" %}</div>
+				<h3 class="audience__title">For integrators and resellers</h3>
+				<p class="audience__body">Wholesale carrier access that doesn't compete with you for your customer. Multi-tenant billing and the SDN appliance for plug-and-play SIP traversal.</p>
+				<a class="btn-link" href="/integrators/">Partner with VoiceTel {{ arrow(12) }}</a>
+			</div>
+			<div class="audience__col">
+				<div class="audience__icon">{% icon "buildings" %}</div>
+				<h3 class="audience__title">For larger organizations</h3>
+				<p class="audience__body">{% yearsSince 1999 %} years in business &mdash; ISP roots, now a full-stack carrier. CLEC + FCC + Robocall Mitigation Database registered. Migration playbook for cutover from your current provider.</p>
+				<a class="btn-link" href="/enterprise/">Talk to VoiceTel {{ arrow(12) }}</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Voice ───────────────────────── -#}
+<section class="section section--white" id="voice" aria-labelledby="voice-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Voice</p>
+				<h2 id="voice-heading">Wholesale voice for managed service providers, carriers, and operators.</h2>
+				<p class="lede">STIR/SHAKEN attestation. Global colocation footprint and cloud regions. US-based NOC. Bring your own STT, TTS, and recording storage &mdash; pay providers directly, no VoiceTel markup.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/voice/">See voice features {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/support/voice/">Integration guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<ul class="status-card">
+					<li class="status-row">
+						<span class="status-row__main"><span class="status-row__title">STIR/SHAKEN attestation</span><span class="status-row__meta">on every call</span></span>
+						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Signed</span>
+					</li>
+					<li class="status-row">
+						<span class="status-row__main"><span class="status-row__title">Global footprint</span><span class="status-row__meta">{{ site.pops | length }} POPs · {{ site.cloudRegions | length }} cloud regions</span></span>
+						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Operational</span>
+					</li>
+					<li class="status-row">
+						<span class="status-row__main"><span class="status-row__title">US-based NOC</span><span class="status-row__meta">24/7</span></span>
+						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Online</span>
+					</li>
+					<li class="status-row">
+						<span class="status-row__main"><span class="status-row__title">BYO STT · TTS · storage</span><span class="status-row__meta">no markup</span></span>
+						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Pass-through</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">Platform features</h3>
+		<ul class="feature-grid">
+			<li class="feature">
+				<div class="feature__icon">{% icon "shield-check" %}</div>
+				<h4 class="feature__title">Verified Calling</h4>
+				<p class="feature__body">STIR/SHAKEN attestation on every call, backed by real-time threat detection and fraud mitigation.</p>
+			</li>
+			<li class="feature">
+				<div class="feature__icon">{% icon "tag" %}</div>
+				<h4 class="feature__title">Wholesale Economics</h4>
+				<p class="feature__body">Published rates, scalable volume discounts, and direct access without contact-sales gates or hidden markups.</p>
+			</li>
+			<li class="feature">
+				<div class="feature__icon">{% icon "layers" %}</div>
+				<h4 class="feature__title">Resilient Network</h4>
+				<p class="feature__body">Geographically diverse POPs with redundant Tier-1 carrier interconnects for dependable performance.</p>
+			</li>
+			<li class="feature">
+				<div class="feature__icon">{% icon "headset" %}</div>
+				<h4 class="feature__title">Operator Support</h4>
+				<p class="feature__body">US-based NOC support from engineers who understand carrier-grade voice, messaging, and IP services.</p>
+			</li>
+		</ul>
+	</div>
+</section>
+
+{#- ───────────────────────── VoiceML ───────────────────────── -#}
+<section class="section section--tint" id="voiceml" aria-labelledby="voiceml-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">VoiceML</p>
+				<h2 id="voiceml-heading">Run your Twilio app on VoiceTel without rewriting code.</h2>
+				<p class="lede">Same <code>&lt;Say&gt;</code>, <code>&lt;Gather&gt;</code>, <code>&lt;Dial&gt;</code>, and <code>&lt;Record&gt;</code>. Compatible webhook signatures. Volume discounts your finance team will notice.</p>
+				<ul class="pill-row">
+					<li class="pill">Say · Gather · Dial</li>
+					<li class="pill">Record · Conference · Queue</li>
+					<li class="pill">Connect · ConversationRelay</li>
+					<li class="pill">Webhook signatures</li>
+				</ul>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/voiceml/">Explore VoiceML {{ arrow(14) }}</a>
+					<a class="btn btn--secondary" href="/voiceml/validator/">Validate VoiceML</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<div class="terminal">
+					<div class="terminal__bar">
+						<span class="terminal__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+						<span class="terminal__label">response.xml</span>
+						<span class="terminal__pill">VoiceML · 200 OK</span>
+					</div>
+					<pre class="terminal__body"><span class="ln"><span class="c">&lt;!-- POST /voice/inbound &middot; application/xml --&gt;</span></span><span class="ln"><span class="tag">&lt;</span><span class="name">Response</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Say</span> <span class="attr">voice</span>=<span class="v">"Polly.Joanna"</span><span class="tag">&gt;</span></span><span class="ln">    <span class="t">Press 1 to be connected.</span></span><span class="ln">  <span class="tag">&lt;/</span><span class="name">Say</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Gather</span> <span class="attr">numDigits</span>=<span class="v">"1"</span> <span class="attr">action</span>=<span class="v">"/dispatch"</span><span class="tag">/&gt;</span></span><span class="ln"><span class="tag">&lt;/</span><span class="name">Response</span><span class="tag">&gt;</span></span></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Messaging ───────────────────────── -#}
+<section class="section section--white" id="messaging" aria-labelledby="messaging-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Messaging</p>
+				<h2 id="messaging-heading">SMS and MMS at wholesale rates.</h2>
+				<p class="lede">A2P 10DLC for high-volume application messaging. Inbound included. Webhook delivery to your endpoint. No per-message platform tax.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/messaging/">See messaging {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<div class="kpi-grid">
+					<div class="kpi">
+						<div class="kpi__label">A2P 10DLC</div>
+						<div class="kpi__value">Ready</div>
+						<div class="kpi__sub">High-volume application messaging</div>
+					</div>
+					<div class="kpi">
+						<div class="kpi__label">Inbound</div>
+						<div class="kpi__value">Supported</div>
+						<div class="kpi__sub">SMS · MMS · webhook or email delivery</div>
+					</div>
+					<div class="kpi">
+						<span class="kpi__trend"><span class="dot" aria-hidden="true"></span>200&nbsp;OK</span>
+						<div class="kpi__label">Webhook delivery</div>
+						<div class="kpi__value">12<span class="suffix">ms avg</span></div>
+						<div class="kpi__sub">Direct to your endpoint</div>
+					</div>
+					<div class="kpi">
+						<div class="kpi__label">Platform tax</div>
+						<div class="kpi__value">$0.00</div>
+						<div class="kpi__sub">Just the segment rate</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Numbers ───────────────────────── -#}
+<section class="section section--tint" id="numbers" aria-labelledby="numbers-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Numbers</p>
+				<h2 id="numbers-heading">Local DIDs, toll-free, and porting.</h2>
+				<p class="lede">Wholesale rates on every number type. Per-number e911 provisioning. CNAM, LIDB, and caller-ID services available. Port local, toll-free, and mobile numbers with coordinated cutover support.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/numbers/">Get numbers {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/support/voice/porting/">Port a number</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<div class="list-panel" role="group" aria-label="Number search example">
+					<div class="tab-row" aria-hidden="true">
+						<span class="tab is-active">Local</span>
+						<span class="tab">Toll-free</span>
+						<span class="tab">Mobile</span>
+						<span class="tab">Area 212</span>
+						<span class="tab">+ port-in</span>
+					</div>
+					<ul class="list">
+						<li class="list__row"><span class="num">+1 (212) 555-0148</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
+						<li class="list__row"><span class="num">+1 (212) 555-0220</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
+						<li class="list__row"><span class="num">+1 (212) 555-0391</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
+						<li class="list__row"><span class="num">+1 (800) 555-3201</span><span class="tag">Toll-free</span><span class="price">{{ tollFreeDid }}<span class="star">/mo*</span></span></li>
+					</ul>
+					<span class="list__footnote">* Per number per month at the 2K-DID volume tier.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── AI Agents ───────────────────────── -#}
+<section class="section section--white" id="ai-agents" aria-labelledby="ai-agents-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">AI Agents</p>
+				<h2 id="ai-agents-heading">Voice and chat AI on the Twilio AI Assistants API.</h2>
+				<p class="lede">Configure assistants with a model, instructions, tools, and knowledge resources. Connect voice sessions through VoiceML and inspect session history through the API.</p>
+				<ul class="pill-row">
+					<li class="pill">Assistants · Tools</li>
+					<li class="pill">Knowledge · Sessions</li>
+					<li class="pill">Feedback · Policies</li>
+				</ul>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/ai-agents/">Explore AI Agents {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/conversations/">Explore Conversations</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<div class="terminal">
+					<div class="terminal__bar">
+						<span class="terminal__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+						<span class="terminal__label">voice-agent.xml</span>
+						<span class="terminal__pill">ConversationRelay</span>
+					</div>
+					<pre class="terminal__body"><span class="ln"><span class="tag">&lt;</span><span class="name">Response</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Connect</span><span class="tag">&gt;</span></span><span class="ln">    <span class="tag">&lt;</span><span class="name">ConversationRelay</span> <span class="attr">url</span>=<span class="v">"wss://your-app.example/conversation"</span></span><span class="ln">        <span class="attr">language</span>=<span class="v">"en-US"</span><span class="tag">/&gt;</span></span><span class="ln">  <span class="tag">&lt;/</span><span class="name">Connect</span><span class="tag">&gt;</span></span><span class="ln"><span class="tag">&lt;/</span><span class="name">Response</span><span class="tag">&gt;</span></span></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── SDN appliance ───────────────────────── -#}
+<section class="section section--tint" id="sdn" aria-labelledby="sdn-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">SDN appliance</p>
+				<h2 id="sdn-heading">Plug-and-play SIP traversal.</h2>
+				<p class="lede">Place a Raspberry Pi in your LAN; it tunnels to VoiceTel core. Solves NAT, ALG, UDP timer, and firewall misconfiguration without changing your routing policies.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/sdn/">Learn about SDN {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/support/voice/pbx/">PBX setup guides</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set diagram = {
+					title: "Your LAN to the SDN appliance to VoiceTel core",
+					nodes: [
+						{ label: "Your LAN", value: "PBX + phones", meta: "10.0.0.0/24" },
+						{ label: "SDN appliance", value: "Raspberry Pi", meta: "sdn-08c4", accent: true },
+						{ label: "VoiceTel core", value: "NYC POP", meta: "TLS 1.3 tunnel" }
+					],
+					links: [{}, { accent: true }],
+					meta: [
+						{ k: "Uplink", v: ":443 outbound" },
+						{ k: "Firewall", v: "no routing changes" },
+						{ k: "Media", v: "SIP + RTP inside" }
+					]
+				} %}
+				{% include "partials/v2/diagram.njk" %}
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Phone apps ───────────────────────── -#}
+<section class="section section--white" id="phone" aria-labelledby="phone-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Phone apps</p>
+				<h2 id="phone-heading">VoIP calling on web, desktop, and mobile.</h2>
+				<p class="lede">VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. WebRTC media. One app, three form factors.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/phone/">Get the app {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/phone/applications/">View applications</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<ul class="platform-grid">
+					<li><a class="platform-card" href="/phone/applications/web/"><div class="platform-card__icon">{% icon "code-slash" %}</div><div class="platform-card__name">Web</div><div class="platform-card__meta">WebRTC · no install</div></a></li>
+					<li><a class="platform-card" href="/phone/applications/desktop/macos/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">macOS</div><div class="platform-card__meta">{{ macDmg.size }} · .dmg</div></a></li>
+					<li><a class="platform-card" href="/phone/applications/desktop/windows/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">Windows</div><div class="platform-card__meta">{{ winSetup.size }} · .exe</div></a></li>
+					<li><a class="platform-card" href="/phone/applications/desktop/linux/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">Linux</div><div class="platform-card__meta">AppImage · deb · rpm</div></a></li>
+					<li><a class="platform-card" href="/phone/applications/mobile/ios/"><div class="platform-card__icon">{% icon "phone-vibrate" %}</div><div class="platform-card__name">iOS</div><div class="platform-card__meta">App Store</div></a></li>
+					<li><a class="platform-card" href="/phone/applications/mobile/android/"><div class="platform-card__icon">{% icon "phone-vibrate" %}</div><div class="platform-card__name">Android</div><div class="platform-card__meta">Google Play</div></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Pricing ───────────────────────── -#}
+<section class="section section--tint" id="pricing" aria-labelledby="pricing-heading">
+	<div class="container">
+		<div class="row row--wide-visual">
+			<div class="row__text">
+				<p class="eyebrow">Pricing</p>
+				<h2 id="pricing-heading">Wholesale rates, in plain numbers.</h2>
+				<p class="lede">Every line item published. No &ldquo;contact sales&rdquo; gates. STT, TTS, and recording storage paid directly to your chosen provider with zero VoiceTel markup.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/pricing/">See pricing {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/signup/">Open an account</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<table class="price-table">
+					<thead>
+						<tr><th scope="col">Service</th><th scope="col" class="right">Rate</th></tr>
+					</thead>
+					<tbody>
+						<tr><td class="price-table__name">Outbound voice<span class="unit">US local · / min</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("voice-out-us50", 200000) }}<span class="star">*</span></td></tr>
+						<tr><td class="price-table__name">Inbound voice<span class="unit">US local · / min</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("voice-in-local", 200000) }}<span class="star">*</span></td></tr>
+						<tr><td class="price-table__name">Local DID<span class="unit">/ number / month</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("did-local", 100) }}<span class="star">*</span></td></tr>
+						<tr><td class="price-table__name">A2P SMS<span class="unit">/ segment</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("sms-out", 200000) }}<span class="star">*</span></td></tr>
+						<tr><td class="price-table__name">STT · TTS · recording storage<span class="unit">paid to your provider</span></td><td class="price-table__rate price-table__rate--passthrough right">Pass-through</td></tr>
+					</tbody>
+				</table>
+				<p class="price-footnote"><span class="star">*</span> Volume tier: 200K minutes, 200K messages, and 100 DIDs per month.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+{#- ───────────────────────── Documentation ───────────────────────── -#}
+<section class="section section--white" id="docs" aria-labelledby="docs-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Documentation</p>
+				<h2 id="docs-heading">Reference, guides, and migration playbooks.</h2>
+				<p class="lede">VoiceML reference, REST API, integration guides for major PBX platforms and firewall vendors, and a five-minute migrate-from-Twilio playbook.</p>
+				<div class="cta-row">
+					<a class="btn btn--primary" href="/docs/">Read the docs {{ arrow(14) }}</a>
+					<a class="btn btn--ghost" href="/voiceml/migrate/">Migrate from Twilio</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				<ul class="docs-list">
+					<li><a class="docs-list__row" href="{{ apiSpecs.voiceml.urlPath }}"><span class="docs-list__icon">{% icon "code-slash" %}</span><span class="docs-list__title">VoiceML reference</span><span class="docs-list__meta">17 verbs</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
+					<li><a class="docs-list__row" href="/docs/api/v2.2/"><span class="docs-list__icon">{% icon "book" %}</span><span class="docs-list__title">REST API</span><span class="docs-list__meta">74 operations</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
+					<li><a class="docs-list__row" href="/voiceml/migrate/#webhook-signatures"><span class="docs-list__icon">{% icon "shield-check" %}</span><span class="docs-list__title">Webhook signatures</span><span class="docs-list__meta">HMAC-SHA256</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
+					<li><a class="docs-list__row" href="/voiceml/migrate/"><span class="docs-list__icon">{% icon "tag" %}</span><span class="docs-list__title">Migrate from Twilio</span><span class="docs-list__meta">5 min</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
+					<li><a class="docs-list__row" href="/support/voice/"><span class="docs-list__icon">{% icon "plug" %}</span><span class="docs-list__title">Vendor integration guides</span><span class="docs-list__meta">PBX · SBC · firewall</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Migrating from Twilio?</h3>
+				<p class="cta-band__body">Point your app at VoiceTel, swap credentials, and validate your markup. The playbook takes about five minutes.</p>
+			</div>
+			<div class="cta-band__actions">
+				<a class="btn btn--primary" href="/voiceml/migrate/">Read the playbook</a>
+				<a class="btn btn--ghost" href="/enterprise/migration/">Talk to VoiceTel</a>
+			</div>
+		</div>
+	</div>
+</section>

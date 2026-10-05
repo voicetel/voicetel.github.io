@@ -1,0 +1,14 @@
+{#- Code panel (design guide § Code panels). Highlighting comes from the
+	Eleventy syntax-highlight plugin; capture it first:
+	  {% set code %}{% highlight "xml" %}…{% endhighlight %}{% endset %}
+	  {% set terminal = { label: "inbound-ivr.xml", pill: "VoiceML · 200 OK", code: code } %}
+	  {% include "partials/v2/terminal.njk" %}
+-#}
+<div class="terminal">
+	<div class="terminal__bar">
+		<span class="terminal__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+		<span class="terminal__label">{{ terminal.label }}</span>
+		{%- if terminal.pill %}<span class="terminal__pill">{{ terminal.pill }}</span>{% endif %}
+	</div>
+	{{ terminal.code | escapeGt | safe }}
+</div>

@@ -1,100 +1,106 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /enterprise/phone/
 title: "Employee calling and white-label apps for enterprise"
 description: "One calling experience across web, desktop, and mobile, with private-label opportunities for branded internal communications applications."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
-<p class="eyebrow"><a href="/enterprise/">For larger organizations</a> / Phone</p>
-<h1>Give employees one calling experience across devices.</h1>
-<p class="lede"><a href="/phone/">VoiceTel Phone</a> provides one calling experience across web, desktop, and mobile. Users can call from the browser, desktop apps, iOS, and Android where enabled, while provisioning stays tied to VoiceTel SIP credentials and account controls.</p>
-<p>For enterprise teams, that supports hybrid work, branch teams, remote staff, mobile employees, contact teams, operations users, and employees who need business calling without being tied to one physical phone.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Talk to VoiceTel</a>
-	<a class="btn btn-secondary" href="/phone/">Phone overview</a>
-</p>
-
-<section class="section-block">
-	<h2>Employee calling options</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
-			<h3>Browser-based calling</h3>
-			<p>Access to calling without requiring a desktop installation where WebRTC is supported.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "hdd-stack" %}</span>
-			<h3>Desktop calling</h3>
-			<p>Windows, macOS, and Linux.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "phone-vibrate" %}</span>
-			<h3>Mobile calling</h3>
-			<p>iOS and Android where mobile deployment is enabled.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
-			<h3>Call recording</h3>
-			<p>Training, compliance, quality assurance, and internal review workflows.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "graph-up" %}</span>
-			<h3>Diagnostics</h3>
-			<p>Call history, DTMF behavior, and SIP message logging for troubleshooting.</p>
-		</li>
-	</ul>
-</section>
-
-<section class="section-block">
-	<h2>White-label and private-label applications</h2>
-	<p>VoiceTel's <a href="/phone/">phone application</a> includes private-label opportunities — custom branding and licensing for resellers, integrators, and enterprise organizations.</p>
-	<p>For enterprise organizations, that opens the door to branded internal communications applications for employees, departments, franchise locations, field teams, or customer-facing business units. Instead of forcing every user into a generic phone app experience, support a branded application strategy aligned with the organization's identity and operating model.</p>
-
-	<h3>White-label use cases</h3>
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "person-vcard" %}</span>
-				<h3 class="oss-card__title">Employee calling app</h3>
-			</header>
-			<p class="oss-card__description">Give staff a company-branded calling experience across supported devices.</p>
-		</article>
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "diagram-3" %}</span>
-				<h3 class="oss-card__title">Department communications</h3>
-			</header>
-			<p class="oss-card__description">Tailored calling environments for sales, support, dispatch, field operations, or branch locations.</p>
-		</article>
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "buildings" %}</span>
-				<h3 class="oss-card__title">Franchise / multi-location</h3>
-			</header>
-			<p class="oss-card__description">Standardize communications across locations while preserving brand consistency.</p>
-		</article>
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "arrow-right-circle" %}</span>
-				<h3 class="oss-card__title">Internal mobility strategy</h3>
-			</header>
-			<p class="oss-card__description">Support employees who move between office, remote, and mobile environments.</p>
-		</article>
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "tag" %}</span>
-				<h3 class="oss-card__title">Customer-facing branding</h3>
-			</header>
-			<p class="oss-card__description">Branded calling tools where the communications experience is part of the customer experience.</p>
-		</article>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Enterprise phone</p>
+			<h1 id="hero-heading">Give employees one calling experience across devices.</h1>
+			<p class="lede">VoiceTel Phone provides one calling experience across web, desktop, and mobile. Users call from the browser, desktop apps, iOS, and Android where enabled, while provisioning stays tied to VoiceTel SIP credentials and account controls.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/contact/">Talk to VoiceTel {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/phone/">Phone overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set diagram = {
+				title: "Employees on any device sign in to VoiceTel Phone, which registers to VoiceTel with the account's SIP credentials",
+				nodes: [
+					{ label: "Employees", value: "Browser · desktop · mobile", meta: "hybrid · branch · remote · field", icon: "person-vcard" },
+					{ label: "VoiceTel Phone", value: "One calling experience", meta: "your brand, private label", icon: "phone-vibrate", accent: true },
+					{ label: "VoiceTel", value: "SIP credentials · account controls", meta: "numbers · PSTN", icon: "diagram-3" }
+				],
+				links: [
+					{ label: "sign in", both: true, accent: true },
+					{ label: "SIP", both: true }
+				],
+				meta: [
+					{ k: "Devices", v: "web · Windows · macOS · Linux · iOS · Android" },
+					{ k: "Provisioning", v: "VoiceTel SIP credentials" },
+					{ k: "Branding", v: "private label available" }
+				]
+			} %}
+			{% include "partials/v2/diagram.njk" %}
+		</div>
 	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="ent-phone-cta">
-	<h2 id="ent-phone-cta">Roll out a branded calling experience.</h2>
-	<p>One identity, every device, with private-label options for the brand layer.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/contact/">Contact us</a>
-		<a class="btn btn-secondary" href="/phone/">Phone overview</a>
-	</p>
-</aside>
+<section class="section section--tint" id="options" aria-labelledby="options-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Employee calling options</p>
+			<h2 id="options-heading">Browser, desktop, and mobile calling, with recording and diagnostics built in.</h2>
+			<p class="lede">For hybrid work, branch teams, remote staff, mobile employees, contact teams, operations users, and employees who need business calling without being tied to one physical phone.</p>
+		</div>
+		{%- set features = [
+			{ icon: "code-slash", title: "Browser-based calling", body: "Access to calling without requiring a desktop installation where WebRTC is supported." },
+			{ icon: "hdd-stack", title: "Desktop calling", body: "Windows, macOS, and Linux." },
+			{ icon: "phone-vibrate", title: "Mobile calling", body: "iOS and Android where mobile deployment is enabled." },
+			{ icon: "record-circle", title: "Call recording", body: "Training, compliance, quality assurance, and internal review workflows." },
+			{ icon: "graph-up", title: "Diagnostics", body: "Call history, DTMF behavior, and SIP message logging for troubleshooting." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--white" id="white-label" aria-labelledby="white-label-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">White-label</p>
+				<h2 id="white-label-heading">White-label and private-label applications for branded internal communications.</h2>
+				<p class="lede">VoiceTel's <a href="/phone/">phone application</a> includes private-label opportunities: custom branding and licensing for resellers, integrators, and enterprise organizations. That opens the door to branded internal communications applications for employees, departments, franchise locations, field teams, or customer-facing business units. Instead of forcing every user into a generic phone app experience, support a branded application strategy aligned with the organization's identity and operating model.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/enterprise/">All enterprise workstreams</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Custom branding", meta: "the app carries your organization's identity", state: "Private label", neutral: true },
+					{ title: "Licensing", meta: "resellers, integrators, and enterprise organizations", state: "Available", neutral: true },
+					{ title: "Platforms", meta: "browser, desktop apps, iOS, and Android", state: "Where enabled", neutral: true },
+					{ title: "Provisioning", meta: "VoiceTel SIP credentials and account controls", state: "VoiceTel", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">White-label use cases</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "person-vcard", title: "Employee calling app", body: "Give staff a company-branded calling experience across supported devices." },
+			{ icon: "diagram-3", title: "Department communications", body: "Tailored calling environments for sales, support, dispatch, field operations, or branch locations." },
+			{ icon: "buildings", title: "Franchise and multi-location", body: "Standardize communications across locations while preserving brand consistency." },
+			{ icon: "arrow-right-circle", title: "Internal mobility strategy", body: "Support employees who move between office, remote, and mobile environments." },
+			{ icon: "tag", title: "Customer-facing branding", body: "Branded calling tools where the communications experience is part of the customer experience." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Roll out a branded calling experience.</h3>
+				<p class="cta-band__body">One identity, every device, with private-label options for the brand layer.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/contact/">Contact us {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/">Phone overview</a>
+			</div>
+		</div>
+	</div>
+</section>

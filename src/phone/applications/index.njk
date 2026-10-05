@@ -1,67 +1,88 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "VoiceTel Phone — Applications"
 description: "VoiceTel Phone applications for web, desktop (Windows / macOS / Linux), and mobile (iOS / Android). SIP-over-TLS, WebRTC media, Bluetooth audio, NAT-friendly."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set macDmg = voicetel.desktop | where("platform", "macos") | where("format", ".dmg") | where("arch", "arm64") | first %}
+{%- set winSetup = voicetel.desktop | where("platform", "windows") | where("format", "Installer (.exe)") | first %}
 
-<p class="eyebrow">VoiceTel Phone</p>
-<h1>Applications.</h1>
-<p class="lede">One app, three form factors — same crystal-clear calling. Pick the platform you want; all clients use the same VoiceTel SIP credentials. <a href="/voiceml/phone/">VoiceML Phone</a>, the same softphone for VoiceML accounts, is available on desktop, the App Store, and Google Play.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/signup/">Sign up</a>
-	<a class="btn btn-secondary" href="/phone/applications/web/">Open web phone</a>
-</p>
-
-<section class="section-block">
-	<h2>Pick your platform</h2>
-
-	<div class="oss-cards">
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "telephone" %}</span>
-				<h3 class="oss-card__title"><a href="/phone/applications/web/">Web</a></h3>
-			</header>
-			<p class="oss-card__description">Runs entirely in the browser — no install. HTML, SIP.js, WebRTC. Useful for quick calls and any environment where a desktop or mobile install isn't an option.</p>
-			<p class="oss-card__url"><a href="/phone/applications/web/">View web client &rarr;</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "layers" %}</span>
-				<h3 class="oss-card__title"><a href="/phone/applications/desktop/">Desktop</a></h3>
-			</header>
-			<p class="oss-card__description">Native client for Windows, macOS, and Linux using your system audio. Local call recording, signed installers, and the diagnostics surface needed for support escalations.</p>
-			<p class="oss-card__url"><a href="/phone/applications/desktop/">View desktop clients &rarr;</a></p>
-		</article>
-
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
-				<h3 class="oss-card__title"><a href="/phone/applications/mobile/">Mobile</a></h3>
-			</header>
-			<p class="oss-card__description">iPhone and Android clients with background calling, Bluetooth audio routing, and adaptive switching between Wi-Fi and cellular. The same VoiceTel SIP credentials follow you between devices.</p>
-			<p class="oss-card__url"><a href="/phone/applications/mobile/">View mobile clients &rarr;</a></p>
-		</article>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">VoiceTel Phone &middot; Applications</p>
+			<h1 id="hero-heading">Applications.</h1>
+			<p class="lede">One app, three form factors &mdash; same crystal-clear calling. Pick the platform you want; all clients use the same VoiceTel SIP credentials.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/signup/">Sign up {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/phone/applications/web/">Open web phone</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set platforms = [
+				{ icon: "code-slash", name: "Web", meta: "WebRTC · no install", href: "/phone/applications/web/" },
+				{ icon: "hdd-stack", name: "macOS", meta: macDmg.size ~ " · .dmg", href: "/phone/applications/desktop/macos/" },
+				{ icon: "hdd-stack", name: "Windows", meta: winSetup.size ~ " · .exe", href: "/phone/applications/desktop/windows/" },
+				{ icon: "hdd-stack", name: "Linux", meta: "AppImage · deb · rpm", href: "/phone/applications/desktop/linux/" },
+				{ icon: "phone-vibrate", name: "iOS", meta: "App Store", href: "/phone/applications/mobile/ios/" },
+				{ icon: "phone-vibrate", name: "Android", meta: "Google Play", href: "/phone/applications/mobile/android/" }
+			] %}
+			{% include "partials/v2/platform-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<section class="section-block">
-	<h2>Across all platforms</h2>
-	<ul>
-		<li>Secure SIP over TLS</li>
-		<li>DTMF support</li>
-		<li>Caller ID and privacy controls</li>
-		<li>NAT-friendly configuration</li>
-		<li>Local storage persistence</li>
-		<li>Diagnostics logging</li>
-	</ul>
+<section class="section section--tint" id="platforms" aria-labelledby="platforms-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Pick your platform</p>
+			<h2 id="platforms-heading">Web, desktop, or mobile, on the same VoiceTel identity.</h2>
+			<p class="lede">Three clients, one set of SIP credentials. Each guide lists what the client does and how to get it.</p>
+		</div>
+		{%- set features = [
+			{ icon: "telephone", title: "Web", body: "Runs entirely in the browser &mdash; no install. HTML, SIP.js, WebRTC. Useful for quick calls and any environment where a desktop or mobile install isn't an option.", href: "/phone/applications/web/", cta: "View web client" },
+			{ icon: "layers", title: "Desktop", body: "Native client for Windows, macOS, and Linux using your system audio. Local call recording, signed installers, and the diagnostics surface needed for support escalations.", href: "/phone/applications/desktop/", cta: "View desktop clients" },
+			{ icon: "phone-vibrate", title: "Mobile", body: "iPhone and Android clients with background calling, Bluetooth audio routing, and adaptive switching between Wi-Fi and cellular. The same VoiceTel SIP credentials follow you between devices.", href: "/phone/applications/mobile/", cta: "View mobile clients" }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="phone-applications-cta-heading">
-	<h2 id="phone-applications-cta-heading">First time setting up?</h2>
-	<p>Sign up to provision and obtain SIP credentials, then download the client for every platform your team uses.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/phone/applications/web/">Open web phone</a>
-	</p>
-</aside>
+<section class="section section--white" id="all-platforms" aria-labelledby="all-platforms-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Across all platforms</p>
+				<h2 id="all-platforms-heading">The same calling features on every client.</h2>
+				<p class="lede">All clients use the same VoiceTel SIP credentials. VoiceML Phone, the same softphone for VoiceML accounts, is available on desktop, the App Store, and Google Play.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/voiceml/phone/">VoiceML Phone</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Secure SIP over TLS", state: "Included" },
+					{ title: "DTMF support", state: "Included" },
+					{ title: "Caller ID and privacy controls", state: "Included" },
+					{ title: "NAT-friendly configuration", state: "Included" },
+					{ title: "Local storage persistence", state: "Included" },
+					{ title: "Diagnostics logging", state: "Included" }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">First time setting up?</h3>
+				<p class="cta-band__body">Sign up to provision and obtain SIP credentials, then download the client for every platform your team uses.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/web/">Open web phone</a>
+			</div>
+		</div>
+	</div>
+</section>

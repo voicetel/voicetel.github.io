@@ -1,66 +1,100 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /phone/applications/mobile/ios/
 title: "VoiceTel Phone for iPhone — Install Guide"
 description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Store, allow microphone and notification access, and sign in to start calling."
 ---
-{%- set voicetel = phoneApps.apps[0] %}
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetel = phoneApps.apps | where("key", "voicetel") | first %}
+{%- set voiceml = phoneApps.apps | where("key", "voiceml") | first %}
 
-<p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; <a href="/phone/applications/mobile/">Mobile</a> &middot; iPhone</p>
-<h1>VoiceTel Phone for iPhone.</h1>
-<p class="lede">Install from the App Store, sign in, and incoming calls appear on the native iOS call screen through CallKit. VoiceML Phone, the same softphone for VoiceML accounts, is on the App Store too.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="{{ voicetel.stores.ios }}">Get it on the App Store</a>
-	<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
-</p>
-
-<section id="install" class="section-block">
-	<h2>1. Install from the App Store</h2>
-	<div class="oss-cards">
-		{%- for app in phoneApps.apps %}
-		<article class="oss-card">
-			<header class="oss-card__header">
-				<span class="oss-card__icon">{% icon "phone-vibrate" %}</span>
-				<h3 class="oss-card__title">{{ app.name }}</h3>
-			</header>
-			<p class="oss-card__description">{{ app.audience }}</p>
-			<p class="oss-card__url"><a href="{{ app.stores.ios }}">{{ app.name }} on the App Store</a></p>
-		</article>
-		{%- endfor %}
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Mobile &middot; iPhone</p>
+			<h1 id="hero-heading">VoiceTel Phone for iPhone.</h1>
+			<p class="lede">Install from the App Store, sign in, and incoming calls appear on the native iOS call screen through CallKit. VoiceML Phone, the same softphone for VoiceML accounts, is on the App Store too.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="{{ voicetel.stores.ios }}">Get it on the App Store {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/phone/applications/mobile/">All mobile clients</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set kpis = [
+				{ label: "Version", value: voicetel.version, sub: "App Store · built " ~ voicetel.built },
+				{ label: "Price", value: "Free", sub: "VoiceTel Phone and VoiceML Phone" },
+				{ label: "Incoming calls", value: "CallKit", sub: "Native iOS call screen" },
+				{ label: "In the background", value: "Push", sub: "Calls arrive as push notifications when the app is closed" }
+			] %}
+			{% include "partials/v2/kpi-grid.njk" %}
+		</div>
 	</div>
 </section>
 
-<section id="firstlaunch" class="section-block">
-	<h2>2. First launch</h2>
-	<ol>
-		<li>Allow <strong>microphone</strong> access when prompted; calls need it.</li>
-		<li>Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed.</li>
-		<li>Optionally allow <strong>contacts</strong> access to dial from your address book. Contacts stay on the device.</li>
-		<li>Sign in. VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>.</li>
-	</ol>
+<section class="section section--tint" id="install" aria-labelledby="install-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">1 &middot; Install from the App Store</p>
+				<h2 id="install-heading">Two apps on the App Store; pick the one for your account.</h2>
+				<p class="lede">VoiceTel Phone for VoiceTel accounts, VoiceML Phone for VoiceML accounts. Both are free on the App Store.</p>
+				<p class="row__links">VoiceTel Phone signs in with the SIP credentials provisioned in the VoiceTel customer portal. VoiceML Phone takes a VoiceML activation code under Settings &rarr; Auto Provision, or SIP credentials entered manually.</p>
+			</div>
+			<div class="row__visual">
+				{%- set docs = [
+					{ icon: "phone-vibrate", title: voicetel.name ~ " on the App Store", meta: "VoiceTel accounts", href: voicetel.stores.ios },
+					{ icon: "phone-vibrate", title: voiceml.name ~ " on the App Store", meta: "VoiceML accounts", href: voiceml.stores.ios }
+				] %}
+				{% include "partials/v2/docs-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<section id="faq" class="section-block faq-block">
-	<h2>FAQ</h2>
-	<details class="faq-item">
-		<summary>Which app do I need?</summary>
-		<p>VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on the App Store.</p>
-	</details>
-	<details class="faq-item">
-		<summary>Incoming calls don't ring when the app is closed</summary>
-		<p>Open <em>Settings &rarr; Notifications</em>, select the app, and turn on <em>Allow Notifications</em>. Incoming calls arrive as push notifications and ring on the CallKit call screen.</p>
-	</details>
-	<details class="faq-item">
-		<summary>The other person can't hear me</summary>
-		<p>Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app.</p>
-	</details>
+<section class="section section--white" id="firstlaunch" aria-labelledby="firstlaunch-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">2 &middot; First launch</p>
+				<h2 id="firstlaunch-heading">Allow the microphone and notifications, then sign in.</h2>
+				<p class="lede">Calls need the microphone; notifications carry incoming calls while the app is in the background or closed. Contacts access is optional and stays on the device.</p>
+			</div>
+			<div class="row__visual">
+				{%- set steps = [
+					{ title: "Allow microphone access", body: "Allow <strong>microphone</strong> access when prompted; calls need it." },
+					{ title: "Allow notifications", body: "Allow <strong>notifications</strong> so incoming calls reach you while the app is in the background or closed." },
+					{ title: "Optionally allow contacts", body: "Allow <strong>contacts</strong> access to dial from your address book. Contacts stay on the device." },
+					{ title: "Sign in", body: "VoiceTel Phone takes the SIP credentials provisioned in the VoiceTel customer portal; VoiceML Phone takes a VoiceML activation code under <em>Settings &rarr; Auto Provision</em>." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="phone-ios-cta-heading">
-	<h2 id="phone-ios-cta-heading">Need credentials first?</h2>
-	<p>Sign up to provision SIP credentials, then install VoiceTel Phone on every iPhone that needs to make calls.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/phone/applications/mobile/">All mobile clients</a>
-	</p>
-</aside>
+<section class="section section--tint" id="faq" aria-labelledby="faq-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-heading">Questions about VoiceTel Phone on iPhone.</h2>
+		</div>
+		{%- set faqs = [
+			{ q: "Which app do I need?", a: "VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on the App Store." },
+			{ q: "Incoming calls don’t ring when the app is closed", a: "Open <em>Settings &rarr; Notifications</em>, select the app, and turn on <em>Allow Notifications</em>. Incoming calls arrive as push notifications and ring on the CallKit call screen." },
+			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Need credentials first?</h3>
+				<p class="cta-band__body">Sign up to provision SIP credentials, then install VoiceTel Phone on every iPhone that needs to make calls.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/mobile/">All mobile clients</a>
+			</div>
+		</div>
+	</div>
+</section>

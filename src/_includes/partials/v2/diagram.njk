@@ -1,0 +1,32 @@
+{#- Architecture diagram (design guide § Diagrams).
+	Expects `diagram`:
+	  title  — accessible name for the group
+	  nodes  — [{ label, value, meta?, icon?, accent? }]   (max five)
+	  links  — [{ label?, both?, accent? }]                 (nodes.length - 1 entries)
+	  meta   — [{ k, v }]                                   (optional spec strip)
+-#}
+<div class="diagram" role="group" aria-label="{{ diagram.title }}">
+	<div class="diagram__bg" aria-hidden="true"></div>
+	<div class="diagram__nodes">
+		{%- for node in diagram.nodes %}
+		{%- if not loop.first %}
+		{%- set link = diagram.links[loop.index0 - 1] or {} %}
+		<div class="arrow-line{% if link.label %} arrow-line--labeled{% endif %}{% if link.both %} arrow-line--both{% endif %}{% if link.accent %} arrow-line--accent{% endif %}" aria-hidden="true">
+			{%- if link.label %}<span class="arrow-line__label">{{ link.label }}</span>{% endif %}
+		</div>
+		{%- endif %}
+		<div class="node{% if node.accent %} node--accent{% endif %}">
+			{%- if node.icon %}<span class="node__icon">{% icon node.icon %}</span>{% endif %}
+			<div class="node__label">{{ node.label }}</div>
+			<div class="node__value">{{ node.value }}{% if node.meta %}<span class="node__meta">{{ node.meta }}</span>{% endif %}</div>
+		</div>
+		{%- endfor %}
+	</div>
+	{%- if diagram.meta %}
+	<div class="diagram__meta">
+		{%- for m in diagram.meta %}
+		<span><strong>{{ m.k }}:</strong> {{ m.v }}</span>
+		{%- endfor %}
+	</div>
+	{%- endif %}
+</div>

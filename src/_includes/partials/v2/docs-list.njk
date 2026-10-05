@@ -1,0 +1,7 @@
+{#- Links to reference material (design guide § Lists).
+	Expects `docs`: [{ icon, title, meta?, href }]. -#}
+<ul class="docs-list">
+	{%- for d in docs %}
+	<li><a class="docs-list__row" href="{{ d.href }}"><span class="docs-list__icon">{% icon d.icon %}</span><span class="docs-list__title">{{ d.title | safe }}</span>{% if d.meta %}<span class="docs-list__meta">{{ d.meta }}</span>{% endif %}<svg class="docs-list__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M5 8h6M8 5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+	{%- endfor %}
+</ul>

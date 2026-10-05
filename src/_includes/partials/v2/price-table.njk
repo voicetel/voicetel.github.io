@@ -1,0 +1,24 @@
+{#- Rate table (design guide § Pricing tables).
+	Expects `rates`: [{ name, unit?, rate?, id?, volume?, star?, passthrough? }]
+	  rate       — a preformatted string, or
+	  id/volume  — looked up from pricing data (volume → tiered rate; omit → list rate)
+	Optional `rateFootnote` (HTML) renders below the table with the blue star. -#}
+<table class="price-table">
+	<thead>
+		<tr><th scope="col">Service</th><th scope="col" class="right">Rate</th></tr>
+	</thead>
+	<tbody>
+		{%- for r in rates %}
+		<tr>
+			<td class="price-table__name">{{ r.name }}{% if r.unit %}<span class="unit">{{ r.unit }}</span>{% endif %}</td>
+			<td class="price-table__rate right{% if r.passthrough %} price-table__rate--passthrough{% endif %}">
+				{%- if r.rate %}{{ r.rate }}{% elif r.volume %}{{ pricingRuntime | volumeRate(r.id, r.volume) }}{% else %}{{ pricingRuntime | listRate(r.id) }}{% endif %}
+				{%- if r.star %}<span class="star">*</span>{% endif -%}
+			</td>
+		</tr>
+		{%- endfor %}
+	</tbody>
+</table>
+{%- if rateFootnote %}
+<p class="price-footnote"><span class="star">*</span> {{ rateFootnote | safe }}</p>
+{%- endif %}

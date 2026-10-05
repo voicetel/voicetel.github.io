@@ -86,6 +86,92 @@ export default function (eleventyConfig) {
 		(pricing, serviceId, volume) => `$${volumeRateValue(pricing, serviceId, volume).toFixed(4)}`
 	);
 
+	// Article layout: split a legacy page body into its hero block (eyebrow, h1,
+	// lede, action row) and the rest, so the layout can render the hero as a band.
+	eleventyConfig.addFilter("splitHero", (html) => {
+		const src = String(html);
+		// The hero is the run of top-level elements before the first top-level block
+		// (section, aside, div, form, table, list …). Depth is tracked so a <section>
+		// nested inside a wrapper div never splits that wrapper.
+		const voids = new Set([
+			"area",
+			"base",
+			"br",
+			"col",
+			"embed",
+			"hr",
+			"img",
+			"input",
+			"link",
+			"meta",
+			"param",
+			"source",
+			"track",
+			"wbr",
+		]);
+		const blocks = new Set([
+			"section",
+			"aside",
+			"article",
+			"div",
+			"form",
+			"table",
+			"ul",
+			"ol",
+			"dl",
+			"nav",
+			"figure",
+			"pre",
+			"details",
+			"blockquote",
+			"main",
+			"header",
+			"footer",
+		]);
+		const tagRe = /<(\/)?([a-zA-Z][a-zA-Z0-9-]*)([^>]*)>/g;
+		let depth = 0;
+		let m;
+		while ((m = tagRe.exec(src)) !== null) {
+			const [, closing, rawName, attrs] = m;
+			const name = rawName.toLowerCase();
+			if (name === "script" || name === "style") {
+				if (!closing) {
+					// Skip to the matching close tag so markup inside it is ignored.
+					const close = src.indexOf(`</${name}`, tagRe.lastIndex);
+					if (close > -1) tagRe.lastIndex = close;
+				}
+				continue;
+			}
+			if (closing) {
+				depth = Math.max(0, depth - 1);
+				continue;
+			}
+			if (depth === 0 && blocks.has(name)) {
+				return { hero: src.slice(0, m.index), body: src.slice(m.index) };
+			}
+			if (!voids.has(name) && !/\/\s*$/.test(attrs)) depth++;
+		}
+		return { hero: src, body: "" };
+	});
+
+	// Prism leaves ">" unescaped in highlighted text; html-validate's
+	// no-raw-characters rule wants "&gt;". Escape text-node ">" only, leaving tags alone.
+	eleventyConfig.addFilter("escapeGt", (html) =>
+		String(html).replace(/(<[^>]*>)|>/g, (match, tag) => tag || "&gt;")
+	);
+
+	// List (undiscounted) rate for any service in pricing.json, formatted for
+	// display: 2 decimals for monthly items, 4 for per-unit traffic rates.
+	eleventyConfig.addFilter("listRate", (pricing, serviceId) => {
+		for (const group of pricing.groups) {
+			const service = group.services.find((s) => s.id === serviceId);
+			if (service) {
+				return `${service.baseRate.toFixed(service.baseRate >= 1 ? 2 : 4)}`;
+			}
+		}
+		throw new Error(`listRate: unknown service "${serviceId}"`);
+	});
+
 	eleventyConfig.addFilter("where", (items, key, value) =>
 		items.filter((item) => item[key] === value)
 	);

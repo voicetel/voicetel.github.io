@@ -1,8 +1,9 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 title: "Carrier Lookup"
 description: "LRN, MNP, and carrier-of-record lookup services for routing decisions, fraud controls, and rate-deck classification."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
 
 <script type="application/ld+json">
 {
@@ -17,76 +18,50 @@ description: "LRN, MNP, and carrier-of-record lookup services for routing decisi
 }
 </script>
 
-<p class="eyebrow">Carrier intelligence</p>
-<h1>Know where a number routes before you rate, route, or risk-score it.</h1>
-<p class="lede">Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/pricing/">See pricing</a>
-	<a class="btn btn-secondary" href="/docs/api/">Read API docs</a>
-</p>
-
-<section class="section-block">
-	<h2>Three workflows, one API</h2>
-	<ul>
-		<li><strong>For real-time call setup</strong> — LRN lookup at signup time, fraud-check time, or call-setup time. REST and webhook formats.</li>
-		<li><strong>For ops teams</strong> — Portal lookup with shareable URLs and exportable history. No API key required for users with portal access.</li>
-	</ul>
-</section>
-
-<section class="section-block">
-	<h2>Lookup modes</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "gear" %}</span>
-			<h3>Real-time API</h3>
-			<p>Query numbers during call setup, signup, fraud checks, or support workflows.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "box-arrow-in-right" %}</span>
-			<h3>Portal queries</h3>
-			<p>Give operations teams a simple manual lookup path for support and troubleshooting.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Routing context</h3>
-			<p>Use carrier-of-record and portability signals as inputs, not as the only routing control.</p>
-		</li>
-	</ul>
-</section>
-
-<section class="section-block code-block-section">
-	<h2>API examples</h2>
-	<p>LRN returns the location-routing number for a destination call. Toll-free RespOrg returns the responsible organization for a toll-free number. Portability check returns whether numbers can be ported in.</p>
-	<div class="code-tabs" data-tabs>
-		<div role="tablist" aria-label="Carrier lookup endpoints" class="code-tabs__list">
-			<button type="button" role="tab" id="tab-lrn" aria-controls="panel-lrn" aria-selected="true" class="code-tabs__tab">LRN</button>
-			<button type="button" role="tab" id="tab-tfresporg" aria-controls="panel-tfresporg" aria-selected="false" tabindex="-1" class="code-tabs__tab">Toll-free RespOrg</button>
-			<button type="button" role="tab" id="tab-portcheck" aria-controls="panel-portcheck" aria-selected="false" tabindex="-1" class="code-tabs__tab">Portability check</button>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Carrier Lookup</p>
+			<h1 id="hero-heading">Know where a number routes before you rate, route, or risk-score it.</h1>
+			<p class="lede">Carrier Lookup returns routing intelligence such as LRN, mobile portability, and carrier-of-record context so telecom teams can make better call-routing, fraud, and cost decisions.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/pricing/#lookup-carrier">See pricing {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/docs/api/">Read API docs</a>
+			</div>
 		</div>
-
-		<div role="tabpanel" id="panel-lrn" aria-labelledby="tab-lrn">
-			<pre class="code-block" data-lang="bash"><code>curl -X POST https://api.voicetel.com/v2.1/info/lrn/ \
+		<div class="hero__visual">
+			<div class="terminal-tabs" data-tabs>
+				<div class="tab-row" role="tablist" aria-label="Carrier lookup endpoints">
+					<button type="button" class="tab" role="tab" id="tab-lrn" aria-controls="panel-lrn" aria-selected="true">LRN</button>
+					<button type="button" class="tab" role="tab" id="tab-tfresporg" aria-controls="panel-tfresporg" aria-selected="false" tabindex="-1">Toll-free RespOrg</button>
+					<button type="button" class="tab" role="tab" id="tab-portcheck" aria-controls="panel-portcheck" aria-selected="false" tabindex="-1">Portability check</button>
+				</div>
+				<div role="tabpanel" id="panel-lrn" aria-labelledby="tab-lrn">
+					{%- set code %}{% highlight "bash" %}curl -X POST https://api.voicetel.com/v2.1/info/lrn/ \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "apikey": "YOUR_API_KEY",
     "cid": 2015551234,
     "dst": 2125551234
-  }'</code></pre>
-		</div>
-
-		<div role="tabpanel" id="panel-tfresporg" aria-labelledby="tab-tfresporg" hidden>
-			<pre class="code-block" data-lang="bash"><code>curl -X POST https://api.voicetel.com/v2.1/info/tfresporg/ \
+  }'{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "lrn.sh", pill: "POST /v2.1/info/lrn", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+				<div role="tabpanel" id="panel-tfresporg" aria-labelledby="tab-tfresporg" hidden>
+					{%- set code %}{% highlight "bash" %}curl -X POST https://api.voicetel.com/v2.1/info/tfresporg/ \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "apikey": "YOUR_API_KEY",
     "tn": 8005551234
-  }'</code></pre>
-		</div>
-
-		<div role="tabpanel" id="panel-portcheck" aria-labelledby="tab-portcheck" hidden>
-			<pre class="code-block" data-lang="bash"><code>curl -X POST https://api.voicetel.com/v2/iNumbering/portInAvailability/ \
+  }'{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "tfresporg.sh", pill: "POST /v2.1/info/tfresporg", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+				<div role="tabpanel" id="panel-portcheck" aria-labelledby="tab-portcheck" hidden>
+					{%- set code %}{% highlight "bash" %}curl -X POST https://api.voicetel.com/v2/iNumbering/portInAvailability/ \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -97,18 +72,53 @@ description: "LRN, MNP, and carrier-of-record lookup services for routing decisi
         { "tn": 2015555678 }
       ]
     }
-  }'</code></pre>
+  }'{% endhighlight %}{% endset %}
+					{%- set terminal = { label: "port-check.sh", pill: "POST /v2/iNumbering/portInAvailability", code: code } %}
+					{% include "partials/v2/terminal.njk" %}
+				</div>
+			</div>
 		</div>
 	</div>
-	<p>Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/lrnLookup">VoiceTel API v2.2 &rsaquo; LRN lookup</a> &middot; <a href="{{ apiSpecs.info.urlPath }}#operation/tfresporg">Info API v2.1 &rsaquo; Toll-free RespOrg</a> &middot; <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/portInAvailability">VoiceTel API v2.2 &rsaquo; Port-in availability</a>.</p>
 </section>
 
-<aside class="cta-block" aria-labelledby="carrier-lookup-cta-heading">
-	<h2 id="carrier-lookup-cta-heading">One real number is worth ten case studies.</h2>
-	<p>Run one query through the API or paste one in the portal. See the routing intelligence on a number you already know the answer for, then trust it on the ones you don't.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/signup/">Free trial</a>
-		<a class="btn btn-secondary" href="/docs/api/">Read API docs</a>
-	</p>
-</aside>
+<section class="section section--tint" id="workflows" aria-labelledby="workflows-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Workflows</p>
+				<h2 id="workflows-heading">Three workflows, one API.</h2>
+				<p class="lede">LRN lookup at signup time, fraud-check time, or call-setup time over REST and webhooks. Portal lookup with shareable URLs and exportable history for ops teams, with no API key required for users with portal access. Batch CSV for lists.</p>
+				<p class="row__links">Full reference: <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/lrnLookup">VoiceTel API v2.2 &rsaquo; LRN lookup</a> &middot; <a href="{{ apiSpecs.info.urlPath }}#operation/tfresporg">Info API v2.1 &rsaquo; Toll-free RespOrg</a> &middot; <a href="{{ apiSpecs['v2.2'].urlPath }}#operation/portInAvailability">VoiceTel API v2.2 &rsaquo; Port-in availability</a>.</p>
+			</div>
+			<div class="row__visual">
+				{%- set rows = [
+					{ title: "Real-time API", meta: "call setup · signup · fraud checks", state: "REST · webhook", neutral: true },
+					{ title: "Portal lookup", meta: "shareable URLs · exportable history", state: "No API key", neutral: true },
+					{ title: "Batch", meta: "lists before a campaign or migration", state: "CSV", neutral: true },
+					{ title: "Returns", meta: "LRN · mobile portability · carrier of record", state: "Per number", neutral: true }
+				] %}
+				{% include "partials/v2/status-card.njk" %}
+			</div>
+		</div>
 
+		<h3 class="subsection-heading">Lookup modes</h3>
+		{%- set featureHeading = "h4" %}
+		{%- set features = [
+			{ icon: "gear", title: "Real-time API", body: "Query numbers during call setup, signup, fraud checks, or support workflows." },
+			{ icon: "box-arrow-in-right", title: "Portal queries", body: "Give operations teams a simple manual lookup path for support and troubleshooting." },
+			{ icon: "diagram-3", title: "Routing context", body: "Use carrier-of-record and portability signals as inputs, not as the only routing control." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">One real number is worth ten case studies.</h3>
+				<p class="cta-band__body">Run one query through the API or paste one in the portal. See the routing intelligence on a number you already know the answer for, then trust it on the ones you don't.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/signup/">Free trial {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/docs/api/">Read API docs</a>
+			</div>
+		</div>
+	</div>
+</section>

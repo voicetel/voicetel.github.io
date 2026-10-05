@@ -1,66 +1,86 @@
 ---
-layout: layouts/page.njk
+layout: layouts/product.njk
 permalink: /enterprise/wholesale-voice/
 title: "Wholesale voice for enterprise"
 description: "Origination, termination, Anycast / Geocast / diverse routing, and STIR/SHAKEN — wholesale voice for organizations that care about performance and cost visibility."
 ---
+{%- from "partials/v2/macros.njk" import arrow %}
+{%- set years %}{% yearsSince 1999 %}{% endset %}
 
-<p class="eyebrow"><a href="/enterprise/">For larger organizations</a> / Wholesale voice</p>
-<h1>Wholesale voice for organizations that care about performance and cost visibility.</h1>
-<p class="lede"><a href="/voice/">VoiceTel Wholesale Voice</a> is built for managed service providers, carriers, operators, and organizations that need inbound and outbound voice with published rate keys, routing controls, and escalation paths.</p>
-<p>The platform supports origination and termination, Anycast, Geocast, and diverse routing. These routing approaches are positioned around performance, resiliency, localized delivery, and business continuity.</p>
-<p class="hero-actions">
-	<a class="btn btn-primary" href="/contact/">Talk to VoiceTel</a>
-	<a class="btn btn-secondary" href="/voice/">Voice overview</a>
-</p>
-
-<section class="section-block">
-	<h2>Enterprise voice advantages</h2>
-	<ul class="features-grid">
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
-			<h3>Origination and termination</h3>
-			<p>Inbound and outbound business voice traffic with clear published rates and carrier support.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
-			<h3>Anycast routing</h3>
-			<p>Route traffic to the nearest or best available node among multiple nodes advertising the same address.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
-			<h3>Geocast routing</h3>
-			<p>Route traffic to nodes in a specific geographic area to keep media paths local and efficient.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "layers" %}</span>
-			<h3>Diverse routing</h3>
-			<p>Multiple network paths or carriers to improve stability and maintain service continuity.</p>
-		</li>
-		<li class="feature">
-			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
-			<h3>STIR/SHAKEN awareness</h3>
-			<p>Caller identity and attestation are part of the voice service, not an afterthought.</p>
-		</li>
-	</ul>
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">Enterprise voice</p>
+			<h1 id="hero-heading">Wholesale voice for organizations that care about performance and cost visibility.</h1>
+			<p class="lede">VoiceTel Wholesale Voice is built for managed service providers, carriers, operators, and organizations that need inbound and outbound voice with published rate keys, routing controls, and escalation paths. Origination and termination with Anycast, Geocast, and diverse routing, for performance, resiliency, localized delivery, and business continuity.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="/contact/">Talk to VoiceTel {{ arrow(14) }}</a>
+				<a class="btn btn--secondary btn--lg" href="/voice/">Voice overview</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			{%- set rows = [
+				{ title: "Anycast", meta: "nearest or best available node", state: "Outbound", neutral: true },
+				{ title: "Geocast", meta: "nodes in a specific geographic area", state: "Outbound", neutral: true },
+				{ title: "Diverse routing", meta: "multiple network paths or carriers", state: "Inbound", neutral: true },
+				{ title: "STIR/SHAKEN", meta: "caller identity and attestation", state: "Signed" },
+				{ title: "Rates", meta: "published rate keys", state: "Published" }
+			] %}
+			{% include "partials/v2/status-card.njk" %}
+		</div>
+	</div>
 </section>
 
-<section class="section-block">
-	<h2>Built for organizations that need operational proof</h2>
-	<p>VoiceTel publishes network and operational proof points that matter to larger organizations:</p>
-	<ul>
-		<li>Colocation POPs in NYC, ORD, DEN, DFW, SJC, and AMS, plus cloud regions.</li>
-		<li>Continuous operation since 1999.</li>
-		<li>FCC, CLEC, Robocall Mitigation Database, and STIR/SHAKEN credentials.</li>
-	</ul>
-	<p>For enterprise buyers, the conversation moves beyond generic claims. VoiceTel can discuss routing, SIP traces, carrier responses, webhook logs, porting, numbers, emergency-service records, and operational details with the teams responsible for keeping communications online.</p>
+<section class="section section--tint" id="advantages" aria-labelledby="advantages-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">Enterprise voice advantages</p>
+			<h2 id="advantages-heading">Origination and termination, three routing modes, and STIR/SHAKEN as part of the service.</h2>
+		</div>
+		{%- set features = [
+			{ icon: "broadcast-pin", title: "Origination and termination", body: "Inbound and outbound business voice traffic with clear published rates and carrier support." },
+			{ icon: "diagram-3", title: "Anycast routing", body: "Route traffic to the nearest or best available node among multiple nodes advertising the same address." },
+			{ icon: "geo-alt", title: "Geocast routing", body: "Route traffic to nodes in a specific geographic area to keep media paths local and efficient." },
+			{ icon: "layers", title: "Diverse routing", body: "Multiple network paths or carriers to improve stability and maintain service continuity." },
+			{ icon: "shield-check", title: "STIR/SHAKEN awareness", body: "Caller identity and attestation are part of the voice service, not an afterthought." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
 </section>
 
-<aside class="cta-block" aria-labelledby="ent-voice-cta">
-	<h2 id="ent-voice-cta">Model your wholesale voice spend.</h2>
-	<p>Published rates plus account-specific tiers once provisioning is complete.</p>
-	<p class="hero-actions">
-		<a class="btn btn-primary" href="/pricing/">Pricing calculator</a>
-		<a class="btn btn-secondary" href="/voice/">Voice overview</a>
-	</p>
-</aside>
+<section class="section section--white" id="proof" aria-labelledby="proof-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Operational proof</p>
+				<h2 id="proof-heading">Built for organizations that need operational proof.</h2>
+				<p class="lede">VoiceTel publishes the network and operational proof points that matter to larger organizations, so the conversation moves beyond generic claims. VoiceTel can discuss routing, SIP traces, carrier responses, webhook logs, porting, numbers, emergency-service records, and operational details with the teams responsible for keeping communications online.</p>
+				<p class="row__links">Facility locations, compliance, and uptime history are published on the <a href="/infrastructure/">infrastructure page</a>.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="/enterprise/">All enterprise workstreams</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set kpis = [
+					{ label: "Colocation POPs", value: (site.pops | length), sub: (site.pops | join(" · ")) ~ ", plus cloud regions" },
+					{ label: "Cloud regions", value: (site.cloudRegions | length), sub: (site.cloudRegions | join(" · ")) },
+					{ label: "Continuous operation", value: years, suffix: "yrs", sub: "Since 1999" },
+					{ label: "Credentials", value: "STIR/SHAKEN", sub: "FCC, CLEC, and Robocall Mitigation Database" }
+				] %}
+				{% include "partials/v2/kpi-grid.njk" %}
+			</div>
+		</div>
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Model your wholesale voice spend.</h3>
+				<p class="cta-band__body">Published rates plus account-specific tiers once provisioning is complete.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="/pricing/">Pricing calculator {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/voice/">Voice overview</a>
+			</div>
+		</div>
+	</div>
+</section>

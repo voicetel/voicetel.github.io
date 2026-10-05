@@ -14,9 +14,7 @@
 		<div class="footer__grid">
 			<div class="footer__brand-col">
 				<a class="brand" href="/">
-					<span class="brand__mark" aria-hidden="true">
-						<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 5.5v5M5.5 3v10M8 1.5v13M10.5 4v8M13.5 6v4" stroke="#9cc3e3" stroke-width="1.4" stroke-linecap="round"/></svg>
-					</span>
+					<span class="brand__mark" aria-hidden="true">{% icon "phone-square" %}</span>
 					{{ site.brand }}
 				</a>
 				<p class="footer__tag">{{ site.tagline }}.<br>POPs in {% for c in colocations %}{% if not loop.first %}{% if loop.last %}, and {% else %}, {% endif %}{% endif %}{{ c.city }}{% endfor %}.</p>

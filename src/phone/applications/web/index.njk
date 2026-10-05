@@ -6,7 +6,7 @@ description: "Browser-based VoIP calling for VoiceTel — SIP over WebSocket, We
 eleventyExcludeFromCollections: true
 ---
 
-<link rel="stylesheet" href="/assets/css/phone-web.css">
+<link rel="stylesheet" href="/assets/css/phone-web.css?v={{ assetVersion }}">
 
 <p class="eyebrow"><a href="/phone/">VoiceTel Phone</a> &middot; Web</p>
 <h1>Calling in the browser. No install.</h1>
@@ -611,5 +611,5 @@ eleventyExcludeFromCollections: true
 <script>window.VOICETEL_CONFIG = { version: "{{ phoneApp.version }}" };</script>
 <script src="https://cdn.jsdelivr.net/npm/sip.js@0.15.11/dist/sip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
-<script src="/assets/js/phone-web-helpers.js"></script>
-<script src="/assets/js/phone-web.js"></script>
+<script src="/assets/js/phone-web-helpers.js?v={{ assetVersion }}"></script>
+<script src="/assets/js/phone-web.js?v={{ assetVersion }}"></script>

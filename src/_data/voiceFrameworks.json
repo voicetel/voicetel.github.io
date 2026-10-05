@@ -1,0 +1,46 @@
+{
+	"_note": "Open-source voice AI frameworks and how each reaches the phone network through VoiceTel, reviewed by reading each repository's source at reviewedCommit. Not tested on live calls. Re-review when a framework's telephony code or VoiceML's Media Streams support changes, and update `reviewed`.",
+	"reviewed": "2026-10-04",
+	"frameworks": [
+		{
+			"name": "Pipecat",
+			"repo": "pipecat-ai/pipecat",
+			"license": "BSD-2-Clause",
+			"connects": "VoiceML <code>&lt;Connect&gt;&lt;Stream&gt;</code> (Twilio Media Streams protocol)",
+			"configure": "Use Pipecat's Twilio serializer and set its <code>base_url</code> to <code>https://voiceml.voicetel.com</code> so automatic hang-up goes to VoiceML.",
+			"reviewedCommit": "c027943"
+		},
+		{
+			"name": "LiveKit Agents",
+			"repo": "livekit/agents",
+			"license": "Apache-2.0",
+			"connects": "<a href=\"/sip-trunking/\">VoiceTel SIP trunking</a> to LiveKit SIP",
+			"configure": "Create LiveKit inbound and outbound SIP trunks for your VoiceTel numbers. Its Twilio-specific transfer helper calls Twilio's API directly and doesn't apply.",
+			"reviewedCommit": "a72c3ba"
+		},
+		{
+			"name": "Dograh",
+			"repo": "dograh-hq/dograh",
+			"license": "BSD-2-Clause",
+			"connects": "Its Asterisk ARI provider, with Asterisk on a <a href=\"/sip-trunking/\">VoiceTel SIP trunk</a>",
+			"configure": "Its Twilio provider is fixed to Twilio's API host for number setup, outbound calls, and transfers, so use the Asterisk provider or change that host.",
+			"reviewedCommit": "fb9050c"
+		},
+		{
+			"name": "TEN Framework",
+			"repo": "TEN-framework/ten-framework",
+			"license": "Apache-2.0 with additional conditions",
+			"connects": "VoiceML <code>&lt;Connect&gt;&lt;Stream&gt;</code>, with its Twilio voice-assistant example",
+			"configure": "The example places and ends calls with the Twilio Python SDK; <a href=\"/voiceml/migrate/#sdk-examples\">point the SDK at VoiceML</a> with a custom HTTP client.",
+			"reviewedCommit": "ad20a173"
+		},
+		{
+			"name": "Bolna",
+			"repo": "bolna-ai/bolna",
+			"license": "MIT",
+			"connects": "VoiceML <code>&lt;Connect&gt;&lt;Stream&gt;</code> (Twilio provider), or Asterisk on a <a href=\"/sip-trunking/\">VoiceTel SIP trunk</a> (sip-trunk provider)",
+			"configure": "Inbound calls use its <code>&lt;Connect&gt;&lt;Stream&gt;</code> response as-is; for outbound calls through its Twilio API server, <a href=\"/voiceml/migrate/#sdk-examples\">point the Twilio Python SDK at VoiceML</a>.",
+			"reviewedCommit": "f7a819b"
+		}
+	]
+}

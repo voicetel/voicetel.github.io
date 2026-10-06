@@ -15,6 +15,7 @@
 		"http://localhost:8000/changelog/",
 		"http://localhost:8000/support/opening-a-ticket/",
 		"http://localhost:8000/support/voice/",
+		"http://localhost:8000/support/voice/addressing-spam-labeled-calls/",
 		"http://localhost:8000/support/voice/sip-trunking/whitelisting-voicetel-ip-addresses/",
 		"http://localhost:8000/support/voice/sip-trunking/ip-termination-account-prefix/",
 		"http://localhost:8000/support/voice/sip-trunking/ip-termination-from-tag/",

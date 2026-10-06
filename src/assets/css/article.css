@@ -461,6 +461,18 @@
 	max-width: none;
 }
 
+/* Long email addresses and URLs wrap instead of widening the table on phones. */
+.article .data-table td a {
+	overflow-wrap: anywhere;
+}
+
+@media (width <= 560px) {
+	.article .data-table th,
+	.article .data-table td {
+		padding: 10px 12px;
+	}
+}
+
 .article table:not(.data-table) {
 	width: 100%;
 	border-collapse: collapse;

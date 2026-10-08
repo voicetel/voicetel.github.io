@@ -40,28 +40,11 @@ description: "Voicemail, recordings, and transcripts from your VoiceML call flow
 				<p class="eyebrow">How it works</p>
 				<h2 id="how-heading">Point a callback at the dashboard; it keeps the rest.</h2>
 				<p class="lede">Point a VoiceML callback at the dashboard with the recipient's email address in the URL. The dashboard keeps the complete payload, downloads the recording, and emails the recipient a summary with a link to that one message. Related recording and transcript callbacks are joined into a single message.</p>
-				<p class="row__links">Callback URLs can also carry call context, such as the digits a caller pressed, which the dashboard shows with the message; a templated document published on <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> fills it in on each call.</p>
-			</div>
-			<div class="row__visual">
-				{%- set diagram = {
-					title: "A VoiceML callback flows into the dashboard and out to the recipient by email",
-					nodes: [
-						{ label: "Your call flow", value: "Record · transcribe", meta: "status callbacks", icon: "code-slash" },
-						{ label: "Dashboard", value: "Payload + audio kept", meta: "messages joined", icon: "activity", accent: true },
-						{ label: "Recipient", value: "Secure link by email", meta: "expires in 30 days", icon: "envelope" }
-					],
-					links: [
-						{ label: "callback", accent: true },
-						{ label: "email" }
-					],
-					meta: [
-						{ k: "Endpoints", v: "/voicemail · /recording · /transcript · /status" },
-						{ k: "Sign-in", v: "Google" }
-					]
-				} %}
-				{% include "partials/v2/diagram.njk" %}
-			</div>
+			<p class="row__links">Callback URLs can also carry call context, such as the digits a caller pressed, which the dashboard shows with the message; a templated document published on <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> fills it in on each call.</p>
 		</div>
+	</div>
+	{%- set drawing = "voiceml-dashboard-flow" %}
+	{% include "partials/section-illustration.njk" %}
 	</div>
 </section>
 

@@ -202,6 +202,14 @@
 	height: auto;
 }
 
+/* Full-width section figures sit one block-rhythm below the content above
+ * them, matching .subsection-heading's top margin. */
+.row + figure.illustration,
+ul.feature-grid + figure.illustration,
+.pricing-calc-footer + figure.illustration {
+	margin-top: 56px;
+}
+
 @media (width <= 960px) {
 	.map-band {
 		padding: 48px 0 0;

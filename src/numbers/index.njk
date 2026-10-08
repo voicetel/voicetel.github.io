@@ -76,23 +76,15 @@ description: "Local, toll-free, mobile, and ported numbers with E911 provisionin
 				<p class="eyebrow">Porting</p>
 				<h2 id="porting-heading">Porting that doesn't lose customers mid-cutover.</h2>
 				<p class="lede">Number portability is where most carrier migrations actually fail. Every port runs the same five steps, with the E911 record reissued before the port completes, not after.</p>
-				<div class="cta-row">
-					<a class="btn btn--ghost" href="/support/voice/porting/procedure/">Porting procedure</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				{%- set steps = [
-					{ title: "Eligibility check", body: "Against LERG and the losing carrier's portability rules." },
-					{ title: "LOA preparation and submission", body: "Losing-carrier-side coordination handled by VoiceTel." },
-					{ title: "Test window scheduling", body: "Calls to the number reach both the old and new endpoints during the window, so you can prove answer rates before cutover." },
-					{ title: "Defined rollback path", body: "If the port lands and something breaks, we put it back inside business hours." },
-					{ title: "E911 record reissued", body: "Before the port completes, not after." }
-				] %}
-				{% include "partials/v2/step-list.njk" %}
+			<div class="cta-row">
+				<a class="btn btn--ghost" href="/support/voice/porting/procedure/">Porting procedure</a>
 			</div>
 		</div>
+	</div>
+	{%- set drawing = "numbers-porting" %}
+	{% include "partials/section-illustration.njk" %}
 
-		<h3 class="subsection-heading">Numbers FAQ</h3>
+	<h3 class="subsection-heading">Numbers FAQ</h3>
 		{%- set faqs = [
 			{ q: "Can I port my number to your service?", a: "Yes. We can port most North American phone numbers, provided the number is eligible for porting. If your number is portable, we can help transfer it to our service." }
 		] %}

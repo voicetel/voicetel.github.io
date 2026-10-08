@@ -74,32 +74,15 @@ description: "VoiceTel Phone provides web, desktop, and mobile VoIP calling back
 				<p class="eyebrow">Call path</p>
 				<h2 id="call-path-heading">SIP over TLS to VoiceTel, WebRTC media in the browser.</h2>
 				<p class="lede">Every client registers with the SIP credentials on your account and reaches the PSTN through VoiceTel, with DTMF, caller ID, call history, and real-time SIP logging on every platform.</p>
-				<div class="cta-row">
-					<a class="btn btn--ghost" href="/support/voice/softphone/">Softphone guides</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				{%- set diagram = {
-					title: "VoiceTel Phone registers to VoiceTel and reaches the PSTN",
-					nodes: [
-						{ label: "VoiceTel Phone", value: "Web · desktop · mobile", meta: "SIP credentials", icon: "phone-vibrate" },
-						{ label: "VoiceTel", value: "SIP over TLS", meta: "WebRTC media", icon: "diagram-3", accent: true },
-						{ label: "PSTN", value: "Calls in and out", icon: "telephone" }
-					],
-					links: [
-						{ label: "register", both: true, accent: true },
-						{ label: "Tier-1", both: true }
-					],
-					meta: [
-						{ k: "Media", v: "WebRTC · DTLS-SRTP where supported" },
-						{ k: "Diagnostics", v: "SIP logging · call history · DTMF" }
-					]
-				} %}
-				{% include "partials/v2/diagram.njk" %}
+			<div class="cta-row">
+				<a class="btn btn--ghost" href="/support/voice/softphone/">Softphone guides</a>
 			</div>
 		</div>
+	</div>
+	{%- set drawing = "phone-call-path" %}
+	{% include "partials/section-illustration.njk" %}
 
-		<div class="cta-band">
+	<div class="cta-band">
 			<div class="cta-band__text">
 				<h3 class="cta-band__title">Get the apps.</h3>
 				<p class="cta-band__body">Sign up to provision and obtain SIP credentials, then grab the apps for every platform. For private-label, white-label, or partner-licensing inquiries, contact us.</p>

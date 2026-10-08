@@ -101,34 +101,17 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 				<p class="eyebrow">Voice</p>
 				<h2 id="voice-heading">Wholesale voice for managed service providers, carriers, and operators.</h2>
 				<p class="lede">STIR/SHAKEN attestation. Global colocation footprint and cloud regions. US-based NOC. Bring your own STT, TTS, and recording storage &mdash; pay providers directly, no VoiceTel markup.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/voice/">See voice features {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/support/voice/">Integration guides</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<ul class="status-card">
-					<li class="status-row">
-						<span class="status-row__main"><span class="status-row__title">STIR/SHAKEN attestation</span><span class="status-row__meta">on every call</span></span>
-						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Signed</span>
-					</li>
-					<li class="status-row">
-						<span class="status-row__main"><span class="status-row__title">Global footprint</span><span class="status-row__meta">{{ site.pops | length }} POPs · {{ site.cloudRegions | length }} cloud regions</span></span>
-						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Operational</span>
-					</li>
-					<li class="status-row">
-						<span class="status-row__main"><span class="status-row__title">US-based NOC</span><span class="status-row__meta">24/7</span></span>
-						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Online</span>
-					</li>
-					<li class="status-row">
-						<span class="status-row__main"><span class="status-row__title">BYO STT · TTS · storage</span><span class="status-row__meta">no markup</span></span>
-						<span class="status-row__state"><span class="dot" aria-hidden="true"></span>Pass-through</span>
-					</li>
-				</ul>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/voice/">See voice features {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/voice/">Integration guides</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "voice") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 
-		<h3 class="subsection-heading">Platform features</h3>
+	<h3 class="subsection-heading">Platform features</h3>
 		<ul class="feature-grid">
 			<li class="feature">
 				<div class="feature__icon">{% icon "shield-check" %}</div>
@@ -168,22 +151,15 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 					<li class="pill">Connect · ConversationRelay</li>
 					<li class="pill">Webhook signatures</li>
 				</ul>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/voiceml/">Explore VoiceML {{ arrow(14) }}</a>
-					<a class="btn btn--secondary" href="/voiceml/validator/">Validate VoiceML</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<div class="terminal">
-					<div class="terminal__bar">
-						<span class="terminal__dots" aria-hidden="true"><span></span><span></span><span></span></span>
-						<span class="terminal__label">response.xml</span>
-						<span class="terminal__pill">VoiceML · 200 OK</span>
-					</div>
-					<pre class="terminal__body"><span class="ln"><span class="c">&lt;!-- POST /voice/inbound &middot; application/xml --&gt;</span></span><span class="ln"><span class="tag">&lt;</span><span class="name">Response</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Say</span> <span class="attr">voice</span>=<span class="v">"Polly.Joanna"</span><span class="tag">&gt;</span></span><span class="ln">    <span class="t">Press 1 to be connected.</span></span><span class="ln">  <span class="tag">&lt;/</span><span class="name">Say</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Gather</span> <span class="attr">numDigits</span>=<span class="v">"1"</span> <span class="attr">action</span>=<span class="v">"/dispatch"</span><span class="tag">/&gt;</span></span><span class="ln"><span class="tag">&lt;/</span><span class="name">Response</span><span class="tag">&gt;</span></span></pre>
-				</div>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/voiceml/">Explore VoiceML {{ arrow(14) }}</a>
+				<a class="btn btn--secondary" href="/voiceml/validator/">Validate VoiceML</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "voiceml") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -193,39 +169,17 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 		<div class="row">
 			<div class="row__text">
 				<p class="eyebrow">Messaging</p>
-				<h2 id="messaging-heading">SMS and MMS at wholesale rates.</h2>
+				<h2 id="messaging-heading">SMS, MMS, and RCS at wholesale rates.</h2>
 				<p class="lede">A2P 10DLC for high-volume application messaging. Inbound included. Webhook delivery to your endpoint. No per-message platform tax.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/messaging/">See messaging {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<div class="kpi-grid">
-					<div class="kpi">
-						<div class="kpi__label">A2P 10DLC</div>
-						<div class="kpi__value">Ready</div>
-						<div class="kpi__sub">High-volume application messaging</div>
-					</div>
-					<div class="kpi">
-						<div class="kpi__label">Inbound</div>
-						<div class="kpi__value">Supported</div>
-						<div class="kpi__sub">SMS · MMS · webhook or email delivery</div>
-					</div>
-					<div class="kpi">
-						<span class="kpi__trend"><span class="dot" aria-hidden="true"></span>200&nbsp;OK</span>
-						<div class="kpi__label">Webhook delivery</div>
-						<div class="kpi__value">12<span class="suffix">ms avg</span></div>
-						<div class="kpi__sub">Direct to your endpoint</div>
-					</div>
-					<div class="kpi">
-						<div class="kpi__label">Platform tax</div>
-						<div class="kpi__value">$0.00</div>
-						<div class="kpi__sub">Just the segment rate</div>
-					</div>
-				</div>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/messaging/">See messaging {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "messaging") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -237,30 +191,15 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 				<p class="eyebrow">Numbers</p>
 				<h2 id="numbers-heading">Local DIDs, toll-free, and porting.</h2>
 				<p class="lede">Wholesale rates on every number type. Per-number e911 provisioning. CNAM, LIDB, and caller-ID services available. Port local, toll-free, and mobile numbers with coordinated cutover support.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/numbers/">Get numbers {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/support/voice/porting/">Port a number</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<div class="list-panel" role="group" aria-label="Number search example">
-					<div class="tab-row" aria-hidden="true">
-						<span class="tab is-active">Local</span>
-						<span class="tab">Toll-free</span>
-						<span class="tab">Mobile</span>
-						<span class="tab">Area 212</span>
-						<span class="tab">+ port-in</span>
-					</div>
-					<ul class="list">
-						<li class="list__row"><span class="num">+1 (212) 555-0148</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
-						<li class="list__row"><span class="num">+1 (212) 555-0220</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
-						<li class="list__row"><span class="num">+1 (212) 555-0391</span><span class="tag">New York · NY</span><span class="price">{{ localDid }}<span class="star">/mo*</span></span></li>
-						<li class="list__row"><span class="num">+1 (800) 555-3201</span><span class="tag">Toll-free</span><span class="price">{{ tollFreeDid }}<span class="star">/mo*</span></span></li>
-					</ul>
-					<span class="list__footnote">* Per number per month at the 2K-DID volume tier.</span>
-				</div>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/numbers/">Get numbers {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/voice/porting/">Port a number</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "numbers") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -277,22 +216,15 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 					<li class="pill">Knowledge · Sessions</li>
 					<li class="pill">Feedback · Policies</li>
 				</ul>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/ai-agents/">Explore AI Agents {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/conversations/">Explore Conversations</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<div class="terminal">
-					<div class="terminal__bar">
-						<span class="terminal__dots" aria-hidden="true"><span></span><span></span><span></span></span>
-						<span class="terminal__label">voice-agent.xml</span>
-						<span class="terminal__pill">ConversationRelay</span>
-					</div>
-					<pre class="terminal__body"><span class="ln"><span class="tag">&lt;</span><span class="name">Response</span><span class="tag">&gt;</span></span><span class="ln">  <span class="tag">&lt;</span><span class="name">Connect</span><span class="tag">&gt;</span></span><span class="ln">    <span class="tag">&lt;</span><span class="name">ConversationRelay</span> <span class="attr">url</span>=<span class="v">"wss://your-app.example/conversation"</span></span><span class="ln">        <span class="attr">language</span>=<span class="v">"en-US"</span><span class="tag">/&gt;</span></span><span class="ln">  <span class="tag">&lt;/</span><span class="name">Connect</span><span class="tag">&gt;</span></span><span class="ln"><span class="tag">&lt;/</span><span class="name">Response</span><span class="tag">&gt;</span></span></pre>
-				</div>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/ai-agents/">Explore AI Agents {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/conversations/">Explore Conversations</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "ai-agents") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -303,30 +235,16 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 			<div class="row__text">
 				<p class="eyebrow">SDN appliance</p>
 				<h2 id="sdn-heading">Plug-and-play SIP traversal.</h2>
-				<p class="lede">Place a Raspberry Pi in your LAN; it tunnels to VoiceTel core. Solves NAT, ALG, UDP timer, and firewall misconfiguration without changing your routing policies.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/sdn/">Learn about SDN {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/support/voice/pbx/">PBX setup guides</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				{%- set diagram = {
-					title: "Your LAN to the SDN appliance to VoiceTel core",
-					nodes: [
-						{ label: "Your LAN", value: "PBX + phones", meta: "10.0.0.0/24" },
-						{ label: "SDN appliance", value: "Raspberry Pi", meta: "sdn-08c4", accent: true },
-						{ label: "VoiceTel core", value: "NYC POP", meta: "TLS 1.3 tunnel" }
-					],
-					links: [{}, { accent: true }],
-					meta: [
-						{ k: "Uplink", v: ":443 outbound" },
-						{ k: "Firewall", v: "no routing changes" },
-						{ k: "Media", v: "SIP + RTP inside" }
-					]
-				} %}
-				{% include "partials/v2/diagram.njk" %}
+				<p class="lede">Place a Raspberry Pi in your LAN; it tunnels to the VoiceTel network. Solves NAT, ALG, UDP timer, and firewall misconfiguration without changing your routing policies. Works perfectly with multi-homed devices &mdash; calls don&rsquo;t drop when the connection changes.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/sdn/">Learn about SDN {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/voice/pbx/">PBX setup guides</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "sdn") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -338,29 +256,22 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 				<p class="eyebrow">Phone apps</p>
 				<h2 id="phone-heading">VoIP calling on web, desktop, and mobile.</h2>
 				<p class="lede">VoIP calling on web (no install), Windows, macOS, Linux, iOS, and Android. WebRTC media. One app, three form factors.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/phone/">Get the app {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/phone/applications/">View applications</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<ul class="platform-grid">
-					<li><a class="platform-card" href="/phone/applications/web/"><div class="platform-card__icon">{% icon "code-slash" %}</div><div class="platform-card__name">Web</div><div class="platform-card__meta">WebRTC · no install</div></a></li>
-					<li><a class="platform-card" href="/phone/applications/desktop/macos/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">macOS</div><div class="platform-card__meta">{{ macDmg.size }} · .dmg</div></a></li>
-					<li><a class="platform-card" href="/phone/applications/desktop/windows/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">Windows</div><div class="platform-card__meta">{{ winSetup.size }} · .exe</div></a></li>
-					<li><a class="platform-card" href="/phone/applications/desktop/linux/"><div class="platform-card__icon">{% icon "hdd-stack" %}</div><div class="platform-card__name">Linux</div><div class="platform-card__meta">AppImage · deb · rpm</div></a></li>
-					<li><a class="platform-card" href="/phone/applications/mobile/ios/"><div class="platform-card__icon">{% icon "phone-vibrate" %}</div><div class="platform-card__name">iOS</div><div class="platform-card__meta">App Store</div></a></li>
-					<li><a class="platform-card" href="/phone/applications/mobile/android/"><div class="platform-card__icon">{% icon "phone-vibrate" %}</div><div class="platform-card__name">Android</div><div class="platform-card__meta">Google Play</div></a></li>
-				</ul>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/phone/">Get the app {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/phone/applications/">View applications</a>
 			</div>
 		</div>
+	</div>
+	{%- set item = landing.tabs | where("key", "phone") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
 {#- ───────────────────────── Pricing ───────────────────────── -#}
 <section class="section section--tint" id="pricing" aria-labelledby="pricing-heading">
 	<div class="container">
-		<div class="row row--wide-visual">
+		<div class="row">
 			<div class="row__text">
 				<p class="eyebrow">Pricing</p>
 				<h2 id="pricing-heading">Wholesale rates, in plain numbers.</h2>
@@ -370,22 +281,10 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 					<a class="btn btn--ghost" href="/signup/">Open an account</a>
 				</div>
 			</div>
-			<div class="row__visual">
-				<table class="price-table">
-					<thead>
-						<tr><th scope="col">Service</th><th scope="col" class="right">Rate</th></tr>
-					</thead>
-					<tbody>
-						<tr><td class="price-table__name">Outbound voice<span class="unit">US local · / min</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("voice-out-us50", 200000) }}<span class="star">*</span></td></tr>
-						<tr><td class="price-table__name">Inbound voice<span class="unit">US local · / min</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("voice-in-local", 200000) }}<span class="star">*</span></td></tr>
-						<tr><td class="price-table__name">Local DID<span class="unit">/ number / month</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("did-local", 100) }}<span class="star">*</span></td></tr>
-						<tr><td class="price-table__name">A2P SMS<span class="unit">/ segment</span></td><td class="price-table__rate right">{{ pricingRuntime | volumeRate("sms-out", 200000) }}<span class="star">*</span></td></tr>
-						<tr><td class="price-table__name">STT · TTS · recording storage<span class="unit">paid to your provider</span></td><td class="price-table__rate price-table__rate--passthrough right">Pass-through</td></tr>
-					</tbody>
-				</table>
-				<p class="price-footnote"><span class="star">*</span> Volume tier: 200K minutes, 200K messages, and 100 DIDs per month.</p>
-			</div>
 		</div>
+		{%- set item = landing.tabs | where("key", "pricing") | first %}
+		{%- set basePath = landing.illustrationPath %}
+		{% include "partials/illustration-figure.njk" %}
 	</div>
 </section>
 
@@ -397,22 +296,16 @@ description: "Run your Twilio app on VoiceTel. Compatible voice markup. Compatib
 				<p class="eyebrow">Documentation</p>
 				<h2 id="docs-heading">Reference, guides, and migration playbooks.</h2>
 				<p class="lede">VoiceML reference, REST API, integration guides for major PBX platforms and firewall vendors, and a five-minute migrate-from-Twilio playbook.</p>
-				<div class="cta-row">
-					<a class="btn btn--primary" href="/docs/">Read the docs {{ arrow(14) }}</a>
-					<a class="btn btn--ghost" href="/voiceml/migrate/">Migrate from Twilio</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				<ul class="docs-list">
-					<li><a class="docs-list__row" href="{{ apiSpecs.voiceml.urlPath }}"><span class="docs-list__icon">{% icon "code-slash" %}</span><span class="docs-list__title">VoiceML reference</span><span class="docs-list__meta">17 verbs</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
-					<li><a class="docs-list__row" href="/docs/api/v2.2/"><span class="docs-list__icon">{% icon "book" %}</span><span class="docs-list__title">REST API</span><span class="docs-list__meta">74 operations</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
-					<li><a class="docs-list__row" href="/voiceml/migrate/#webhook-signatures"><span class="docs-list__icon">{% icon "shield-check" %}</span><span class="docs-list__title">Webhook signatures</span><span class="docs-list__meta">HMAC-SHA256</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
-					<li><a class="docs-list__row" href="/voiceml/migrate/"><span class="docs-list__icon">{% icon "tag" %}</span><span class="docs-list__title">Migrate from Twilio</span><span class="docs-list__meta">5 min</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
-					<li><a class="docs-list__row" href="/support/voice/"><span class="docs-list__icon">{% icon "plug" %}</span><span class="docs-list__title">Vendor integration guides</span><span class="docs-list__meta">PBX · SBC · firewall</span>{{ arrow(16) | replace('class="arrow"', 'class="docs-list__arrow"') }}</a></li>
-				</ul>
+			<div class="cta-row">
+				<a class="btn btn--primary" href="/docs/">Read the docs {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/voiceml/migrate/">Migrate from Twilio</a>
 			</div>
 		</div>
-		<div class="cta-band">
+	</div>
+	{%- set item = landing.tabs | where("key", "docs") | first %}
+	{%- set basePath = landing.illustrationPath %}
+	{% include "partials/illustration-figure.njk" %}
+	<div class="cta-band">
 			<div class="cta-band__text">
 				<h3 class="cta-band__title">Migrating from Twilio?</h3>
 				<p class="cta-band__body">Point your app at VoiceTel, swap credentials, and validate your markup. The playbook takes about five minutes.</p>

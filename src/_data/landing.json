@@ -195,12 +195,12 @@
 					},
 					{
 						"icon": "broadcast-pin",
-						"label": "Carrier",
-						"meta": "SMS · MMS"
+						"label": "Mobile Carrier",
+						"meta": "SMS · MMS · RCS"
 					},
 					{
 						"icon": "phone-vibrate",
-						"label": "Handset",
+						"label": "Mobile Handset",
 						"meta": "customer replies"
 					}
 				],
@@ -216,7 +216,7 @@
 					}
 				],
 				"loop": {
-					"label": "Reply → inbound webhook to your endpoint"
+					"label": "Reply → inbound webhook or email delivery"
 				}
 			}
 		},
@@ -246,12 +246,12 @@
 					{
 						"icon": "diagram-3",
 						"label": "Route",
-						"meta": "SIP · VoiceML · SMS"
+						"meta": "SIP · VoiceML"
 					},
 					{
-						"icon": "geo-alt",
-						"label": "LIDB + E911",
-						"meta": "CNAM · per number"
+						"icon": "gear",
+						"label": "Configure",
+						"meta": ["SMS · MMS · RCS", "LIDB · CNAM · E911"]
 					}
 				],
 				"links": [
@@ -349,8 +349,8 @@
 					},
 					{
 						"icon": "diagram-3",
-						"label": "VoiceTel core",
-						"meta": "NYC POP"
+						"label": "VoiceTel Network",
+						"meta": "closest POP"
 					}
 				],
 				"links": [

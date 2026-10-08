@@ -54,27 +54,9 @@ description: "Twilio-compatible AI Assistants API — build voice and chat agent
 					<a class="btn btn--ghost" href="/voiceml/compatibility/#ai-assistants">Endpoint map</a>
 				</div>
 			</div>
-			<div class="row__visual">
-				{%- set diagram = {
-					title: "A caller reaches an assistant over ConversationRelay; the assistant calls your tools",
-					nodes: [
-						{ label: "Caller or chat", value: "Voice via VoiceML", meta: "or any chat client", icon: "telephone" },
-						{ label: "Assistant", value: "Model + system prompt", meta: "sessions · feedback", icon: "robot", accent: true },
-						{ label: "Your tools", value: "Function calls", meta: "results feed the next turn", icon: "plug" }
-					],
-					links: [
-						{ label: "relay", both: true, accent: true },
-						{ label: "webhook", both: true }
-					],
-					meta: [
-						{ k: "Knowledge", v: "web · files · text" },
-						{ k: "History", v: "per-session, read back" },
-						{ k: "Policies", v: "guardrail catalog" }
-					]
-				} %}
-				{% include "partials/v2/diagram.njk" %}
-			</div>
 		</div>
+		{%- set drawing = "ai-agents-anatomy" %}
+		{% include "partials/section-illustration.njk" %}
 
 		<h3 class="subsection-heading">What you get</h3>
 		{%- set featureHeading = "h4" %}

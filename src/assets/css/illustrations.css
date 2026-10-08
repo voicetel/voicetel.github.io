@@ -9,6 +9,12 @@
 	fill: var(--primary-color);
 }
 
+/* Wide lanes drawings start labels after the icon (~136 usable units);
+ * longer labels drop to the meta size rather than overflowing the box. */
+.li-label--sm {
+	font-size: 13px;
+}
+
 .li-meta,
 .li-code,
 .li-link,

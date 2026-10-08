@@ -26,7 +26,7 @@
 <rect class="li-accent" x="{{ x | round(1) }}" y="{{ boxTop }}" width="{{ w | round(1) }}" height="3"/>
 {%- endif %}
 <g class="li-icon" transform="translate({{ (x + 14) | round(1) }} {{ boxTop + 14 }}) scale(1.25)">{% icon node.icon %}</g>
-<text class="li-label" x="{{ (x + 42) | round(1) }}" y="{{ boxTop + 30 }}">{{ node.label }}</text>
+<text class="li-label{% if (node.label | length) > 13 %} li-label--sm{% endif %}" x="{{ (x + 42) | round(1) }}" y="{{ boxTop + 30 }}">{{ node.label }}</text>
 <text class="li-meta" x="{{ (x + 14) | round(1) }}" y="{{ boxTop + 60 }}">{{ node.meta }}</text>
 {%- if not loop.last %}
 {%- set link = lane.links[loop.index0] %}

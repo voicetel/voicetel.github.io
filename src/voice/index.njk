@@ -63,21 +63,15 @@ description: "Wholesale Voice Calling with origination, termination, VoiceML cal
 				<p class="eyebrow">Routing</p>
 				<h2 id="routing-heading">Anycast, Geocast, and diverse routing.</h2>
 				<p class="lede">Outbound calls go to the nearest or best available node (Anycast) or to nodes in a specific region (Geocast). Inbound routing tests multiple paths and carriers and keeps the best one to the last hop.</p>
-				<div class="cta-row">
-					<a class="btn btn--ghost" href="/support/voice/sip-trunking/">SIP trunking guides</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				{%- set rows = [
-					{ title: "Anycast", meta: "nearest or best available node", state: "Outbound", neutral: true },
-					{ title: "Geocast", meta: "nodes in a specific region", state: "Outbound", neutral: true },
-					{ title: "Diverse routing", meta: "best of several paths and carriers", state: "Inbound", neutral: true }
-				] %}
-				{% include "partials/v2/status-card.njk" %}
+			<div class="cta-row">
+				<a class="btn btn--ghost" href="/support/voice/sip-trunking/">SIP trunking guides</a>
 			</div>
 		</div>
+	</div>
+	{%- set drawing = "voice-routing" %}
+	{% include "partials/section-illustration.njk" %}
 
-		<h3 class="subsection-heading">Voice capabilities</h3>
+	<h3 class="subsection-heading">Voice capabilities</h3>
 		{%- set featureHeading = "h4" %}
 		{%- set features = [
 			{ icon: "telephone", title: "Origination and termination", body: "Run inbound and outbound voice through VoiceTel with published rate keys, routing controls, and carrier-support escalation paths." },

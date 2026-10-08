@@ -94,20 +94,13 @@ description: "SMS and MMS for application messaging, A2P 10DLC, inbound webhooks
 				<p class="eyebrow">SMS-enable any number</p>
 				<h2 id="sms-enable-heading">SMS-enable any number, even one you didn't get from us.</h2>
 				<p class="lede">If you (or your customer) own a phone number on a different carrier, VoiceTel can SMS-enable it. Sign a Letter of Authorization, we handle the carrier coordination, and the number stays where it is for voice. Useful when a customer can't move their voice service but wants application messaging on the same DID.</p>
-				<div class="cta-row">
-					<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
-				</div>
-			</div>
-			<div class="row__visual">
-				{%- set rows = [
-					{ title: "Voice service", meta: "stays on the current carrier", state: "Unchanged", neutral: true },
-					{ title: "Letter of Authorization", meta: "signed by the number owner", state: "You sign", neutral: true },
-					{ title: "Carrier coordination", meta: "handled end to end", state: "VoiceTel", neutral: true },
-					{ title: "Application messaging", meta: "SMS · MMS on the same DID", state: "Enabled" }
-				] %}
-				{% include "partials/v2/status-card.njk" %}
+			<div class="cta-row">
+				<a class="btn btn--ghost" href="/support/messaging/10dlc/">10DLC registration guide</a>
 			</div>
 		</div>
+	</div>
+	{%- set drawing = "messaging-sms-enable" %}
+	{% include "partials/section-illustration.njk" %}
 	</div>
 </section>
 

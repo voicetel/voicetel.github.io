@@ -461,7 +461,7 @@
 					{
 						"icon": "shield-check",
 						"label": "Swap credentials",
-						"meta": "VoiceTel account"
+						"meta": "VoiceML account"
 					},
 					{
 						"icon": "list-check",

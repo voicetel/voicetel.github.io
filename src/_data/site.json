@@ -2,7 +2,7 @@
 	"version": "0.1.0",
 	"updated": "2026-05-08",
 	"brand": "VoiceTel",
-	"legalName": "VoiceTel Communications",
+	"legalName": "United Internet Services, LLC d/b/a VoiceTel",
 	"tagline": "Providing Services since 1999",
 	"description": "Run your Twilio app on VoiceTel. Compatible voice markup. Compatible webhook signatures. Volume discounts your finance team will notice.",
 	"lang": "en",
@@ -17,6 +17,8 @@
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
 	"indexNowKey": "62e0ac48a4638be78210ac35c7e995e3",
+	"supportPhone": "+19175803000",
+	"supportPhoneDisplay": "(917) 580-3000",
 	"supportEmail": "support@voicetel.com",
 	"webEmails": {
 		"compliance": "compliance+ws@voicetel.com",

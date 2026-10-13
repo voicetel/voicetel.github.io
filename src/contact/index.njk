@@ -9,6 +9,10 @@ description: "Contact VoiceTel for sales, support, billing, porting, partnership
 <p class="lede">We'd love to hear from you.</p>
 <p class="hero-actions">
 	<button type="button" class="btn btn-primary" data-open-chat>Email support</button>
+	<a class="btn btn-secondary" href="mailto:{{ site.supportEmail }}">Email support</a>
+	<a class="btn btn-secondary" href="tel:{{ site.supportPhone }}">{{ site.supportPhoneDisplay | replace(" ", "&nbsp;") | replace("-", "&#8209;") | safe }}</a>
+</p>
+<p class="hero-actions">
 	<a class="btn btn-secondary" href="mailto:{{ site.webEmails.sales }}">Email sales</a>
 	<a class="btn btn-secondary" href="mailto:{{ site.webEmails.compliance }}">Email compliance</a>
 </p>

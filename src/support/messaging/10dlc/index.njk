@@ -17,6 +17,26 @@ description: "Pass A2P 10DLC vetting on the first try. Standards from CTIA, GSMA
 	<p>For U.S. 10DLC, The Campaign Registry states that <strong>any business that wants to use SMS on 10DLC to communicate with customers and/or employees must register</strong>, including businesses sending individual non-marketing messages. TCR treats all business messaging as non-consumer, or A2P, messaging. A <strong>Campaign</strong> is the messaging use case — it defines the type of content being sent, such as marketing, customer care, delivery notifications, fraud alerts, or other standard or special use cases.</p>
 	<p>CTIA uses the term <strong>Non-Consumer Messaging</strong> for messages sent by or to a business, organization, entity, political campaign, medical practice, school, nonprofit, customer-service operation, or similar sender. CTIA says these senders should follow non-consumer messaging best practices — especially around consumer consent, privacy, security, and unwanted-message prevention.</p>
 	<p>TCR separates ecosystem roles. A business sending messages is a <strong>Brand</strong> and generally registers through its messaging service provider. A <strong>Campaign Service Provider (CSP)</strong> can register directly with TCR and submit Brands and Campaigns into the 10DLC ecosystem. TCR describes itself as the centralized hub where CSPs register their customers' brands and messaging campaigns so the ecosystem knows what to expect.</p>
+
+	<h3>Brand types</h3>
+	<p>TCR supports multiple brand entity types:</p>
+	<ul>
+		<li><strong>Publicly Traded Company</strong> — requires stock symbol and exchange information.</li>
+		<li><strong>Private Company</strong> — the most common type; requires legal name, EIN, and business address.</li>
+		<li><strong>Nonprofit</strong> — requires legal name and EIN; must match IRS or state registration records.</li>
+		<li><strong>Sole Proprietor</strong> — for individual business owners without a separate EIN. Uses the owner's legal name and SSN or ITIN. Sole proprietor brands receive a lower trust score and reduced throughput compared to verified business entities.</li>
+		<li><strong>Government</strong> — for government entities at federal, state, or local level.</li>
+	</ul>
+	<p>Choose the entity type that matches the business's legal structure. Mismatched entity type is a common cause of Unverified status.</p>
+
+	<h3>Trust scores and throughput</h3>
+	<p>TCR assigns each brand a <strong>trust score</strong> based on the completeness and accuracy of the brand verification. The trust score, combined with the campaign use case and vetting level, determines daily message throughput allotted by each carrier.</p>
+	<ul>
+		<li><strong>Unverified</strong> — brand cannot register campaigns or send on 10DLC. Typically caused by legal-name / EIN mismatch.</li>
+		<li><strong>Verified</strong> — brand can register campaigns and send at baseline throughput. Throughput varies by carrier and use case.</li>
+		<li><strong>Vetted_Verified</strong> — brand has completed additional vetting (standard or enhanced). Higher throughput tiers may be available. Enhanced vetting typically takes 2–4 weeks and involves a deeper review of the business.</li>
+	</ul>
+	<p>Throughput is managed at the number/campaign level (AT&amp;T) or brand level (T-Mobile). Businesses with high-volume needs should review throughput requirements before filing and consider vetting to access higher tiers.</p>
 </section>
 
 <section class="section-block">
@@ -193,6 +213,13 @@ Keyword opt-in: A customer may text JOIN to the Northstar 10DLC number after see
 		<h3 id="passing-summary-heading">The simplest passing story</h3>
 		<p>Real brand, real website, exact EIN match, one clear use case, visible opt-in disclosure, documented consent, privacy policy linked from the CTA, compliant samples, working STOP and HELP, and traffic that matches the filing.</p>
 	</aside>
+</section>
+
+<section class="section-block">
+	<h2>Toll-Free Verification as an alternative path</h2>
+	<p>10DLC is not the only registered messaging path. Businesses sending A2P traffic from <strong>toll-free numbers</strong> (800, 888, 877, 866, 855, 844, 833 prefixes) must complete <strong>Toll-Free Verification (TFV)</strong> through their messaging provider or the verifying carrier. TFV is separate from 10DLC — toll-free numbers are not registered in TCR and do not use the brand/campaign model.</p>
+	<p>The same consent, disclosure, STOP/HELP, and content rules apply to toll-free messaging. The registration path differs: TFV is managed through the verifying carrier or aggregator rather than TCR. Unverified toll-free numbers may be blocked or filtered.</p>
+	<p>See the <a href="/support/messaging/compliance/">messaging compliance guide</a> for toll-free verification requirements.</p>
 </section>
 
 <section class="section-block">

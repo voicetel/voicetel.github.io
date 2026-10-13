@@ -204,6 +204,30 @@ textarea {
 	word-break: break-all;
 }
 
+/* ─── SMS consent checkbox ─── */
+
+.consent-label {
+	display: flex;
+	gap: var(--space-3);
+	align-items: flex-start;
+	cursor: pointer;
+	line-height: var(--leading-normal);
+}
+
+.consent-label input[type="checkbox"] {
+	margin-top: 0.25em;
+	flex-shrink: 0;
+}
+
+.consent-text {
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+}
+
+.consent-text a {
+	text-decoration: underline;
+}
+
 /* ─── E911 provisioning wizard ─── */
 
 .e911-step {

@@ -1,0 +1,46 @@
+---
+layout: layouts/tool.njk
+title: "SMS text message unsubscribe"
+description: "Unsubscribe from VoiceTel text messages. Enter your mobile number to opt out of all SMS communications from VoiceTel."
+---
+
+<p class="eyebrow"><a href="/legal/">Legal</a> / SMS unsubscribe</p>
+<h1>Unsubscribe from VoiceTel text messages.</h1>
+<p class="lede">Enter the mobile number you want to unsubscribe. We'll remove it from all VoiceTel SMS programs. You will receive one final confirmation message and no further texts.</p>
+
+<section class="section-block">
+	<h2>Unsubscribe</h2>
+
+	<form id="sms-unsubscribe-form" action="{{ site.portalUrl }}{{ site.formEndpoints.smsUnsubscribe }}" data-fallback-url="/contact/" method="post" class="form-grid full-width">
+		<div class="form-row form-row--full">
+			<label for="sms-unsub-phone">Mobile number <span class="required" aria-hidden="true">*</span></label>
+			<input id="sms-unsub-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 123-4567">
+		</div>
+		<div class="form-row form-row--full">
+			<div class="cf-turnstile" data-sitekey="{{ site.turnstileSiteKey }}" data-theme="light" data-size="normal"></div>
+		</div>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-warning">Unsubscribe</button>
+		</div>
+	</form>
+
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+	<div id="sms-unsub-result" class="alert alert-success" hidden role="status" aria-live="polite">
+		<p><strong>You're unsubscribed.</strong> The number provided has been removed from all VoiceTel SMS programs. You will receive one final confirmation message and no further texts.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Other ways to opt out</h2>
+	<ul>
+		<li>Reply <strong>STOP</strong>, <strong>CANCEL</strong>, <strong>END</strong>, <strong>QUIT</strong>, or <strong>UNSUBSCRIBE</strong> to any VoiceTel text message.</li>
+		<li>Contact <a href="/contact/">VoiceTel support</a> with your mobile number and a request to opt out.</li>
+		<li>Email <a href="mailto:{{ site.webEmails.compliance }}">{{ site.webEmails.compliance }}</a> with your mobile number and an unsubscribe request.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Want to re-subscribe?</h2>
+	<p>If you opted out and want to start receiving messages again, visit the <a href="/sms-optin/">SMS opt-in page</a> or text <strong>JOIN</strong> to your VoiceTel number (if keyword opt-in is active for your program).</p>
+</section>

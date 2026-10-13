@@ -18,6 +18,7 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 		<li><a href="#messaging">Messaging Service Agreement</a></li>
 		<li><a href="#messaging-compliance">Messaging Compliance and Abuse Prevention</a></li>
 		<li><a href="#privacy">Privacy Policy</a></li>
+		<li><a href="#sms-terms">SMS Message Terms</a></li>
 		<li><a href="#permission">Permission to Contact</a></li>
 		<li><a href="#msa">Master Service Agreement (Billing &amp; Payment)</a></li>
 		<li><a href="#api-services">API Services and Third-Party Provider Terms</a></li>
@@ -106,8 +107,9 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 	<p>VoiceTel provides wholesale SMS and MMS services to facilitate enterprise and A2P messaging.</p>
 	<h3>2. Compliance</h3>
 	<p>Customer is solely responsible for compliance with all laws, regulations, rules, industry guidelines, carrier requirements, aggregator requirements, platform rules, and third-party provider requirements applicable to Customer's messaging, campaigns, senders, numbers, recipients, content, and use of the Messaging Services, including without limitation TCPA, CTIA guidelines, CAN-SPAM, CCPA/CPRA, GDPR, 10DLC requirements, toll-free messaging verification requirements, international marketing consent rules, opt-in/opt-out requirements, do-not-call and do-not-message rules, and all applicable consumer protection, privacy, telecommunications, and data protection laws.</p>
-	<p>Customer shall obtain, document, maintain, and honor all required opt-ins, consents, authorizations, registrations, disclosures, and approvals before sending or causing any message to be sent. Customer must provide clear opt-out instructions where required, must honor STOP, HELP, CANCEL, END, QUIT, OPTOUT, UNSUBSCRIBE, and similar recipient requests, and must immediately cease messaging any recipient who has opted out or revoked consent.</p>
-	<p>Customer shall maintain complete and accurate records of consent, opt-in source, opt-in language, timestamps, recipient information, campaign details, sender details, opt-outs, and related compliance evidence. Customer shall provide such records to VoiceTel upon request within the timeframe requested by VoiceTel, a carrier, aggregator, platform, provider, regulator, governmental authority, or other applicable third party.</p>
+	<p>Customer shall obtain, document, maintain, and honor all required opt-ins, consents, authorizations, registrations, disclosures, and approvals before sending or causing any message to be sent. Marketing and promotional messages require prior express written consent under the TCPA. Customer must provide clear opt-out instructions where required, must honor STOP, HELP, CANCEL, END, QUIT, OPTOUT, UNSUBSCRIBE, and similar recipient requests, and must immediately cease messaging any recipient who has opted out or revoked consent, with no more than one non-promotional opt-out confirmation message.</p>
+	<p>Customer shall not send marketing messages before 8:00 AM or after 9:00 PM in the recipient's local time zone. Customer shall scrub marketing recipient lists against the National Do Not Call Registry and maintain an internal do-not-contact list.</p>
+	<p>Customer shall maintain complete and accurate records of consent, opt-in source, opt-in language, timestamps, recipient information, campaign details, sender details, opt-outs, and related compliance evidence for a minimum of four (4) years. Customer shall provide such records to VoiceTel upon request within the timeframe requested by VoiceTel, a carrier, aggregator, platform, provider, regulator, governmental authority, or other applicable third party.</p>
 	<h3>3. Prohibited Content</h3>
 	<p>Messaging shall not include or promote spam, unsolicited messages, non-consensual messages, spoofed sender IDs, fraudulent content, deceptive content, misleading content, phishing, smishing, vishing, malware, credential harvesting, illegal activity, abusive content, harassing content, hate or violent content, unlawful debt collection, traffic pumping, artificial traffic generation, or restricted SHAFT categories without prior written approval where such approval is permitted. VoiceTel may reject, block, filter, suspend, or terminate any content, sender, campaign, number, route, account, or traffic source that VoiceTel reasonably determines may violate this Agreement, applicable law, carrier rules, platform rules, industry guidelines, third-party provider requirements, or VoiceTel's acceptable use, fraud, security, or compliance standards.</p>
 	<h3>4. Delivery</h3>
@@ -142,7 +144,10 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 	<p>These standards apply to all Application-to-Person (A2P) messaging traffic, including marketing messages, appointment reminders, customer support notifications, account alerts, verification codes (OTP / 2FA), and conversational business messaging.</p>
 
 	<h3>2. Prior Express Consent and Opt-In</h3>
-	<p>Customers must obtain clear consumer consent before sending SMS messages. Valid opt-in methods include web forms, checkout consent checkboxes, keyword opt-ins (e.g. <code>Text JOIN to 55555</code>), paper forms, recorded verbal consent, and IVR systems. Consent records must be retained and provided to VoiceTel, a carrier, an aggregator, a platform, a provider, a regulator, or a governmental authority upon request.</p>
+	<p>Customers must obtain clear consumer consent before sending SMS messages. Valid opt-in methods include web forms, checkout consent checkboxes, keyword opt-ins (e.g. <code>Text JOIN to 55555</code>), paper forms, recorded verbal consent, and IVR systems.</p>
+	<p><strong>Marketing and promotional messages require prior express written consent</strong> under the TCPA — a higher standard than general consent. Written consent means the consumer has signed or otherwise agreed in writing (including electronic agreement) to receive advertising or telemarketing messages at a specific number.</p>
+	<p>Consent records must be retained for a minimum of four (4) years from the date of the last message sent based on that consent, consistent with the TCPA statute of limitations, and provided to VoiceTel, a carrier, an aggregator, a platform, a provider, a regulator, or a governmental authority upon request.</p>
+	<p>For marketing messages, Customers must scrub recipient numbers against the National Do Not Call Registry and maintain an internal do-not-contact list that includes anyone who has opted out or requested not to be contacted.</p>
 
 	<h3>3. Required Disclosure Language</h3>
 	<p>Consumers must be informed of message frequency, message and data rates, brand or business identity, STOP instructions, HELP instructions, and Terms and Privacy Policy references. Example disclosure:</p>
@@ -150,6 +155,8 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 
 	<h3>4. Message Structure</h3>
 	<p>Carriers expect messages to be transparent, identifiable, and consistent with the registered campaign use case. Messages must clearly identify the business or brand, include opt-out instructions on marketing messages (STOP, UNSUBSCRIBE, CANCEL, END, QUIT), support HELP responses, match the approved campaign purpose, avoid deceptive or misleading language, avoid URL obfuscation or hidden redirects, and avoid impersonation of banks, carriers, or government entities.</p>
+	<p><strong>Quiet hours:</strong> Marketing messages must not be sent before 8:00 AM or after 9:00 PM in the recipient's local time zone, per TCPA requirements.</p>
+	<p><strong>Opt-out confirmation:</strong> After a consumer sends STOP or an equivalent opt-out keyword, the sender may send one final confirmation message acknowledging the opt-out. That message must not contain promotional content. No further messages may be sent after the opt-out confirmation.</p>
 
 	<h3>5. Prohibited Content</h3>
 	<p>The following traffic categories are prohibited or heavily restricted by carriers and may result in immediate blocking or fines:</p>
@@ -183,7 +190,7 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 	<p>VoiceTel may also suspend or terminate services immediately for severe or repeated abuse violations. Customer shall pay all such amounts without offset, deduction, withholding, delay, or setoff.</p>
 
 	<h3>8. Customer Responsibilities</h3>
-	<p>To maintain healthy message delivery and avoid carrier filtering, Customer shall obtain documented consent before messaging, clearly identify its brand, keep content relevant and expected, include STOP instructions where required, honor opt-outs immediately, register all A2P campaigns properly, use branded domains in links, avoid misleading urgency or deceptive language, and monitor complaint and opt-out rates.</p>
+	<p>To maintain healthy message delivery and avoid carrier filtering, Customer shall obtain documented consent before messaging (prior express written consent for marketing), clearly identify its brand, keep content relevant and expected, include STOP instructions where required, honor opt-outs immediately with only one non-promotional confirmation message, register all A2P campaigns properly, complete toll-free verification if sending from toll-free numbers, use branded domains in links, avoid misleading urgency or deceptive language, respect quiet hours for marketing messages, scrub marketing lists against the National Do Not Call Registry, retain consent records for at least four years, and monitor complaint and opt-out rates.</p>
 
 	<h3>9. Additional Resources</h3>
 	<ul>
@@ -226,6 +233,8 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 	<p>VoiceTel applies appropriate technical and organizational measures to safeguard data, including access controls, least-privilege personnel access, and protections for data in transit between customers and the Services.</p>
 	<h3>9. Disclosure and International Transfers</h3>
 	<p>Data may be disclosed to affiliates, carriers, aggregators, upstream and downstream providers, and vendors only as necessary to provide the Services, or to authorities as legally required. Personal data may be processed in the United States and other countries where VoiceTel or its providers operate network infrastructure. Cross-border transfers from the EEA, UK, or Switzerland follow GDPR-approved mechanisms, such as Standard Contractual Clauses or applicable adequacy decisions.</p>
+	<h3>9A. SMS Consent and Mobile Data</h3>
+	<p>Mobile phone numbers and SMS consent records collected through the VoiceTel SMS opt-in form or any other VoiceTel marketing opt-in channel will not be shared, sold, rented, or disclosed to third parties or affiliates for their own marketing or promotional purposes. We may share mobile numbers and SMS consent data only with service providers who help us operate our messaging program (for example, our messaging carrier or delivery platform), and those providers may use that information only to deliver messages on our behalf. SMS consent data is retained for a minimum of four (4) years from the date of the last message sent based on that consent, consistent with the TCPA statute of limitations, or longer as required by law.</p>
 	<h3>10. Marketing</h3>
 	<p>Marketing communications require explicit consent. Users may withdraw consent at any time. Necessary service communications may not be opted out of.</p>
 	<h3>11. Children</h3>
@@ -234,6 +243,44 @@ description: "VoiceTel terms and conditions, acceptable use policy, service agre
 	<p>Customer agrees to indemnify VoiceTel from any claims, regulatory actions, or penalties arising from Customer's misuse of personal data or failure to comply with applicable privacy laws. Customer shall be responsible for promptly paying all resulting fines, penalties, administrative costs, and legal expenses without offset, deduction, or delay.</p>
 	<h3>13. Amendments</h3>
 	<p>VoiceTel may update, modify, or amend this Privacy Policy at any time. Customer will be provided notice of material changes by email, portal posting, or other reasonable means. Customer's continued use of the Services after the effective date of any amendment constitutes acceptance. For regulatory or security compliance changes, VoiceTel may implement updates immediately without prior notice, but will provide notice as soon as practicable thereafter.</p>
+</section>
+
+<section id="sms-terms" class="section-block">
+	<h2>SMS Message Terms</h2>
+	<p>These terms apply to individuals who opt in to receive text messages from VoiceTel Communications ("VoiceTel", "we", "us"). They describe the SMS program, your rights, and how to manage your preferences.</p>
+
+	<h3>1. Program Description</h3>
+	<p>By opting in through the <a href="/sms-optin/">SMS opt-in form</a> or by texting a keyword to a VoiceTel number, you agree to receive recurring text messages from VoiceTel. Messages may include product updates, account alerts, promotional offers, and service-related notifications.</p>
+
+	<h3>2. Message Frequency</h3>
+	<p>Message frequency varies based on the type of communication. You will not receive an excessive number of messages. You may contact us at any time to ask about current message frequency.</p>
+
+	<h3>3. Rates</h3>
+	<p>Message and data rates may apply depending on your mobile carrier and plan. Your carrier's standard messaging rates will apply. VoiceTel does not charge for sending messages to you, but your carrier may charge you for receiving them.</p>
+
+	<h3>4. Opting Out</h3>
+	<p>You may opt out of all VoiceTel text messages at any time by:</p>
+	<ul>
+		<li>Replying <strong>STOP</strong>, <strong>CANCEL</strong>, <strong>END</strong>, <strong>QUIT</strong>, or <strong>UNSUBSCRIBE</strong> to any VoiceTel text message.</li>
+		<li>Visiting the <a href="/sms-unsubscribe/">SMS unsubscribe page</a> and entering your mobile number.</li>
+		<li>Contacting <a href="/contact/">VoiceTel support</a> with your mobile number and an unsubscribe request.</li>
+	</ul>
+	<p>After opting out, you will receive one final confirmation message. No further messages will be sent.</p>
+
+	<h3>5. Help and Support</h3>
+	<p>Reply <strong>HELP</strong> to any VoiceTel text message for support contact information. You may also visit the <a href="/contact/">contact page</a> or email <a href="mailto:{{ site.webEmails.compliance }}">{{ site.webEmails.compliance }}</a>.</p>
+
+	<h3>6. Consent Is Not a Condition of Purchase</h3>
+	<p>Consent to receive text messages is not required to purchase or use VoiceTel services. You may opt out at any time without affecting your account or service.</p>
+
+	<h3>7. Carrier Liability</h3>
+	<p>Mobile carriers are not liable for delayed or undelivered messages.</p>
+
+	<h3>8. Privacy</h3>
+	<p>Your mobile number and SMS consent data are handled in accordance with our <a href="/legal/#privacy">Privacy Policy</a>. SMS consent and mobile numbers collected for SMS purposes will not be shared, sold, rented, or disclosed to third parties or affiliates for their own marketing or promotional purposes.</p>
+
+	<h3>9. Amendments</h3>
+	<p>VoiceTel may update these SMS Message Terms at any time. Changes will be posted on this page. Your continued receipt of text messages after the effective date of any amendment constitutes acceptance of the updated terms.</p>
 </section>
 
 <section id="permission" class="section-block">

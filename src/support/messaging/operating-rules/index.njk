@@ -16,9 +16,11 @@ description: "Day-to-day operating rules for U.S. A2P SMS programs — consent r
 	<h2>Consent rules</h2>
 	<ul>
 		<li>Send only to subscribers who opted in to the specific brand and campaign type.</li>
+		<li>Marketing messages require prior express written consent.</li>
 		<li>Do not upload purchased, rented, scraped, shared, affiliate, or lead-gen lists.</li>
 		<li>Keep SMS consent separate from email consent.</li>
-		<li>Store consent evidence before sending.</li>
+		<li>Store consent evidence before sending and retain records for at least four years.</li>
+		<li>Scrub marketing lists against the National Do Not Call Registry before first send and at regular intervals.</li>
 		<li>Reconfirm consent when the campaign type changes materially.</li>
 	</ul>
 </section>
@@ -32,6 +34,8 @@ description: "Day-to-day operating rules for U.S. A2P SMS programs — consent r
 		<li>Include STOP language in promotional campaigns, preferably every message.</li>
 		<li>Avoid all disallowed or high-risk content.</li>
 		<li>Match the registered use case and samples.</li>
+		<li>Send only one opt-out confirmation message after STOP — no promotional content in that message.</li>
+		<li>Do not send any further messages after the opt-out confirmation.</li>
 	</ul>
 </section>
 
@@ -42,7 +46,10 @@ description: "Day-to-day operating rules for U.S. A2P SMS programs — consent r
 		<li>Avoid sudden spikes in volume.</li>
 		<li>Cap daily / weekly sends by segment.</li>
 		<li>Suppress recent purchasers or recent opt-outs from irrelevant campaigns.</li>
-		<li>Avoid sending during quiet hours unless your use case explicitly requires it (and your registration allows for it).</li>
+		<li>Marketing messages must not be sent before 8:00 AM or after 9:00 PM in the recipient's local time zone (TCPA quiet hours).</li>
+		<li>Map recipient numbers to time zones and enforce quiet hours per number.</li>
+		<li>For transactional messages outside quiet hours, still consider the recipient's time zone and expectations.</li>
+		<li>Document send-window rules and enforce them in the scheduling or automation platform.</li>
 	</ul>
 </section>
 

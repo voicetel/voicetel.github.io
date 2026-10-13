@@ -1,8 +1,8 @@
 ---
 layout: layouts/article.njk
 permalink: /support/messaging/compliance/
-title: "SMS messaging compliance and abuse prevention"
-description: "CTIA, carrier, and FCC messaging standards every VoiceTel messaging customer is required to follow — A2P 10DLC requirements, opt-in, opt-out, prohibited content, and carrier enforcement."
+title: "SMS messaging compliance, TCPA, and abuse prevention"
+description: "CTIA, TCPA, carrier, and FCC messaging standards every VoiceTel messaging customer is required to follow — A2P 10DLC and toll-free verification requirements, consent, quiet hours, Do Not Call, opt-out, prohibited content, and carrier enforcement."
 ---
 
 <p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/messaging/">Messaging</a> / Compliance</p>
@@ -49,7 +49,18 @@ description: "CTIA, carrier, and FCC messaging standards every VoiceTel messagin
 		<li>Recorded verbal consent</li>
 		<li>IVR systems</li>
 	</ul>
-	<p>Consent records must be retained and provided upon request.</p>
+	<p>Consent records must be retained for a minimum of <strong>four (4) years</strong> from the date of the last message sent based on that consent, consistent with the TCPA statute of limitations. CTIA recommends retaining consent records for <strong>five (5) years</strong>. Records must be provided to VoiceTel, a carrier, a regulator, or a governmental authority upon request.</p>
+
+	<h3>Do Not Call Registry and internal suppression</h3>
+	<p>For marketing messages, customers must scrub recipient numbers against the <strong>National Do Not Call Registry</strong> maintained by the Federal Trade Commission and the Federal Communications Commission. Numbers on the registry must not be messaged for marketing purposes unless the customer has a prior express written consent exception or an established business relationship exception that applies under TCPA rules.</p>
+	<p>Customers must also maintain an <strong>internal do-not-contact list</strong> that includes anyone who has opted out, requested not to be contacted, or filed a complaint. The internal list must be checked before every send.</p>
+
+	<h3>Prior express written consent for marketing</h3>
+	<p>Under the TCPA, <strong>marketing and promotional messages require prior express written consent</strong> — a higher standard than general consent. Written consent means the consumer has signed or otherwise agreed in writing (including electronic agreement) to receive advertising or telemarketing messages at a specific number. A pre-checked box, implied consent, or a business-card drop does not meet this standard.</p>
+	<p>For marketing opt-ins, the disclosure must be clear and conspicuous, not buried in terms, and must specifically state that the consumer agrees to receive marketing text messages from the identified brand.</p>
+
+	<h3>Double opt-in (recommended)</h3>
+	<p>While not required by CTIA or TCPA, <strong>double opt-in</strong> — where the consumer confirms their subscription by replying to a confirmation message — is considered a best practice. It produces stronger consent evidence, reduces complaint rates, and improves carrier trust. Some carriers and downstream reviewers view double opt-in favorably during campaign vetting.</p>
 
 	<h3>Required disclosure language</h3>
 	<p>Consumers must be informed of:</p>
@@ -85,6 +96,16 @@ description: "CTIA, carrier, and FCC messaging standards every VoiceTel messagin
 	<p>Example:</p>
 	<blockquote>Reply STOP to opt out.</blockquote>
 
+	<h3>Opt-out confirmation message</h3>
+	<p>When a consumer sends a STOP or equivalent opt-out keyword, the sender may send <strong>one final confirmation message</strong> acknowledging the opt-out. That confirmation message:</p>
+	<ul>
+		<li>Must not contain any promotional or marketing content.</li>
+		<li>Must confirm the consumer has been unsubscribed.</li>
+		<li>May include a HELP or customer-care contact reference.</li>
+		<li>Must be the last message sent to that consumer for the campaign.</li>
+	</ul>
+	<p>No further messages may be sent after the opt-out confirmation. Sending additional messages after opt-out — including re-engagement attempts, win-back offers, or "you missed out" messages — violates CTIA guidance and TCPA rules.</p>
+
 	<h3>Help instructions</h3>
 	<p>Messaging programs should support HELP responses. Example HELP response:</p>
 	<blockquote>VoiceTel Alerts: Reply STOP to unsubscribe. Call 800-555-1234 for support.</blockquote>
@@ -97,6 +118,16 @@ description: "CTIA, carrier, and FCC messaging standards every VoiceTel messagin
 		<li>Clearly identify offers or promotions</li>
 		<li>Avoid URL obfuscation or hidden redirects</li>
 		<li>Avoid impersonation of banks, carriers, or government entities</li>
+	</ul>
+
+	<h3>Quiet hours and send windows</h3>
+	<p>Under the TCPA, <strong>marketing messages must not be sent before 8:00 AM or after 9:00 PM</strong> in the recipient's local time zone. This applies to all telemarketing and promotional text messages.</p>
+	<p>Transactional and informational messages — such as appointment reminders, delivery notifications, account alerts, and OTP codes — are not subject to the same quiet-hours restriction, but senders should still consider the recipient's time zone and expectations.</p>
+	<p>Best practices for send windows:</p>
+	<ul>
+		<li>Map recipient numbers to time zones and enforce quiet hours per number.</li>
+		<li>Default to a conservative window (e.g., 9:00 AM – 8:00 PM local) when time zone data is uncertain.</li>
+		<li>Document send-window rules and enforce them in your scheduling or automation platform.</li>
 	</ul>
 </section>
 
@@ -219,18 +250,99 @@ description: "CTIA, carrier, and FCC messaging standards every VoiceTel messagin
 </section>
 
 <section class="section-block">
+	<h2>Toll-Free Verification (TFV)</h2>
+	<p>In addition to 10DLC, businesses sending A2P messaging from <strong>toll-free numbers</strong> (800, 888, 877, 866, 855, 844, 833 prefixes) must complete <strong>Toll-Free Verification</strong> through their messaging provider or the verifying carrier. Toll-free verification is a separate compliance path from 10DLC — the two systems do not overlap.</p>
+	<p>Unverified toll-free numbers may be blocked or filtered by carriers. Verified toll-free numbers receive higher throughput and improved deliverability.</p>
+	<h3>TFV requirements</h3>
+	<ul>
+		<li>Business name, website, and contact information must be consistent.</li>
+		<li>Use case must be described accurately.</li>
+		<li>Opt-in method and disclosure must be documented.</li>
+		<li>Sample messages must match the described use case.</li>
+		<li>Privacy policy and terms must be live and accessible.</li>
+		<li>Consent evidence must be available for review.</li>
+	</ul>
+	<p>The same consent, disclosure, STOP/HELP, and content rules described above apply to toll-free messaging. The difference is the registration path: toll-free verification is managed through the verifying carrier or aggregator rather than through TCR.</p>
+	<p>Choose 10DLC when you need local number presence and campaign-level registration. Choose toll-free verification when your use case is customer-service oriented, OTP, or notification-based traffic from a toll-free number.</p>
+</section>
+
+<section class="section-block">
+	<h2>Special campaign types</h2>
+
+	<h3>Political messaging</h3>
+	<p>Political messaging is a distinct TCR campaign use case with additional requirements. Political campaigns must:</p>
+	<ul>
+		<li>Register under the political campaign use case in TCR.</li>
+		<li>Comply with FEC regulations and applicable state election laws.</li>
+		<li>Identify the political committee or organization paying for the message.</li>
+		<li>Include "Paid for by [committee name]" in the message or disclosure.</li>
+		<li>Obtain express written consent specific to political messaging.</li>
+		<li>Not use purchased, rented, or shared voter lists as the sole consent source.</li>
+	</ul>
+	<p>Political messaging is subject to heightened carrier scrutiny. Some carriers restrict or prohibit certain political content categories.</p>
+
+	<h3>Charity and nonprofit messaging</h3>
+	<p>Charities and nonprofits must still register brands and campaigns through TCR. Nonprofit status does not exempt an organization from 10DLC registration, consent, or disclosure requirements. Specific considerations include:</p>
+	<ul>
+		<li>Register the legal entity name as it appears on the IRS determination letter or state registration.</li>
+		<li>Select the appropriate campaign use case (e.g., charitable solicitation, donor updates).</li>
+		<li>Comply with state charitable solicitation laws where applicable.</li>
+		<li>Obtain consent specific to the messaging program — event attendance alone is not consent to receive ongoing texts.</li>
+	</ul>
+
+	<h3>Age-gated content</h3>
+	<p>Campaigns involving alcohol, tobacco, cannabis (where state-legal), or other age-restricted products require additional controls:</p>
+	<ul>
+		<li>Age verification at the point of opt-in (e.g., date-of-birth field or age-gate page).</li>
+		<li>Carrier pre-approval before sending — some carriers require advance review of age-gated campaigns.</li>
+		<li>Clear disclosure that the content is intended for adults of legal age.</li>
+		<li>Compliance with applicable federal, state, and local laws governing the product.</li>
+	</ul>
+	<p>Federally illegal cannabis promotion remains prohibited regardless of state law. State-legal cannabis messaging may be permitted by some carriers with additional restrictions, age gating, and carrier pre-approval — but it carries elevated risk of filtering or rejection.</p>
+</section>
+
+<section class="section-block">
+	<h2>Campaign trust scores and throughput</h2>
+	<p>TCR assigns each registered brand a <strong>trust score</strong> based on the completeness and accuracy of the brand verification. The trust score, combined with the campaign use case and vetting level, determines the <strong>daily message throughput</strong> allotted by each carrier.</p>
+	<ul>
+		<li><strong>Unverified brands</strong> cannot register campaigns or send on 10DLC.</li>
+		<li><strong>Verified brands</strong> receive baseline throughput. Throughput varies by carrier and use case.</li>
+		<li><strong>Vetted brands</strong> (standard or enhanced vetting) may receive higher throughput tiers. Enhanced vetting involves a deeper review and typically takes 2–4 weeks.</li>
+	</ul>
+	<p>Throughput is managed at the number/campaign level (AT&amp;T) or brand level (T-Mobile). Businesses with high-volume needs should review throughput requirements before filing and consider vetting to access higher tiers.</p>
+	<p>Consistently operating within your allotted throughput, maintaining low complaint rates, and keeping traffic aligned with the registered use case all contribute to sustained or improved throughput over time.</p>
+</section>
+
+<section class="section-block">
+	<h2>International messaging considerations</h2>
+	<p>The compliance standards on this page focus on <strong>U.S. messaging requirements</strong> (TCPA, CTIA, TCR, FCC). Businesses sending messages to recipients outside the United States must also comply with the messaging laws of each destination country.</p>
+	<ul>
+		<li><strong>Canada:</strong> Canada's Anti-Spam Legislation (CASL) requires express or implied consent for commercial electronic messages, including SMS. Canada does not currently use the 10DLC registration system; toll-free and long-code messaging follow different carrier rules.</li>
+		<li><strong>European Union / UK:</strong> GDPR and the ePrivacy Directive require consent for marketing messages. Each EU member state may have additional national rules. The UK follows PECR (Privacy and Electronic Communications Regulations).</li>
+		<li><strong>Other jurisdictions:</strong> Many countries have their own consent, disclosure, and content requirements for commercial messaging.</li>
+	</ul>
+	<p>Customers sending internationally should consult legal counsel familiar with each destination market and confirm carrier requirements with VoiceTel before launching.</p>
+</section>
+
+<section class="section-block">
 	<h2>Best practices for compliance</h2>
 	<p>To maintain healthy message delivery and avoid carrier filtering:</p>
 	<ul>
 		<li>Obtain documented consent before messaging</li>
+		<li>Use prior express written consent for marketing messages</li>
 		<li>Clearly identify your brand</li>
 		<li>Keep content relevant and expected</li>
 		<li>Include STOP instructions where required</li>
-		<li>Honor opt-outs immediately</li>
+		<li>Honor opt-outs immediately and send only one confirmation message</li>
 		<li>Register all A2P campaigns properly</li>
+		<li>Complete toll-free verification if sending from toll-free numbers</li>
 		<li>Use branded domains in links</li>
 		<li>Avoid misleading urgency or deceptive language</li>
+		<li>Respect quiet hours (8:00 AM – 9:00 PM local time for marketing)</li>
+		<li>Scrub marketing lists against the National Do Not Call Registry</li>
+		<li>Retain consent records for at least four years</li>
 		<li>Monitor complaint and opt-out rates</li>
+		<li>Consider double opt-in for stronger consent evidence</li>
 	</ul>
 </section>
 
@@ -240,6 +352,8 @@ description: "CTIA, carrier, and FCC messaging standards every VoiceTel messagin
 		<li><a href="https://api.ctia.org/wp-content/uploads/2023/05/230523-CTIA-Messaging-Principles-and-Best-Practices-FINAL.pdf" rel="external">CTIA Messaging Principles and Best Practices</a></li>
 		<li><a href="https://www.fcc.gov/general/telemarketing-and-robocalls" rel="external">FCC TCPA regulations</a></li>
 		<li><a href="https://www.campaignregistry.com/" rel="external">The Campaign Registry</a></li>
+		<li><a href="https://www.ftc.gov/policy/rules/rulemaking/telemarketing-sales-rule/do-not-call-registry" rel="external">FTC National Do Not Call Registry</a></li>
+		<li><a href="https://api.ctia.org/wp-content/uploads/2025/10/Messaging-Security-Best-Practices-_October-2025.pdf" rel="external">CTIA Messaging Security Best Practices (October 2025)</a></li>
 	</ul>
 </section>
 

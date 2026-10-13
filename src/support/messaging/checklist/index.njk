@@ -16,6 +16,7 @@ description: "Pre-flight checklist for U.S. A2P SMS programs — brand readiness
 	<h2>Brand readiness</h2>
 	<ul>
 		<li>Legal business name matches tax / government records.</li>
+		<li>Brand entity type is selected correctly (Public Company, Private Company, Nonprofit, Sole Proprietor, or Government).</li>
 		<li>DBA is documented and appears on the website or public online presence.</li>
 		<li>Website is live, secure, and clearly identifies the brand.</li>
 		<li>Website has a working contact page or branded support email.</li>
@@ -23,6 +24,8 @@ description: "Pre-flight checklist for U.S. A2P SMS programs — brand readiness
 		<li>Terms and conditions are live and linked from the opt-in page.</li>
 		<li>No disallowed products or services appear on the website.</li>
 		<li>All teams (messaging, support, development) agree on the exact public brand name to use in messages.</li>
+		<li>Brand has reached Verified or Vetted_Verified status in TCR before filing the campaign.</li>
+		<li>If sending from toll-free numbers, toll-free verification is complete with the verifying carrier.</li>
 	</ul>
 </section>
 
@@ -34,15 +37,19 @@ description: "Pre-flight checklist for U.S. A2P SMS programs — brand readiness
 		<li>Any opt-in checkbox is unchecked by default.</li>
 		<li>The opt-in disclosure appears near the phone-number field or keyword instruction — not buried in the privacy policy.</li>
 		<li>The disclosure includes brand name, message type, frequency, rates notice, STOP, HELP, privacy policy, and terms.</li>
-		<li>Consent records are stored and exportable.</li>
+		<li>Marketing messages use prior express written consent — the disclosure specifically states the consumer agrees to receive marketing texts.</li>
+		<li>Consent records are stored, exportable, and retained for at least four years.</li>
 		<li>Purchased, rented, scraped, affiliate, or shared lead lists are not used.</li>
+		<li>Marketing recipient lists have been scrubbed against the National Do Not Call Registry.</li>
+		<li>Internal suppression list is maintained and enforced before every send.</li>
+		<li>Double opt-in is considered for stronger consent evidence where appropriate.</li>
 	</ul>
 </section>
 
 <section class="section-block">
 	<h2>Campaign application readiness</h2>
 	<ul>
-		<li>Campaign use case is selected accurately (marketing, customer care, account notifications, etc.) — not the wrong category for convenience.</li>
+		<li>Campaign use case is selected accurately (marketing, customer care, account notifications, political, charity, etc.) — not the wrong category for convenience.</li>
 		<li>Campaign description explains who sends, who receives, what is sent, and why.</li>
 		<li>Message flow explains every opt-in method.</li>
 		<li>Message flow includes direct links or screenshots of opt-in surfaces.</li>
@@ -51,6 +58,9 @@ description: "Pre-flight checklist for U.S. A2P SMS programs — brand readiness
 		<li>At least one sample includes STOP language.</li>
 		<li>Embedded link and embedded phone-number attributes match the samples.</li>
 		<li>Opt-in, opt-out, and HELP messages contain the required brand and support details.</li>
+		<li>Age-gated content attributes are set correctly and carrier pre-approval is obtained where required.</li>
+		<li>Political campaigns include required "Paid for by" disclosure in samples.</li>
+		<li>Throughput needs are reviewed; vetting level is selected accordingly.</li>
 	</ul>
 </section>
 
@@ -59,11 +69,15 @@ description: "Pre-flight checklist for U.S. A2P SMS programs — brand readiness
 	<ul>
 		<li>STOP, END, CANCEL, UNSUBSCRIBE, and similar opt-out words are handled.</li>
 		<li>HELP returns brand and customer-care details.</li>
+		<li>Opt-out confirmation sends only one final message with no promotional content.</li>
+		<li>No further messages are sent after opt-out confirmation.</li>
 		<li>Suppression list is enforced before every send.</li>
-		<li>Quiet-hours rules and campaign send windows are documented.</li>
+		<li>Marketing messages respect quiet hours — not sent before 8:00 AM or after 9:00 PM in the recipient's local time zone.</li>
+		<li>Send-window rules are documented and enforced in the scheduling or automation platform.</li>
 		<li>Test messages are sent only after campaign approval and sender association.</li>
 		<li>Delivery errors and opt-outs are monitored.</li>
 		<li>Customer support has a script for SMS questions and opt-out requests.</li>
+		<li>Consent records are stored with a retention policy of at least four years.</li>
 	</ul>
 </section>
 <aside class="cta-block" aria-labelledby="checklist-cta-heading">

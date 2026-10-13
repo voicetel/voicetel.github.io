@@ -300,7 +300,9 @@
 				{ "label": "About", "href": "/about/" },
 				{ "label": "Contact", "href": "/contact/" },
 				{ "label": "Open Source", "href": "/open-source/" },
-				{ "label": "Legal", "href": "/legal/" }
+				{ "label": "Legal", "href": "/legal/" },
+				{ "label": "SMS opt-in", "href": "/sms-optin/" },
+				{ "label": "SMS unsubscribe", "href": "/sms-unsubscribe/" }
 			]
 		}
 	],
@@ -311,7 +313,9 @@
 		"passwordRecovery": "/?recovery",
 		"porting": "/porting",
 		"resellerInquiry": "/reseller-inquiry",
-		"contact": "/contact"
+		"contact": "/contact",
+		"smsOptin": "/sms-optin",
+		"smsUnsubscribe": "/sms-unsubscribe"
 	},
 	"_note": "site.formEndpoints.signup is the AJAX endpoint on portalUrl that the /signup/ form posts to. Site navigation links to /signup/ (the marketing page), not directly to formEndpoints.signup.",
 	"navCta": { "label": "Get started", "href": "/signup/" }

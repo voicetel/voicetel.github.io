@@ -32,11 +32,11 @@ description: "A small on-prem VoiceTel SDN appliance creates a secure tunnel for
 		</div>
 		<div class="hero__visual">
 			{%- set diagram = {
-				title: "Your LAN to the SDN appliance to VoiceTel core",
+				title: "Your LAN to the SDN appliance to the VoiceTel network",
 				nodes: [
 					{ label: "Your LAN", value: "PBX + phones", meta: "10.0.0.0/24" },
 					{ label: "SDN appliance", value: "Raspberry Pi", meta: "sdn-08c4", accent: true },
-					{ label: "VoiceTel core", value: "NYC POP", meta: "TLS 1.3 tunnel" }
+					{ label: "VoiceTel Network", value: "closest POP", meta: "TLS 1.3 tunnel" }
 				],
 				links: [{}, { accent: true }],
 				meta: [
@@ -78,6 +78,8 @@ description: "A small on-prem VoiceTel SDN appliance creates a secure tunnel for
 			{ icon: "headset", title: "Support visibility", body: "Give support a clearer demarcation point for diagnosing LAN, tunnel, SIP, and media behavior." }
 		] %}
 		{% include "partials/v2/feature-grid.njk" %}
+		{%- set drawing = "sdn-before-after" %}
+		{% include "partials/section-illustration.njk" %}
 	</div>
 </section>
 

@@ -1,9 +1,20 @@
 {%- set n = ill.nodes | length %}
+{#- Node meta may be a string or an array of lines; box height follows the
+	tallest node so every box stays uniform. -#}
+{%- set metaLineCounts = [] %}
+{%- for node in ill.nodes %}
+	{%- if node.meta is string %}
+		{%- set _ = metaLineCounts.push(1) %}
+	{%- else %}
+		{%- set _ = metaLineCounts.push(node.meta | length) %}
+	{%- endif %}
+{%- endfor %}
+{%- set extra = (metaLineCounts | sort | last) - 1 %}
 {%- if variant === "wide" %}
 {%- set gap = 80 %}
 {%- set w = (984 - gap * (n - 1)) / n %}
 {%- set top = 12 %}
-{%- set h = 92 %}
+{%- set h = 92 + extra * 17 %}
 {%- set mid = top + h / 2 %}
 {%- for node in ill.nodes %}
 {%- set x = 8 + loop.index0 * (w + gap) %}
@@ -13,7 +24,10 @@
 {%- endif %}
 <g class="li-icon" transform="translate({{ (x + 14) | round(1) }} {{ top + 16 }}) scale(1.375)">{% icon node.icon %}</g>
 <text class="li-label" x="{{ (x + 14) | round(1) }}" y="{{ top + 62 }}">{{ node.label }}</text>
-<text class="li-meta" x="{{ (x + 14) | round(1) }}" y="{{ top + 81 }}">{{ node.meta }}</text>
+{%- set metas = [node.meta] if (node.meta is string) else node.meta %}
+{%- for m in metas %}
+<text class="li-meta" x="{{ (x + 14) | round(1) }}" y="{{ top + 81 + loop.index0 * 17 }}">{{ m }}</text>
+{%- endfor %}
 {%- if not loop.last %}
 {%- set link = ill.links[loop.index0] %}
 {%- set x1 = x + w + 6 %}
@@ -33,7 +47,7 @@
 {%- else %}
 {%- set nx = 22 %}
 {%- set nw = 290 %}
-{%- set nh = 60 %}
+{%- set nh = 60 + extra * 17 %}
 {%- set vgap = 40 %}
 {%- set lastTop = 8 + (n - 1) * (nh + vgap) %}
 {%- for node in ill.nodes %}
@@ -44,7 +58,10 @@
 {%- endif %}
 <g class="li-icon" transform="translate({{ nx + 14 }} {{ y + 19 }}) scale(1.375)">{% icon node.icon %}</g>
 <text class="li-label" x="{{ nx + 50 }}" y="{{ y + 26 }}">{{ node.label }}</text>
-<text class="li-meta" x="{{ nx + 50 }}" y="{{ y + 45 }}">{{ node.meta }}</text>
+{%- set metas = [node.meta] if (node.meta is string) else node.meta %}
+{%- for m in metas %}
+<text class="li-meta" x="{{ nx + 50 }}" y="{{ y + 45 + loop.index0 * 17 }}">{{ m }}</text>
+{%- endfor %}
 {%- if not loop.last %}
 {%- set link = ill.links[loop.index0] %}
 <line class="li-line" x1="{{ nx + nw / 2 }}" y1="{{ y + nh + 5 }}" x2="{{ nx + nw / 2 }}" y2="{{ y + nh + vgap - 5 }}" marker-end="url(#arrow)"{% if link.both %} marker-start="url(#arrow)"{% endif %}/>

@@ -18,7 +18,7 @@
     },
     {
       "name": "Gateways",
-      "description": "Manage SIP gateways (outbound trunks). System route types (USER, T30, VOICE_BRIDGE, DID, T38, RTC_BRIDGE, SDN) are always present and read-only."
+      "description": "Manage SIP gateways (outbound trunks). System route types (USER, T30, VOICE_BRIDGE, DID, T38, VOICEML, SDN) are always present and read-only."
     },
     {
       "name": "iNumbering",
@@ -137,12 +137,12 @@
       "numberMessagingCampaignAssignData": {
         "properties": {
           "carrier": {
-            "description": "Outbound carrier id assigned to the number after binding (17 = path A, 19 = path B).",
-            "example": 17,
+            "description": "Outbound carrier id the number routes through once enabled (19 = path B, 1 = path C). For a pending path-C enablement the number keeps its current routing until provisioning completes.",
+            "example": 1,
             "type": "integer"
           },
           "upstreamCnpId": {
-            "description": "CNP ID from the CSP sharing record. CAMP004 = path A, CAMP003 = path B.",
+            "description": "CNP ID from the CSP sharing record: CAMP003 = path B, BANDW = path C. (Campaigns on path A, CAMP004, are being migrated and take no new numbers.)",
             "example": "CAMP004",
             "type": [
               "string",
@@ -155,7 +155,6 @@
             "enum": [
               "A",
               "B",
-              "unknown",
               null
             ],
             "type": [
@@ -167,6 +166,38 @@
             "description": "Seven-character TCR campaign id.",
             "example": "CAMP002",
             "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "enabled",
+              "already",
+              "pending"
+            ],
+            "example": "pending",
+            "description": "enabled = bound now (path B); already = the number was already bound to this campaign (records reconciled, no new order); pending = accepted and being provisioned (path C) -- poll GET /v2.2/numbers/{number}/messaging (pending) until state is done or failed."
+          },
+          "alreadyAssigned": {
+            "description": "True when the number was already bound to this campaign on the target messaging path; records are reconciled and no new network order is placed.",
+            "example": false,
+            "type": "boolean"
+          },
+          "orderId": {
+            "description": "Network order id created for a path-B assignment. Null for path C (see job), idempotent no-ops, and assignments confirmed without a new order.",
+            "example": null,
+            "type": [
+              "string",
+              "integer",
+              "null"
+            ]
+          },
+          "warning": {
+            "description": "Non-fatal condition detected during the assignment (for example a stale registration on the other messaging path whose removal has been requested).",
+            "example": null,
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousNetworkCleared": {
             "description": "True if a conflicting binding on the other path was successfully disabled to allow this assignment.",
@@ -180,28 +211,51 @@
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "network": {
-            "description": "Messaging path the campaign resolves to (from the CSP sharing record).",
-            "example": "A",
+            "description": "Messaging path the campaign resolves to (from the CSP sharing record). Path B is assigned synchronously; path C is provisioned asynchronously (status \"pending\").",
+            "example": "C",
             "enum": [
-              "A",
               "B",
+              "C",
               null
             ],
             "type": [
               "string",
               "null"
             ]
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "Enablement accepted; the number is being provisioned with the messaging provider (typically minutes, sometimes longer).",
+            "description": "Human-readable note for a pending enablement."
+          },
+          "job": {
+            "$ref": "#/components/schemas/messagingEnablementJob"
           }
         },
         "description": "Data payload for the number messaging campaign assign operation.",
         "example": {
-          "carrier": 17,
-          "upstreamCnpId": "CAMP004",
-          "previousNetwork": null,
-          "campaignId": "CAMP002",
-          "previousNetworkCleared": false,
           "number": "6185550104",
-          "network": "A"
+          "campaignId": "CAMP002",
+          "status": "pending",
+          "network": "C",
+          "upstreamCnpId": "BANDW",
+          "carrier": 1,
+          "alreadyAssigned": false,
+          "previousNetwork": null,
+          "previousNetworkCleared": false,
+          "orderId": null,
+          "warning": null,
+          "message": "Enablement accepted; the number is being provisioned with the messaging provider (typically minutes, sometimes longer).",
+          "job": {
+            "campaignId": "CAMP002",
+            "state": "queued",
+            "message": "Queued",
+            "createdAt": "2026-10-13T09:30:00+00:00",
+            "updatedAt": "2026-10-13T09:30:00+00:00"
+          }
         },
         "required": [],
         "type": "object"
@@ -552,7 +606,7 @@
                   "type": "string"
                 },
                 "status": {
-                  "description": "Outcome of the operation.",
+                  "description": "Campaign status: CAMPAIGN_DCA_COMPLETE (ready: carrier review finished, numbers assigned), CAMPAIGN_DCA_COMPLETE_NO_NUMBERS_ASSIGNED, CAMPAIGN_PENDING_DCA (active at the campaign registry, but carrier (DCA) review is not finished yet; numbers cannot be enabled until it is), CAMPAIGN_DCA_REJECTED (a carrier's DCA rejected or suspended the campaign; see dca.carriers), CAMPAIGN_<registry status>, or CAMPAIGN_INVALID_ID.",
                   "example": "CAMPAIGN_DCA_COMPLETE",
                   "type": "string"
                 },
@@ -565,6 +619,61 @@
                     "example"
                   ],
                   "type": "array"
+                },
+                "dca": {
+                  "type": "object",
+                  "nullable": true,
+                  "description": "Carrier (DCA) review progress. null for CAMPAIGN_INVALID_ID.",
+                  "properties": {
+                    "electionComplete": {
+                      "type": "boolean",
+                      "description": "Every carrier has a DCA assigned to review the campaign.",
+                      "example": true
+                    },
+                    "electedCarriers": {
+                      "type": "array",
+                      "nullable": true,
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Carriers with a DCA assigned so far (null when unavailable).",
+                      "example": [
+                        "AT&T",
+                        "T-Mobile",
+                        "US Cellular",
+                        "Verizon Wireless",
+                        "ClearSky",
+                        "Interop"
+                      ]
+                    },
+                    "carriers": {
+                      "type": "array",
+                      "description": "Each carrier DCA decision received, latest per carrier.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "carrier": {
+                            "type": "string",
+                            "example": "T-Mobile"
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "ACTIVE, REJECTED, SUSPENDED, UNSUSPENDED or TERMINATED.",
+                            "example": "ACTIVE"
+                          },
+                          "detail": {
+                            "type": "string",
+                            "description": "The reviewer's note, as given.",
+                            "example": "Campaign approved"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               },
               "type": "object"
@@ -575,7 +684,19 @@
                 "status": "CAMPAIGN_DCA_COMPLETE",
                 "numbers": [
                   "example"
-                ]
+                ],
+                "dca": {
+                  "electionComplete": true,
+                  "electedCarriers": [
+                    "AT&T",
+                    "T-Mobile",
+                    "US Cellular",
+                    "Verizon Wireless",
+                    "ClearSky",
+                    "Interop"
+                  ],
+                  "carriers": []
+                }
               }
             ],
             "type": "array"
@@ -589,7 +710,19 @@
               "status": "CAMPAIGN_DCA_COMPLETE",
               "numbers": [
                 "example"
-              ]
+              ],
+              "dca": {
+                "electionComplete": true,
+                "electedCarriers": [
+                  "AT&T",
+                  "T-Mobile",
+                  "US Cellular",
+                  "Verizon Wireless",
+                  "ClearSky",
+                  "Interop"
+                ],
+                "carriers": []
+              }
             }
           ]
         },
@@ -604,7 +737,7 @@
             "type": "integer"
           },
           "routeOut": {
-            "description": "Outbound carrier id (numbers.carrier value).",
+            "description": "Outbound carrier id.",
             "example": 17,
             "type": "integer"
           }
@@ -675,7 +808,7 @@
             "type": "string"
           }
         },
-        "description": "Body passed through to the campaign registration service. campaignClassName and campaignStartDate are auto-populated if omitted.",
+        "description": "Body passed through to the campaign registration service. campaignClassName (from the campaign registry) and campaignStartDate (today) are auto-populated if omitted.",
         "example": {
           "campaignStartDate": "2026-05-18T12:00:00Z",
           "externalCampaignId": "abc123",
@@ -823,7 +956,6 @@
           "data": {
             "services": {
               "sms": true,
-              "rcid": true,
               "mms": true,
               "bypassMedia": true,
               "e911": true,
@@ -1244,7 +1376,6 @@
                 "status": "Complete",
                 "createdAt": "2026-05-18T12:00:00Z",
                 "pid": "y0d36",
-                "supportUrl": "https://desk.support.voicetel.com/conversation/2107",
                 "foc": "19750715",
                 "message": "Your numbers will be porting on May/04/2026 at 10:00 AM Central."
               }
@@ -1260,7 +1391,6 @@
               "status": "Complete",
               "createdAt": "2026-05-18T12:00:00Z",
               "pid": "y0d36",
-              "supportUrl": "https://desk.support.voicetel.com/conversation/2107",
               "foc": "19750715",
               "message": "Your numbers will be porting on May/04/2026 at 10:00 AM Central."
             }
@@ -1850,18 +1980,30 @@
             "type": "string"
           }
         },
-        "description": "Result of binding a single number to a 10DLC campaign. Includes any conflicting binding that was cleared from the other messaging path.",
+        "description": "Result of binding a single number to a 10DLC campaign. The campaign must be available to the account and ACTIVE; the number is enabled on the messaging path the campaign lives on. Idempotent: a number already bound to the campaign reports status \"already\".",
         "example": {
+          "status": "success",
           "data": {
-            "carrier": 17,
-            "upstreamCnpId": "CAMP004",
-            "previousNetwork": null,
-            "campaignId": "CAMP002",
-            "previousNetworkCleared": false,
             "number": "6185550104",
-            "network": "A"
-          },
-          "status": "success"
+            "campaignId": "CAMP002",
+            "status": "pending",
+            "network": "C",
+            "upstreamCnpId": "BANDW",
+            "carrier": 1,
+            "alreadyAssigned": false,
+            "previousNetwork": null,
+            "previousNetworkCleared": false,
+            "orderId": null,
+            "warning": null,
+            "message": "Enablement accepted; the number is being provisioned with the messaging provider (typically minutes, sometimes longer).",
+            "job": {
+              "campaignId": "CAMP002",
+              "state": "queued",
+              "message": "Queued",
+              "createdAt": "2026-10-13T09:30:00+00:00",
+              "updatedAt": "2026-10-13T09:30:00+00:00"
+            }
+          }
         },
         "required": [
           "status",
@@ -2504,7 +2646,19 @@
                 "status": "CAMPAIGN_DCA_COMPLETE",
                 "numbers": [
                   "example"
-                ]
+                ],
+                "dca": {
+                  "electionComplete": true,
+                  "electedCarriers": [
+                    "AT&T",
+                    "T-Mobile",
+                    "US Cellular",
+                    "Verizon Wireless",
+                    "ClearSky",
+                    "Interop"
+                  ],
+                  "carriers": []
+                }
               }
             ]
           },
@@ -3018,7 +3172,7 @@
             "type": "string"
           },
           "authType": {
-            "description": "Authentication mode for the account. 0 = Digest only, 1 = IP allowlist only, 2 = Digest OR IP allowlist, 3 = Digest AND IP allowlist.",
+            "description": "Authentication mode for the account. 0 = Digest, 1 = Lax (Digest | IP), 2 = IP, 3 = Strict (Digest + IP).",
             "example": 0,
             "enum": [
               0,
@@ -3076,21 +3230,27 @@
       "portOutPinUpdateData": {
         "properties": {
           "portOutPin": {
-            "description": "The newly-active port-out PIN.",
+            "description": "The port-out PIN now on file for this number (the value just set, or the existing value if the number was already locked).",
             "example": "4287",
             "type": "string"
           },
           "number": {
-            "description": "Ten-digit telephone number whose PIN was set.",
+            "description": "Ten-digit telephone number whose PIN is reported.",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
+          },
+          "changed": {
+            "description": "true if this request set the PIN; false if the number already had one, which is locked for 30 days once set and is returned unchanged.",
+            "type": "boolean",
+            "example": true
           }
         },
         "description": "Data payload for the port out pin update operation.",
         "example": {
           "portOutPin": "4287",
-          "number": "2015550100"
+          "number": "2015550100",
+          "changed": true
         },
         "required": [],
         "type": "object"
@@ -4977,7 +5137,7 @@
       "orderCreateData": {
         "properties": {
           "amountCharged": {
-            "description": "USD deducted from accounts.cash.",
+            "description": "Amount deducted from the account balance.",
             "example": 0.5,
             "type": "number"
           },
@@ -5581,7 +5741,6 @@
                 "status": "Complete",
                 "createdAt": "2026-05-18T12:00:00Z",
                 "pid": "y0d36",
-                "supportUrl": "https://desk.support.voicetel.com/conversation/2107",
                 "foc": "19750715",
                 "message": "Your numbers will be porting on May/04/2026 at 10:00 AM Central."
               }
@@ -6301,7 +6460,7 @@
             "type": "array"
           },
           "authType": {
-            "description": "0=Digest, 1=IP Auth, 2=Digest OR IP Auth, 3=Digest AND IP Auth",
+            "description": "0=Digest, 1=Lax (Digest | IP), 2=IP, 3=Strict (Digest + IP)",
             "example": 0,
             "enum": [
               0,
@@ -6843,12 +7002,16 @@
             "enum": [
               "A",
               "B",
+              "C",
               null
             ],
             "type": [
               "string",
               "null"
             ]
+          },
+          "pending": {
+            "$ref": "#/components/schemas/messagingEnablementJob"
           }
         },
         "description": "Current messaging routing state for a single number, including the bound campaign and its CSP status if any.",
@@ -7706,11 +7869,6 @@
             "example": "y0d36",
             "type": "string"
           },
-          "supportUrl": {
-            "description": "URL to the related support ticket conversation.",
-            "example": "https://desk.support.voicetel.com/conversation/2107",
-            "type": "string"
-          },
           "foc": {
             "description": "Firm Order Commitment date (YYYYMMDD) (schema portSummary).",
             "example": "19750715",
@@ -7728,7 +7886,6 @@
           "status": "Complete",
           "createdAt": "2026-05-18T12:00:00Z",
           "pid": "y0d36",
-          "supportUrl": "https://desk.support.voicetel.com/conversation/2107",
           "foc": "19750715",
           "message": "Your numbers will be porting on May/04/2026 at 10:00 AM Central."
         },
@@ -8568,11 +8725,6 @@
                 "example": true,
                 "type": "boolean"
               },
-              "rcid": {
-                "description": "Rcid.",
-                "example": true,
-                "type": "boolean"
-              },
               "mms": {
                 "description": "Mms (in services).",
                 "example": true,
@@ -8607,7 +8759,6 @@
             "description": "Per-service feature flags. true means the service is enabled on this account.",
             "example": {
               "sms": true,
-              "rcid": true,
               "mms": true,
               "bypassMedia": true,
               "e911": true,
@@ -8746,7 +8897,6 @@
         "example": {
           "services": {
             "sms": true,
-            "rcid": true,
             "mms": true,
             "bypassMedia": true,
             "e911": true,
@@ -9590,6 +9740,45 @@
         },
         "required": [],
         "type": "object"
+      },
+      "messagingEnablementJob": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "State of an asynchronous (path C) enablement.",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "example": "CAMP002"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "hosting",
+              "assigning",
+              "routing",
+              "done",
+              "failed"
+            ],
+            "example": "hosting",
+            "description": "queued -> hosting -> assigning -> routing -> done, or failed (see message). The number keeps its previous routing until done."
+          },
+          "message": {
+            "type": "string",
+            "example": "Hosting order submitted",
+            "description": "Latest progress note, or the reason for failure."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       }
     }
   },
@@ -9606,7 +9795,7 @@
     "termsOfService": "https://www.voicetel.com/tos",
     "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key — this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account, account/recurring-charges, account/cdr, account/api-key — 6 requests per hour per IP.",
     "title": "VoiceTel API",
-    "version": "2.2.10",
+    "version": "2.2.14",
     "contact": {
       "email": "support@voicetel.com"
     }
@@ -9614,7 +9803,7 @@
   "paths": {
     "/v2.2/orders": {
       "post": {
-        "description": "Places an the number order for the listed numbers and adds them to the authenticated account. Charges accounts.cash by accounts.did × len(numbers). Supports the Idempotency-Key header for safe retries (the cached response is returned for 24h on replay).",
+        "description": "Places an the number order for the listed numbers and adds them to the authenticated account. Charges the account balance by the per-DID monthly rate for each number ordered. Supports the Idempotency-Key header for safe retries (the cached response is returned for 24h on replay).",
         "tags": [
           "iNumbering"
         ],
@@ -9702,7 +9891,7 @@
                 }
               }
             },
-            "description": "accounts.cash insufficient for the order total"
+            "description": "Insufficient balance for the order total"
           },
           "400": {
             "content": {
@@ -9745,7 +9934,7 @@
                 }
               }
             },
-            "description": "Order placed and accounts.cash debited"
+            "description": "Order placed and account balance debited"
           }
         }
       }
@@ -9983,7 +10172,6 @@
                   "data": {
                     "services": {
                       "sms": true,
-                      "rcid": true,
                       "mms": true,
                       "bypassMedia": true,
                       "e911": true,
@@ -11813,7 +12001,7 @@
     },
     "/v2.2/ports": {
       "post": {
-        "description": "Submits a number port-in. Replicates the legacy LNP web form: creates a port record, opens a support ticket, notifies the LNP team, and deducts $6 per TN from accounts.cash. Numbers must have been confirmed portable via GET /v2.2/ports/availability/{number} within the prior hour. The LOA must be uploaded after submission.",
+        "description": "Submits a number port-in. Replicates the legacy LNP web form: creates a port record, opens a support ticket, notifies the LNP team, and deducts the configured per-TN port fee from the account balance. Numbers must have been confirmed portable via GET /v2.2/ports/availability/{number} within the prior hour. The LOA must be uploaded after submission.",
         "tags": [
           "iNumbering"
         ],
@@ -11907,7 +12095,7 @@
                 }
               }
             },
-            "description": "accounts.cash insufficient for port-in fee"
+            "description": "Insufficient balance for the port-in fee"
           },
           "400": {
             "content": {
@@ -12009,7 +12197,6 @@
                         "status": "Complete",
                         "createdAt": "2026-05-18T12:00:00Z",
                         "pid": "y0d36",
-                        "supportUrl": "https://desk.support.voicetel.com/conversation/2107",
                         "foc": "19750715",
                         "message": "Your numbers will be porting on May/04/2026 at 10:00 AM Central."
                       }
@@ -13152,7 +13339,7 @@
         }
       },
       "get": {
-        "description": "Returns all system route types and user-defined SIP gateways. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+        "description": "Returns all system route types and user-defined SIP gateways. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=VOICEML, 8=SDN.",
         "tags": [
           "Gateways"
         ],
@@ -13283,7 +13470,7 @@
     },
     "/v2.2/ports/availability/{number}": {
       "get": {
-        "description": "Checks whether the number can be ported in. On portable=true the system sets a Redis flag that lets a subsequent POST /v2.2/ports submit the port within an hour.",
+        "description": "Checks whether the number can be ported in. On portable=true the system sets an internal flag that lets a subsequent POST /v2.2/ports submit the port within an hour.",
         "tags": [
           "iNumbering"
         ],
@@ -14465,7 +14652,7 @@
     },
     "/v2.2/messaging/campaigns": {
       "post": {
-        "description": "Campaign registration. messagingBrandId / externalCampaignId / campaignDescription are required; campaignClassName and campaignStartDate default to T / today if omitted.",
+        "description": "Campaign registration. messagingBrandId / externalCampaignId / campaignDescription are required. The campaign must be available to the authenticated account (created by or shared with it). campaignClassName defaults to the message class the campaign registry assigned to the campaign (for example E for a standard campaign, T for low volume); campaignStartDate defaults to today.",
         "tags": [
           "Messaging"
         ],
@@ -14551,7 +14738,7 @@
         }
       },
       "get": {
-        "description": "For each id, returns the the messaging network campaign status and the list of numbers currently bound.",
+        "description": "For each id, returns the campaign status and the authenticated account's numbers currently enabled on that campaign (all messaging paths). Only campaigns available to the account are answered; other ids return CAMPAIGN_INVALID_ID. Status values: CAMPAIGN_DCA_COMPLETE (ready: carrier review finished, numbers assigned), CAMPAIGN_DCA_COMPLETE_NO_NUMBERS_ASSIGNED, CAMPAIGN_PENDING_DCA (active at the campaign registry, but carrier (DCA) review is not finished yet; numbers cannot be enabled until it is), CAMPAIGN_DCA_REJECTED (a carrier's DCA rejected or suspended the campaign; see dca.carriers), CAMPAIGN_<registry status> (e.g. CAMPAIGN_EXPIRED), or CAMPAIGN_INVALID_ID. Each entry also carries network, upstreamCnpId and dca (carrier review progress: electionComplete, electedCarriers, and each carrier decision received).",
         "tags": [
           "Messaging"
         ],
@@ -14606,7 +14793,19 @@
                         "status": "CAMPAIGN_DCA_COMPLETE",
                         "numbers": [
                           "example"
-                        ]
+                        ],
+                        "dca": {
+                          "electionComplete": true,
+                          "electedCarriers": [
+                            "AT&T",
+                            "T-Mobile",
+                            "US Cellular",
+                            "Verizon Wireless",
+                            "ClearSky",
+                            "Interop"
+                          ],
+                          "carriers": []
+                        }
                       }
                     ]
                   },
@@ -15494,7 +15693,7 @@
     },
     "/v2.2/numbers/{number}/messaging": {
       "patch": {
-        "description": "At least one of routeIn / routeOut must be present. routeIn must be a numbers_sms row id owned by the authenticated account, or 0 to detach.",
+        "description": "At least one of routeIn / routeOut must be present. routeIn must be a numbers_sms row id owned by the authenticated account, or 0 to detach. routeOut must be 0 (outbound off) or the route the number is enabled on; to move a number to another campaign or messaging path use PUT /v2.2/numbers/{number}/messaging-campaign.",
         "tags": [
           "Numbers"
         ],
@@ -15522,8 +15721,8 @@
                 "$ref": "#/components/schemas/numberMessagingPatchRequest"
               },
               "example": {
-                "routeIn": 1234,
-                "routeOut": 17
+                "routeOut": 0,
+                "routeIn": 1234
               }
             }
           },
@@ -15619,6 +15818,9 @@
               }
             },
             "description": "No update fields present"
+          },
+          "409": {
+            "description": "routeOut is not 0 or the route the number is enabled on."
           }
         }
       },
@@ -16103,7 +16305,7 @@
         }
       },
       "put": {
-        "description": "Binds the number to a registered campaign at the network. Number must be on the authenticated account.",
+        "description": "Enables the number for messaging on a 10DLC campaign. The campaign is verified first: it must be available to the authenticated account (created by or shared with it) and ACTIVE. The number is then enabled on the messaging path the campaign lives on -- path B synchronously (200), path C asynchronously (202, status \"pending\": the number is provisioned with the messaging provider, then routed; poll GET /v2.2/numbers/{number}/messaging). A campaign that is still awaiting carrier approval also returns 202 \"pending\": nothing changes until it is approved, then the number is enabled automatically. A binding on another path is removed. Campaigns still on path A are being migrated and are refused (409). Number must be on the authenticated account.",
         "tags": [
           "Numbers"
         ],
@@ -16182,20 +16384,60 @@
                   "$ref": "#/components/schemas/numberMessagingCampaignAssignResponse"
                 },
                 "example": {
+                  "status": "success",
                   "data": {
-                    "carrier": 17,
-                    "upstreamCnpId": "CAMP004",
-                    "previousNetwork": null,
-                    "campaignId": "CAMP002",
-                    "previousNetworkCleared": false,
                     "number": "6185550104",
-                    "network": "A"
-                  },
-                  "status": "success"
+                    "campaignId": "CAMP002",
+                    "status": "enabled",
+                    "network": "B",
+                    "upstreamCnpId": "CAMP003",
+                    "carrier": 19,
+                    "alreadyAssigned": false,
+                    "previousNetwork": null,
+                    "previousNetworkCleared": false,
+                    "orderId": "229544057",
+                    "warning": null,
+                    "message": null,
+                    "job": null
+                  }
                 }
               }
             },
-            "description": "Campaign assigned"
+            "description": "Number bound (path B, status \"enabled\"), or already bound to this campaign (status \"already\")."
+          },
+          "202": {
+            "description": "Accepted: path-C enablement queued (status \"pending\"); the number is provisioned asynchronously.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/numberMessagingCampaignAssignResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "number": "6185550104",
+                    "campaignId": "CAMP002",
+                    "status": "pending",
+                    "network": "C",
+                    "upstreamCnpId": "BANDW",
+                    "carrier": 1,
+                    "alreadyAssigned": false,
+                    "previousNetwork": null,
+                    "previousNetworkCleared": false,
+                    "orderId": null,
+                    "warning": null,
+                    "message": "Enablement accepted; the number is being provisioned with the messaging provider (typically minutes, sometimes longer).",
+                    "job": {
+                      "campaignId": "CAMP002",
+                      "state": "queued",
+                      "message": "Queued",
+                      "createdAt": "2026-10-13T09:30:00+00:00",
+                      "updatedAt": "2026-10-13T09:30:00+00:00"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "content": {
@@ -16213,6 +16455,40 @@
               }
             },
             "description": "campaignId missing or malformed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Carrier excluded 6185550104 from the order (current assignment: none, or an order is still in flight) — retry in a few minutes"
+                  }
+                }
+              }
+            },
+            "description": "Campaign not ACTIVE, not elected to a messaging path, still on path A (being migrated), the number is porting, enabled on another path that must be disabled first, or another enablement for it is in progress."
+          },
+          "403": {
+            "description": "The campaign is not available to this account, or the number is not on it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Carrier excluded 6185550104 from the order (current assignment: none, or an order is still in flight) — retry in a few minutes"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -16784,7 +17060,7 @@
     },
     "/v2.2/numbers/{number}/port-out-pin": {
       "patch": {
-        "description": "Updates the four-digit PIN that future losing carriers must present to release this number. Requires that the number is currently on the authenticated account.",
+        "description": "Sets the port-out PIN a losing carrier must present to release this number. A PIN is locked for 30 days once set, so this call is idempotent: if the number already has a PIN it is returned unchanged with changed=false; a newly set PIN returns changed=true. Both cases return HTTP 200.",
         "tags": [
           "Numbers"
         ],

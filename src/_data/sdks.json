@@ -1,7 +1,7 @@
 {
 	"source": "https://github.com/voicetel",
 	"license": "MIT",
-	"targetApi": "VoiceTel REST API v2.2.10",
+	"targetApi": "VoiceTel REST API v2.2.14",
 	"sdks": [
 		{
 			"name": "Python",
@@ -29,7 +29,7 @@
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/java-sdk",
-			"install": "com.voicetel:voicetel-sdk:2.2.10",
+			"install": "com.voicetel:voicetel-sdk:2.2.14",
 			"installLabel": "Maven",
 			"description": "Java 11+ client with builder-style request construction. Pluggable HTTP transport; OkHttp by default."
 		},
@@ -37,7 +37,7 @@
 			"name": "Kotlin",
 			"slug": "kotlin",
 			"repo": "https://github.com/voicetel/kotlin-sdk",
-			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.10",
+			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.14",
 			"installLabel": "Gradle",
 			"description": "Coroutine-first Kotlin client. Suspending functions, sealed result types, idiomatic null handling."
 		},
@@ -45,7 +45,7 @@
 			"name": "Scala",
 			"slug": "scala",
 			"repo": "https://github.com/voicetel/scala-sdk",
-			"install": "com.voicetel:voicetel-sdk_3:2.2.10",
+			"install": "com.voicetel:voicetel-sdk_3:2.2.14",
 			"installLabel": "sbt",
 			"description": "Scala 3 client. Effect-system-agnostic core with thin Future and cats-effect bindings."
 		},
@@ -100,7 +100,7 @@
 			"icon": "gear",
 			"repo": "https://github.com/voicetel/cli",
 			"install": "go install github.com/voicetel/cli@latest",
-			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.10 operation from the terminal."
+			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.14 operation from the terminal."
 		},
 		{
 			"name": "API Collections",
@@ -108,7 +108,7 @@
 			"icon": "layers",
 			"repo": "https://github.com/voicetel/api-collections",
 			"install": "import into Postman or Bruno",
-			"description": "Pre-built Postman and Bruno collections covering all 74 v2.2.10 operations. Environment templates for API key and base URL included."
+			"description": "Pre-built Postman and Bruno collections covering all 74 v2.2.14 operations. Environment templates for API key and base URL included."
 		}
 	]
 }

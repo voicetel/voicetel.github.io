@@ -1,0 +1,157 @@
+<Response>
+  {% if Digits == blank %}
+    <!-- Initial IVR Greeting -->
+    <Gather input="dtmf" timeout="3" method="POST">
+      <Pause length="2"/>
+      <Say>Thank you for calling widgets.com. Let us begin with the basic fundamentals of business. You have a company that manufactures widgets. You have raw materials, you have a labor force, you have plant and equipment. A widget is a fictitious product.</Say>
+      <Pause length="2"/>
+      <Say>For sales inquiries, press 1.</Say>
+      <Pause length="2"/>
+      <Say>To speak with the labor force, press 2.</Say>
+      <Pause length="2"/>
+      <Say>To speak with an AI agent, press 0.</Say>
+      <Pause length="2"/>
+      <Say>If you know your party’s extension, you may dial it at any time.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% else %}
+    {% assign email = "" %}
+    {% assign name = "" %}
+
+    <!-- Press 0 (AI Agent) -->
+    {% if Digits == "0" %}
+      <Say>Connecting you to our AI agent now.</Say>
+      <Connect>
+        <ConversationRelay url="wss://YOUR_AI_WEBSOCKET_URL" welcomeGreeting="Hello! I am the AI agent for widgets.com. How can I help you today?"/>
+      </Connect>
+      <Hangup/>
+
+    <!-- Extension 100 / Press 1 -->
+    {% elsif Digits == "1" or Digits == "100" %}
+      {% assign email = "michael@widgets.com" %}
+      {% assign name = "Michael" %}
+      <Say>Connecting you now.</Say>
+      <Pause length="1"/>
+      <Say>This call is being recorded.</Say>
+      <Pause length="1"/>
+      <Dial timeout="20" ringTone="us" record="record-from-answer-dual"
+            recordingStatusCallback="%DASHBOARD_URL%/recording/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+            recordingStatusCallbackEvent="completed">
+        <Sip statusCallback="%DASHBOARD_URL%/status/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+             statusCallbackMethod="POST" statusCallbackEvent="ringing answered completed">sip:100@widgets.vml.voice.tel</Sip>
+      </Dial>
+      <Pause length="1"/>
+      <Say>{{ name }} is unavailable. Please leave a message after the tone. When you are finished, you may hang up.</Say>
+      <Record action="GOODBYE_URL" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"
+              transcribe="true"
+              transcribeCallback="%DASHBOARD_URL%/transcript/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallback="%DASHBOARD_URL%/voicemail/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallbackEvent="completed"/>
+      <Say>Thank you. Goodbye.</Say>
+      <Hangup/>
+
+    <!-- Press 2 (Rings the plant) -->
+    {% elsif Digits == "2" %}
+      {% assign email = "michael@widgets.com" %}
+      {% assign name = "A representative" %}
+      <Say>Connecting you now.</Say>
+      <Pause length="1"/>
+      <Say>This call is being recorded.</Say>
+      <Pause length="1"/>
+      <Dial timeout="20" ringTone="us" record="record-from-answer-dual"
+            recordingStatusCallback="%DASHBOARD_URL%/recording/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+            recordingStatusCallbackEvent="completed">
+        <Sip>sip:100@widgets.vml.voice.tel</Sip>
+        <Sip>sip:101@widgets.vml.voice.tel</Sip>
+        <Sip>sip:102@widgets.vml.voice.tel</Sip>
+        <Sip>sip:103@widgets.vml.voice.tel</Sip>
+      </Dial>
+      <Pause length="1"/>
+      <Say>{{ name }} is unavailable. Please leave a message after the tone. When you are finished, you may hang up.</Say>
+      <Record action="GOODBYE_URL" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"
+              transcribe="true"
+              transcribeCallback="%DASHBOARD_URL%/transcript/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallback="%DASHBOARD_URL%/voicemail/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallbackEvent="completed"/>
+      <Say>Thank you. Goodbye.</Say>
+      <Hangup/>
+
+    <!-- Extension 101 -->
+    {% elsif Digits == "101" %}
+      {% assign email = "ali@widgets.com" %}
+      {% assign name = "Ali" %}
+      <Say>Connecting you now.</Say>
+      <Pause length="1"/>
+      <Say>This call is being recorded.</Say>
+      <Pause length="1"/>
+      <Dial timeout="20" ringTone="us" record="record-from-answer-dual"
+            recordingStatusCallback="%DASHBOARD_URL%/recording/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+            recordingStatusCallbackEvent="completed">
+        <Sip statusCallback="%DASHBOARD_URL%/status/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+             statusCallbackMethod="POST" statusCallbackEvent="ringing answered completed">sip:101@widgets.vml.voice.tel</Sip>
+      </Dial>
+      <Pause length="1"/>
+      <Say>{{ name }} is unavailable. Please leave a message after the tone. When you are finished, you may hang up.</Say>
+      <Record action="GOODBYE_URL" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"
+              transcribe="true"
+              transcribeCallback="%DASHBOARD_URL%/transcript/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallback="%DASHBOARD_URL%/voicemail/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallbackEvent="completed"/>
+      <Say>Thank you. Goodbye.</Say>
+      <Hangup/>
+
+    <!-- Extension 102 / Press 3 -->
+    {% elsif Digits == "3" or Digits == "102" %}
+      {% assign email = "lily@widgets.com" %}
+      {% assign name = "Lily" %}
+      <Say>Connecting you now.</Say>
+      <Pause length="1"/>
+      <Say>This call is being recorded.</Say>
+      <Pause length="1"/>
+      <Dial timeout="20" ringTone="us" record="record-from-answer-dual"
+            recordingStatusCallback="%DASHBOARD_URL%/recording/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+            recordingStatusCallbackEvent="completed">
+        <Sip statusCallback="%DASHBOARD_URL%/status/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+             statusCallbackMethod="POST" statusCallbackEvent="ringing answered completed">sip:102@widgets.vml.voice.tel</Sip>
+      </Dial>
+      <Pause length="1"/>
+      <Say>{{ name }} is unavailable. Please leave a message after the tone. When you are finished, you may hang up.</Say>
+      <Record action="GOODBYE_URL" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"
+              transcribe="true"
+              transcribeCallback="%DASHBOARD_URL%/transcript/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallback="%DASHBOARD_URL%/voicemail/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallbackEvent="completed"/>
+      <Say>Thank you. Goodbye.</Say>
+      <Hangup/>
+
+    <!-- Extension 103 / Press 4 -->
+    {% elsif Digits == "4" or Digits == "103" %}
+      {% assign email = "chloe@widgets.com" %}
+      {% assign name = "Chloe" %}
+      <Say>Connecting you now.</Say>
+      <Pause length="1"/>
+      <Say>This call is being recorded.</Say>
+      <Pause length="1"/>
+      <Dial timeout="20" ringTone="us" record="record-from-answer-dual"
+            recordingStatusCallback="%DASHBOARD_URL%/recording/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+            recordingStatusCallbackEvent="completed">
+        <Sip statusCallback="%DASHBOARD_URL%/status/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+             statusCallbackMethod="POST" statusCallbackEvent="ringing answered completed">sip:103@widgets.vml.voice.tel</Sip>
+      </Dial>
+      <Pause length="1"/>
+      <Say>{{ name }} is unavailable. Please leave a message after the tone. When you are finished, you may hang up.</Say>
+      <Record action="GOODBYE_URL" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"
+              transcribe="true"
+              transcribeCallback="%DASHBOARD_URL%/transcript/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallback="%DASHBOARD_URL%/voicemail/{{ email | url_encode }}?From={{ From | url_encode }}&amp;To={{ To | url_encode }}&amp;CallerName={{ CallerName | url_encode }}&amp;Digits={{ Digits | url_encode }}"
+              recordingStatusCallbackEvent="completed"/>
+      <Say>Thank you. Goodbye.</Say>
+      <Hangup/>
+
+    {% else %}
+      <Say>That is not a valid option. Goodbye.</Say>
+      <Hangup/>
+    {% endif %}
+  {% endif %}
+</Response>

@@ -1,0 +1,226 @@
+---
+layout: layouts/article.njk
+title: "Build a full-featured PBX with VoiceML"
+description: "A complete VoiceML PBX for a fictional company: IVR, extensions, ring-all, call recording, voicemail transcripts, an AI agent, and a live operator dashboard."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/pbx/">PBX</a> / Build a PBX with VoiceML</p>
+<h1>Build a full-featured PBX with VoiceML.</h1>
+<p class="lede">Widgets.com is a fictional company with four extensions, a main menu, a ring-all line for the labor force, an AI agent on 0, and voicemail with transcripts. The whole phone system runs on two documents published on voiceml.org and the VoiceML Dashboard, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/dashboard/">VoiceML Dashboard</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers and operators get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>IVR with direct dial</h3>
+			<p>Press 1 for sales, 2 for the labor force, or 0 for the AI agent, or dial extensions 100&ndash;103 at any time during the greeting.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+			<h3>Ring-all</h3>
+			<p>Pressing 2 rings all four extensions at once. The first phone answered takes the call.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "robot" %}</span>
+			<h3>AI agent</h3>
+			<p>Pressing 0 bridges the caller to your voice agent over <code>&lt;ConversationRelay&gt;</code>. The platform runs speech recognition and synthesis; your agent receives text and replies with text.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
+			<h3>Call recording</h3>
+			<p>Every call answered at an extension is recorded with the caller and the extension on separate channels, so a transcript reads as a conversation.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "envelope" %}</span>
+			<h3>Voicemail with transcripts</h3>
+			<p>Unanswered calls go to a personal voicemail. The audio and its transcript are emailed to the extension&rsquo;s owner as a secure link.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3>Real-time dashboard</h3>
+			<p>A live board of calls in progress with running timers, and which extensions are registered, ringing, or on a call.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3>Drag-and-drop transfer</h3>
+			<p>Drag a live call from the board onto an extension to transfer the caller there.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>Live call control</h3>
+			<p>From any live call: hang up, transfer, send to voicemail, or start and stop recording.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>Real-time transcription</h3>
+			<p>Start a live transcript on any call and watch it stream into the call view. Post-call summaries are optional and use your own Anthropic or OpenAI key.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "graph-up" %}</span>
+			<h3>Call analytics</h3>
+			<p>Today&rsquo;s calls, answered calls and answer rate, missed calls, and the average answered call, plus an analytics page with date filters and the busiest numbers.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the widgets.com PBX</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The number&rsquo;s voice URL. Plays the menu, branches on the keys pressed, rings extensions, and takes voicemail.</td></tr>
+				<tr><td>Goodbye document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of every <code>&lt;Record&gt;</code>. Tells a joke and hangs up.</td></tr>
+				<tr><td>Extensions 100&ndash;103</td><td>Your VoiceML SIP domain (here <code>widgets.vml.voice.tel</code>)</td><td>Desk phones or <a href="/voiceml/phone/">VoiceML Phone</a> registered as 100, 101, 102, and 103.</td></tr>
+				<tr><td>VoiceML Dashboard</td><td><a href="{{ site.voicemlDashboardUrl }}">{{ site.voicemlDashboardUrl | replace("https://", "") }}</a></td><td>Receives the status, recording, voicemail, and transcript callbacks. Runs the live board, call control, and analytics.</td></tr>
+				<tr><td>AI agent</td><td>Your own <code>wss://</code> endpoint</td><td>Answers callers who press 0.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Four extensions registered on your SIP domain</strong>, numbered 100 to 103.</li>
+		<li><strong>The VoiceML Dashboard connected to the account.</strong> An administrator signs in at the <a href="{{ site.voicemlDashboardUrl }}">VoiceML Dashboard</a>, verifies the account with its Account SID and API key, and invites each address that receives messages from the Users page. The dashboard refuses callbacks for an address that isn&rsquo;t a member of the account.</li>
+		<li><strong>For the AI agent, your agent on a <code>wss://</code> WebSocket.</strong> The relay needs a speech recognizer and a synthesis engine on the account, or the platform defaults. See <a href="/voiceml/conversationrelay/">ConversationRelay</a>.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>widgets.com is used here as a fictional company.</strong> It is a real, registered domain with no connection to VoiceTel. Replace every email address and the SIP domain with your own before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the goodbye document</h2>
+	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>. Without one, the runtime requests the current document again when the recording ends, which replays the voicemail greeting and records again. This small document is that <code>action</code>: it tells a knock-knock joke and hangs up.</p>
+	<p class="code-block-header">goodbye.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ widgetsPbx.goodbye | escape }}</code></pre>
+	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the main document</h2>
+	<p>In the document below, replace <code>GOODBYE_URL</code> (five places) with the URL from step 1, and <code>wss://YOUR_AI_WEBSOCKET_URL</code> with your agent&rsquo;s endpoint. Replace the email addresses, names, and SIP addresses with your own.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ widgetsPbx.main | escape }}</code></pre>
+	<p>Publish it at voiceml.org. Because it contains Liquid tags, it is published to an <code>/r/</code> URL and rendered on every call with that call&rsquo;s parameters.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Point the number at it</h2>
+	<p>Set the <code>/r/</code> URL as the phone number&rsquo;s voice URL. GET and POST both work.</p>
+	<p>To log calls that never reach a <code>&lt;Dial&gt;</code>, such as calls to the AI agent or callers who hang up during the menu, also point the number&rsquo;s status callback at the dashboard&rsquo;s <code>/status/</code> route for a recipient. A number&rsquo;s status callback reports only the completed event, so the dashboard records those calls when they hang up.</p>
+	<p>Then test it: call the number, press 1, and watch the call appear on the dashboard&rsquo;s live board while extension 100 rings. Answer it, drag the call onto another extension, and start a live transcript from the call view. Call again and let it ring out to check that the voicemail and its transcript arrive by email.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the routing works</h2>
+	<p>The first request for the main document carries no <code>Digits</code>, so <code>{% raw %}{% if Digits == blank %}{% endraw %}</code> plays the greeting inside a <code>&lt;Gather&gt;</code>. That <code>&lt;Gather&gt;</code> has no <code>action</code>, so when the caller presses keys the runtime requests the same document again with <code>Digits</code> set, and the <code>{% raw %}{% else %}{% endraw %}</code> branch routes the call. <code>timeout="3"</code> ends input three seconds after the last key, which gives callers time to dial a three-digit extension; pressing <kbd>#</kbd> ends it sooner. A caller who presses nothing hears &ldquo;We did not receive a selection&rdquo; and the call ends.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>What each entry does</caption>
+			<thead>
+				<tr>
+					<th scope="col">Caller enters</th>
+					<th scope="col">Rings</th>
+					<th scope="col">Recordings and voicemail go to</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>1 or 100</td><td>Michael, extension 100</td><td>michael@widgets.com</td></tr>
+				<tr><td>2</td><td>Extensions 100, 101, 102, and 103 together</td><td>michael@widgets.com</td></tr>
+				<tr><td>101</td><td>Ali, extension 101</td><td>ali@widgets.com</td></tr>
+				<tr><td>3 or 102</td><td>Lily, extension 102</td><td>lily@widgets.com</td></tr>
+				<tr><td>4 or 103</td><td>Chloe, extension 103</td><td>chloe@widgets.com</td></tr>
+				<tr><td>0</td><td>The AI agent</td><td>Not recorded by this document</td></tr>
+				<tr><td>Anything else</td><td>Nothing; the caller hears &ldquo;That is not a valid option&rdquo;</td><td>&mdash;</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Every branch that rings a phone follows the same pattern:</p>
+	<ol>
+		<li>It announces that the call is being recorded.</li>
+		<li><code>&lt;Dial record="record-from-answer-dual"&gt;</code> rings the extension for 20 seconds and sends the two-channel recording to the dashboard&rsquo;s <code>/recording/</code> route.</li>
+		<li>The <code>statusCallback</code> on <code>&lt;Sip&gt;</code> sends ringing, answered, and completed events to <code>/status/</code>, which puts the call on the live board.</li>
+		<li>If nobody answers, <code>&lt;Record transcribe="true"&gt;</code> takes a voicemail and sends the audio to <code>/voicemail/</code> and the transcript to <code>/transcript/</code>. Both use the same address, so the dashboard joins them into one message.</li>
+	</ol>
+	<p>Each callback URL also carries <code>From</code>, <code>To</code>, and <code>Digits</code>, which the dashboard shows with the message as call context. Every value placed inside a URL ends in <code>| url_encode</code>, so a caller&rsquo;s <code>+</code> or <code>&amp;</code> can&rsquo;t break the query string.</p>
+</section>
+
+<section class="section-block">
+	<h2>Running the switchboard</h2>
+	<p>Operators and administrators land on the dashboard&rsquo;s operator panel. The summary strip shows calls active now, today&rsquo;s calls, answered calls with the answer rate, missed calls, and the average answered call. The live board lists calls in progress, and the Extensions card shows each extension as registered, ringing, on a call, or offline. Clicking a call opens its call view, with details, its live transcript, and these actions:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Call control from the VoiceML Dashboard</caption>
+			<thead>
+				<tr>
+					<th scope="col">Action</th>
+					<th scope="col">What happens</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Hang up</td><td>Ends the call.</td></tr>
+				<tr><td>Transfer</td><td>Blind-transfers the caller to a phone number or SIP address. Dragging the call onto an extension does the same.</td></tr>
+				<tr><td>Send to voicemail</td><td>Plays a prompt and records a voicemail for the call&rsquo;s recipient.</td></tr>
+				<tr><td>Start or stop recording</td><td>Records both sides on separate channels and delivers the recording to Messages.</td></tr>
+				<tr><td>Start or stop live transcript</td><td>Transcribes both sides; the text streams into the call view as the call goes on.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Every action, including refused ones, is written to the audit log. Voicemail, recordings, and transcripts collect in Messages, with filters by number, a transcript search, and a filter for messages that carry what the caller pressed.</p>
+</section>
+
+<section class="section-block">
+	<h2>Adding an extension</h2>
+	<ol>
+		<li>Register the new phone on your SIP domain, for example as extension 104.</li>
+		<li>Copy one of the single-extension branches and change its <code>elsif</code> condition, <code>email</code>, <code>name</code>, and SIP address.</li>
+		<li>Invite the new email address in the dashboard.</li>
+		<li>Publish the updated document and point the number at its new <code>/r/</code> URL. Published documents can&rsquo;t be edited, so every change is a new URL.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>The voicemail prompt can follow an answered call.</strong> The <code>&lt;Dial&gt;</code> has no <code>action</code>, so the document continues to the voicemail prompt whatever the outcome. If the extension hangs up first, the caller hears the prompt. Choosing what happens by dial result needs a server.</li>
+		<li><strong>Ring-all calls don&rsquo;t show while they ring.</strong> The four <code>&lt;Sip&gt;</code> nouns behind option 2 have no <code>statusCallback</code>. Add the same <code>statusCallback</code> attributes used in the other branches to show those legs on the live board.</li>
+		<li><strong><code>CallerName</code> arrives empty.</strong> The VoiceML runtime doesn&rsquo;t send it. <code>From</code> and <code>To</code> identify the caller.</li>
+		<li><strong>Long voicemails may not get a transcript.</strong> Recordings are transcribed when they last between 2 and 120 seconds. With <code>maxLength="120"</code>, a message that runs the full length is at the limit; lower it to 115 if every voicemail needs a transcript.</li>
+		<li><strong>No lookups or memory.</strong> A voiceml.org document can branch on the call itself but can&rsquo;t look anything up or remember anything between calls. A CRM lookup or caller authentication needs a server.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The greeting</strong> is adapted from Dr. Phillip Barbay&rsquo;s widget lecture in <cite><a href="https://en.wikipedia.org/wiki/Back_to_School" rel="external">Back to School</a></cite> (1986), directed by Alan Metter and distributed by Orion Pictures. Rodney Dangerfield stars as Thornton Melon, the self-made businessman who enrolls in college alongside his son; Paxton Whitehead plays Dr. Barbay.</li>
+		<li><strong>The sign-off</strong> is the &ldquo;interrupting cow,&rdquo; a traditional <a href="https://en.wikipedia.org/wiki/Knock-knock_joke" rel="external">knock-knock joke</a> whose author is unknown. Knock-knock jokes took hold in the United States in the 1930s.</li>
+		<li><strong>widgets.com</strong>, its staff, and its extensions are fictional in this example. VoiceTel is not affiliated with widgets.com or with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>, the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, and the <a href="{{ site.voicemlReferenceUrl }}/prompts/app-builder.txt">VoiceML app-builder prompt</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="build-pbx-cta-heading">
+	<h2 id="build-pbx-cta-heading">Want help with your own call flow?</h2>
+	<p>Tell us how your calls should route, and we&rsquo;ll help you map it to VoiceML, or set you up on VoiceTel Hosted PBX instead.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/pbx/">Hosted PBX overview</a>
+	</p>
+</aside>

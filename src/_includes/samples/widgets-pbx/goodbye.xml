@@ -1,0 +1,14 @@
+<Response>
+  <Say>Knock knock.</Say>
+  <Pause length="1"/>
+  <Say>Who's there?</Say>
+  <Pause length="1"/>
+  <Say>The interrupting cow.</Say>
+  <Pause length="1"/>
+  <Say>The interrupting cow who?</Say>
+  <Pause length="1"/>
+  <Say>Moooooo!</Say>
+  <Pause length="1"/>
+  <Say>We will get back to you as soon as possible. Thank you. Goodbye.</Say>
+  <Hangup/>
+</Response>

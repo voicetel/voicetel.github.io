@@ -38,9 +38,10 @@ const ELEMENTS = {
 			"Autopilot",
 		],
 	},
+	// <Refer> is a verb of its own, never a <Dial> child.
 	Dial: {
 		kind: "verb",
-		children: ["Number", "Client", "Sip", "Conference", "Queue", "Sim", "Application", "Refer"],
+		children: ["Number", "Client", "Sip", "Conference", "Queue", "Sim", "Application"],
 	},
 	Echo: { kind: "verb", children: [] },
 	Enqueue: { kind: "verb", children: ["Task"] },
@@ -48,16 +49,22 @@ const ELEMENTS = {
 	Hangup: { kind: "verb", children: [] },
 	Leave: { kind: "verb", children: [] },
 	Pause: { kind: "verb", children: [] },
+	Message: { kind: "verb", children: ["Body", "Media"] },
 	Pay: { kind: "verb", children: ["Parameter", "Prompt"] },
 	Play: { kind: "verb", children: [] },
-	Prompt: { kind: "verb", children: ["Say", "Play", "Pause"] },
 	Record: { kind: "verb", children: [] },
 	Redirect: { kind: "verb", children: [] },
 	Refer: { kind: "verb", children: ["Sip"] },
 	Reject: { kind: "verb", children: [] },
 	Say: { kind: "verb", children: SSML_CHILDREN },
+	Sms: { kind: "verb", children: [] },
 	Start: { kind: "verb", children: ["Stream", "Siprec", "Transcription"] },
 	Stop: { kind: "verb", children: ["Stream", "Siprec", "Transcription"] },
+
+	// <Prompt> is valid only inside <Pay>, never at the top level.
+	Prompt: { kind: "noun", children: ["Say", "Play", "Pause"] },
+	Body: { kind: "noun", children: [] },
+	Media: { kind: "noun", children: [] },
 
 	Number: { kind: "noun", children: [] },
 	Client: { kind: "noun", children: ["Identity", "Parameter"] },

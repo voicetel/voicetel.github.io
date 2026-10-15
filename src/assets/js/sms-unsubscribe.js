@@ -50,7 +50,9 @@ if (unsubForm) {
 		}
 		err.replaceChildren();
 		err.appendChild(
-			document.createTextNode("We couldn't complete the unsubscribe right now. Please try again, reply STOP to any VoiceTel message, or ")
+			document.createTextNode(
+				"We couldn't complete the unsubscribe right now. Please try again, reply STOP to any VoiceTel message, or "
+			)
 		);
 		const link = document.createElement("a");
 		link.href = unsubForm.dataset.fallbackUrl;

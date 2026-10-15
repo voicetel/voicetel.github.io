@@ -49,7 +49,9 @@ if (optinForm) {
 		}
 		err.replaceChildren();
 		err.appendChild(
-			document.createTextNode("We couldn't complete the opt-in right now. Please try again or ")
+			document.createTextNode(
+				"We couldn't complete the opt-in right now. Please try again or "
+			)
 		);
 		const link = document.createElement("a");
 		link.href = optinForm.dataset.fallbackUrl;

@@ -20,7 +20,7 @@ SRC = REPO / "src"
 # --- Archetype classification by URL prefix --------------------------------
 
 # Form pages: form is the action; no hero-actions / no cta-block.
-FORM_PREFIXES = ("/signup/", "/login/", "/contact/")
+FORM_PREFIXES = ("/signup/", "/login/", "/contact/", "/sms-optin/", "/sms-unsubscribe/")
 
 # Tool pages: interactive surfaces; the tool is the action.
 TOOL_PREFIXES = (

@@ -29,8 +29,8 @@
 
     <!-- Extension 100 / Press 1 -->
     {% elsif Digits == "1" or Digits == "100" %}
-      {% assign email = "michael@widgets.com" %}
-      {% assign name = "Michael" %}
+      {% assign email = "thornton@widgets.com" %}
+      {% assign name = "Thornton" %}
       <Say>Connecting you now.</Say>
       <Pause length="1"/>
       <Say>This call is being recorded.</Say>
@@ -53,7 +53,7 @@
 
     <!-- Press 2 (Rings the plant) -->
     {% elsif Digits == "2" %}
-      {% assign email = "michael@widgets.com" %}
+      {% assign email = "thornton@widgets.com" %}
       {% assign name = "A representative" %}
       <Say>Connecting you now.</Say>
       <Pause length="1"/>
@@ -79,8 +79,8 @@
 
     <!-- Extension 101 -->
     {% elsif Digits == "101" %}
-      {% assign email = "ali@widgets.com" %}
-      {% assign name = "Ali" %}
+      {% assign email = "lou@widgets.com" %}
+      {% assign name = "Lou" %}
       <Say>Connecting you now.</Say>
       <Pause length="1"/>
       <Say>This call is being recorded.</Say>
@@ -103,8 +103,8 @@
 
     <!-- Extension 102 / Press 3 -->
     {% elsif Digits == "3" or Digits == "102" %}
-      {% assign email = "lily@widgets.com" %}
-      {% assign name = "Lily" %}
+      {% assign email = "jason@widgets.com" %}
+      {% assign name = "Jason" %}
       <Say>Connecting you now.</Say>
       <Pause length="1"/>
       <Say>This call is being recorded.</Say>
@@ -127,8 +127,8 @@
 
     <!-- Extension 103 / Press 4 -->
     {% elsif Digits == "4" or Digits == "103" %}
-      {% assign email = "chloe@widgets.com" %}
-      {% assign name = "Chloe" %}
+      {% assign email = "diane@widgets.com" %}
+      {% assign name = "Diane" %}
       <Say>Connecting you now.</Say>
       <Pause length="1"/>
       <Say>This call is being recorded.</Say>

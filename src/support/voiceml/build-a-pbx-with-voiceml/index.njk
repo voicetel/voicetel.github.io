@@ -82,7 +82,7 @@ description: "A complete VoiceML PBX for a fictional company: IVR, extensions, r
 			</thead>
 			<tbody>
 				<tr><td>Main document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The number&rsquo;s voice URL. Plays the menu, branches on the keys pressed, rings extensions, and takes voicemail.</td></tr>
-				<tr><td>Goodbye document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of every <code>&lt;Record&gt;</code>. Tells a joke and hangs up.</td></tr>
+				<tr><td>Goodbye document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of every <code>&lt;Record&gt;</code>. Thanks the caller, signs off, and hangs up.</td></tr>
 				<tr><td>Extensions 100&ndash;103</td><td>Your VoiceML SIP domain (here <code>widgets.vml.voice.tel</code>)</td><td>Desk phones or <a href="/voiceml/phone/">VoiceML Phone</a> registered as 100, 101, 102, and 103.</td></tr>
 				<tr><td>VoiceML Dashboard</td><td><a href="{{ site.voicemlDashboardUrl }}">{{ site.voicemlDashboardUrl | replace("https://", "") }}</a></td><td>Receives the status, recording, voicemail, and transcript callbacks. Runs the live board, call control, and analytics.</td></tr>
 				<tr><td>AI agent</td><td>Your own <code>wss://</code> endpoint</td><td>Answers callers who press 0.</td></tr>
@@ -106,7 +106,7 @@ description: "A complete VoiceML PBX for a fictional company: IVR, extensions, r
 
 <section class="section-block">
 	<h2>Step 1: Publish the goodbye document</h2>
-	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>. Without one, the runtime requests the current document again when the recording ends, which replays the voicemail greeting and records again. This small document is that <code>action</code>: it tells a knock-knock joke and hangs up.</p>
+	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>. Without one, the runtime requests the current document again when the recording ends, which replays the voicemail greeting and records again. This small document is that <code>action</code>: it thanks the caller, signs off with two nods to the film, and hangs up.</p>
 	<p class="code-block-header">goodbye.xml</p>
 	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["widgets-pbx"].goodbye | escape }}</code></pre>
 	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
@@ -211,7 +211,7 @@ description: "A complete VoiceML PBX for a fictional company: IVR, extensions, r
 	<ul>
 		<li><strong>The greeting</strong> is adapted from Dr. Phillip Barbay&rsquo;s widget lecture in <cite><a href="https://en.wikipedia.org/wiki/Back_to_School" rel="external">Back to School</a></cite> (1986), directed by Alan Metter and distributed by Orion Pictures. Rodney Dangerfield stars as Thornton Melon, the self-made businessman who enrolls in college alongside his son; Paxton Whitehead plays Dr. Barbay.</li>
 		<li><strong>The staff</strong> are characters from the same film: Thornton Melon; Lou, his bodyguard and chauffeur, played by Burt Young; his son Jason Melon, played by Keith Gordon; and Dr. Diane Turner, the literature professor, played by Sally Kellerman.</li>
-		<li><strong>The sign-off</strong> is the &ldquo;interrupting cow,&rdquo; a traditional <a href="https://en.wikipedia.org/wiki/Knock-knock_joke" rel="external">knock-knock joke</a> whose author is unknown. Knock-knock jokes took hold in the United States in the 1930s.</li>
+		<li><strong>The sign-off</strong> comes from the same film: the &ldquo;Triple Lindy,&rdquo; the dangerous dive Thornton performs to win the diving meet, and his reply when Dr. Turner says she has class tonight and tomorrow night, &ldquo;Why don&rsquo;t you call me some time when you have no class?&rdquo;</li>
 		<li><strong>widgets.com</strong> and its extensions are fictional in this example, and the film&rsquo;s characters never worked there. VoiceTel is not affiliated with widgets.com or with the film or its rights holders.</li>
 		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>, the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, and the <a href="{{ site.voicemlReferenceUrl }}/prompts/app-builder.txt">VoiceML app-builder prompt</a>.</li>
 	</ul>

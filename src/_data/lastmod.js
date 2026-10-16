@@ -8,6 +8,7 @@ const REPO_ROOT = resolve(__dirname, "..", "..");
 const SRC = resolve(__dirname, "..");
 const INCLUDES = resolve(SRC, "_includes");
 const DATA_DIR = resolve(SRC, "_data");
+const SAMPLES_DIR = resolve(INCLUDES, "samples");
 
 // Files under _includes/ whose edits are presentational chrome, not content.
 // Excluded from each page's dependency set so a base.njk or nav.njk edit
@@ -101,6 +102,38 @@ function collectDataDeps(files) {
 	return out;
 }
 
+// voicemlSamples.js reads each example's call-flow documents from
+// _includes/samples/<dir>/ with readFileSync, so no include tag points at
+// them. A page that shows voicemlSamples["<dir>"] depends on every file in
+// that directory.
+const SAMPLE_REF_RE = /voicemlSamples\[\s*["']([^"']+)["']\s*\]/g;
+
+function collectSampleDeps(files) {
+	const out = [];
+	for (const f of files) {
+		let body;
+		try {
+			body = readFileSync(f, "utf8");
+		} catch {
+			continue;
+		}
+		const expressions = nunjucksExpressions(body);
+		SAMPLE_REF_RE.lastIndex = 0;
+		let m;
+		while ((m = SAMPLE_REF_RE.exec(expressions))) {
+			const dir = resolve(SAMPLES_DIR, m[1]);
+			let entries;
+			try {
+				entries = readdirSync(dir);
+			} catch {
+				continue;
+			}
+			for (const name of entries) out.push(join(dir, name));
+		}
+	}
+	return out;
+}
+
 function listPageFiles(dir, out = []) {
 	const SKIP = new Set([
 		resolve(SRC, "_includes"),
@@ -164,7 +197,8 @@ export default function lastmod() {
 	for (const page of pages) {
 		const includeSet = walkIncludes(page);
 		const dataDeps = collectDataDeps(includeSet);
-		const all = [...includeSet, ...dataDeps];
+		const sampleDeps = collectSampleDeps(includeSet);
+		const all = [...includeSet, ...dataDeps, ...sampleDeps];
 		const times = all.map((f) => fileTime.get(relative(REPO_ROOT, f)));
 		const best = maxIso(times);
 		const inputPath = "./" + relative(REPO_ROOT, page);

@@ -1,0 +1,6 @@
+<Response>
+  <Say>Please continue to hold. A caseworker will see you shortly.</Say>
+  <Pause length="2"/>
+  <Say>While you wait, this is a good time to read the Handbook for the Recently Deceased.</Say>
+  <Pause length="20"/>
+</Response>

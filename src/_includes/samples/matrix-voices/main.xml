@@ -1,0 +1,36 @@
+<Response>
+  {% if Digits == blank %}
+    <!-- Morpheus speaks in the built-in male voice -->
+    <Gather input="dtmf" numDigits="1" timeout="8" method="POST">
+      <Pause length="1"/>
+      <Say voice="man">This is your last chance. After this, there is no turning back.</Say>
+      <Pause length="1"/>
+      <Say voice="man">You take the blue pill, the story ends. You wake up in your bed and believe whatever you want to believe. Press 2.</Say>
+      <Pause length="1"/>
+      <Say voice="man">You take the red pill, you stay in Wonderland, and I show you how deep the rabbit hole goes. Press 1.</Say>
+    </Gather>
+    <Say voice="man">Tell me, Mister Anderson, what good is a phone call if you are unable to speak?</Say>
+    <Hangup/>
+
+  <!-- The red pill: two voices, a recorded clip, and spoken emphasis -->
+  {% elsif Digits == "1" %}
+    <Say voice="man">Remember: all I am offering is the truth.</Say>
+    <Pause length="1"/>
+    <Say voice="woman">Follow the white rabbit.</Say>
+    <Play>AUDIO_URL</Play>
+    <Say voice="man">Welcome to the real world.</Say>
+    <Pause length="1"/>
+    <Say voice="woman">There is no <emphasis level="strong">spoon</emphasis>.</Say>
+    <Hangup/>
+
+  {% elsif Digits == "2" %}
+    <Say voice="man">The story ends. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Any other key: the same line twice, with loop -->
+  {% else %}
+    <Say voice="man" loop="2">Mister Anderson.</Say>
+    <Say voice="man">That was not one of the pills. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

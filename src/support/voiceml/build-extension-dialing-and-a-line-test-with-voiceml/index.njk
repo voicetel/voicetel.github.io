@@ -1,0 +1,129 @@
+---
+layout: layouts/article.njk
+title: "Build extension dialing and a line test with VoiceML"
+description: "A VoiceML line for a fictional computer lab: one key dials into another phone system and keys an extension automatically, another plays the caller's own voice back."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build extension dialing and a line test with VoiceML</p>
+<h1>Build extension dialing and a line test with VoiceML.</h1>
+<p class="lede">A fictional defense computer answers the phone. Pressing 1 calls another company&rsquo;s switchboard and keys an extension automatically once it answers, so the caller never navigates someone else&rsquo;s menu. Pressing 2 starts a line test that plays the caller&rsquo;s own voice back to them. It is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/nouns/number/">&lt;Number&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>An extension, dialed for them</h3>
+			<p><code>sendDigits</code> waits for the other system to answer, pauses, and keys the extension, so callers reach a person behind someone else&rsquo;s menu with one key.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "activity" %}</span>
+			<h3>A line test</h3>
+			<p><code>&lt;Echo&gt;</code> plays everything the caller says back to them, to check for delay, echo, or poor audio on their line.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3>A touch tone as a cue</h3>
+			<p><code>&lt;Play digits&gt;</code> plays a touch tone to mark the start of the test, with no audio file needed.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>The number of the phone system to dial into</strong>, the extension, and how long its greeting runs before it accepts keys.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The switchboard number and extension in this document are fictional.</strong> The number uses the 555-0100 to 555-0199 range, which is set aside for fiction. Replace both before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Replace the switchboard number and the extension in <code>sendDigits</code>, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["wopr-line"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<ol>
+		<li>Call the number and press 2. After the tone, speak; you hear yourself a moment later. Hang up to end the test.</li>
+		<li>Call again and press 1. Listen as the switchboard answers and the extension is keyed for you.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How it works</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The markup behind each feature</caption>
+			<thead>
+				<tr>
+					<th scope="col">Markup</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>&lt;Number sendDigits="wwww1983#"&gt;</code></td><td>After the dialed number answers, waits two seconds (each <code>w</code> is half a second, each <code>W</code> a full second), then sends the keys 1, 9, 8, 3, and <kbd>#</kbd> on that call.</td></tr>
+				<tr><td><code>&lt;Play digits="#"/&gt;</code></td><td>Plays the <kbd>#</kbd> touch tone to the caller, a beep with no audio file to host.</td></tr>
+				<tr><td><code>&lt;Echo/&gt;</code></td><td>Plays the caller&rsquo;s own audio back to them until they hang up. Nothing after it runs, so it comes last.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Tune the pause in <code>sendDigits</code> to the system you call: if the keys arrive while its greeting is still playing, it may ignore them. Add a <code>w</code> for every half second more it needs.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to WarGames in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>&ldquo;Greetings, Professor Falken. Shall we play a game?&rdquo;, the WOPR computer&rsquo;s words.</td></tr>
+				<tr><td>Option 1</td><td>Dr. Stephen Falken, who lives on an island off the coast of Oregon, area code 541; his extension is the film&rsquo;s release year.</td></tr>
+				<tr><td>A wrong key</td><td>&ldquo;How about a nice game of chess?&rdquo;</td></tr>
+				<tr><td>No key at all</td><td>&ldquo;A strange game. The only winning move is not to play.&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>The keys are sent blind.</strong> <code>sendDigits</code> follows its timing, not what the other system says. If that system changes its greeting or menu, update the pauses and keys.</li>
+		<li><strong>The line test runs until the caller hangs up.</strong> <code>&lt;Echo&gt;</code> has no time limit and no way to continue to another verb.</li>
+		<li><strong>One fixed extension.</strong> To let callers choose, give each key its own <code>&lt;Number sendDigits&gt;</code>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The WOPR</strong>, Dr. Falken, and their lines come from <cite><a href="https://en.wikipedia.org/wiki/WarGames" rel="external">WarGames</a></cite> (1983), directed by John Badham and distributed by MGM/UA. Matthew Broderick plays David Lightman, the high school hacker who finds the WOPR while war dialing for a game company; Ally Sheedy plays Jennifer Mack; and John Wood plays Dr. Stephen Falken and voices the WOPR.</li>
+		<li><strong>The switchboard, its extension, and its phone number</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/nouns/number/"><code>&lt;Number&gt;</code> reference</a>, the <a href="{{ site.voicemlReferenceUrl }}/verbs/echo/"><code>&lt;Echo&gt;</code> reference</a>, and the <a href="{{ site.voicemlReferenceUrl }}/verbs/play/"><code>&lt;Play&gt;</code> reference</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="extension-cta-heading">
+	<h2 id="extension-cta-heading">Connecting callers to other phone systems?</h2>
+	<p>Tell us which systems your callers need to reach, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

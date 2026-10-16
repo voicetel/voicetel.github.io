@@ -1,0 +1,34 @@
+<Response>
+  {% if Digits == blank %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Pause length="1"/>
+      <Say>Greetings, Professor Falken. Shall we play a game?</Say>
+      <Pause length="1"/>
+      <Say>To be connected to Dr. Falken's extension, press 1. For a line test, press 2.</Say>
+    </Gather>
+    <Say>A strange game. The only winning move is not to play. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 1: call the switchboard, wait two seconds after it answers, then key the extension -->
+  {% elsif Digits == "1" %}
+    <Say>Connecting you to Dr. Falken. We will dial his extension for you.</Say>
+    <Dial timeout="30" ringTone="us">
+      <Number sendDigits="wwww1983#">+15415550100</Number>
+    </Dial>
+    <Say>Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 2: everything the caller says is played back until they hang up -->
+  {% elsif Digits == "2" %}
+    <Say>Line test. After the tone, everything you say will be played back to you, so you can hear how your line sounds. Hang up when you are finished.</Say>
+    <Play digits="#"/>
+    <Echo/>
+
+  {% else %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>How about a nice game of chess? Or press 1 for Dr. Falken, or 2 for a line test.</Say>
+    </Gather>
+    <Say>A strange game. The only winning move is not to play. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

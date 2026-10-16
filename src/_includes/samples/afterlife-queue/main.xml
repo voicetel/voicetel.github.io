@@ -1,0 +1,20 @@
+<Response>
+  {% assign caseworkers = "+18605550101,+18605550102" | split: "," %}
+
+  {% if caseworkers contains From %}
+    <!-- Caseworkers take the caller who has waited longest -->
+    <Say>Caseworker line. Connecting you to the next soul in the waiting room.</Say>
+    <Dial timeout="10">
+      <Queue url="CONNECT_URL">recently-deceased</Queue>
+    </Dial>
+    <Say>Call again to see the next soul. Goodbye.</Say>
+    <Hangup/>
+
+  {% else %}
+    <!-- Everyone else takes a number and waits -->
+    <Say>Welcome to the afterlife waiting room. Please take a number. A caseworker will see you in turn.</Say>
+    <Enqueue waitUrl="WAIT_URL">recently-deceased</Enqueue>
+    <Say>Thank you for waiting. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

@@ -1,0 +1,56 @@
+<Response>
+  {% if Digits == blank %}
+    <!-- Each option is announced in its own language -->
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Pause length="1"/>
+      <Say language="en-US">Welcome to Rick's Café Américain. For English, press 1.</Say>
+      <Say language="fr-FR">Pour le français, appuyez sur 2.</Say>
+      <Say language="de-DE">Für Deutsch, drücken Sie 3.</Say>
+      <Say language="es-ES">Para español, pulse 4.</Say>
+    </Gather>
+    <Say language="en-US">We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+
+  {% elsif Digits == "1" %}
+    <Say language="en-US">We are open every night from 8 p.m. to 2 a.m. Of all the gin joints in all the towns in all the world, you called ours. Connecting you to the bar.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>+12125550142</Number>
+    </Dial>
+    <Say language="en-US">Here's looking at you, kid. Goodbye.</Say>
+    <Hangup/>
+
+  {% elsif Digits == "2" %}
+    <Say language="fr-FR">Bienvenue au Rick's Café Américain. Nous sommes ouverts tous les soirs de 20 heures à 2 heures du matin. Nous vous mettons en relation avec le bar.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>+12125550142</Number>
+    </Dial>
+    <Say language="fr-FR">Merci de votre appel. Au revoir.</Say>
+    <Hangup/>
+
+  {% elsif Digits == "3" %}
+    <Say language="de-DE">Willkommen in Rick's Café Américain. Wir haben jeden Abend von 20 Uhr bis 2 Uhr nachts geöffnet. Wir verbinden Sie jetzt mit der Bar.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>+12125550142</Number>
+    </Dial>
+    <Say language="de-DE">Vielen Dank für Ihren Anruf. Auf Wiederhören.</Say>
+    <Hangup/>
+
+  {% elsif Digits == "4" %}
+    <Say language="es-ES">Bienvenido al Rick's Café Américain. Abrimos todas las noches de las ocho de la tarde a las dos de la madrugada. Le pasamos con el bar.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>+12125550142</Number>
+    </Dial>
+    <Say language="es-ES">Gracias por su llamada. Adiós.</Say>
+    <Hangup/>
+
+  {% else %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say language="en-US">For English, press 1.</Say>
+      <Say language="fr-FR">Pour le français, appuyez sur 2.</Say>
+      <Say language="de-DE">Für Deutsch, drücken Sie 3.</Say>
+      <Say language="es-ES">Para español, pulse 4.</Say>
+    </Gather>
+    <Say language="en-US">We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

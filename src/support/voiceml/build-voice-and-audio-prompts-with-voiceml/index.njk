@@ -1,0 +1,130 @@
+---
+layout: layouts/article.njk
+title: "Build voice and audio prompts with VoiceML"
+description: "VoiceML prompts for a fictional choice between two pills: male and female voices, spoken emphasis, repeated lines, pauses, and a recorded audio clip."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build voice and audio prompts with VoiceML</p>
+<h1>Build voice and audio prompts with VoiceML.</h1>
+<p class="lede">Morpheus offers callers a choice: the red pill or the blue pill. The call shows how a document controls what callers hear: two different voices, a word stressed with emphasis, a line repeated with <code>loop</code>, timed pauses, and a recorded audio clip. It is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/text-to-speech/">Text-to-speech guide</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers hear</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
+			<h3>Two voices</h3>
+			<p>Morpheus speaks in the built-in male voice; the other lines use the female voice.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>Emphasis on one word</h3>
+			<p>&ldquo;There is no <em>spoon</em>&rdquo; stresses the last word with <code>&lt;emphasis&gt;</code>.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3>A repeated line</h3>
+			<p>A wrong key gets &ldquo;Mister Anderson&rdquo; twice, from a single <code>&lt;Say loop="2"&gt;</code>.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
+			<h3>A recorded clip</h3>
+			<p>The red pill plays an audio file of your own with <code>&lt;Play&gt;</code>, between spoken lines.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>A short audio clip at a public HTTPS URL</strong>, as a WAV or MP3 of up to 50 MiB, with a file name that ends in its format. Use audio you have the rights to.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Replace <code>AUDIO_URL</code> with your clip&rsquo;s URL, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["matrix-voices"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<p>Call and press 1 to hear both voices, your clip, and the stressed &ldquo;spoon&rdquo;. Call again and press 9 to hear the repeated line, or stay silent to hear what Agent Smith thinks of a caller who doesn&rsquo;t speak.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the prompts work</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The markup that shapes what callers hear</caption>
+			<thead>
+				<tr>
+					<th scope="col">Markup</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>&lt;Say voice="man"&gt;</code></td><td>Uses the built-in male voice. <code>woman</code> or no <code>voice</code> gives the female voice. With your own text-to-speech provider, <code>voice</code> takes that provider&rsquo;s voice names.</td></tr>
+				<tr><td><code>&lt;emphasis level="strong"&gt;</code></td><td>Stresses the words inside it. <code>moderate</code> and <code>reduced</code> are the other levels; any other tag inside a <code>&lt;Say&gt;</code> is read as plain text.</td></tr>
+				<tr><td><code>&lt;Say loop="2"&gt;</code></td><td>Speaks the text twice. <code>loop="0"</code> repeats it until the call ends.</td></tr>
+				<tr><td><code>&lt;Pause length="1"/&gt;</code></td><td>Leaves a second of silence between lines.</td></tr>
+				<tr><td><code>&lt;Play&gt;</code></td><td>Plays an audio file. The platform fetches it once and caches it; to replace a clip, give the new file a new URL.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Choosing a language is covered by the <a href="/support/voiceml/build-a-multilingual-line-with-voiceml/">multilingual line example</a>.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to The Matrix in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The menu</td><td>Morpheus&rsquo;s offer of the blue pill and the red pill.</td></tr>
+				<tr><td>The red pill</td><td>&ldquo;Follow the white rabbit,&rdquo; &ldquo;Welcome to the real world,&rdquo; and &ldquo;There is no spoon.&rdquo;</td></tr>
+				<tr><td>No key at all</td><td>Agent Smith: &ldquo;What good is a phone call if you&rsquo;re unable to speak?&rdquo;</td></tr>
+				<tr><td>A wrong key</td><td>&ldquo;Mister Anderson,&rdquo; as Agent Smith calls Neo.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Two built-in voices per language.</strong> The built-in voices offer one male and one female voice. More voices, or a particular one, need your own text-to-speech provider.</li>
+		<li><strong>Only emphasis is honored.</strong> Inside <code>&lt;Say&gt;</code>, <code>&lt;emphasis&gt;</code> is the one tag that changes how text is spoken.</li>
+		<li><strong>The clip must be reachable.</strong> If the audio URL can&rsquo;t be fetched, or serves something other than audio, the clip doesn&rsquo;t play.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The pills</strong>, Morpheus, and Agent Smith come from <cite><a href="https://en.wikipedia.org/wiki/The_Matrix" rel="external">The Matrix</a></cite> (1999), written and directed by the Wachowskis and distributed by Warner Bros. Keanu Reeves plays Neo, Laurence Fishburne plays Morpheus, Carrie-Anne Moss plays Trinity, and Hugo Weaving plays Agent Smith.</li>
+		<li><strong>The line and its menu</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="/voiceml/text-to-speech/">text-to-speech guide</a>, the <a href="{{ site.voicemlReferenceUrl }}/verbs/say/"><code>&lt;Say&gt;</code> reference</a>, and the <a href="{{ site.voicemlReferenceUrl }}/verbs/play/"><code>&lt;Play&gt;</code> reference</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="voices-cta-heading">
+	<h2 id="voices-cta-heading">Choosing how your line sounds?</h2>
+	<p>Tell us the voices and recordings you want callers to hear, and we&rsquo;ll help you map them to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

@@ -1,0 +1,129 @@
+---
+layout: layouts/article.njk
+title: "Build a multilingual line with VoiceML"
+description: "A VoiceML line for a fictional nightclub that speaks English, French, German, and Spanish: each option is announced in its own language, then the caller is connected."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build a multilingual line with VoiceML</p>
+<h1>Build a multilingual line with VoiceML.</h1>
+<p class="lede">Rick&rsquo;s Café Américain is a fictional nightclub with an international crowd. Its line announces each language option in that language, then greets the caller, gives the opening hours, and connects them to the bar in the language they chose. It is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="/voiceml/text-to-speech/">Text-to-speech guide</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>Options in their own language</h3>
+			<p>&ldquo;For English, press 1. Pour le français, appuyez sur 2. Für Deutsch, drücken Sie 3. Para español, pulse 4.&rdquo;, each in a native voice.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3>The rest of the call in that language</h3>
+			<p>The greeting, the opening hours, and the goodbye are all spoken in the language the caller chose.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>Keypad, not speech</h3>
+			<p>Callers choose with a key, so no speech recognition is needed in any language.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Text-to-speech for your languages.</strong> The built-in voices speak English, Spanish, French, and German, with nothing to set up. For other languages, add your own text-to-speech provider; see the <a href="/voiceml/text-to-speech/">text-to-speech guide</a>.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The bar&rsquo;s number in this document is fictional.</strong> It uses the 555-0100 to 555-0199 range, which is set aside for fiction. Replace it with a real number before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Replace the bar&rsquo;s number and the opening hours with your own, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["ricks-cafe"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<p>Call the number and listen: each option is read in its own language. Press 2, and the rest of the call is in French; call again and press 3 for German.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the languages work</h2>
+	<p>Every <code>&lt;Say&gt;</code> has a <code>language</code> attribute. With the built-in voices, only the first part of the code matters:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Languages in this document</caption>
+			<thead>
+				<tr>
+					<th scope="col">Key</th>
+					<th scope="col"><code>language</code></th>
+					<th scope="col">Built-in voice</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>1</td><td><code>en-US</code></td><td>English</td></tr>
+				<tr><td>2</td><td><code>fr-FR</code></td><td>French</td></tr>
+				<tr><td>3</td><td><code>de-DE</code></td><td>German</td></tr>
+				<tr><td>4</td><td><code>es-ES</code></td><td>Spanish; <code>es-MX</code> sounds the same with the built-in voices</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>With the built-in voices, any other language is read in English, so a language beyond these four needs a text-to-speech provider that speaks it.</p>
+	<p>The whole call happens in one document on purpose. Values can&rsquo;t carry from one voiceml.org document to the next, so a second document wouldn&rsquo;t know which language the caller picked. Each language&rsquo;s branch says everything that language needs.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Casablanca in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>Rick&rsquo;s Café Américain, whose customers include French and German officials and refugees hoping to reach America.</td></tr>
+				<tr><td>The English branch</td><td>&ldquo;Of all the gin joints in all the towns in all the world,&rdquo; adapted to &ldquo;you called ours.&rdquo;</td></tr>
+				<tr><td>The English goodbye</td><td>&ldquo;Here&rsquo;s looking at you, kid.&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Speech input is English by default.</strong> This line uses the keypad. To let callers speak their choice in another language, add a speech recognizer that supports it and set <code>language</code> on the <code>&lt;Gather&gt;</code>.</li>
+		<li><strong>The menu always starts in English.</strong> The first sentence is English for everyone. To start in another language, change the order or the first <code>&lt;Say&gt;</code>.</li>
+		<li><strong>One bar for every language.</strong> Each branch rings the same number. To send each language to its own staff, give each branch its own <code>&lt;Number&gt;</code>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Rick&rsquo;s Café Américain</strong> and its lines come from <cite><a href="https://en.wikipedia.org/wiki/Casablanca_(film)" rel="external">Casablanca</a></cite> (1942), directed by Michael Curtiz and distributed by Warner Bros. Humphrey Bogart plays Rick Blaine, Ingrid Bergman plays Ilsa Lund, Claude Rains plays Captain Louis Renault, and Dooley Wilson plays Sam.</li>
+		<li><strong>The café&rsquo;s hours and phone number</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="/voiceml/text-to-speech/">text-to-speech guide</a>, the <a href="{{ site.voicemlReferenceUrl }}/verbs/say/"><code>&lt;Say&gt;</code> reference</a>, and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="multilingual-cta-heading">
+	<h2 id="multilingual-cta-heading">Serving callers in several languages?</h2>
+	<p>Tell us which languages your callers speak, and we&rsquo;ll help you map them to VoiceML voices and menus.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

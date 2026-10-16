@@ -1,0 +1,8 @@
+<Response>
+  <Gather input="dtmf" numDigits="6" action="VERIFY_URL" method="POST" timeout="10">
+    <Pause length="1"/>
+    <Say>Secure line. Enter your six-digit agent code.</Say>
+  </Gather>
+  <Say>No code was entered. Goodbye.</Say>
+  <Hangup/>
+</Response>

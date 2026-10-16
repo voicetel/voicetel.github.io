@@ -1,0 +1,31 @@
+<Response>
+  {% comment %} The first key is the party size, the second the time slot. {% endcomment %}
+  {% assign party = Digits | slice: 0 | plus: 0 %}
+  {% assign slot = Digits | slice: 1 %}
+  {% case slot %}
+    {% when "1" %}{% assign time = "6 p.m." %}
+    {% when "2" %}{% assign time = "7 p.m." %}
+    {% when "3" %}{% assign time = "8 p.m." %}
+  {% endcase %}
+
+  {% if party == 9 %}
+    <Say>Monk's Café seats parties of up to eight. No table for you!</Say>
+    <Hangup/>
+
+  {% elsif party &lt; 1 or time == blank %}
+    <Say>Sorry, that is not a reservation we can take. Please call again.</Say>
+    <Hangup/>
+
+  {% else %}
+    <Say>A table for {{ party }} at {{ time }} tonight. We are sending you a text message to confirm.</Say>
+
+    <!-- To the caller: with no to attribute, the message goes to whoever called -->
+    <Message>Monk's Café: your table for {{ party }} is booked for {{ time }} tonight. Call us if your plans change.</Message>
+
+    <!-- To the restaurant, so the staff know the table is taken -->
+    <Message to="+12125550123">New reservation: {{ party }} at {{ time }} tonight, for {{ From }}.</Message>
+
+    <Say>Thank you for calling Monk's Café. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

@@ -1,0 +1,169 @@
+---
+layout: layouts/article.njk
+title: "Build SMS confirmations with VoiceML"
+description: "A VoiceML reservation line for a fictional diner: callers book a table with two keys, then get a text message confirming it while the staff get one too."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build SMS confirmations with VoiceML</p>
+<h1>Build SMS confirmations with VoiceML.</h1>
+<p class="lede">Monk&rsquo;s Café is a fictional diner that takes table reservations by phone. Callers press two keys, one for the size of their party and one for the time, and hang up with a text message confirming the booking, while the restaurant gets a text of its own. It runs on two documents published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/verbs/message/">&lt;Message&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>A booking in two keys</h3>
+			<p>The first key is the party size, from 1 to 8. The second is the time: 1 for 6 p.m., 2 for 7 p.m., or 3 for 8 p.m.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>A text for the caller</h3>
+			<p>A <code>&lt;Message&gt;</code> during the call sends the caller an SMS with the party size and time.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-square-text" %}</span>
+			<h3>A text for the restaurant</h3>
+			<p>A second <code>&lt;Message&gt;</code> tells the staff about the booking, with the caller&rsquo;s number.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>Checks on what was pressed</h3>
+			<p>An unknown time or a party of zero is turned away, and so is a party of nine.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the Monk&rsquo;s Café reservation line</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The number&rsquo;s voice URL. Asks for the two keys.</td></tr>
+				<tr><td>Reservation document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The <code>action</code> of the <code>&lt;Gather&gt;</code>. Reads the two keys, confirms the booking aloud, and sends both text messages.</td></tr>
+				<tr><td>Restaurant phone</td><td>Any mobile number</td><td>Receives a text for each booking.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Messaging on the account and the number.</strong> The texts are sent from the number that was called. Without messaging, each text is recorded as failed with error 21609, &ldquo;Account not enabled for messaging,&rdquo; and the call carries on. In the US, texts from a local number also need a registered <a href="/support/messaging/10dlc/">10DLC campaign</a>.</li>
+		<li><strong>A mobile number for the restaurant</strong>, to receive the booking texts.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The restaurant number in this document is fictional.</strong> It uses the 555-0100 to 555-0199 range, which is set aside for fiction. Replace it with a real mobile number before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the reservation document</h2>
+	<p>Replace the restaurant number with your own, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>. It contains Liquid tags, so it is published to an <code>/r/</code> URL and rendered on every call with that call&rsquo;s parameters. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+	<p class="code-block-header">reserve.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["monks-reservations"].reserve | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the main document and point the number at it</h2>
+	<p>Replace <code>RESERVE_URL</code> with the <code>/r/</code> URL from step 1 and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Set that URL as the phone number&rsquo;s voice URL.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["monks-reservations"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Test it</h2>
+	<ol>
+		<li>Call the number from a mobile phone and press 4, then 2.</li>
+		<li>You hear &ldquo;A table for 4 at 7 p.m. tonight,&rdquo; and a text with the same details arrives on your phone.</li>
+		<li>The restaurant phone gets a text with the booking and your number.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How the confirmation works</h2>
+	<p>The main document&rsquo;s <code>&lt;Gather numDigits="2"&gt;</code> collects both keys in one go and sends them to the reservation document as <code>Digits</code>, such as <code>42</code>. Values can&rsquo;t carry from one voiceml.org document to the next, so taking both keys in one <code>&lt;Gather&gt;</code> is what lets a single document see the whole booking. Liquid splits them apart:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>How the reservation document reads the two keys</caption>
+			<thead>
+				<tr>
+					<th scope="col">Liquid</th>
+					<th scope="col">For <code>42</code></th>
+					<th scope="col">Means</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>{% raw %}Digits | slice: 0 | plus: 0{% endraw %}</code></td><td><code>4</code></td><td>The party size, as a number so it can be compared</td></tr>
+				<tr><td><code>{% raw %}Digits | slice: 1{% endraw %}</code></td><td><code>2</code></td><td>The time slot, turned into &ldquo;7 p.m.&rdquo; by a <code>{% raw %}{% case %}{% endraw %}</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Then two <code>&lt;Message&gt;</code> verbs send the texts while the call continues:</p>
+	<ul>
+		<li><strong>The first has no <code>to</code>.</strong> On an inbound call, a <code>&lt;Message&gt;</code> without <code>to</code> goes to the caller, and without <code>from</code> it is sent from the number they called.</li>
+		<li><strong>The second has <code>to</code> set to the restaurant.</strong> Its text includes <code>{% raw %}{{ From }}{% endraw %}</code>, the caller&rsquo;s number, so the staff can call back.</li>
+	</ul>
+	<p>Neither has an <code>action</code>, so the call carries on to the goodbye whether or not the texts go through. Each send is saved as a message record you can look up over the REST API, and a <code>statusCallback</code> on a <code>&lt;Message&gt;</code> reports whether it was sent or failed.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the show turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Seinfeld in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>Monk&rsquo;s Café, the diner from the show.</td></tr>
+				<tr><td>A party of nine</td><td>&ldquo;No table for you!&rdquo;, after the show&rsquo;s &ldquo;No soup for you!&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Nothing checks availability.</strong> A voiceml.org document can&rsquo;t look anything up or remember earlier calls, so every booking is accepted, even for a full room. The restaurant&rsquo;s text is the only record. Checking tables needs a server.</li>
+		<li><strong>Landlines don&rsquo;t get the text.</strong> The confirmation goes to the number the caller rang from; if it can&rsquo;t receive texts, that message fails and the call carries on.</li>
+		<li><strong>The times are fixed in the document.</strong> Changing the menu of times means publishing again and pointing the number at the new URL.</li>
+		<li><strong>Callers can&rsquo;t change a booking.</strong> The text asks them to call the restaurant instead.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Monk&rsquo;s Café</strong> and &ldquo;No soup for you!&rdquo; come from <cite><a href="https://en.wikipedia.org/wiki/Seinfeld" rel="external">Seinfeld</a></cite> (NBC, 1989&ndash;1998), created by Larry David and Jerry Seinfeld, and starring Jerry Seinfeld, Julia Louis-Dreyfus, Michael Richards, and Jason Alexander. Tom&rsquo;s Restaurant, at Broadway and 112th Street in Manhattan, stood in for the diner&rsquo;s exterior.</li>
+		<li><strong>The restaurant&rsquo;s reservations, times, and phone number</strong> are fictional in this example. VoiceTel is not affiliated with the show or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/verbs/message/"><code>&lt;Message&gt;</code> reference</a>, the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, and <a href="/support/messaging/">messaging support</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="sms-confirm-cta-heading">
+	<h2 id="sms-confirm-cta-heading">Sending confirmations by text?</h2>
+	<p>Tell us what your callers book and what they should receive, and we&rsquo;ll help you map it to VoiceML and messaging.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

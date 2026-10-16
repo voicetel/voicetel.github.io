@@ -1,0 +1,173 @@
+---
+layout: layouts/article.njk
+title: "Build outbound notification calls with VoiceML"
+description: "VoiceML outbound calls for a fictional school: one API request places the call, answering-machine detection picks the message, and a person can reply on the keypad."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build outbound notification calls with VoiceML</p>
+<h1>Build outbound notification calls with VoiceML.</h1>
+<p class="lede">A fictional high school&rsquo;s Dean of Students calls home about an absence. One API request places the call; answering-machine detection decides whether to leave a voicemail or talk to a person; and a person can confirm the message or be put through to the attendance office. The call flow is two documents published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/nouns/number/">Machine detection reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What the call does</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "code-slash" %}</span>
+			<h3>One request per call</h3>
+			<p>A single REST API request places the call and names the document to run when it is answered.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "robot" %}</span>
+			<h3>Person or voicemail</h3>
+			<p>Answering-machine detection reports who answered as <code>AnsweredBy</code>, before the document runs.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
+			<h3>A message after the beep</h3>
+			<p>On voicemail, the document waits for the greeting to end, then leaves the full message.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>A reply on the keypad</h3>
+			<p>A person can press 1 to confirm, or 2 to be connected to the attendance office.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the attendance calls</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>API request</td><td>Your terminal, a script, or a scheduled job</td><td>Places each call, with machine detection on.</td></tr>
+				<tr><td>Notice document</td><td>voiceml.org, <code>/r/</code> URL</td><td>Runs when the call is answered. Leaves a voicemail, or asks a person to reply.</td></tr>
+				<tr><td>Response document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The <code>action</code> of the reply <code>&lt;Gather&gt;</code>. Thanks the person or connects them to the office.</td></tr>
+				<tr><td>Attendance office</td><td>Any phone number</td><td>Rings when a person presses 2.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number</strong>, to place the calls from. See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>The Account SID and API key</strong>, for the API request.</li>
+		<li><strong>Consent from the people you call.</strong> Automated and prerecorded calls need the recipient&rsquo;s prior express consent. See <a href="/support/voice/compliance/">compliance and abuse prevention</a> before you place calls to anyone but yourself.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The numbers in these documents and the request are fictional.</strong> They use the 555-0100 to 555-0199 range, which is set aside for fiction. Test by calling your own phone first.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the response document</h2>
+	<p>Replace the attendance office&rsquo;s number with your own, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>. It contains Liquid tags, so it is published to an <code>/r/</code> URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">response.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["attendance-calls"].response | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the notice document</h2>
+	<p>Replace <code>RESPONSE_URL</code> with the <code>/r/</code> URL from step 1, then publish.</p>
+	<p class="code-block-header">notice.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["attendance-calls"].notice | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Place a call</h2>
+	<p>Send this request with your Account SID, API key, phone numbers, and the notice document&rsquo;s <code>/r/</code> URL in place of <code>NOTICE_URL</code>. <code>From</code> must be a number on your account or a caller ID verified on it; any other number is refused with error 21210. Start with your own mobile as <code>To</code>.</p>
+	<p class="code-block-header">Place the call</p>
+	<pre class="code-block" data-lang="bash"><code>ACCOUNT_SID="AC..."
+API_KEY="..."
+
+curl -u "$ACCOUNT_SID:$API_KEY" \
+  -d "To=+13125550199" \
+  -d "From=+13125550100" \
+  -d "Url=NOTICE_URL" \
+  -d "MachineDetection=DetectMessageEnd" \
+  {{ site.voicemlPortalUrl }}/2010-04-01/Accounts/$ACCOUNT_SID/Calls</code></pre>
+	<p>Answer it to hear the menu and press 1 or 2. Place it again and let it go to voicemail to hear the message left after your greeting.</p>
+</section>
+
+<section class="section-block">
+	<h2>How detection picks the message</h2>
+	<p>With <code>MachineDetection</code> in the request, the call waits for a verdict before running the document, and the verdict arrives with the request for <code>NOTICE_URL</code> as <code>AnsweredBy</code>. The notice document branches on it:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>What each AnsweredBy value does</caption>
+			<thead>
+				<tr>
+					<th scope="col"><code>AnsweredBy</code></th>
+					<th scope="col">What happens</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>human</code></td><td>The menu: press 1 to confirm, or 2 for the attendance office.</td></tr>
+				<tr><td>Starts with <code>machine</code></td><td>The voicemail message, then the call ends.</td></tr>
+				<tr><td><code>fax</code></td><td>The call ends.</td></tr>
+				<tr><td><code>unknown</code></td><td>The menu, so a person who wasn&rsquo;t recognized still hears it.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><code>MachineDetection=DetectMessageEnd</code> waits for the voicemail greeting to finish before reporting a machine, so the message starts after the beep instead of over the greeting. <code>MachineDetection=Enable</code> reports sooner and suits calls that hang up on machines. The detection thresholds and timeout are the same settings as the <code>&lt;Number&gt;</code> noun&rsquo;s machine detection.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Ferris Bueller&rsquo;s Day Off in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The caller</td><td>Edward Rooney, Dean of Students.</td></tr>
+				<tr><td>The voicemail</td><td>Nine absences so far this semester.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Every call says the same thing.</strong> A voiceml.org document can&rsquo;t receive values of your own, such as a student&rsquo;s name, so a personal message needs one document per message, or a server.</li>
+		<li><strong>Replies aren&rsquo;t recorded.</strong> Pressing 1 is acknowledged on the call, but nothing stores it. To keep a list of who confirmed, point the <code>&lt;Gather&gt;</code>&rsquo;s <code>action</code> at your own server.</li>
+		<li><strong>One request places one call.</strong> Calling a list means sending one request per number, from a script or scheduler.</li>
+		<li><strong>Detection can be wrong.</strong> A person who answers with a long greeting can be taken for voicemail, and a short voicemail greeting for a person. The voicemail message is written to make sense either way.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Edward Rooney</strong> and Ferris&rsquo;s nine absences come from <cite><a href="https://en.wikipedia.org/wiki/Ferris_Bueller%27s_Day_Off" rel="external">Ferris Bueller&rsquo;s Day Off</a></cite> (1986), written and directed by John Hughes and distributed by Paramount Pictures. Matthew Broderick plays Ferris Bueller, and Jeffrey Jones plays Edward R. Rooney, the Dean of Students.</li>
+		<li><strong>The school, its calls, and its phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/nouns/number/">machine detection settings</a>, the <a href="/voiceml/migrate/">direct HTTP test call</a> on the migration guide, and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="outbound-cta-heading">
+	<h2 id="outbound-cta-heading">Calling customers with notices?</h2>
+	<p>Tell us who you call and what they need to hear, and we&rsquo;ll help you map it to VoiceML and the compliance rules that apply.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

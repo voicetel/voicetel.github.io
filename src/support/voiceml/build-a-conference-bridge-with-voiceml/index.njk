@@ -1,0 +1,140 @@
+---
+layout: layouts/article.njk
+title: "Build a conference bridge with VoiceML"
+description: "A VoiceML incident bridge for a fictional park: the control room opens and closes it, staff wait on hold until it starts, and visitors listen in muted."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build a conference bridge with VoiceML</p>
+<h1>Build a conference bridge with VoiceML.</h1>
+<p class="lede">Jurassic Park runs a fictional incident bridge. The control room opens it by calling in, park staff who call first wait on hold until it starts, visitors can listen without being heard, and the bridge closes for everyone when the control room hangs up. It is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/nouns/conference/">&lt;Conference&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "headset" %}</span>
+			<h3>A moderator</h3>
+			<p>Calls from the control room&rsquo;s numbers open the bridge, and the bridge closes when they hang up.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "clock" %}</span>
+			<h3>Hold until it starts</h3>
+			<p>Staff and visitors who call before the control room hear hold music, not silence.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>Staff who speak</h3>
+			<p>Pressing 1 joins the bridge with a voice.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "broadcast-pin" %}</span>
+			<h3>Visitors who listen</h3>
+			<p>Pressing 2 joins muted, without the join tone, to hear the bridge without interrupting it.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>The numbers the control room calls from</strong>, in E.164 format.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The control room numbers in this document are fictional.</strong> They use the 555-0100 to 555-0199 range, which is set aside for fiction. Replace them with your own before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Replace the control room numbers with your own, then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["park-incident-bridge"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<ol>
+		<li>From a phone that isn&rsquo;t on the control room list, call and press 1. You hear hold music.</li>
+		<li>From a control room phone, call the same number. The bridge opens and the two calls are connected.</li>
+		<li>From a third phone, call and press 2. You hear the other two, but they can&rsquo;t hear you.</li>
+		<li>Hang up the control room phone. The other two calls leave the bridge and hear that it has closed.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How the bridge works</h2>
+	<p>Everyone joins the same room with <code>&lt;Dial&gt;&lt;Conference&gt;isla-nublar-incident&lt;/Conference&gt;&lt;/Dial&gt;</code>. Room names are private to your account, so another account using the same name gets a separate room. What differs between callers is the attributes:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The &lt;Conference&gt; attributes for each kind of caller</caption>
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Control room</th>
+					<th scope="col">Staff</th>
+					<th scope="col">Visitors</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>startConferenceOnEnter</code></td><td><code>true</code>: starts the bridge</td><td><code>false</code>: waits on hold</td><td><code>false</code>: waits on hold</td></tr>
+				<tr><td><code>endConferenceOnExit</code></td><td><code>true</code>: closes it for everyone</td><td>Default <code>false</code></td><td>Default <code>false</code></td></tr>
+				<tr><td><code>muted</code></td><td>Default <code>false</code></td><td>Default <code>false</code></td><td><code>true</code>: heard by no one</td></tr>
+				<tr><td><code>beep</code></td><td><code>true</code></td><td><code>true</code></td><td><code>false</code>: joins without a tone</td></tr>
+				<tr><td><code>participantLabel</code></td><td><code>control-room</code></td><td><code>staff</code></td><td><code>visitor</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>None of them sets <code>waitUrl</code>, so callers waiting for the control room hear the platform&rsquo;s default hold playlist. The control room is recognized by <code>From</code>, using the same Liquid list check as the <a href="/support/voiceml/build-call-screening-with-voiceml/">call screening example</a>; everyone else chooses with a key. When a participant leaves the room, the document carries on after the <code>&lt;Dial&gt;</code>, which is where staff and visitors hear that the bridge has closed.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Jurassic Park in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The room name</td><td>Isla Nublar, the park&rsquo;s island.</td></tr>
+				<tr><td>The control room</td><td>&ldquo;Hold on to your butts,&rdquo; Ray Arnold&rsquo;s line.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Anyone who calls can join as staff.</strong> There is no code to get in. To require one, add the check from the <a href="/support/voiceml/build-a-pin-protected-line-with-voiceml/">PIN-protected line example</a> before the staff branch.</li>
+		<li><strong>The control room must call from a listed number.</strong> Calling from any other phone joins as staff, and the bridge won&rsquo;t start.</li>
+		<li><strong>One room.</strong> Every call joins <code>isla-nublar-incident</code>. A second, simultaneous incident needs a second room name.</li>
+		<li><strong>Not recorded.</strong> Add <code>record="record-from-start"</code> to the control room&rsquo;s <code>&lt;Conference&gt;</code> to record the bridge; recording stops when the control room leaves.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Jurassic Park</strong>, Isla Nublar, and Ray Arnold come from <cite><a href="https://en.wikipedia.org/wiki/Jurassic_Park_(film)" rel="external">Jurassic Park</a></cite> (1993), directed by Steven Spielberg, based on the novel by Michael Crichton, and distributed by Universal Pictures. Sam Neill, Laura Dern, Jeff Goldblum, and Richard Attenborough star; Samuel L. Jackson plays Ray Arnold, the park&rsquo;s chief engineer.</li>
+		<li><strong>The bridge, its callers, and its phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/nouns/conference/"><code>&lt;Conference&gt;</code> reference</a> and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="bridge-cta-heading">
+	<h2 id="bridge-cta-heading">Running conference calls?</h2>
+	<p>Tell us who runs your calls and who joins them, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

@@ -1,0 +1,41 @@
+<Response>
+  {% assign control_room = "+15105550101,+15105550102" | split: "," %}
+
+  {% if control_room contains From %}
+    <!-- The control room opens the bridge, and closing it ends the call for everyone -->
+    <Say>Control room, the incident bridge is open. Hold on to your butts.</Say>
+    <Dial>
+      <Conference startConferenceOnEnter="true" endConferenceOnExit="true" beep="true"
+                  participantLabel="control-room">isla-nublar-incident</Conference>
+    </Dial>
+    <Hangup/>
+
+  <!-- Park staff can speak, and wait on hold until the control room arrives -->
+  {% elsif Digits == "1" %}
+    <Say>Joining the incident bridge.</Say>
+    <Dial>
+      <Conference startConferenceOnEnter="false" beep="true"
+                  participantLabel="staff">isla-nublar-incident</Conference>
+    </Dial>
+    <Say>The incident bridge has closed. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Visitors listen in, muted -->
+  {% elsif Digits == "2" %}
+    <Say>You are joining as a listener. You will hear the bridge, but you will not be heard.</Say>
+    <Dial>
+      <Conference startConferenceOnEnter="false" muted="true" beep="false"
+                  participantLabel="visitor">isla-nublar-incident</Conference>
+    </Dial>
+    <Say>The incident bridge has closed. Goodbye.</Say>
+    <Hangup/>
+
+  {% else %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>Welcome to Jurassic Park visitor services.</Say>
+      <Say>Park staff, press 1 to join the incident bridge. Visitors, press 2 to listen in.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

@@ -1,0 +1,127 @@
+---
+layout: layouts/article.njk
+title: "Build location routing with VoiceML"
+description: "VoiceML location routing for a fictional restaurant chain: the caller's area code picks the nearest restaurant, and callers it can't place choose from a menu."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build location routing with VoiceML</p>
+<h1>Build location routing with VoiceML.</h1>
+<p class="lede">Los Pollos Hermanos is a fictional fried chicken chain with restaurants across the Southwest and one phone number. The caller&rsquo;s area code decides which restaurant rings, and callers it can&rsquo;t place, such as those from other area codes or other countries, pick one from a menu. It is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlPublisherUrl }}">VoiceML publisher</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
+			<h3>The nearest restaurant</h3>
+			<p>Callers from New Mexico reach Albuquerque, callers from Arizona reach Phoenix, and callers from El Paso reach El Paso, with no menu.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>A menu as a fallback</h3>
+			<p>Any other caller hears the list of restaurants and presses a key.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "buildings" %}</span>
+			<h3>One number for every restaurant</h3>
+			<p>Each restaurant&rsquo;s own number lives in the document, so the chain advertises a single number.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Each location&rsquo;s phone number</strong>, and the area codes that should reach it.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The restaurants and numbers in this document are fictional.</strong> The numbers use the 555-0100 to 555-0199 range, which is set aside for fiction. Replace them with your own locations before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Replace the locations, area codes, and numbers with your own. Then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["pollos-locations"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<p>Call from a phone whose area code is on your list, and that location rings without a menu. Call from any other phone, and you hear the menu; press a key, and that location rings.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the routing works</h2>
+	<p><code>From</code> is the caller&rsquo;s number in E.164, such as <code>+15055551234</code>. For North American numbers, the first two characters are <code>+1</code> and the next three are the area code, so two <code>slice</code> filters split it:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>How the document reads the caller&rsquo;s number</caption>
+			<thead>
+				<tr>
+					<th scope="col">Liquid</th>
+					<th scope="col">For <code>+15055551234</code></th>
+					<th scope="col">For <code>+442071234567</code></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>{% raw %}From | slice: 0, 2{% endraw %}</code></td><td><code>+1</code></td><td><code>+4</code></td></tr>
+				<tr><td><code>{% raw %}From | slice: 2, 3{% endraw %}</code></td><td><code>505</code></td><td><code>207</code>, discarded because the number isn&rsquo;t <code>+1</code></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>A <code>{% raw %}{% case %}{% endraw %}</code> on the area code sets the restaurant&rsquo;s name and number, and <code>&lt;Number&gt;{% raw %}{{ line }}{% endraw %}&lt;/Number&gt;</code> dials it. Several area codes can share a restaurant in one <code>when</code>, as Arizona&rsquo;s five do for Phoenix.</p>
+	<p>When nothing matches, the menu&rsquo;s <code>&lt;Gather&gt;</code> has no <code>action</code>, so the key comes back to the same document as <code>Digits</code>. A <code>{% raw %}{% case Digits %}{% endraw %}</code> near the top replaces the area code with the chosen restaurant&rsquo;s, and the same routing runs again.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the show turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Breaking Bad in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>Los Pollos Hermanos, &ldquo;the chicken brothers.&rdquo;</td></tr>
+				<tr><td>The first location</td><td>Albuquerque, home of the chain&rsquo;s best-known restaurant.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>An area code isn&rsquo;t a location.</strong> Mobile numbers keep their area code when people move, so a caller from Phoenix with an Albuquerque number reaches Albuquerque.</li>
+		<li><strong>No city or state from the network.</strong> The VoiceML runtime sends <code>FromCity</code>, <code>FromState</code>, and the other location fields empty, so the area code is the only clue in the call.</li>
+		<li><strong>The list is fixed in the document.</strong> A new location or area code means publishing again and pointing the number at the new URL.</li>
+		<li><strong>Closed restaurants still ring.</strong> To skip a location outside its hours, combine this with the checks in the <a href="/support/voiceml/build-business-hours-routing-with-voiceml/">business-hours example</a>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Los Pollos Hermanos</strong> comes from <cite><a href="https://en.wikipedia.org/wiki/Breaking_Bad" rel="external">Breaking Bad</a></cite> (AMC, 2008&ndash;2013), created by Vince Gilligan. Bryan Cranston plays Walter White, and Giancarlo Esposito plays Gus Fring, the owner of the chain, which has 14 restaurants across the Southwest in the show.</li>
+		<li><strong>The Phoenix and El Paso restaurants, the area-code assignments, and the phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the show or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, whose Liquid cookbook routes by area code, and the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="location-cta-heading">
+	<h2 id="location-cta-heading">Routing calls to many locations?</h2>
+	<p>Tell us where your locations are and how callers should reach them, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

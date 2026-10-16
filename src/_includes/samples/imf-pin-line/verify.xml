@@ -1,0 +1,26 @@
+<Response>
+  {% comment %} The document stores SHA-256 hashes of the codes, never the codes themselves. {% endcomment %}
+  {% assign entered = Digits | sha256 %}
+  {% case entered %}
+    {% when "110165df04d9ea4a1b72a2425756bebf16c0d2c44fe30547d0e6932e854d6231" %}
+      {% assign agent = "Phelps" %}
+      {% assign line = "+12025550101" %}
+    {% when "7e76c9ad0714b0cfe0dc354163290b5aaf3defa8e5820ee5730ace1725fc0a1a" %}
+      {% assign agent = "Briggs" %}
+      {% assign line = "+12025550102" %}
+  {% endcase %}
+
+  {% if agent %}
+    <Say>Good morning, Mr. {{ agent }}. Your mission, should you choose to accept it, is waiting on the secure line.</Say>
+    <Dial timeout="20" ringTone="us">
+      <Number>{{ line }}</Number>
+    </Dial>
+    <Say>This call will self-destruct in five seconds. Good luck, Mr. {{ agent }}.</Say>
+    <Hangup/>
+
+  {% else %}
+    <!-- One attempt per call: guessing costs the caller a new call each time -->
+    <Say>Access denied. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

@@ -1,0 +1,11 @@
+<Response>
+  <Gather input="dtmf" numDigits="2" action="RESERVE_URL" method="POST" timeout="8">
+    <Pause length="1"/>
+    <Say>Thank you for calling Monk's Café.</Say>
+    <Pause length="1"/>
+    <Say>To reserve a table for tonight, press the number of people in your party, from 1 to 8. Then press 1 for 6 p.m., 2 for 7 p.m., or 3 for 8 p.m.</Say>
+    <Say>For example, for four people at 7 p.m., press 4, then 2.</Say>
+  </Gather>
+  <Say>We did not receive a reservation. Goodbye.</Say>
+  <Hangup/>
+</Response>

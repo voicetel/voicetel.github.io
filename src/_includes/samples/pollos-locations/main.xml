@@ -1,0 +1,43 @@
+<Response>
+  {% comment %} From is E.164: +1 and then the area code, for North American numbers. {% endcomment %}
+  {% assign country = From | slice: 0, 2 %}
+  {% assign area = From | slice: 2, 3 %}
+  {% if country != "+1" %}{% assign area = "" %}{% endif %}
+
+  {% comment %} A key pressed in the menu below takes priority over the area code. {% endcomment %}
+  {% case Digits %}
+    {% when "1" %}{% assign area = "505" %}
+    {% when "2" %}{% assign area = "602" %}
+    {% when "3" %}{% assign area = "915" %}
+  {% endcase %}
+
+  {% case area %}
+    {% when "505", "575" %}
+      {% assign store = "Albuquerque" %}
+      {% assign line = "+15055550101" %}
+    {% when "480", "520", "602", "623", "928" %}
+      {% assign store = "Phoenix" %}
+      {% assign line = "+16025550101" %}
+    {% when "915" %}
+      {% assign store = "El Paso" %}
+      {% assign line = "+19155550101" %}
+  {% endcase %}
+
+  {% if store %}
+    <Say>Thank you for calling Los Pollos Hermanos, the chicken brothers. Connecting you to our {{ store }} restaurant.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>{{ line }}</Number>
+    </Dial>
+    <Say>Thank you for calling Los Pollos Hermanos. Goodbye.</Say>
+    <Hangup/>
+
+  {% else %}
+    <!-- No match: let the caller choose. With no action, the key comes back to this document. -->
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>Thank you for calling Los Pollos Hermanos, the chicken brothers.</Say>
+      <Say>For Albuquerque, press 1. For Phoenix, press 2. For El Paso, press 3.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

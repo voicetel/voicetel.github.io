@@ -1,0 +1,148 @@
+---
+layout: layouts/article.njk
+title: "Build a PIN-protected line with VoiceML"
+description: "A VoiceML secure line for fictional agents: callers enter a six-digit code, the document checks its SHA-256 hash, and each agent is routed to their own line."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build a PIN-protected line with VoiceML</p>
+<h1>Build a PIN-protected line with VoiceML.</h1>
+<p class="lede">The Impossible Missions Force runs a fictional secure line. Callers enter a six-digit agent code, the document checks it against SHA-256 hashes so the codes themselves are never written down, and each agent is put through to their own line. A wrong code ends the call. It runs on two documents published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/verbs/gather/">&lt;Gather&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>A code prompt</h3>
+			<p>The line asks for a six-digit code and moves on as soon as the sixth digit is pressed.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Hashed codes</h3>
+			<p>The document holds the SHA-256 hash of each code, so reading the document doesn&rsquo;t reveal a code directly.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
+			<h3>A line per agent</h3>
+			<p>Each code belongs to one agent, who is greeted by name and put through to their own number.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>One try per call</h3>
+			<p>A wrong code ends the call, so every guess costs the caller a new call.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the IMF secure line</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The number&rsquo;s voice URL. Asks for the code.</td></tr>
+				<tr><td>Verification document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The <code>action</code> of the <code>&lt;Gather&gt;</code>. Hashes the code, finds the agent, and connects them.</td></tr>
+				<tr><td>Agents&rsquo; phones</td><td>Any phone numbers</td><td>The line each agent is put through to.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>A six-digit code for each person</strong>, and the number each one should be put through to.</li>
+		<li><strong>The SHA-256 hash of each code.</strong> On Linux, <code>printf '%s' 427351 | sha256sum</code> prints it; on macOS, use <code>shasum -a 256</code> in place of <code>sha256sum</code>. Use <code>printf</code> rather than <code>echo</code>, which adds a newline and changes the hash.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The codes and numbers in these documents are samples.</strong> The hashes are for the codes 427351 and 916204, and the numbers use the fictional 555-0100 to 555-0199 range. Replace them all before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the verification document</h2>
+	<p>Replace each hash with the hash of a real code, and each number with that person&rsquo;s line. Then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>. It contains Liquid tags, so it is published to an <code>/r/</code> URL. Keep the URL exactly as returned, <code>key</code> included, and don&rsquo;t post it publicly.</p>
+	<p class="code-block-header">verify.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["imf-pin-line"].verify | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the main document and point the number at it</h2>
+	<p>Replace <code>VERIFY_URL</code> with the <code>/r/</code> URL from step 1 and publish. Set the <code>/s/</code> URL it returns as the phone number&rsquo;s voice URL.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["imf-pin-line"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Test it</h2>
+	<ol>
+		<li>Call the number and enter one of your codes. You are greeted by name and the matching phone rings.</li>
+		<li>Call again and enter any other six digits. You hear &ldquo;Access denied&rdquo; and the call ends.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How the check works</h2>
+	<p>The <code>&lt;Gather numDigits="6"&gt;</code> sends the code to the verification document as <code>Digits</code>. There, <code>{% raw %}{% assign entered = Digits | sha256 %}{% endraw %}</code> turns it into the same 64-character hash that <code>sha256sum</code> prints, and a <code>{% raw %}{% case entered %}{% endraw %}</code> compares it with each agent&rsquo;s hash. A match sets the agent&rsquo;s name and number; <code>&lt;Number&gt;{% raw %}{{ line }}{% endraw %}&lt;/Number&gt;</code> dials whichever number was set. Anything else falls through to &ldquo;Access denied&rdquo; and <code>&lt;Hangup/&gt;</code>.</p>
+	<p>Sending wrong codes to a hang-up instead of a second try is deliberate. A document can&rsquo;t count attempts or remember earlier calls, so it can&rsquo;t lock anyone out; ending the call is the only brake it has on guessing.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the show turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Mission: Impossible in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The agents</td><td>Jim Phelps and Dan Briggs, who led the team.</td></tr>
+				<tr><td>The greeting</td><td>&ldquo;Good morning, Mr. Phelps,&rdquo; and &ldquo;Your mission, should you choose to accept it.&rdquo;</td></tr>
+				<tr><td>The sign-off</td><td>The taped message that &ldquo;will self-destruct in five seconds.&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Hashing hides the codes, but doesn&rsquo;t make them secret.</strong> A six-digit code has a million possibilities, and anyone holding the document can hash all of them in seconds and find the match. Keep the document&rsquo;s URL private, and use longer codes where it matters.</li>
+		<li><strong>No lockout.</strong> Each wrong guess ends the call, but nothing stops someone from calling again. Watch your call logs for repeated failures.</li>
+		<li><strong>The caller&rsquo;s number isn&rsquo;t checked.</strong> To require both a code and a known number, add the number lists from the <a href="/support/voiceml/build-call-screening-with-voiceml/">call screening example</a>.</li>
+		<li><strong>Changing a code means publishing again.</strong> Published documents can&rsquo;t be edited, so a new code is a new document and a new URL for the number.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The Impossible Missions Force</strong>, its taped briefings, and their sign-off come from <cite><a href="https://en.wikipedia.org/wiki/Mission:_Impossible_(1966_TV_series)" rel="external">Mission: Impossible</a></cite> (CBS, 1966&ndash;1973), created by Bruce Geller. Steven Hill plays Dan Briggs, who leads the team in the first season, and Peter Graves plays Jim Phelps, who leads it after him.</li>
+		<li><strong>The line, its agents&rsquo; codes, and its phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the show or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/verbs/gather/"><code>&lt;Gather&gt;</code> reference</a> and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, which lists the Liquid filters a document can use, <code>sha256</code> among them.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="pin-line-cta-heading">
+	<h2 id="pin-line-cta-heading">Protecting a phone line?</h2>
+	<p>Tell us who should get through and how they prove it, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

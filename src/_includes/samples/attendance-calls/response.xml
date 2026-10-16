@@ -1,0 +1,19 @@
+<Response>
+  {% case Digits %}
+    {% when "1" %}
+      <Say>Thank you for confirming. Goodbye.</Say>
+      <Hangup/>
+
+    {% when "2" %}
+      <Say>Connecting you to the attendance office.</Say>
+      <Dial timeout="25" ringTone="us">
+        <Number>+13125550140</Number>
+      </Dial>
+      <Say>The attendance office is not available. Please call back during school hours. Goodbye.</Say>
+      <Hangup/>
+
+    {% else %}
+      <Say>That is not a valid option. Please call the attendance office. Goodbye.</Say>
+      <Hangup/>
+  {% endcase %}
+</Response>

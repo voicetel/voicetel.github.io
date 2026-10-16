@@ -1,0 +1,20 @@
+<Response>
+  {% if AnsweredBy contains "machine" %}
+    <!-- Voicemail answered. With DetectMessageEnd, this plays after the greeting ends. -->
+    <Say>Hello, this is Edward Rooney, Dean of Students, calling about an absence from school today.</Say>
+    <Say>So far this semester, that is nine absences. Please call the attendance office to discuss it. Thank you.</Say>
+    <Hangup/>
+
+  {% elsif AnsweredBy == "fax" %}
+    <Hangup/>
+
+  {% else %}
+    <!-- A person answered, or detection couldn't tell -->
+    <Gather input="dtmf" numDigits="1" action="RESPONSE_URL" method="POST" timeout="8">
+      <Say>Hello, this is Edward Rooney, Dean of Students, calling about an absence from school today.</Say>
+      <Say>To confirm you received this message, press 1. To speak with the attendance office now, press 2.</Say>
+    </Gather>
+    <Say>We did not receive a response. Please call the attendance office. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

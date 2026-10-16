@@ -96,7 +96,11 @@ function extractOperations(spec) {
 			ops.push({
 				method: m,
 				path,
-				operationId: op.operationId || `${m}-${path}`,
+				// Spec operations without an operationId get a slug that stays safe in
+				// element ids and #op= deep links.
+				operationId:
+					op.operationId ||
+					`${m}${path}`.replace(/[^A-Za-z0-9]+/g, "-").replace(/-$/, ""),
 				summary: op.summary || "",
 				description: op.description || "",
 				tags: op.tags || ["Other"],

@@ -1,7 +1,8 @@
 {
 	"source": "https://github.com/voicetel",
 	"license": "MIT",
-	"targetApi": "VoiceTel REST API v2.2.14",
+	"targetApi": "VoiceTel REST API v2.2.15",
+	"operationCount": 79,
 	"sdks": [
 		{
 			"name": "Python",
@@ -15,21 +16,21 @@
 			"name": "TypeScript / JavaScript",
 			"slug": "typescript",
 			"repo": "https://github.com/voicetel/typescript-sdk",
-			"install": "npm install @voicetel/sdk",
+			"install": "npm install @voicetel.com/sdk",
 			"description": "Typed client for Node and modern browsers. ESM and CJS entry points, generated from the OpenAPI spec, fetch-based transport."
 		},
 		{
 			"name": "Go",
 			"slug": "go",
 			"repo": "https://github.com/voicetel/go-sdk",
-			"install": "go get github.com/voicetel/go-sdk",
+			"install": "go get github.com/voicetel/go-sdk/v2",
 			"description": "Generated Go client with context-aware methods and structured error types. No reflection on the hot path."
 		},
 		{
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/java-sdk",
-			"install": "com.voicetel:voicetel-sdk:2.2.14",
+			"install": "com.voicetel:voicetel-sdk:2.2.15",
 			"installLabel": "Maven",
 			"description": "Java 11+ client with builder-style request construction. Pluggable HTTP transport; OkHttp by default."
 		},
@@ -37,7 +38,7 @@
 			"name": "Kotlin",
 			"slug": "kotlin",
 			"repo": "https://github.com/voicetel/kotlin-sdk",
-			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.14",
+			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.15",
 			"installLabel": "Gradle",
 			"description": "Coroutine-first Kotlin client. Suspending functions, sealed result types, idiomatic null handling."
 		},
@@ -45,7 +46,7 @@
 			"name": "Scala",
 			"slug": "scala",
 			"repo": "https://github.com/voicetel/scala-sdk",
-			"install": "com.voicetel:voicetel-sdk_3:2.2.14",
+			"install": "com.voicetel:voicetel-sdk_3:2.2.15",
 			"installLabel": "sbt",
 			"description": "Scala 3 client. Effect-system-agnostic core with thin Future and cats-effect bindings."
 		},
@@ -100,7 +101,7 @@
 			"icon": "gear",
 			"repo": "https://github.com/voicetel/cli",
 			"install": "go install github.com/voicetel/cli@latest",
-			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.14 operation from the terminal."
+			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.15 operation from the terminal."
 		},
 		{
 			"name": "API Collections",
@@ -108,7 +109,7 @@
 			"icon": "layers",
 			"repo": "https://github.com/voicetel/api-collections",
 			"install": "import into Postman or Bruno",
-			"description": "Pre-built Postman and Bruno collections covering all 74 v2.2.14 operations. Environment templates for API key and base URL included."
+			"description": "Pre-built Postman and Bruno collections covering all 79 v2.2.15 operations. Environment templates for API key and base URL included."
 		}
 	]
 }

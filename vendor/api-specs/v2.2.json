@@ -9795,7 +9795,7 @@
     "termsOfService": "https://www.voicetel.com/tos",
     "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key — this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account, account/recurring-charges, account/cdr, account/api-key — 6 requests per hour per IP.",
     "title": "VoiceTel API",
-    "version": "2.2.14",
+    "version": "2.2.15",
     "contact": {
       "email": "support@voicetel.com"
     }
@@ -17939,6 +17939,147 @@
               }
             },
             "description": "OK response from tickets list."
+          }
+        }
+      }
+    },
+    "/v2.2/messaging/health": {
+      "get": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Messaging health",
+        "description": "Your account's messaging health, the same view as the portal Messaging tab: summary (numbers, messaging on, healthy, needing attention, in progress), campaigns with carrier-review progress, numbers needing attention (each with a plain-language title, detail and the actions that fix it: assign, disable, samples), 14 days of delivery counts (delivered, failed, blocked as spam, refused because the number is not enabled), and the alert-email setting. Updated hourly. Fix a number with PUT or DELETE /v2.2/numbers/{number}/messaging-campaign.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/v2.2/messaging/health/check": {
+      "post": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Check a number now",
+        "description": "Live check of one number: in service, messaging enabled, campaign approved, assigned to the campaign by the messaging provider, delivery failures in the last 24 hours, enablement in progress. Limited to 30 checks per hour per account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "number"
+                ],
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "example": "2125550123",
+                    "description": "10-digit number on your account"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Number not on this account"
+          },
+          "429": {
+            "description": "Too many checks this hour"
+          }
+        }
+      }
+    },
+    "/v2.2/messaging/health/samples": {
+      "get": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Messages blocked as spam",
+        "description": "Up to 3 recent outbound messages from the number that carriers blocked as spam (time, masked recipient, text, reason), to help review content.",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "10-digit number on your account"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Number not on this account"
+          }
+        }
+      }
+    },
+    "/v2.2/messaging/health/alerts": {
+      "get": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Alert email setting",
+        "description": "Whether new messaging problems are emailed to the account.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Messaging"
+        ],
+        "summary": "Turn alert emails on or off",
+        "description": "Email the account when new messaging problems are found (at most one digest about every 20 hours).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled"
+                ],
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }

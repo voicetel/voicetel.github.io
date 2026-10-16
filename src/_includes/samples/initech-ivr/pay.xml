@@ -1,0 +1,34 @@
+<Response>
+  {% if Digits == "1" %}
+    {% assign amount = "495.00" %}
+    {% assign spoken = "four hundred ninety-five dollars" %}
+  {% elsif Digits == "2" %}
+    {% assign amount = "45.00" %}
+    {% assign spoken = "forty-five dollars" %}
+  {% endif %}
+
+  {% if amount == blank %}
+    <Say>That is not a valid option. Goodbye.</Say>
+    <Hangup/>
+  {% else %}
+    <Say>You are paying {{ spoken }}.</Say>
+    <Pay chargeAmount="{{ amount }}" currency="usd" description="Initech invoice payment"
+         action="CONFIRM_URL" method="POST" maxAttempts="2" timeout="10">
+      <Prompt for="payment-card-number">
+        <Say>Please enter your card number, followed by the pound sign.</Say>
+      </Prompt>
+      <Prompt for="expiration-date">
+        <Say>Please enter the four-digit expiration date, two digits for the month and two for the year.</Say>
+      </Prompt>
+      <Prompt for="security-code">
+        <Say>Please enter the security code on your card, followed by the pound sign.</Say>
+      </Prompt>
+      <Prompt for="postal-code">
+        <Say>Please enter your five-digit billing ZIP code.</Say>
+      </Prompt>
+      <Prompt for="payment-processing">
+        <Say>Please hold while we process your payment. Yeah, if you could go ahead and stay on the line, that would be great.</Say>
+      </Prompt>
+    </Pay>
+  {% endif %}
+</Response>

@@ -1,0 +1,140 @@
+---
+layout: layouts/article.njk
+title: "Build business-hours routing with VoiceML"
+description: "VoiceML business hours for a fictional paper company: open hours, weekends, fixed and moving holidays, and an early close, all in the office's time zone."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build business-hours routing with VoiceML</p>
+<h1>Build business-hours routing with VoiceML.</h1>
+<p class="lede">Dunder Mifflin&rsquo;s Scranton branch is a fictional paper company that answers its phone from 9 to 5 on weekdays. Calls in those hours ring reception; calls after hours, on weekends, and on holidays hear why the office is closed and when it opens. The whole schedule is one document published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlPublisherUrl }}">VoiceML publisher</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>Open hours</h3>
+			<p>Monday to Friday, 9 a.m. to 5 p.m. Eastern, calls ring reception.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "clock" %}</span>
+			<h3>After hours and weekends</h3>
+			<p>Outside those hours, callers hear that the office is closed and when it opens.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "calendar-month" %}</span>
+			<h3>Holidays by name</h3>
+			<p>New Year&rsquo;s Day, Independence Day, and Christmas fall on the same date every year; Memorial Day, Labor Day, and Thanksgiving are listed by date. Callers hear which holiday it is.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>An early close</h3>
+			<p>On Christmas Eve the office closes at noon instead of 5.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "geo-alt" %}</span>
+			<h3>The office&rsquo;s own time zone</h3>
+			<p>Every check uses Eastern time, wherever the caller is, and daylight saving time is handled by the time zone name.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>The number that should ring during open hours</strong>, your office&rsquo;s time zone as an IANA name such as <code>America/Chicago</code>, and your holiday dates.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The reception number in this document is fictional.</strong> It uses the 555-0100 to 555-0199 range, which is set aside for fiction. Replace it with a real number before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the document and point the number at it</h2>
+	<p>Change the time zone, hours, holidays, and reception number to your own. Then publish it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["office-hours"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Test it</h2>
+	<p>Call during your open hours and reception rings. To hear the closed message without waiting for the evening, change <code>tz</code> to a time zone where the office would be closed right now, such as <code>Asia/Tokyo</code> during a US workday, publish that copy, and point the number at it. Point the number back at the real document when you&rsquo;re done.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the schedule works</h2>
+	<p><code>{% raw %}"now" | date: "%H%M", tz{% endraw %}</code> formats the moment the call arrives as hours and minutes in the office&rsquo;s time zone, such as <code>0930</code>, and <code>{% raw %}| plus: 0{% endraw %}</code> turns it into the number 930, so it can be compared with the opening and closing times. The document reads four values this way:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The date values the document reads</caption>
+			<thead>
+				<tr>
+					<th scope="col">Variable</th>
+					<th scope="col">Format</th>
+					<th scope="col">Example</th>
+					<th scope="col">Used for</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>today</code></td><td><code>%Y-%m-%d</code></td><td><code>2026-11-26</code></td><td>Holidays that move from year to year</td></tr>
+				<tr><td><code>monthday</code></td><td><code>%m-%d</code></td><td><code>12-25</code></td><td>Holidays on the same date every year, and the early close</td></tr>
+				<tr><td><code>weekday</code></td><td><code>%u</code></td><td><code>6</code></td><td>Weekends: 1 is Monday and 7 is Sunday</td></tr>
+				<tr><td><code>time</code></td><td><code>%H%M</code></td><td><code>930</code></td><td>Opening and closing times</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Two <code>{% raw %}{% case %}{% endraw %}</code> blocks set <code>holiday</code> to the holiday&rsquo;s name when today matches a date. The checks then run in order, and the first that applies decides the call: a holiday, then a weekend, then a time outside the opening hours. Only a call that passes all three rings reception. In 2026, Independence Day falls on a Saturday, so the office closes on Friday, July 3, which is listed as its own date.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the show turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to The Office in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>Dunder Mifflin Paper Company, Scranton branch.</td></tr>
+				<tr><td>After hours</td><td>Dwight Schrute, Assistant to the Regional Manager, who would rather you didn&rsquo;t call him at home.</td></tr>
+				<tr><td>Weekends</td><td>Dwight&rsquo;s family beet farm.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Moving holidays need a yearly update.</strong> The document lists Memorial Day, Labor Day, and Thanksgiving for 2026 and 2027. Add each new year&rsquo;s dates, and any weekday a weekend holiday is observed on, then publish again.</li>
+		<li><strong>Every change is a new document.</strong> Published documents can&rsquo;t be edited, so a new holiday or new hours means publishing again and pointing the number at the new URL.</li>
+		<li><strong>The time is read once, when the call arrives.</strong> A caller who is still on hold at closing time stays connected.</li>
+		<li><strong>Closed callers can&rsquo;t leave a message.</strong> To take voicemail after hours, add a <code>&lt;Record&gt;</code> to the closed branches, as the <a href="/support/voiceml/build-a-pbx-with-voiceml/">PBX example</a> does.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Dunder Mifflin</strong>, its Scranton branch, and Dwight Schrute come from <cite><a href="https://en.wikipedia.org/wiki/The_Office_(American_TV_series)" rel="external">The Office</a></cite> (NBC, 2005&ndash;2013), developed by Greg Daniels from the British series created by Ricky Gervais and Stephen Merchant. Rainn Wilson plays Dwight Schrute; Steve Carell, John Krasinski, and Jenna Fischer play Michael Scott, Jim Halpert, and Pam Beesly.</li>
+		<li><strong>The branch&rsquo;s hours, holidays, and phone number</strong> are fictional in this example. VoiceTel is not affiliated with the show or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, whose Liquid cookbook covers the date filter and time zones, and the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="hours-cta-heading">
+	<h2 id="hours-cta-heading">Routing calls by schedule?</h2>
+	<p>Tell us your hours, holidays, and time zones, and we&rsquo;ll help you map them to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

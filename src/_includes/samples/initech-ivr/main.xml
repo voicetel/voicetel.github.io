@@ -1,0 +1,69 @@
+<Response>
+  {% if Digits == blank %}
+    <!-- Main menu -->
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Pause length="1"/>
+      <Say>Thank you for calling Initech, where we are committed to maximizing productivity and minimizing unnecessary human interaction.</Say>
+      <Pause length="1"/>
+      <Say>To pay an outstanding invoice, press 1.</Say>
+      <Say>To check your account balance, press 2.</Say>
+      <Say>To dispute a charge for a missing TPS report, press 3.</Say>
+      <Say>To speak with management, press 4.</Say>
+      <Pause length="1"/>
+      <Say>And remember, we are going to need you to go ahead and make that payment. That would be great.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 1: pay an invoice -->
+  {% elsif Digits == "1" %}
+    <Gather input="dtmf" action="INVOICE_URL" method="POST" finishOnKey="#" timeout="5">
+      <Say>Please enter your invoice number, followed by the pound sign.</Say>
+    </Gather>
+    <Say>We did not receive an invoice number. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 2: account balance -->
+  {% elsif Digits == "2" %}
+    <Say>Your account balance is four hundred ninety-five dollars. That includes a forty-five dollar TPS report processing surcharge, because your last report was filed without the new cover sheet.</Say>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>To pay it now, press 1.</Say>
+    </Gather>
+    <Say>Thank you for calling Initech. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 3: TPS report dispute -->
+  {% elsif Digits == "3" %}
+    <Say>Disputes for a missing TPS report must be filed with the new cover sheet. Did you get the memo? We will go ahead and make sure you get another copy of that memo.</Say>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>To pay your invoice instead, press 1.</Say>
+    </Gather>
+    <Say>Thank you for calling Initech. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 4: management -->
+  {% elsif Digits == "4" %}
+    <Say>Your call is important to all eight of your bosses. Each of them will follow up with you separately to discuss it.</Say>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>While you wait, to pay your invoice, press 1.</Say>
+    </Gather>
+    <Say>Thank you for calling Initech. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 0: not on the menu -->
+  {% elsif Digits == "0" %}
+    <Say>Our operator has been moved to the basement. If you have seen a red stapler, please return it there.</Say>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>To pay your invoice, press 1.</Say>
+    </Gather>
+    <Say>Thank you for calling Initech. Goodbye.</Say>
+    <Hangup/>
+
+  {% else %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>That is not a valid option. Please press 1, 2, 3, or 4.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

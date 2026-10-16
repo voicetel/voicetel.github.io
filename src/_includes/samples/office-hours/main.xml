@@ -1,0 +1,51 @@
+<Response>
+  {% comment %} Every date and time is read in the office's time zone. {% endcomment %}
+  {% assign tz = "America/New_York" %}
+  {% assign today = "now" | date: "%Y-%m-%d", tz %}
+  {% assign monthday = "now" | date: "%m-%d", tz %}
+  {% assign weekday = "now" | date: "%u", tz | plus: 0 %}
+  {% assign time = "now" | date: "%H%M", tz | plus: 0 %}
+
+  {% comment %} Holidays on the same date every year {% endcomment %}
+  {% case monthday %}
+    {% when "01-01" %}{% assign holiday = "New Year's Day" %}
+    {% when "07-04" %}{% assign holiday = "Independence Day" %}
+    {% when "12-25" %}{% assign holiday = "Christmas Day" %}
+  {% endcase %}
+
+  {% comment %} Holidays that move: list each year's date {% endcomment %}
+  {% case today %}
+    {% when "2026-05-25", "2027-05-31" %}{% assign holiday = "Memorial Day" %}
+    {% when "2026-07-03" %}{% assign holiday = "Independence Day" %}
+    {% when "2026-09-07", "2027-09-06" %}{% assign holiday = "Labor Day" %}
+    {% when "2026-11-26", "2027-11-25" %}{% assign holiday = "Thanksgiving" %}
+  {% endcase %}
+
+  {% comment %} Opening hours as HHMM; Christmas Eve closes at noon {% endcomment %}
+  {% assign opens = 900 %}
+  {% assign closes = 1700 %}
+  {% if monthday == "12-24" %}{% assign closes = 1200 %}{% endif %}
+
+  <Say>Thank you for calling Dunder Mifflin Paper Company, Scranton branch.</Say>
+
+  {% if holiday %}
+    <Say>Our office is closed today for {{ holiday }}. We will reopen on the next business day at 9 a.m. Eastern.</Say>
+    <Hangup/>
+
+  {% elsif weekday &gt;= 6 %}
+    <Say>Our office is closed for the weekend. Even Dwight has gone home to the beet farm. Our hours are 9 a.m. to 5 p.m. Eastern, Monday through Friday.</Say>
+    <Hangup/>
+
+  {% elsif time &lt; opens or time &gt;= closes %}
+    <Say>Our office is closed. Our hours are 9 a.m. to 5 p.m. Eastern, Monday through Friday. Dwight Schrute, Assistant to the Regional Manager, asks that you do not call him at home.</Say>
+    <Hangup/>
+
+  {% else %}
+    <Say>Please hold while we connect you to reception.</Say>
+    <Dial timeout="25" ringTone="us">
+      <Number>+15705550100</Number>
+    </Dial>
+    <Say>Thank you for calling Dunder Mifflin. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

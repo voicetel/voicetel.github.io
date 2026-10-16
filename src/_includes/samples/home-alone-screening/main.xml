@@ -1,0 +1,26 @@
+<Response>
+  {% assign blocked = "+18475550188,+18475550189" | split: "," %}
+  {% assign family = "+18475550101,+18475550102,+18475550103" | split: "," %}
+
+  {% if blocked contains From %}
+    <!-- Known nuisance numbers: refused before the call is answered -->
+    <Reject reason="busy"/>
+
+  {% elsif family contains From %}
+    <!-- Family numbers ring the house without screening -->
+    <Dial timeout="20" ringTone="us">
+      <Number>+18475550100</Number>
+    </Dial>
+    <Say>If no one picked up, please try again later. Goodbye.</Say>
+    <Hangup/>
+
+  {% else %}
+    <!-- Everyone else is screened -->
+    <Gather input="speech" action="SCREEN_URL" method="POST" timeout="5" speechTimeout="auto"
+            hints="Kate, Peter, Buzz, Uncle Frank, Little Nero's, pizza, Harry, Marv">
+      <Say>You have reached the McCallister residence. Please say your name and the reason for your call.</Say>
+    </Gather>
+    <Say>We did not hear anything. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

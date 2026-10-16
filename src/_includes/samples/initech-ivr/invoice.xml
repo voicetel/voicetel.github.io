@@ -1,0 +1,16 @@
+<Response>
+  {% if Digits == blank %}
+    <Say>We did not receive an invoice number. Goodbye.</Say>
+    <Hangup/>
+  {% else %}
+    <Say>Invoice number {{ Digits | split: "" | join: " " }}.</Say>
+    <Pause length="1"/>
+    <Say>The balance due is four hundred ninety-five dollars. That includes a forty-five dollar TPS report processing surcharge.</Say>
+    <Gather input="dtmf" numDigits="1" action="PAY_URL" method="POST" timeout="5">
+      <Say>To pay the full balance of four hundred ninety-five dollars, press 1.</Say>
+      <Say>To pay only the TPS report surcharge of forty-five dollars, press 2.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

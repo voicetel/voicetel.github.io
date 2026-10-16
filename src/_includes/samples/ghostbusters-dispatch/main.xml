@@ -1,0 +1,54 @@
+<Response>
+  {% if Digits == blank %}
+    <!-- Triage menu -->
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Pause length="1"/>
+      <Say>Ghostbusters paranormal response. We're ready to believe you.</Say>
+      <Pause length="1"/>
+      <Say>For an active haunting, press 1.</Say>
+      <Say>For a containment unit emergency, press 2.</Say>
+      <Say>To report a sighting or request an inspection, press 3.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 1: active haunting. The on-call chain rings one Ghostbuster at a time. -->
+  {% elsif Digits == "1" %}
+    <Say>Dispatching the on-call Ghostbuster. Please stay on the line.</Say>
+    <Dial sequential="true" timeout="15" ringTone="us">
+      <Number>+12125550101</Number>  <!-- Peter Venkman -->
+      <Number>+12125550102</Number>  <!-- Ray Stantz -->
+      <Number>+12125550104</Number>  <!-- Winston Zeddemore -->
+    </Dial>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>If no one answered, press 1 to try the on-call team again, or press 3 to leave a report. Otherwise, you may hang up.</Say>
+    </Gather>
+    <Say>Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 2: containment unit emergency. A different chain, with Egon first. -->
+  {% elsif Digits == "2" %}
+    <Say>This is a containment emergency. Do not switch off the containment unit. Connecting you to Egon.</Say>
+    <Dial sequential="true" timeout="15" ringTone="us">
+      <Number>+12125550103</Number>  <!-- Egon Spengler -->
+      <Number>+12125550102</Number>  <!-- Ray Stantz -->
+    </Dial>
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>If no one answered, press 2 to try the containment team again, or press 3 to leave a report. Otherwise, you may hang up.</Say>
+    </Gather>
+    <Say>Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Press 3: non-urgent report, taken as a recording -->
+  {% elsif Digits == "3" %}
+    <Say>Describe what you saw, where you saw it, and a number where we can reach you. If it is a giant marshmallow man, please say so first. Press the pound key when you are finished.</Say>
+    <Record action="GOODBYE_URL" method="POST" maxLength="120" timeout="5" finishOnKey="#" playBeep="true" trim="trim-silence"/>
+
+  {% else %}
+    <Gather input="dtmf" numDigits="1" timeout="5" method="POST">
+      <Say>That is not a valid option. Please press 1, 2, or 3.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% endif %}
+</Response>

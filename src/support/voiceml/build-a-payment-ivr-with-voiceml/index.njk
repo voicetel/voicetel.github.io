@@ -1,0 +1,225 @@
+---
+layout: layouts/article.njk
+title: "Build a payment IVR with VoiceML"
+description: "A VoiceML payment line for a fictional company: a menu, invoice entry, a choice of amount, and card capture with <Pay> against Stripe in test mode."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build a payment IVR with VoiceML</p>
+<h1>Build a payment IVR with VoiceML.</h1>
+<p class="lede">Initech is a fictional company whose billing line takes card payments by phone. Callers hear a menu, enter an invoice number, choose an amount, and pay with <code>&lt;Pay&gt;</code>. The whole line runs on four documents published on voiceml.org and your own Stripe account in test mode, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/verbs/pay/">&lt;Pay&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>A billing menu</h3>
+			<p>Press 1 to pay an invoice, 2 for the account balance, 3 to dispute a missing TPS report, or 4 for management.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>Invoice entry</h3>
+			<p>The caller keys in an invoice number and hears it read back, digit by digit, with the balance due.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "tag" %}</span>
+			<h3>A choice of amount</h3>
+			<p>Pay the full $495.00 balance, or only the $45.00 TPS report processing surcharge.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>Card capture with &lt;Pay&gt;</h3>
+			<p>Card number, expiration date, security code, and ZIP code, keyed on the phone&rsquo;s keypad and charged through your Stripe account. Your documents never see the card digits.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "printer-fill" %}</span>
+			<h3>A truthful closing</h3>
+			<p>The caller hears a closing message that holds whether the charge was approved or declined, followed by an update on the receipt printer.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the Initech payment line</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The number&rsquo;s voice URL. Plays the menu and branches on the key pressed.</td></tr>
+				<tr><td>Invoice document</td><td>voiceml.org, <code>/r/</code> URL</td><td>Reads back the invoice number and the balance, and offers the two amounts.</td></tr>
+				<tr><td>Payment document</td><td>voiceml.org, <code>/r/</code> URL</td><td>Sets the amount from the key pressed and runs <code>&lt;Pay&gt;</code>.</td></tr>
+				<tr><td>Confirmation document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of <code>&lt;Pay&gt;</code>. Closes the call.</td></tr>
+				<tr><td>Stripe account</td><td>Its test-mode secret key, saved on the Payments page in the <a href="{{ site.voicemlPortalUrl }}">VoiceML Portal</a></td><td>Receives the card details and makes the charge.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Payments enabled on the account.</strong> Payments are off by default. <a href="/contact/">Ask us</a> to turn them on; the VoiceML Portal then shows a Payments page.</li>
+		<li><strong>A Stripe test-mode secret key.</strong> In Stripe, open Developers, then API keys, and reveal the secret key that starts with <code>sk_test_</code>. Paste it on the Payments page. The key is write-only, and each account&rsquo;s payments go to its own Stripe account; there is no shared key.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>Use Stripe test cards only.</strong> Test-mode charges don&rsquo;t move money, and Stripe&rsquo;s guidance is never to test with real card details. Never enter a real card number when you call this line.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the confirmation document</h2>
+	<p>Published documents can&rsquo;t be edited, and each one needs the URL of the document after it, so publish from the end of the call backwards. The confirmation document is the end: <code>&lt;Pay&gt;</code> requests it when the payment finishes.</p>
+	<p class="code-block-header">confirm.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["initech-ivr"].confirm | escape }}</code></pre>
+	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the payment document</h2>
+	<p>Replace <code>CONFIRM_URL</code> with the URL from step 1, then publish.</p>
+	<p class="code-block-header">pay.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["initech-ivr"].pay | escape }}</code></pre>
+	<p>It contains Liquid tags, so it is published to an <code>/r/</code> URL and rendered on every call with that call&rsquo;s parameters.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Publish the invoice document</h2>
+	<p>Replace <code>PAY_URL</code> with the <code>/r/</code> URL from step 2, then publish.</p>
+	<p class="code-block-header">invoice.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["initech-ivr"].invoice | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 4: Publish the main document and point the number at it</h2>
+	<p>Replace <code>INVOICE_URL</code> with the <code>/r/</code> URL from step 3, publish, and set the resulting <code>/r/</code> URL as the phone number&rsquo;s voice URL. GET and POST both work.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["initech-ivr"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 5: Test it</h2>
+	<ol>
+		<li>Call the number and press 1.</li>
+		<li>Enter any invoice number, such as 1999, then press <kbd>#</kbd>.</li>
+		<li>Press 1 to pay the full balance.</li>
+		<li>Enter Stripe&rsquo;s test Visa number, <code>4242 4242 4242 4242</code>, then <kbd>#</kbd>. For the expiration date, enter any future month and year as four digits, such as <code>1234</code>; then any three-digit security code and <kbd>#</kbd>; then any five-digit ZIP code.</li>
+		<li>In the Stripe Dashboard, look at your test payments: a $495.00 payment with the description &ldquo;Initech invoice payment&rdquo;.</li>
+	</ol>
+	<p>Call again with Stripe&rsquo;s generic decline card, <code>4000 0000 0000 0002</code>, to hear that the closing message still holds when the charge is declined. Stripe lists more test cards on its <a href="https://docs.stripe.com/testing" rel="external">testing page</a>.</p>
+</section>
+
+<section class="section-block">
+	<h2>How the call flows</h2>
+	<p>The first request for the main document carries no <code>Digits</code>, so <code>{% raw %}{% if Digits == blank %}{% endraw %}</code> plays the menu inside a <code>&lt;Gather numDigits="1"&gt;</code>. That <code>&lt;Gather&gt;</code> has no <code>action</code>, so the key the caller presses comes back to the same document as <code>Digits</code> and picks a branch. The branches for 2, 3, 4, and 0 end with the same kind of <code>&lt;Gather&gt;</code>, so pressing 1 there also leads to the payment.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>What each key does in the main menu</caption>
+			<thead>
+				<tr>
+					<th scope="col">Caller presses</th>
+					<th scope="col">What happens</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>1</td><td>Asks for the invoice number. This <code>&lt;Gather&gt;</code> has <code>action</code> set to the invoice document and ends on <kbd>#</kbd>.</td></tr>
+				<tr><td>2</td><td>Reads the $495.00 balance and the TPS report surcharge, then offers 1 to pay.</td></tr>
+				<tr><td>3</td><td>Explains the TPS report cover-sheet policy, then offers 1 to pay.</td></tr>
+				<tr><td>4</td><td>Promises a follow-up from each of the caller&rsquo;s eight bosses, then offers 1 to pay.</td></tr>
+				<tr><td>0</td><td>Not on the menu. Reports where the operator has gone, asks about a red stapler, then offers 1 to pay.</td></tr>
+				<tr><td>Anything else</td><td>&ldquo;That is not a valid option,&rdquo; then asks again for 1, 2, 3, or 4.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The invoice document reads the number back with <code>{% raw %}{{ Digits | split: "" | join: " " }}{% endraw %}</code>, so 1999 is spoken as &ldquo;1 9 9 9&rdquo;, not &ldquo;one thousand nine hundred ninety-nine&rdquo;. Its <code>&lt;Gather&gt;</code> sends the amount choice to the payment document, which turns 1 or 2 into an amount with <code>{% raw %}{% assign %}{% endraw %}</code> and hands it to <code>&lt;Pay&gt;</code>:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The &lt;Pay&gt; attributes this example sets</caption>
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Value</th>
+					<th scope="col">Effect</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>chargeAmount</code></td><td><code>495.00</code> or <code>45.00</code></td><td>Charges the card. Without it, <code>&lt;Pay&gt;</code> only tokenizes the card.</td></tr>
+				<tr><td><code>currency</code></td><td><code>usd</code></td><td>The charge currency (the default, set here for clarity).</td></tr>
+				<tr><td><code>description</code></td><td><code>Initech invoice payment</code></td><td>Shown with the payment in Stripe.</td></tr>
+				<tr><td><code>action</code></td><td>The confirmation document</td><td>Requested when the payment finishes, approved or not.</td></tr>
+				<tr><td><code>maxAttempts</code></td><td><code>2</code></td><td>Gives the caller two tries at each entry. The limit is 1 to 3.</td></tr>
+				<tr><td><code>timeout</code></td><td><code>10</code></td><td>Seconds to wait for the caller&rsquo;s next digit, up from the default of 5, so callers have time to read the card as they key it in.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Each <code>&lt;Prompt for="&hellip;"&gt;</code> replaces the built-in prompt for one step: <code>payment-card-number</code>, <code>expiration-date</code>, <code>security-code</code>, <code>postal-code</code>, and <code>payment-processing</code>, which plays while Stripe processes the charge. Visa, Mastercard, and American Express are accepted by default; list others in <code>validCardTypes</code>.</p>
+</section>
+
+<section class="section-block">
+	<h2>Why the closing message doesn&rsquo;t say &ldquo;approved&rdquo;</h2>
+	<p>When the payment finishes, <code>&lt;Pay&gt;</code> requests its <code>action</code> with the outcome: <code>Result</code>, <code>PaymentConfirmationCode</code>, and the card&rsquo;s last four digits in <code>PaymentCardNumber</code>. A voiceml.org document can read the call&rsquo;s parameters and a <code>&lt;Gather&gt;</code>&rsquo;s results, but not these, and an <code>/s/</code> document never reads the request at all. So the confirmation document can&rsquo;t tell an approved payment from a declined one, and it says only what is true either way: &ldquo;If your payment was approved, it will appear on your next statement.&rdquo;</p>
+	<p>To read back the confirmation code, or to send a declined caller back to try another card, point <code>action</code> at your own server. It receives the same parameters and can answer with VoiceML of its own.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Office Space in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>&ldquo;We are going to need you to go ahead and make that payment. That would be great.&rdquo;</td></tr>
+				<tr><td>Options 2 and 3</td><td>The TPS report and its new cover sheet. Did you get the memo?</td></tr>
+				<tr><td>Option 4</td><td>All eight of your bosses.</td></tr>
+				<tr><td>Option 0, not on the menu</td><td>An operator moved to the basement, and a red stapler.</td></tr>
+				<tr><td>While the charge processes</td><td>&ldquo;Yeah, if you could go ahead and stay on the line, that would be great.&rdquo;</td></tr>
+				<tr><td>The closing message</td><td>The receipt printer, which says PC load letter.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>Every invoice has the same balance.</strong> A voiceml.org document can branch on the call but can&rsquo;t look anything up, so any invoice number gets $495.00. Looking up a real balance needs a server.</li>
+		<li><strong>The invoice number doesn&rsquo;t reach Stripe.</strong> Values don&rsquo;t carry from one document to the next, so the payment document never sees the invoice number and its <code>description</code> is fixed text.</li>
+		<li><strong>The closing message can&rsquo;t report the result.</strong> See above; reporting it needs a server as the <code>action</code>.</li>
+		<li><strong>Keypad entry only.</strong> <code>&lt;Pay&gt;</code> takes card details as keypad digits; spoken card entry isn&rsquo;t available.</li>
+		<li><strong>Written for test mode.</strong> Before taking real card payments, <a href="/contact/">talk to us</a>.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>Initech</strong>, its TPS reports, the cover-sheet memo, the eight bosses, the red stapler, and the printer come from <cite><a href="https://en.wikipedia.org/wiki/Office_Space" rel="external">Office Space</a></cite> (1999), written and directed by Mike Judge and distributed by 20th Century Fox. Ron Livingston stars as Peter Gibbons, the Initech programmer with eight different bosses; Gary Cole plays vice president Bill Lumbergh, whose &ldquo;that would be great&rdquo; the greeting borrows, and Stephen Root plays Milton Waddams, the collator with the red stapler.</li>
+		<li><strong>Initech</strong>, its billing department, its invoices, and its balances are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/verbs/pay/"><code>&lt;Pay&gt;</code> reference</a>, the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>, the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>, and Stripe&rsquo;s <a href="https://docs.stripe.com/testing" rel="external">testing documentation</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="payment-ivr-cta-heading">
+	<h2 id="payment-ivr-cta-heading">Taking payments by phone?</h2>
+	<p>Tell us how your callers pay today, and we&rsquo;ll help you map it to VoiceML and get payments enabled on your account.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

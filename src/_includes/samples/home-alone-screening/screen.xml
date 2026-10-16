@@ -1,0 +1,46 @@
+<Response>
+  {% assign said = SpeechResult | downcase %}
+  {% assign confidence = Confidence | plus: 0 %}
+
+  {% if said == blank %}
+    <Say>We did not hear anything. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- The Wet Bandits are refused, whatever number they call from -->
+  {% elsif said contains "harry" or said contains "marv" or said contains "wet bandit" %}
+    <Say>The Wet Bandits are not welcome at this residence. The house is protected. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Unsure what was said: ask again. With no action, the answer comes back to this document.
+       A confidence of 0 means the speech engine didn't report one, so it is not treated as unsure. -->
+  {% elsif confidence &gt; 0 and confidence &lt; 0.5 %}
+    <Gather input="speech" method="POST" timeout="5" speechTimeout="auto"
+            hints="Kate, Peter, Buzz, Uncle Frank, Little Nero's, pizza">
+      <Say>Sorry, we did not catch that. Please say your name and the reason for your call.</Say>
+    </Gather>
+    <Say>We did not hear anything. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Family calling from a number we don't know, and the pizza delivery, are put through -->
+  {% elsif said contains "kate" or said contains "mom" or said contains "peter" or said contains "dad" or said contains "buzz" or said contains "frank" %}
+    <Say>Thank you. Connecting you now.</Say>
+    <Dial timeout="20" ringTone="us">
+      <Number>+18475550100</Number>
+    </Dial>
+    <Say>If no one picked up, please try again later. Goodbye.</Say>
+    <Hangup/>
+
+  {% elsif said contains "nero" or said contains "pizza" %}
+    <Say>Little Nero's. Connecting you now. And keep the change, ya filthy animal.</Say>
+    <Dial timeout="20" ringTone="us">
+      <Number>+18475550100</Number>
+    </Dial>
+    <Say>If no one picked up, please leave the pizza on the front step. Goodbye.</Say>
+    <Hangup/>
+
+  <!-- Everyone else goes to voicemail -->
+  {% else %}
+    <Say>Thank you. No one can come to the phone right now. Please leave a message after the tone.</Say>
+    <Record action="GOODBYE_URL" method="POST" maxLength="120" timeout="5" playBeep="true" trim="trim-silence"/>
+  {% endif %}
+</Response>

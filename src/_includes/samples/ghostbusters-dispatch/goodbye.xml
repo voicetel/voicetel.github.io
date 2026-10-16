@@ -1,0 +1,6 @@
+<Response>
+  <Say>Thank you. Your report has been logged with the Ghostbusters. If things get worse, call back and press 1.</Say>
+  <Pause length="1"/>
+  <Say>Until then, whatever you do, don't cross the streams. Goodbye.</Say>
+  <Hangup/>
+</Response>

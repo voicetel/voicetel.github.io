@@ -1,0 +1,8 @@
+<Response>
+  <Say>Thank you. That completes the Initech payment process. If your payment was approved, it will appear on your next statement.</Say>
+  <Pause length="1"/>
+  <Say>We tried to print your receipt, but the printer says PC load letter, and nobody here knows what that means.</Say>
+  <Pause length="1"/>
+  <Say>Thank you for calling Initech. Goodbye.</Say>
+  <Hangup/>
+</Response>

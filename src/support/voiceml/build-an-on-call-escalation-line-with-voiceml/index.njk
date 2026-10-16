@@ -1,0 +1,174 @@
+---
+layout: layouts/article.njk
+title: "Build an on-call escalation line with VoiceML"
+description: "A VoiceML dispatch line for a fictional company: urgent calls ring an on-call chain one person at a time, and routine reports are taken as recordings."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build an on-call escalation line with VoiceML</p>
+<h1>Build an on-call escalation line with VoiceML.</h1>
+<p class="lede">The Ghostbusters run a fictional paranormal response line. Urgent calls ring the on-call team one person at a time until someone answers, each kind of emergency has its own call order, and routine reports are recorded for the morning. It runs on two documents published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/verbs/dial/">&lt;Dial&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "hash" %}</span>
+			<h3>Triage first</h3>
+			<p>Press 1 for an active haunting, 2 for a containment unit emergency, or 3 to report a sighting. Only the first two wake anyone up.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
+			<h3>An on-call chain</h3>
+			<p><code>&lt;Dial sequential="true"&gt;</code> rings Peter, then Ray, then Winston, 15 seconds each, and connects the first one who answers.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "diagram-3" %}</span>
+			<h3>A chain per emergency</h3>
+			<p>Containment emergencies have their own call order: Egon first, then Ray.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "arrow-right-circle" %}</span>
+			<h3>A way out when nobody answers</h3>
+			<p>After the chain, the caller can ring the team again or leave a report, and a caller whose call was answered just hangs up.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
+			<h3>Routine reports, recorded</h3>
+			<p>Sightings and inspection requests are taken as a recording of up to two minutes, so nobody is called for them.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the Ghostbusters dispatch line</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The number&rsquo;s voice URL. Plays the menu, rings the on-call chains, and takes reports.</td></tr>
+				<tr><td>Goodbye document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of the <code>&lt;Record&gt;</code>. Confirms the report and hangs up.</td></tr>
+				<tr><td>On-call phones</td><td>Any phone numbers</td><td>The mobile numbers of the people on call. Each one the chain rings is an outbound call on your account.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>The phone numbers of the people on call</strong>, in E.164 format, and the order to call them in for each kind of emergency.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The numbers in these documents are fictional.</strong> They use the 555-0100 to 555-0199 range, which is set aside for fiction. Replace every <code>&lt;Number&gt;</code> with a real on-call number before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the goodbye document</h2>
+	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>; without one, the runtime requests the current document again and the caller hears the prompt and records a second time. This document is that <code>action</code>.</p>
+	<p class="code-block-header">goodbye.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["ghostbusters-dispatch"].goodbye | escape }}</code></pre>
+	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the main document</h2>
+	<p>Replace <code>GOODBYE_URL</code> with the URL from step 1, and replace the on-call numbers with your own. Then publish it, and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["ghostbusters-dispatch"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Test it</h2>
+	<ol>
+		<li>Call the number and press 1. The first on-call phone rings; don&rsquo;t answer it.</li>
+		<li>After 15 seconds the second phone rings. Answer it, and you are connected to the caller.</li>
+		<li>Call again, press 1, and let every phone ring out. You hear the offer to try again or leave a report; press 3 and leave one.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How the escalation works</h2>
+	<p>The menu&rsquo;s <code>&lt;Gather&gt;</code> has no <code>action</code>, so the key the caller presses comes back to the same document as <code>Digits</code> and picks a branch. Branches 1 and 2 each hold a <code>&lt;Dial&gt;</code> with several <code>&lt;Number&gt;</code> nouns:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>The &lt;Dial&gt; attributes this example sets</caption>
+			<thead>
+				<tr>
+					<th scope="col">Attribute</th>
+					<th scope="col">Value</th>
+					<th scope="col">Effect</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>sequential</code></td><td><code>true</code></td><td>Rings the numbers one at a time, in document order, until one answers. Without it, they all ring at once and the first to answer wins.</td></tr>
+				<tr><td><code>timeout</code></td><td><code>15</code></td><td>How long each number rings before the next one is tried.</td></tr>
+				<tr><td><code>ringTone</code></td><td><code>us</code></td><td>The caller hears a US ringback tone while the chain rings.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The on-call phone shows the caller&rsquo;s own number, because a <code>&lt;Dial&gt;</code> without a <code>callerId</code> passes it through.</p>
+	<p>A <code>&lt;Dial&gt;</code> without an <code>action</code> continues to the next verb whether the call was answered or not, and a voiceml.org document can&rsquo;t read the dial result to tell the two apart. So instead of guessing, the line asks: &ldquo;If no one answered, press 1 to try the on-call team again, or press 3 to leave a report. Otherwise, you may hang up.&rdquo; That <code>&lt;Gather&gt;</code> has no <code>action</code> either, so the key the caller presses runs the matching branch of the menu again.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Ghostbusters in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The greeting</td><td>&ldquo;We&rsquo;re ready to believe you,&rdquo; the film&rsquo;s tagline.</td></tr>
+				<tr><td>The on-call chain</td><td>Peter Venkman, Ray Stantz, and Winston Zeddemore.</td></tr>
+				<tr><td>Option 2</td><td>The containment unit, and Egon Spengler at the top of its call order. Don&rsquo;t switch it off.</td></tr>
+				<tr><td>Option 3</td><td>A giant marshmallow man.</td></tr>
+				<tr><td>The goodbye</td><td>&ldquo;Don&rsquo;t cross the streams.&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>The caller decides what happens after the chain.</strong> To retry or take a report automatically when nobody answered, point the <code>&lt;Dial&gt;</code>&rsquo;s <code>action</code> at your own server, which receives <code>DialCallStatus</code> and can answer with VoiceML of its own.</li>
+		<li><strong>A phone&rsquo;s voicemail can end the chain.</strong> If an on-call phone sends calls to voicemail before <code>timeout</code> runs out, the voicemail answers and the chain stops there. Keep <code>timeout</code> shorter than your team&rsquo;s phones take to go to voicemail.</li>
+		<li><strong>The rotation is fixed in the document.</strong> Published documents can&rsquo;t be edited, so changing who is on call means publishing a new document and pointing the number at its URL. To pick the chain by day of the week, combine this with the time checks in the <a href="/support/voiceml/build-business-hours-routing-with-voiceml/">business-hours example</a>.</li>
+		<li><strong>Reports stay on your account.</strong> To have each report emailed, add the VoiceML Dashboard&rsquo;s voicemail callback to the <code>&lt;Record&gt;</code>, as the <a href="/support/voiceml/build-a-pbx-with-voiceml/">PBX example</a> does.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The Ghostbusters</strong>, the containment unit, and the marshmallow man come from <cite><a href="https://en.wikipedia.org/wiki/Ghostbusters" rel="external">Ghostbusters</a></cite> (1984), directed by Ivan Reitman, written by Dan Aykroyd and Harold Ramis, and distributed by Columbia Pictures. Bill Murray plays Peter Venkman, Dan Aykroyd plays Ray Stantz, Harold Ramis plays Egon Spengler, and Ernie Hudson plays Winston Zeddemore.</li>
+		<li><strong>The line, its menu, and its phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/verbs/dial/"><code>&lt;Dial&gt;</code> reference</a>, the <a href="{{ site.voicemlReferenceUrl }}/llms-full.txt">VoiceML language reference</a>, and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="on-call-cta-heading">
+	<h2 id="on-call-cta-heading">Running an on-call rotation?</h2>
+	<p>Tell us how your team takes urgent calls, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

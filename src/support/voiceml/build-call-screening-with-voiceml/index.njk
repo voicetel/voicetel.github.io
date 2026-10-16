@@ -1,0 +1,187 @@
+---
+layout: layouts/article.njk
+title: "Build call screening with VoiceML"
+description: "VoiceML call screening for a fictional family: blocked numbers are refused, family rings straight through, and everyone else says who they are first."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build call screening with VoiceML</p>
+<h1>Build call screening with VoiceML.</h1>
+<p class="lede">The McCallisters are a fictional family with a house phone to protect. Known nuisance numbers are refused before the call is answered, family numbers ring straight through, and every other caller says their name and why they&rsquo;re calling, which speech recognition checks before anyone is disturbed. It runs on three documents published on voiceml.org, with no application server.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/signup/">Free trial</a>
+	<a class="btn btn-secondary" href="{{ site.voicemlReferenceUrl }}/verbs/gather/">&lt;Gather&gt; reference</a>
+</p>
+
+<section class="section-block">
+	<h2>What callers get</h2>
+	<ul class="features-grid">
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "shield-check" %}</span>
+			<h3>A block list</h3>
+			<p>Numbers on the block list hear a busy signal. <code>&lt;Reject&gt;</code> refuses the call before it is answered, so it isn&rsquo;t charged.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "person-vcard" %}</span>
+			<h3>A family list</h3>
+			<p>Calls from family numbers ring the house without any questions.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "chat-text" %}</span>
+			<h3>Spoken screening</h3>
+			<p>Everyone else says their name and the reason for the call. Speech recognition turns it into text, and the next document decides what to do with it.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "telephone" %}</span>
+			<h3>Rules on what was said</h3>
+			<p>Family calling from an unknown number and the pizza delivery are put through. The Wet Bandits are refused by name, whatever number they use.</p>
+		</li>
+		<li class="feature">
+			<span class="feature-icon" aria-hidden="true">{% icon "record-circle" %}</span>
+			<h3>Voicemail for the rest</h3>
+			<p>Callers who match no rule leave a message instead of ringing the house.</p>
+		</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>How the pieces fit</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Components of the McCallister call screening</caption>
+			<thead>
+				<tr>
+					<th scope="col">Piece</th>
+					<th scope="col">Where it lives</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Main document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The number&rsquo;s voice URL. Checks the caller&rsquo;s number against both lists, and asks everyone else who they are.</td></tr>
+				<tr><td>Screening document</td><td>voiceml.org, <code>/r/</code> URL</td><td>The <code>action</code> of the spoken <code>&lt;Gather&gt;</code>. Matches what the caller said and connects, refuses, or takes a message.</td></tr>
+				<tr><td>Goodbye document</td><td>voiceml.org, <code>/s/</code> URL</td><td>The <code>action</code> of the <code>&lt;Record&gt;</code>. Says goodbye and hangs up.</td></tr>
+				<tr><td>House phone</td><td>Any phone number</td><td>The phone that rings for callers who are put through.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Before you start</h2>
+	<ol>
+		<li><strong>A VoiceML account with a phone number.</strong> See <a href="/voiceml/">VoiceML</a> or <a href="/signup/">start a free trial</a>.</li>
+		<li><strong>Speech recognition.</strong> Nothing to set up for English: accounts without their own speech recognizer use the platform default, which recognizes English only. To use another engine or language, see <a href="/voiceml/speech-recognition/">speech recognition</a>.</li>
+		<li><strong>The phone that should ring</strong>, and the numbers for the block and family lists, in E.164 format.</li>
+	</ol>
+	<div class="alert alert-warning" role="note">
+		<p><strong>The numbers in these documents are fictional.</strong> They use the 555-0100 to 555-0199 range, which is set aside for fiction. Replace them with real numbers before you publish.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Step 1: Publish the goodbye document</h2>
+	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>; without one, the runtime requests the current document again and the caller records a second time. This document is that <code>action</code>.</p>
+	<p class="code-block-header">goodbye.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["home-alone-screening"].goodbye | escape }}</code></pre>
+	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 2: Publish the screening document</h2>
+	<p>Replace <code>GOODBYE_URL</code> with the URL from step 1 and the house number with your own, then publish.</p>
+	<p class="code-block-header">screen.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["home-alone-screening"].screen | escape }}</code></pre>
+	<p>It contains Liquid tags, so it is published to an <code>/r/</code> URL and rendered on every call with that call&rsquo;s parameters.</p>
+</section>
+
+<section class="section-block">
+	<h2>Step 3: Publish the main document and point the number at it</h2>
+	<p>Replace <code>SCREEN_URL</code> with the <code>/r/</code> URL from step 2, and fill in your block list, family list, and house number. Publish it, and set the <code>/r/</code> URL it returns as the phone number&rsquo;s voice URL.</p>
+	<p class="code-block-header">main.xml</p>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["home-alone-screening"].main | escape }}</code></pre>
+</section>
+
+<section class="section-block">
+	<h2>Step 4: Test it</h2>
+	<ol>
+		<li>Call from a number on neither list and say &ldquo;This is Kate, calling about Kevin.&rdquo; The house phone rings.</li>
+		<li>Call again and say &ldquo;I&rsquo;m calling about your car&rsquo;s extended warranty.&rdquo; You are asked to leave a message.</li>
+		<li>Add your own number to the family list, publish again, repoint the number, and call: the house phone rings with no questions.</li>
+	</ol>
+</section>
+
+<section class="section-block">
+	<h2>How the screening works</h2>
+	<p>The main document compares <code>From</code>, the caller&rsquo;s number in E.164, with two lists built by <code>{% raw %}{% assign blocked = "+18475550188,+18475550189" | split: "," %}{% endraw %}</code>. Liquid&rsquo;s <code>contains</code> tests whether a list holds a value, so <code>{% raw %}{% if blocked contains From %}{% endraw %}</code> is the whole check. A blocked caller gets <code>&lt;Reject reason="busy"/&gt;</code>. It comes before any other verb, so the call is refused without being answered.</p>
+	<p>Everyone else hits a <code>&lt;Gather input="speech"&gt;</code> whose <code>action</code> is the screening document. That document receives what the caller said as <code>SpeechResult</code>, lower-cases it, and tests it with <code>contains</code>, in this order:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>How the screening document decides</caption>
+			<thead>
+				<tr>
+					<th scope="col">If the caller said</th>
+					<th scope="col">Then</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Nothing</td><td>&ldquo;We did not hear anything,&rdquo; and the call ends.</td></tr>
+				<tr><td>&ldquo;Harry&rdquo;, &ldquo;Marv&rdquo;, or &ldquo;Wet Bandit&rdquo;</td><td>Refused, and the call ends.</td></tr>
+				<tr><td>Anything, with a <code>Confidence</code> above 0 but under 0.5</td><td>Asked to say it again.</td></tr>
+				<tr><td>&ldquo;Kate&rdquo;, &ldquo;Mom&rdquo;, &ldquo;Peter&rdquo;, &ldquo;Dad&rdquo;, &ldquo;Buzz&rdquo;, or &ldquo;Frank&rdquo;</td><td>Put through to the house.</td></tr>
+				<tr><td>&ldquo;Nero&rdquo; or &ldquo;pizza&rdquo;</td><td>Put through, with a word for the delivery driver.</td></tr>
+				<tr><td>Anything else</td><td>Asked to leave a message.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>The <code>hints</code> attribute lists the names and words the rules look for, which biases recognition toward them. The &ldquo;say it again&rdquo; prompt is a <code>&lt;Gather&gt;</code> with no <code>action</code>, so the second answer comes back to the screening document and goes through the same rules. Some speech engines don&rsquo;t report a confidence and send 0, so 0 isn&rsquo;t treated as unsure; otherwise every caller on those engines would be asked again and again.</p>
+</section>
+
+<section class="section-block">
+	<h2>Where the movie turns up</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>References to Home Alone in the call flow</caption>
+			<thead>
+				<tr>
+					<th scope="col">Where</th>
+					<th scope="col">Reference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>The family list</td><td>Kate, Peter, Buzz, and Uncle Frank, the McCallisters who left for Paris.</td></tr>
+				<tr><td>The refusal</td><td>Harry and Marv, the Wet Bandits.</td></tr>
+				<tr><td>The pizza delivery</td><td>Little Nero&rsquo;s, and &ldquo;Keep the change, ya filthy animal&rdquo; from <cite>Angels with Filthy Souls</cite>, the gangster film Kevin plays at the door.</td></tr>
+				<tr><td>The goodbye</td><td>&ldquo;Merry Christmas.&rdquo;</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Limits of this design</h2>
+	<ul>
+		<li><strong>The person answering doesn&rsquo;t hear who is calling.</strong> The rules decide who gets through; the name the caller spoke isn&rsquo;t played to the house phone.</li>
+		<li><strong>No caller name lookup.</strong> The VoiceML runtime doesn&rsquo;t send <code>CallerName</code>, so screening uses the caller&rsquo;s number and what they say.</li>
+		<li><strong>Caller ID can be faked.</strong> The block and family lists keep out casual nuisance calls, but they aren&rsquo;t security: anyone who sets their caller ID to a family number rings straight through.</li>
+		<li><strong>Matching is by keyword.</strong> <code>contains "frank"</code> also matches &ldquo;Franklin&rdquo; and &ldquo;frankly&rdquo;. Choose words your real callers will say and strangers won&rsquo;t.</li>
+		<li><strong>The &ldquo;say it again&rdquo; prompt can repeat.</strong> A caller the recognizer stays unsure about is asked again each time; documents can&rsquo;t count attempts.</li>
+		<li><strong>Messages stay on your account.</strong> To have them emailed, add the VoiceML Dashboard&rsquo;s voicemail callback to the <code>&lt;Record&gt;</code>, as the <a href="/support/voiceml/build-a-pbx-with-voiceml/">PBX example</a> does.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Credits</h2>
+	<ul>
+		<li><strong>The McCallisters</strong>, the Wet Bandits, and Little Nero&rsquo;s come from <cite><a href="https://en.wikipedia.org/wiki/Home_Alone" rel="external">Home Alone</a></cite> (1990), directed by Chris Columbus, written and produced by John Hughes, and distributed by 20th Century Fox. Macaulay Culkin plays Kevin McCallister; Joe Pesci and Daniel Stern play Harry and Marv; Catherine O&rsquo;Hara and John Heard play Kate and Peter.</li>
+		<li><strong>The household, its lists, and its phone numbers</strong> are fictional in this example. VoiceTel is not affiliated with the film or its rights holders.</li>
+		<li><strong>References:</strong> the <a href="{{ site.voicemlReferenceUrl }}/verbs/gather/"><code>&lt;Gather&gt;</code> reference</a>, the <a href="{{ site.voicemlReferenceUrl }}/verbs/reject/"><code>&lt;Reject&gt;</code> reference</a>, and the <a href="{{ site.voicemlPublisherUrl }}/llms-full.txt">voiceml.org publishing and integration guide</a>.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="screening-cta-heading">
+	<h2 id="screening-cta-heading">Screening calls for a team?</h2>
+	<p>Tell us who should get through and who shouldn&rsquo;t, and we&rsquo;ll help you map it to VoiceML.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/contact/">Contact us</a>
+		<a class="btn btn-secondary" href="/support/voiceml/">More VoiceML examples</a>
+	</p>
+</aside>

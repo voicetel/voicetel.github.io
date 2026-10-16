@@ -4,7 +4,7 @@ title: "Build a full-featured PBX with VoiceML"
 description: "A complete VoiceML PBX for a fictional company: IVR, extensions, ring-all, call recording, voicemail transcripts, an AI agent, and a live operator dashboard."
 ---
 
-<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / <a href="/support/voice/pbx/">PBX</a> / Build a PBX with VoiceML</p>
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voiceml/">VoiceML examples</a> / Build a PBX with VoiceML</p>
 <h1>Build a full-featured PBX with VoiceML.</h1>
 <p class="lede">Widgets.com is a fictional company with four extensions, a main menu, a ring-all line for the labor force, an AI agent on 0, and voicemail with transcripts. The whole phone system runs on two documents published on voiceml.org and the VoiceML Dashboard, with no application server.</p>
 <p class="hero-actions">
@@ -108,7 +108,7 @@ description: "A complete VoiceML PBX for a fictional company: IVR, extensions, r
 	<h2>Step 1: Publish the goodbye document</h2>
 	<p>Every <code>&lt;Record&gt;</code> needs an <code>action</code>. Without one, the runtime requests the current document again when the recording ends, which replays the voicemail greeting and records again. This small document is that <code>action</code>: it tells a knock-knock joke and hangs up.</p>
 	<p class="code-block-header">goodbye.xml</p>
-	<pre class="code-block" data-lang="xml"><code>{{ widgetsPbx.goodbye | escape }}</code></pre>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["widgets-pbx"].goodbye | escape }}</code></pre>
 	<p>Paste it at <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a>, validate it, and publish. It contains no Liquid, so it is served from an <code>/s/</code> URL. Keep the URL exactly as returned, <code>key</code> included. The key is a shared secret, so don&rsquo;t post the URL publicly.</p>
 </section>
 
@@ -116,7 +116,7 @@ description: "A complete VoiceML PBX for a fictional company: IVR, extensions, r
 	<h2>Step 2: Publish the main document</h2>
 	<p>In the document below, replace <code>GOODBYE_URL</code> (five places) with the URL from step 1, and <code>wss://YOUR_AI_WEBSOCKET_URL</code> with your agent&rsquo;s endpoint. Replace the email addresses, names, and SIP addresses with your own.</p>
 	<p class="code-block-header">main.xml</p>
-	<pre class="code-block" data-lang="xml"><code>{{ widgetsPbx.main | escape }}</code></pre>
+	<pre class="code-block" data-lang="xml"><code>{{ voicemlSamples["widgets-pbx"].main | escape }}</code></pre>
 	<p>Publish it at voiceml.org. Because it contains Liquid tags, it is published to an <code>/r/</code> URL and rendered on every call with that call&rsquo;s parameters.</p>
 </section>
 

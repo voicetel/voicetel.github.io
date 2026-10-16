@@ -1,0 +1,26 @@
+---
+pagination:
+  data: redirects
+  size: 1
+  alias: redirect
+permalink: "{{ redirect.from }}"
+eleventyExcludeFromCollections: true
+---
+{#- GitHub Pages can't send a 301, so each moved URL gets an immediate meta refresh, with a canonical link to the new URL and noindex so search engines index only the destination. -#}
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{ redirect.title }} has moved — {{ site.brand }}</title>
+		<meta name="robots" content="noindex">
+		<link rel="canonical" href="{{ site.url }}{{ redirect.to }}">
+		<meta http-equiv="refresh" content="0; url={{ redirect.to }}">
+	</head>
+	<body>
+		<main>
+			<h1>This page has moved.</h1>
+			<p><a href="{{ redirect.to }}">{{ redirect.title }}</a> is now at {{ site.url }}{{ redirect.to }}.</p>
+		</main>
+	</body>
+</html>

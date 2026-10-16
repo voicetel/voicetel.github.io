@@ -139,6 +139,8 @@ async function main() {
 	const pages = [];
 	for (const file of files) {
 		const html = await readFile(file, "utf8");
+		// Redirect stubs for moved URLs are noindex and carry no content.
+		if (/<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html)) continue;
 		const parsed = parseHtml(html, originHost);
 		pages.push({
 			url: urlFromFile(file),

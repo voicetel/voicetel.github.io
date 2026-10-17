@@ -48,6 +48,16 @@ def rewrite_branding(value):
 		)
 		# Mask SID example literals
 		value = SID_LITERAL.sub(lambda m: m.group(1) + "x" * 32, value)
+		# Internal implementation details leaked by upstream prose: the event-log
+		# store, Go handler/function names, cross-references to them, and
+		# issue-tracker numbers. None of it means anything to a customer reading
+		# the reference. Stripped BEFORE the TwiML rewrite below so identifiers
+		# like `recordTwiMLNotification` are removed intact rather than mangled.
+		value = re.sub(r"\bReal\s+eventlog-backed resource\b", "Populated from the call event log", value)
+		value = re.sub(r"\s*\(`record[A-Za-z]+`\)", "", value)
+		value = re.sub(r",\s*recorded by\s*`[A-Za-z.]+`", "", value)
+		value = re.sub(r"\s*\(\s*see\s+[a-z][A-Za-z0-9]*\.[a-zA-Z0-9]+\s*\)", "", value)
+		value = re.sub(r"\s*\(#[0-9]+\)", "", value)
 		# Trademark: TwiML must not ship on the public site (CLAUDE.md §3). Wire field
 		# names such as Twiml are dict keys and are not walked as values here, so
 		# rewriting the value-side spelling is safe (request/response field name
@@ -57,6 +67,9 @@ def rewrite_branding(value):
 		value = re.sub(r"\bTwiml=<inline>", "inline voice-markup body", value)
 		value = re.sub(r"`Twiml`", "the inline voice-markup body", value)
 		value = re.sub(r"\bTwiml\b", "inline voice markup", value)
+		# "parity" implies wire-for-wire equivalence, which the customer-facing
+		# language rules avoid; upstream uses it for "accepted for compatibility".
+		value = re.sub(r"\bparity\b", "compatibility", value)
 		# Engine vendor names: FreeSWITCH (and the `Fs` shorthand in BYO STT
 		# descriptions) is an implementation detail that should not surface on the
 		# public reference. Field names like `SttFsVendor` are dict keys and not
@@ -120,6 +133,7 @@ TAG_RULES = [
 	(re.compile(r"^/Transcriptions"), "Account / Transcriptions"),
 	(re.compile(r"^/Balance"), "Account / Balance"),
 	(re.compile(r"^/Exports"), "Account / Exports"),
+	(re.compile(r"^/Usage/Records"), "Account / Usage Records"),
 	# /2010-04-01/Accounts/{Sid}/SIP
 	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/CredentialListMappings"), "SIP / Auth / Calls / CredentialListMappings"),
 	(re.compile(r"^/SIP/Domains/\{[^}]+\}/Auth/Calls/IpAccessControlListMappings"), "SIP / Auth / Calls / IpAccessControlListMappings"),
@@ -131,6 +145,7 @@ TAG_RULES = [
 	(re.compile(r"^/SIP/CredentialLists"), "SIP / CredentialLists"),
 	(re.compile(r"^/SIP/IpAccessControlLists/\{[^}]+\}/IpAddresses"), "SIP / IpAccessControlLists / IpAddresses"),
 	(re.compile(r"^/SIP/IpAccessControlLists"), "SIP / IpAccessControlLists"),
+	(re.compile(r"^/SIP/Registrations"), "SIP / Registrations"),
 ]
 
 # Full-path rules: applied against the whole path (no AccountSid strip). Used
@@ -138,6 +153,12 @@ TAG_RULES = [
 FULL_PATH_RULES = [
 	# Account self
 	(re.compile(r"^/2010-04-01/Accounts/\{[^}]+\}\.json$"), "Account"),
+	# Pricing v1 / v2 (checked before /v2/PhoneNumbers below)
+	(re.compile(r"^/v1/Voice/"), "Pricing / Voice v1"),
+	(re.compile(r"^/v1/Messaging/"), "Pricing / Messaging v1"),
+	(re.compile(r"^/v1/PhoneNumbers/"), "Pricing / PhoneNumbers v1"),
+	(re.compile(r"^/v2/Voice/"), "Pricing / Voice v2"),
+	(re.compile(r"^/v2/Trunking/"), "Pricing / Trunking v2"),
 	# v2 — Inbound Processing Region per resource
 	(re.compile(r"^/v2/SipDomains"), "SIP / Domains / InboundProcessingRegion"),
 	(re.compile(r"^/v2/PhoneNumbers"), "Numbers / InboundProcessingRegion"),
@@ -196,13 +217,21 @@ TAG_GROUPS = [
 	{"name": "Queues", "tags": ["Queues", "Queues / Members"]},
 	{"name": "Applications", "tags": ["Applications"]},
 	{"name": "Numbers", "tags": ["IncomingPhoneNumbers", "Numbers / InboundProcessingRegion"]},
-	{"name": "Messaging", "tags": ["Messages"]},
+	{"name": "Messaging", "tags": ["Messages", "Messaging Services"]},
 	{"name": "Account", "tags": [
 		"Account",
 		"Account / Balance",
 		"Account / OutgoingCallerIds",
 		"Account / Transcriptions",
 		"Account / Exports",
+		"Account / Usage Records",
+	]},
+	{"name": "Pricing", "tags": [
+		"Pricing / Voice v1",
+		"Pricing / Messaging v1",
+		"Pricing / PhoneNumbers v1",
+		"Pricing / Voice v2",
+		"Pricing / Trunking v2",
 	]},
 	{"name": "Account telemetry", "tags": ["Notifications"]},
 	{"name": "SIP trunking", "tags": [
@@ -217,6 +246,7 @@ TAG_GROUPS = [
 		"SIP / CredentialLists / Credentials",
 		"SIP / IpAccessControlLists",
 		"SIP / IpAccessControlLists / IpAddresses",
+		"SIP / Registrations",
 	]},
 	{"name": "Voice trunking", "tags": [
 		"Voice trunking / IpRecords",
@@ -289,6 +319,17 @@ def tag_for_path(path):
 	return "Other"
 
 
+def tag_for_operation(path, op):
+	"""/v1/Services is shared by Conversations and Messaging Services and is
+	routed by Host. Operations upstream tags as Messaging-only (Messaging
+	Service update, sender pool) go under Messaging; shared ones keep the
+	path-based tag."""
+	upstream = op.get("tags") or []
+	if upstream and all(t.startswith("MessagingV1") for t in upstream):
+		return "Messaging Services"
+	return tag_for_path(path)
+
+
 def main():
 	with open(SOURCE) as f:
 		spec = yaml.safe_load(f)
@@ -310,11 +351,11 @@ def main():
 	tags_seen = set()
 	paths = spec.get("paths", {})
 	for path, path_item in paths.items():
-		tag = tag_for_path(path)
-		tags_seen.add(tag)
 		for method, op in path_item.items():
 			if method not in ("get", "post", "put", "delete", "patch", "options", "head"):
 				continue
+			tag = tag_for_operation(path, op)
+			tags_seen.add(tag)
 			op["tags"] = [tag]
 			override = OPERATION_OVERRIDES.get((path, method))
 			if override:

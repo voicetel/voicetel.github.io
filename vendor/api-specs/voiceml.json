@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "summary": "Twilio-compatible voice (inbound + outbound), SMS, conferencing, recording, transcription, and payment platform",
     "description": "VoiceML exposes a Twilio-compatible REST + voice markup surface covering\nvoice (inbound + outbound calls, conferences, queues), SMS via the\nMessages resource, mid-call recording / SIPREC / real-time\ntranscription / `<Pay>` subresources, and the `IncomingPhoneNumbers`\n+ `Applications` configuration surfaces. Existing Twilio SDKs\n(`twilio-node`, `twilio-python`, `twilio-go`, ...) integrate with\nminimal migration effort. Authentication, error codes, and\npagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n * Username = `:AccountSid` (the URL path parameter, Twilio-format\n AC + 32 hex chars). Same value the Twilio SDK validates in its\n constructor — migration-compatible.\n * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
@@ -58,6 +58,9 @@
     },
     {
       "name": "Account / Transcriptions"
+    },
+    {
+      "name": "Account / Usage Records"
     },
     {
       "name": "Applications"
@@ -135,10 +138,28 @@
       "name": "Messages"
     },
     {
+      "name": "Messaging Services"
+    },
+    {
       "name": "Notifications"
     },
     {
       "name": "Numbers / InboundProcessingRegion"
+    },
+    {
+      "name": "Pricing / Messaging v1"
+    },
+    {
+      "name": "Pricing / PhoneNumbers v1"
+    },
+    {
+      "name": "Pricing / Trunking v2"
+    },
+    {
+      "name": "Pricing / Voice v1"
+    },
+    {
+      "name": "Pricing / Voice v2"
     },
     {
       "name": "Queues"
@@ -181,6 +202,9 @@
     },
     {
       "name": "SIP / IpAccessControlLists / IpAddresses"
+    },
+    {
+      "name": "SIP / Registrations"
     },
     {
       "name": "Voice trunking / ByocTrunks"
@@ -249,7 +273,8 @@
     {
       "name": "Messaging",
       "tags": [
-        "Messages"
+        "Messages",
+        "Messaging Services"
       ]
     },
     {
@@ -259,7 +284,18 @@
         "Account / Balance",
         "Account / OutgoingCallerIds",
         "Account / Transcriptions",
-        "Account / Exports"
+        "Account / Exports",
+        "Account / Usage Records"
+      ]
+    },
+    {
+      "name": "Pricing",
+      "tags": [
+        "Pricing / Voice v1",
+        "Pricing / Messaging v1",
+        "Pricing / PhoneNumbers v1",
+        "Pricing / Voice v2",
+        "Pricing / Trunking v2"
       ]
     },
     {
@@ -281,7 +317,8 @@
         "SIP / CredentialLists",
         "SIP / CredentialLists / Credentials",
         "SIP / IpAccessControlLists",
-        "SIP / IpAccessControlLists / IpAddresses"
+        "SIP / IpAccessControlLists / IpAddresses",
+        "SIP / Registrations"
       ]
     },
     {
@@ -684,19 +721,15 @@
           "price": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio compatibility — always empty (VoiceML does not bill per-call)."
+            "description": "The call's price, set when it ends, as Twilio renders it: a completed call the account's per-minute carrier rate times the billed time (rounded up to the billing increment), negated, to five decimals (e.g. `-0.01400`); a failed call `0.00000`; null while in progress, for a busy / no-answer / canceled call, and when no rate is available."
           },
           "price_unit": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio compatibility — always empty."
+            "description": "Always `USD`, from create on, as on Twilio."
           },
           "phone_number_sid": {
             "nullable": true,
-            "type": "string",
-            "description": "Twilio compatibility — always empty."
-          },
-          "annotation": {
             "type": "string",
             "description": "Twilio compatibility — always empty."
           },
@@ -714,6 +747,11 @@
             "nullable": true,
             "type": "string",
             "description": "Twilio compatibility — always empty."
+          },
+          "annotation": {
+            "nullable": true,
+            "type": "string",
+            "description": "Twilio compatibility — always null. Returned by live Twilio on the Call resource though absent from twilio-oai."
           },
           "date_created": {
             "nullable": true,
@@ -743,8 +781,7 @@
         "required": [
           "calls",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "calls": {
@@ -759,10 +796,10 @@
           "page_size": {
             "type": "integer"
           },
-          "num_pages": {
+          "start": {
             "type": "integer"
           },
-          "total": {
+          "end": {
             "type": "integer"
           },
           "first_page_uri": {
@@ -881,8 +918,7 @@
         "required": [
           "conferences",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "conferences": {
@@ -897,10 +933,10 @@
           "page_size": {
             "type": "integer"
           },
-          "num_pages": {
+          "start": {
             "type": "integer"
           },
-          "total": {
+          "end": {
             "type": "integer"
           },
           "first_page_uri": {
@@ -936,7 +972,6 @@
           "status",
           "start_conference_on_enter",
           "end_conference_on_exit",
-          "api_version",
           "uri"
         ],
         "properties": {
@@ -1005,9 +1040,6 @@
             "type": "string",
             "description": "Optional tag set via `<Conference participantLabel=…>`. Empty when not set."
           },
-          "api_version": {
-            "type": "string"
-          },
           "uri": {
             "nullable": true,
             "type": "string"
@@ -1031,8 +1063,7 @@
         "required": [
           "participants",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "participants": {
@@ -1047,7 +1078,10 @@
           "page_size": {
             "type": "integer"
           },
-          "total": {
+          "start": {
+            "type": "integer"
+          },
+          "end": {
             "type": "integer"
           },
           "first_page_uri": {
@@ -1133,8 +1167,7 @@
         "required": [
           "queues",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "queues": {
@@ -1147,12 +1180,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -1226,7 +1253,6 @@
           "queue_members",
           "page",
           "page_size",
-          "total",
           "uri"
         ],
         "properties": {
@@ -1240,12 +1266,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -1310,7 +1330,8 @@
           "voice_url": {
             "nullable": true,
             "type": "string",
-            "description": "voice markup URL fetched when <Dial><Application>SID</Application></Dial> dispatches."
+            "example": "https://voiceml.org/your-app/voice.xml",
+            "description": "voice markup URL fetched when <Dial><Application>SID</Application></Dial> dispatches. No web server needed — host your VoiceML documents free on voiceml.org's CDN."
           },
           "voice_method": {
             "nullable": true,
@@ -1323,6 +1344,7 @@
           "voice_fallback_url": {
             "nullable": true,
             "type": "string",
+            "example": "https://voiceml.org/your-app/voice-fallback.xml",
             "description": "Fetched when voice_url returns non-2xx or fails."
           },
           "voice_fallback_method": {
@@ -1349,19 +1371,47 @@
               "POST"
             ]
           },
-          "status_callback_event": {
-            "type": "string",
-            "description": "Comma-separated."
-          },
           "message_status_callback": {
             "nullable": true,
             "type": "string",
-            "description": "DLR (delivery-receipt) URL fired per-message for outbound SMS sent via this Application. Default DLR target when an outbound message carries no explicit StatusCallback (#450)."
+            "description": "DLR (delivery-receipt) URL fired per-message for outbound SMS sent via this Application. Default DLR target when an outbound message carries no explicit StatusCallback."
           },
           "sms_status_callback": {
             "nullable": true,
             "type": "string",
-            "description": "Legacy alias of message_status_callback (DLR URL for outbound SMS). Default DLR target after message_status_callback (#450)."
+            "description": "Legacy alias of message_status_callback (DLR URL for outbound SMS). Default DLR target after message_status_callback."
+          },
+          "sms_url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri",
+            "description": "Twilio-compatible: webhook for inbound messages to a number whose sms_application_sid binds this Application; wins over the number's own sms_* fields."
+          },
+          "sms_method": {
+            "nullable": true,
+            "type": "string",
+            "format": "http-method",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "description": "HTTP method for sms_url; Twilio's default POST when unset."
+          },
+          "sms_fallback_url": {
+            "nullable": true,
+            "type": "string",
+            "format": "uri",
+            "description": "Twilio-compatible: tried once, with the original parameters, when the sms_url fetch fails."
+          },
+          "sms_fallback_method": {
+            "nullable": true,
+            "type": "string",
+            "format": "http-method",
+            "enum": [
+              "GET",
+              "POST"
+            ],
+            "description": "HTTP method for sms_fallback_url; Twilio's default POST when unset."
           },
           "date_created": {
             "nullable": true,
@@ -1384,8 +1434,7 @@
         "required": [
           "applications",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "applications": {
@@ -1398,12 +1447,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -1500,7 +1543,8 @@
           "VoiceUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Default voice webhook URL for the account."
+            "description": "Default voice webhook URL for the account. No web server needed — host your VoiceML documents free on voiceml.org's CDN.",
+            "example": "https://voiceml.org/your-app/voice.xml"
           },
           "VoiceMethod": {
             "type": "string",
@@ -1513,7 +1557,8 @@
           "VoiceFallbackUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Fallback voice webhook URL."
+            "description": "Fallback voice webhook URL.",
+            "example": "https://voiceml.org/your-app/voice-fallback.xml"
           },
           "VoiceFallbackMethod": {
             "type": "string",
@@ -1645,8 +1690,7 @@
         "required": [
           "outgoing_caller_ids",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "outgoing_caller_ids": {
@@ -1659,12 +1703,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -1776,7 +1814,8 @@
           "voice_url": {
             "nullable": true,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "example": "https://voiceml.org/your-app/voice.xml"
           },
           "voice_method": {
             "nullable": true,
@@ -1790,7 +1829,8 @@
           "voice_fallback_url": {
             "nullable": true,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "example": "https://voiceml.org/your-app/voice-fallback.xml"
           },
           "voice_fallback_method": {
             "nullable": true,
@@ -1967,8 +2007,7 @@
         "required": [
           "domains",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "domains": {
@@ -1983,10 +2022,158 @@
           "page_size": {
             "type": "integer"
           },
-          "num_pages": {
+          "start": {
             "type": "integer"
           },
-          "total": {
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "SipRegistrationContact": {
+        "type": "object",
+        "required": [
+          "contact",
+          "registered"
+        ],
+        "properties": {
+          "contact": {
+            "type": "string"
+          },
+          "received": {
+            "nullable": true,
+            "type": "string"
+          },
+          "socket": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user_agent": {
+            "nullable": true,
+            "type": "string"
+          },
+          "expires_at": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "registered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SipRegistration": {
+        "type": "object",
+        "required": [
+          "aor",
+          "username",
+          "domain",
+          "domain_sid",
+          "status",
+          "contacts"
+        ],
+        "properties": {
+          "aor": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "domain_sid": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered",
+              "expired"
+            ]
+          },
+          "caller_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user_agent": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_registered": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time-rfc-2822"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipRegistrationContact"
+            }
+          },
+          "active_call": {
+            "nullable": true,
+            "type": "object",
+            "required": [
+              "call_sid"
+            ],
+            "properties": {
+              "call_sid": {
+                "type": "string"
+              },
+              "direction": {
+                "nullable": true,
+                "type": "string"
+              },
+              "remote": {
+                "nullable": true,
+                "type": "string"
+              },
+              "since": {
+                "nullable": true,
+                "type": "string",
+                "format": "date-time-rfc-2822"
+              }
+            }
+          }
+        }
+      },
+      "SipRegistrationList": {
+        "type": "object",
+        "required": [
+          "registrations",
+          "page",
+          "page_size"
+        ],
+        "properties": {
+          "registrations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SipRegistration"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
             "type": "integer"
           },
           "start": {
@@ -2038,7 +2225,8 @@
           "friendly_name": {
             "nullable": true,
             "type": "string",
-            "example": "office-handsets"
+            "example": "office-handsets",
+            "description": "Human-readable label (Twilio free-text semantics). VoiceML extension: when this value is a valid phone number, it is also used as the outbound caller ID presented by every device registered under this credential list; a non-numeric label sets no caller ID."
           },
           "date_created": {
             "nullable": true,
@@ -2068,8 +2256,7 @@
         "required": [
           "credential_lists",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "credential_lists": {
@@ -2082,12 +2269,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2169,8 +2350,7 @@
         "required": [
           "credentials",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "credentials": {
@@ -2183,12 +2363,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2270,8 +2444,7 @@
         "required": [
           "ip_access_control_lists",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "ip_access_control_lists": {
@@ -2284,12 +2457,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2383,8 +2550,7 @@
         "required": [
           "ip_addresses",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "ip_addresses": {
@@ -2397,12 +2563,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2482,8 +2642,7 @@
         "required": [
           "credential_list_mappings",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "credential_list_mappings": {
@@ -2496,12 +2655,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2535,8 +2688,7 @@
         "required": [
           "ip_access_control_list_mappings",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "ip_access_control_list_mappings": {
@@ -2549,12 +2701,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2648,7 +2794,7 @@
           },
           "num_media": {
             "type": "string",
-            "description": "Count of media items attached to the message (#473), string-typed per Twilio. '0' for SMS-only messages."
+            "description": "Count of media items attached to the message, string-typed per Twilio. '0' for SMS-only messages."
           },
           "direction": {
             "type": "string",
@@ -2728,8 +2874,7 @@
         "required": [
           "messages",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "messages": {
@@ -2742,12 +2887,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -2827,8 +2966,7 @@
         "required": [
           "media_list",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "media_list": {
@@ -2843,10 +2981,215 @@
           "page_size": {
             "type": "integer"
           },
-          "num_pages": {
+          "start": {
             "type": "integer"
           },
-          "total": {
+          "end": {
+            "type": "integer"
+          },
+          "first_page_uri": {
+            "type": "string"
+          },
+          "next_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previous_page_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "UsageRecord": {
+        "type": "object",
+        "required": [
+          "account_sid",
+          "api_version",
+          "as_of",
+          "category",
+          "count",
+          "count_unit",
+          "description",
+          "end_date",
+          "price",
+          "price_unit",
+          "start_date",
+          "subresource_uris",
+          "uri",
+          "usage",
+          "usage_unit"
+        ],
+        "properties": {
+          "account_sid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "api_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "as_of": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The records are current as of this timestamp (YYYY-MM-DDTHH:MM:SS+00:00, GMT)."
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "calls",
+              "calls-inbound",
+              "calls-outbound",
+              "mms",
+              "mms-inbound",
+              "mms-outbound",
+              "sms",
+              "sms-inbound",
+              "sms-inbound-longcode",
+              "sms-outbound",
+              "sms-outbound-longcode",
+              "totalprice"
+            ],
+            "description": "The usage category. VoiceML reports exactly this set — the categories its product surface can accrue — each listed in every window even when zero, as the upstream API does."
+          },
+          "count": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Number of usage events (calls/messages). Null on the totalprice record."
+          },
+          "count_unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "\"calls\" or \"messages\"; empty on totalprice."
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "end_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "Last day of the record's window (inclusive), GMT."
+          },
+          "price": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Total price over the window as a minimal-decimal string (\"0.0525\"), exactly as the live upstream API renders it (its OAS declares `number`; the wire is a string)."
+          },
+          "price_unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ISO 4217 currency, lowercase (\"usd\")."
+          },
+          "start_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "First day of the record's window, GMT."
+          },
+          "subresource_uris": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "all_time": {
+                "type": "string"
+              },
+              "daily": {
+                "type": "string"
+              },
+              "last_month": {
+                "type": "string"
+              },
+              "monthly": {
+                "type": "string"
+              },
+              "this_month": {
+                "type": "string"
+              },
+              "today": {
+                "type": "string"
+              },
+              "yearly": {
+                "type": "string"
+              },
+              "yesterday": {
+                "type": "string"
+              }
+            }
+          },
+          "uri": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "This record's list URI, carrying the resolved window."
+          },
+          "usage": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Usage amount in usage_unit (minutes for calls, segments for the direction splits, messages for the sms/mms aggregates; the price string on totalprice)."
+          },
+          "usage_unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "\"minutes\", \"segments\", \"messages\", \"usd\" (totalprice), or empty (sms)."
+          }
+        }
+      },
+      "UsageRecordList": {
+        "type": "object",
+        "required": [
+          "usage_records",
+          "page",
+          "page_size"
+        ],
+        "properties": {
+          "usage_records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsageRecord"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
             "type": "integer"
           },
           "start": {
@@ -2936,7 +3279,13 @@
           },
           "duration": {
             "nullable": true,
-            "type": "string"
+            "type": "string",
+            "description": "Seconds; null in the response that starts a call recording."
+          },
+          "track": {
+            "type": "string",
+            "nullable": true,
+            "description": "The recorded track (`both`). Present only in the response that starts a call recording."
           },
           "api_version": {
             "nullable": true,
@@ -3000,8 +3349,7 @@
         "required": [
           "recordings",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "description": "Canonical Twilio pagination envelope for recording-list\nendpoints. Used by both the account-scoped `/Recordings`\nlist, the per-call `/Calls/{Sid}/Recordings` list, and the\nper-conference `/Conferences/{Sid}/Recordings` list — every\nSDK auto-paginator depends on the same fields.\n",
         "properties": {
@@ -3015,12 +3363,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -3101,7 +3443,7 @@
               "hosted",
               ""
             ],
-            "description": "Twilio-compatible: source of the number. VoiceML emits empty (provisioning model is operator-managed, not number-buy)."
+            "description": "Source of the number. Always `twilio`, as live Twilio answers for its numbers."
           },
           "beta": {
             "nullable": true,
@@ -3135,7 +3477,8 @@
           },
           "voice_url": {
             "nullable": true,
-            "type": "string"
+            "type": "string",
+            "example": "https://voiceml.org/your-app/voice.xml"
           },
           "voice_method": {
             "nullable": true,
@@ -3147,7 +3490,8 @@
           },
           "voice_fallback_url": {
             "nullable": true,
-            "type": "string"
+            "type": "string",
+            "example": "https://voiceml.org/your-app/voice-fallback.xml"
           },
           "voice_fallback_method": {
             "nullable": true,
@@ -3178,7 +3522,7 @@
           "sms_url": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio-compatible: SMS handler URL. VoiceML is voice-only — empty."
+            "description": "Twilio-compatible: SMS handler URL for inbound messages to this number; empty when unset."
           },
           "sms_method": {
             "nullable": true,
@@ -3188,12 +3532,12 @@
               "POST",
               ""
             ],
-            "description": "Twilio-compatible: empty (SMS not handled)."
+            "description": "HTTP method for `sms_url`; `POST` (Twilio's default) when unset."
           },
           "sms_fallback_url": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio-compatible: empty (SMS not handled)."
+            "description": "Twilio-compatible: called when requesting or executing the voice markup at `sms_url` fails; empty when unset."
           },
           "sms_fallback_method": {
             "nullable": true,
@@ -3203,12 +3547,12 @@
               "POST",
               ""
             ],
-            "description": "Twilio-compatible: empty (SMS not handled)."
+            "description": "HTTP method for `sms_fallback_url`; `POST` (Twilio's default) when unset."
           },
           "sms_application_sid": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio-compatible: empty (SMS not handled)."
+            "description": "Twilio-compatible: linked `AP…` Application sid that supplies the SMS webhook config; when set, the application's `sms_*` fields win over this number's own."
           },
           "status_callback": {
             "nullable": true,
@@ -3263,7 +3607,7 @@
               "Inactive",
               ""
             ],
-            "description": "Twilio-compatible: E911 registration. Not handled by VoiceML — emits empty."
+            "description": "Always `Active`, as live Twilio shows for its numbers."
           },
           "emergency_address_sid": {
             "nullable": true,
@@ -3281,12 +3625,20 @@
               "unregistration-failure",
               ""
             ],
-            "description": "Twilio-compatible: E911 registration state. Not tracked — empty."
+            "description": "Always `unregistered`, as live Twilio shows for a number without an emergency address."
           },
           "status": {
             "nullable": true,
             "type": "string",
-            "description": "Twilio-compatible: provisioning status (`in-use`, etc.). VoiceML doesn't model this — empty."
+            "description": "Provisioning status. Always `in-use`."
+          },
+          "subresource_uris": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Twilio's `{assigned_add_ons: …/IncomingPhoneNumbers/{Sid}/AssignedAddOns.json}` map."
           },
           "type": {
             "nullable": true,
@@ -3316,8 +3668,7 @@
         "required": [
           "incoming_phone_numbers",
           "page",
-          "page_size",
-          "total"
+          "page_size"
         ],
         "properties": {
           "incoming_phone_numbers": {
@@ -3330,12 +3681,6 @@
             "type": "integer"
           },
           "page_size": {
-            "type": "integer"
-          },
-          "num_pages": {
-            "type": "integer"
-          },
-          "total": {
             "type": "integer"
           },
           "start": {
@@ -3401,10 +3746,6 @@
               "stopped"
             ]
           },
-          "date_created": {
-            "type": "string",
-            "description": "Set on start; preserved across update."
-          },
           "date_updated": {
             "nullable": true,
             "type": "string"
@@ -3444,19 +3785,12 @@
             "nullable": true,
             "type": "string"
           },
-          "connector_name": {
-            "type": "string",
-            "description": "Names a per-tenant SIPREC connector; resolves to that connector's Session Recording Server SIP URI. Required — pure per-tenant BYO with no operator default, so an empty, unknown, or disabled connector starts no recording (fails closed)."
-          },
           "status": {
             "type": "string",
             "enum": [
               "in-progress",
               "stopped"
             ]
-          },
-          "date_created": {
-            "type": "string"
           },
           "date_updated": {
             "nullable": true,
@@ -3537,28 +3871,12 @@
             "nullable": true,
             "type": "string"
           },
-          "language_code": {
-            "type": "string",
-            "description": "Echoed only when supplied on the request; the engine applies en-US when absent but does not echo it."
-          },
-          "transcription_engine": {
-            "type": "string",
-            "enum": [
-              "deepgram",
-              "google",
-              "aws",
-              "azure"
-            ]
-          },
           "status": {
             "type": "string",
             "enum": [
               "in-progress",
               "stopped"
             ]
-          },
-          "date_created": {
-            "type": "string"
           },
           "date_updated": {
             "nullable": true,
@@ -3567,6 +3885,132 @@
           "uri": {
             "nullable": true,
             "type": "string"
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "call_sid",
+          "api_version",
+          "error_code",
+          "log",
+          "message_date",
+          "more_info",
+          "uri",
+          "date_created",
+          "date_updated"
+        ],
+        "description": "Twilio-compatible alert-log entry. Rows are emitted when\nthe voice markup document fetch or parse fails; error_code/more_info\nfollow Twilio's own error dictionary (11200 HTTP retrieval\nfailure, 12100 document parse failure). uri is call-scoped\nwhen fetched via the /Calls/{CallSid}/Notifications route and\naccount-scoped via /Notifications, matching Twilio's own\nfixtures. api_version, message_text, request_method and\nrequest_url are null for a notification a verb raised with no\nrequest of its own (the 32650/32651 transcription refusals),\nas on Twilio.\n",
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^NO[a-f0-9]{32}$"
+          },
+          "account_sid": {
+            "type": "string"
+          },
+          "call_sid": {
+            "type": "string"
+          },
+          "api_version": {
+            "nullable": true,
+            "type": "string"
+          },
+          "error_code": {
+            "type": "string"
+          },
+          "log": {
+            "type": "string",
+            "description": "Twilio renders this numeric field as a string on the wire (\"0\"/\"1\")."
+          },
+          "message_date": {
+            "type": "string"
+          },
+          "message_text": {
+            "nullable": true,
+            "type": "string"
+          },
+          "more_info": {
+            "type": "string"
+          },
+          "request_method": {
+            "nullable": true,
+            "type": "string"
+          },
+          "request_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string"
+          },
+          "date_updated": {
+            "type": "string"
+          }
+        }
+      },
+      "CallEvent": {
+        "type": "object",
+        "required": [
+          "request",
+          "response"
+        ],
+        "description": "Twilio-compatible per-call lifecycle event. One row per\nREST request/response against a call (create + each update),\nrecorded by recordCallEvent. List-only — Twilio's Events\nresource has no fetch-by-id operation.\n",
+        "properties": {
+          "request": {
+            "type": "object",
+            "required": [
+              "method",
+              "parameters",
+              "url"
+            ],
+            "properties": {
+              "method": {
+                "type": "string"
+              },
+              "parameters": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          },
+          "response": {
+            "type": "object",
+            "required": [
+              "content_type",
+              "date_created",
+              "request_duration",
+              "response_body",
+              "response_code"
+            ],
+            "properties": {
+              "content_type": {
+                "type": "string"
+              },
+              "date_created": {
+                "type": "string"
+              },
+              "request_duration": {
+                "type": "integer"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "response_code": {
+                "type": "integer"
+              }
+            }
           }
         }
       },
@@ -3656,7 +4100,7 @@
           },
           "more_info": {
             "type": "string",
-            "description": "URL to error documentation: `{base}/docs/errors/{code}`. Always populated."
+            "description": "URL to Twilio's error dictionary entry: `https://www.twilio.com/docs/errors/{code}`, as live Twilio sends. Always populated."
           },
           "status": {
             "type": "integer",
@@ -3787,7 +4231,7 @@
           },
           "RecordingStatusCallbackEvent": {
             "type": "string",
-            "description": "Comma-separated subset of `in-progress`, `completed`, `absent`."
+            "description": "Subset of `in-progress`, `completed`, `absent`: space-separated in one value, or one value per repeated key. Default `completed`."
           },
           "RecordingChannels": {
             "type": "string",
@@ -3795,7 +4239,7 @@
               "mono",
               "dual"
             ],
-            "description": "Recording channel layout. Only `mono` is honored — `dual` is accepted but a single mixed channel is written."
+            "description": "Recording channel layout: `dual` records the call's two parties into separate channels (channel 1 what the call receives from its remote party, channel 2 the call's own audio). Default `mono`."
           },
           "RecordingTrack": {
             "type": "string",
@@ -3804,7 +4248,7 @@
               "outbound",
               "both"
             ],
-            "description": "Accepted for Twilio compatibility but currently ignored."
+            "description": "`inbound` records only the audio the call receives, `outbound` only the audio it sends — always one channel; `both` (default) records both."
           },
           "Trim": {
             "type": "string",
@@ -3812,7 +4256,7 @@
               "trim-silence",
               "do-not-trim"
             ],
-            "description": "Accepted for Twilio compatibility but currently ignored."
+            "description": "Trims leading and trailing silence from the `Record=true` recording; `trim-silence` is the default."
           },
           "Timeout": {
             "type": "integer",
@@ -4020,6 +4464,534 @@
           },
           "meta": {
             "$ref": "#/components/schemas/VoiceV1Meta"
+          }
+        }
+      },
+      "PricingCountryRef": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingCountriesList": {
+        "type": "object",
+        "required": [
+          "countries",
+          "meta"
+        ],
+        "properties": {
+          "countries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingCountryRef"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/VoiceV1Meta"
+          }
+        }
+      },
+      "PricingPrice": {
+        "type": "object",
+        "required": [
+          "base_price",
+          "current_price"
+        ],
+        "properties": {
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingOutboundPrefixPrice": {
+        "type": "object",
+        "required": [
+          "prefixes",
+          "base_price",
+          "current_price",
+          "friendly_name"
+        ],
+        "properties": {
+          "prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          },
+          "friendly_name": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingOutboundPrefixPriceWithOrigin": {
+        "type": "object",
+        "required": [
+          "origination_prefixes",
+          "destination_prefixes",
+          "base_price",
+          "current_price",
+          "friendly_name"
+        ],
+        "properties": {
+          "origination_prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "destination_prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          },
+          "friendly_name": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingInboundCallPrice": {
+        "type": "object",
+        "required": [
+          "base_price",
+          "current_price",
+          "number_type"
+        ],
+        "properties": {
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          },
+          "number_type": {
+            "type": "string",
+            "enum": [
+              "local",
+              "toll free"
+            ]
+          }
+        }
+      },
+      "PricingOutboundCallPrice": {
+        "type": "object",
+        "required": [
+          "base_price",
+          "current_price"
+        ],
+        "properties": {
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingOutboundCallPriceWithOrigin": {
+        "type": "object",
+        "required": [
+          "origination_prefixes",
+          "base_price",
+          "current_price"
+        ],
+        "properties": {
+          "origination_prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingOutboundSMSPrice": {
+        "type": "object",
+        "required": [
+          "carrier",
+          "mcc",
+          "mnc",
+          "prices"
+        ],
+        "properties": {
+          "carrier": {
+            "type": "string"
+          },
+          "mcc": {
+            "type": "string"
+          },
+          "mnc": {
+            "type": "string"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingInboundCallPrice"
+            }
+          }
+        }
+      },
+      "PricingPhoneNumberPrice": {
+        "type": "object",
+        "required": [
+          "number_type",
+          "base_price",
+          "current_price"
+        ],
+        "properties": {
+          "number_type": {
+            "type": "string",
+            "enum": [
+              "local",
+              "toll free"
+            ]
+          },
+          "base_price": {
+            "type": "string"
+          },
+          "current_price": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingVoiceCountry": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "outbound_prefix_prices",
+          "inbound_call_prices",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "outbound_prefix_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundPrefixPrice"
+            }
+          },
+          "inbound_call_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingInboundCallPrice"
+            }
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingVoiceNumber": {
+        "type": "object",
+        "required": [
+          "number",
+          "country",
+          "iso_country",
+          "outbound_call_price",
+          "inbound_call_price",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "outbound_call_price": {
+            "$ref": "#/components/schemas/PricingOutboundCallPrice"
+          },
+          "inbound_call_price": {
+            "$ref": "#/components/schemas/PricingInboundCallPrice"
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingMessagingCountry": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "outbound_sms_prices",
+          "inbound_sms_prices",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "outbound_sms_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundSMSPrice"
+            }
+          },
+          "inbound_sms_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingInboundCallPrice"
+            }
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingPhoneNumberCountry": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "phone_number_prices",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "phone_number_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingPhoneNumberPrice"
+            }
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingVoiceCountryV2": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "outbound_prefix_prices",
+          "inbound_call_prices",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "outbound_prefix_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundPrefixPriceWithOrigin"
+            }
+          },
+          "inbound_call_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingInboundCallPrice"
+            }
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingVoiceNumberV2": {
+        "type": "object",
+        "required": [
+          "destination_number",
+          "origination_number",
+          "country",
+          "iso_country",
+          "outbound_call_prices",
+          "inbound_call_price",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "destination_number": {
+            "type": "string"
+          },
+          "origination_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "outbound_call_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundCallPriceWithOrigin"
+            }
+          },
+          "inbound_call_price": {
+            "$ref": "#/components/schemas/PricingInboundCallPrice"
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingTrunkingCountry": {
+        "type": "object",
+        "required": [
+          "country",
+          "iso_country",
+          "terminating_prefix_prices",
+          "originating_call_prices",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "terminating_prefix_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundPrefixPriceWithOrigin"
+            }
+          },
+          "originating_call_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingInboundCallPrice"
+            }
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "PricingTrunkingNumber": {
+        "type": "object",
+        "required": [
+          "destination_number",
+          "origination_number",
+          "country",
+          "iso_country",
+          "terminating_prefix_prices",
+          "originating_call_price",
+          "price_unit",
+          "url"
+        ],
+        "properties": {
+          "destination_number": {
+            "type": "string"
+          },
+          "origination_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string"
+          },
+          "iso_country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "terminating_prefix_prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOutboundPrefixPriceWithOrigin"
+            }
+          },
+          "originating_call_price": {
+            "$ref": "#/components/schemas/PricingInboundCallPrice"
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
           }
         }
       },
@@ -5368,6 +6340,222 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ConversationsV1Service"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/VoiceV1Meta"
+          }
+        }
+      },
+      "MessagingService": {
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "friendly_name",
+          "date_created",
+          "date_updated",
+          "url"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "pattern": "^MG[0-9a-fA-F]{32}$",
+            "minLength": 34,
+            "maxLength": 34,
+            "example": "MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "account_sid": {
+            "type": "string",
+            "pattern": "^AC[0-9a-fA-F]{32}$",
+            "minLength": 34,
+            "maxLength": 34
+          },
+          "friendly_name": {
+            "type": "string"
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inbound_request_url": {
+            "type": "string"
+          },
+          "inbound_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "fallback_url": {
+            "type": "string"
+          },
+          "fallback_method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "status_callback": {
+            "type": "string"
+          },
+          "sticky_sender": {
+            "type": "boolean"
+          },
+          "mms_converter": {
+            "type": "boolean"
+          },
+          "smart_encoding": {
+            "type": "boolean"
+          },
+          "scan_message_content": {
+            "type": "string",
+            "enum": [
+              "inherit",
+              "enable",
+              "disable"
+            ]
+          },
+          "fallback_to_long_code": {
+            "type": "boolean"
+          },
+          "area_code_geomatch": {
+            "type": "boolean"
+          },
+          "synchronous_validation": {
+            "type": "boolean"
+          },
+          "validity_period": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "usecase": {
+            "type": "string"
+          },
+          "use_inbound_webhook_on_number": {
+            "type": "boolean"
+          },
+          "advanced_opt_out": {
+            "type": "boolean",
+            "description": "VoiceML extension: when on, the inbound webhook carries OptOutType=START|STOP|HELP for keyword matches. Twilio exposes this toggle in the Console only, not on the REST resource."
+          }
+        }
+      },
+      "ServicesSharedResponse": {
+        "description": "Either a Conversation Service (conversations.twilio.com) or a\nMessaging Service (messaging.twilio.com) — disambiguated on the\nwire by the sid prefix (IS vs MG). See MessagingService's\ndescription above.\n",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ConversationsV1Service"
+          },
+          {
+            "$ref": "#/components/schemas/MessagingService"
+          }
+        ]
+      },
+      "MessagingServicePhoneNumber": {
+        "description": "One phone number in a Messaging Service's sender pool (Twilio's\n/v1/Services/{ServiceSid}/PhoneNumbers subresource, #266).\n",
+        "type": "object",
+        "required": [
+          "sid",
+          "account_sid",
+          "service_sid",
+          "date_created",
+          "date_updated",
+          "phone_number",
+          "country_code",
+          "capabilities",
+          "url"
+        ],
+        "properties": {
+          "sid": {
+            "type": "string",
+            "description": "The referenced IncomingPhoneNumber's PN sid."
+          },
+          "account_sid": {
+            "type": "string",
+            "pattern": "^AC[0-9a-fA-F]{32}$"
+          },
+          "service_sid": {
+            "type": "string",
+            "pattern": "^MG[0-9a-fA-F]{32}$"
+          },
+          "date_created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "E.164."
+          },
+          "country_code": {
+            "type": "string",
+            "example": "US"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Voice",
+                "SMS",
+                "MMS"
+              ]
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "MessagingServicePhoneNumberList": {
+        "type": "object",
+        "required": [
+          "phone_numbers",
+          "meta"
+        ],
+        "properties": {
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessagingServicePhoneNumber"
+            }
+          },
+          "meta": {
+            "type": "object"
+          }
+        }
+      },
+      "ServicesSharedListResponse": {
+        "type": "object",
+        "required": [
+          "services",
+          "meta"
+        ],
+        "properties": {
+          "services": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ConversationsV1Service"
+                },
+                {
+                  "$ref": "#/components/schemas/MessagingService"
+                }
+              ]
             }
           },
           "meta": {
@@ -7418,7 +8606,8 @@
           "voice_url": {
             "nullable": true,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "example": "https://voiceml.org/your-app/voice.xml"
           },
           "voice_method": {
             "nullable": true,
@@ -7431,7 +8620,8 @@
           "voice_fallback_url": {
             "nullable": true,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "example": "https://voiceml.org/your-app/voice-fallback.xml"
           },
           "voice_fallback_method": {
             "nullable": true,
@@ -8656,7 +9846,7 @@
         "tags": [
           "Queues"
         ],
-        "summary": "List queues for the account (paged, FriendlyName ASC)",
+        "summary": "List queues for the account (paged, newest first)",
         "parameters": [
           {
             "$ref": "#/components/parameters/Page"
@@ -9089,7 +10279,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -9100,7 +10291,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -9130,12 +10322,12 @@
                   "MessageStatusCallback": {
                     "type": "string",
                     "format": "uri",
-                    "description": "DLR (delivery-receipt) URL for outbound SMS sent via this Application (#450)."
+                    "description": "DLR (delivery-receipt) URL for outbound SMS sent via this Application."
                   },
                   "SmsStatusCallback": {
                     "type": "string",
                     "format": "uri",
-                    "description": "Legacy alias of MessageStatusCallback (#450)."
+                    "description": "Legacy alias of MessageStatusCallback."
                   }
                 }
               }
@@ -9179,7 +10371,7 @@
         "tags": [
           "Applications"
         ],
-        "summary": "List Applications for the account (paged, FriendlyName ASC)",
+        "summary": "List Applications for the account (paged, newest first)",
         "parameters": [
           {
             "name": "FriendlyName",
@@ -9274,7 +10466,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -9285,7 +10478,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -9314,12 +10508,12 @@
                   "MessageStatusCallback": {
                     "type": "string",
                     "format": "uri",
-                    "description": "DLR (delivery-receipt) URL for outbound SMS sent via this Application (#450)."
+                    "description": "DLR (delivery-receipt) URL for outbound SMS sent via this Application."
                   },
                   "SmsStatusCallback": {
                     "type": "string",
                     "format": "uri",
-                    "description": "Legacy alias of MessageStatusCallback (#450)."
+                    "description": "Legacy alias of MessageStatusCallback."
                   }
                 }
               }
@@ -9445,16 +10639,15 @@
         "tags": [
           "Account / OutgoingCallerIds"
         ],
-        "summary": "List OutgoingCallerIds for the account (paged, FriendlyName ASC)",
+        "summary": "List OutgoingCallerIds for the account (paged, SID ascending)",
         "parameters": [
           {
             "name": "PhoneNumber",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "phone-number"
+              "type": "string"
             },
-            "description": "Filter to the OutgoingCallerId with this exact PhoneNumber."
+            "description": "The whole number, in E.164, without the `+`, or as the national ten digits of a +1 number; a partial number matches nothing, as on Twilio."
           },
           {
             "name": "FriendlyName",
@@ -9462,7 +10655,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Filter to OutgoingCallerIds with this exact FriendlyName."
+            "description": "The whole FriendlyName, matched case-insensitively, as on Twilio."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -9630,7 +10823,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -9641,7 +10835,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -9758,6 +10953,60 @@
         }
       }
     },
+    "/2010-04-01/Accounts/{AccountSid}/SIP/Registrations.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "sip_registrations.list",
+        "tags": [
+          "SIP / Registrations"
+        ],
+        "summary": "List registered SIP endpoints for the account (paged)",
+        "description": "VoiceML extension: every AOR registered under the account's SIP\nDomains, with its contacts and, when the endpoint is on a call, the\nactive call (direction, remote party, since). Not part of Twilio's\nAPI surface.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of SIP registrations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SipRegistrationList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "SIP registrations subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/2010-04-01/Accounts/{AccountSid}/SIP/Domains/{Sid}.json": {
       "parameters": [
         {
@@ -9813,7 +11062,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -9824,7 +11074,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -11653,7 +12904,7 @@
           "Messages"
         ],
         "summary": "Send an SMS or MMS",
-        "description": "Sends `Body` to `To` via the configured SMS provider. When one\nor more `MediaUrl` values are supplied the message is an MMS,\ndispatched through the tenant's configured MMS provider (#473)\nand `Body` becomes optional. When the provider is not configured\nthe row is still persisted with status=failed and\nerror_code=21609 so the integrator can introspect the rejection\nthrough GET /Messages/{Sid}.\n",
+        "description": "Sends `Body` to `To` via the configured SMS provider. When one\nor more `MediaUrl` values are supplied the message is an MMS,\ndispatched through the tenant's configured MMS provider\nand `Body` becomes optional. When the provider is not configured\nthe row is still persisted with status=failed and\nerror_code=21609 so the integrator can introspect the rejection\nthrough GET /Messages/{Sid}.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -11682,16 +12933,22 @@
                       "type": "string",
                       "format": "uri"
                     },
-                    "description": "One or more media URLs to attach (#473). Repeatable; presence makes the message an MMS routed through the tenant's MMS provider."
+                    "description": "One or more media URLs to attach. Repeatable; presence makes the message an MMS routed through the tenant's MMS provider."
                   },
                   "MessagingServiceSid": {
                     "type": "string",
-                    "description": "Accepted for parity; not yet routed against."
+                    "description": "Accepted for compatibility; not yet routed against."
+                  },
+                  "ValidityPeriod": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 36000,
+                    "description": "Seconds the message may stay queued before failing with 30001 (Twilio's `Queue overflow`). Per-message value wins over the Messaging Service's `validity_period`; default 36000. Counts from SendAt for scheduled sends."
                   },
                   "StatusCallback": {
                     "type": "string",
                     "format": "uri",
-                    "description": "Per-message delivery-receipt (DLR) callback URL; overrides the Application-level default (#450)."
+                    "description": "Per-message delivery-receipt (DLR) callback URL; overrides the Application-level default."
                   },
                   "StatusCallbackMethod": {
                     "type": "string",
@@ -11699,7 +12956,7 @@
                       "GET",
                       "POST"
                     ],
-                    "description": "HTTP method for the StatusCallback (#450)."
+                    "description": "HTTP method for the StatusCallback."
                   }
                 }
               }
@@ -12046,7 +13303,7 @@
           "Messages"
         ],
         "summary": "Fetch a Media item",
-        "description": "Returns the Media resource JSON by default. A request whose\nAccept header asks for the media bytes (e.g. `image/*`) receives\na 302 redirect to a short-lived presigned URL for the stored\nbytes, or to the recorded external source URL when bytes are not\nstored locally (#473).\n",
+        "description": "Returns the Media resource JSON by default. A request whose\nAccept header asks for the media bytes (e.g. `image/*`) receives\na 302 redirect to a short-lived presigned URL for the stored\nbytes, or to the recorded external source URL when bytes are not\nstored locally.\n",
         "responses": {
           "200": {
             "description": "Media resource.",
@@ -12171,6 +13428,16 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "description": "The account was modified by another request (optimistic-locking conflict, Twilio error 20409). Refresh the resource and retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "503": {
             "description": "Account store not configured.",
@@ -12545,7 +13812,16 @@
                       "mono",
                       "dual"
                     ],
-                    "description": "`dual` is accepted but not honored — VoiceML records mono, so `Recording.channels` is always 1."
+                    "description": "`dual` records the call's two parties into separate channels: channel 1 what the call receives from its remote party, channel 2 the call's own audio. Default `mono`."
+                  },
+                  "RecordingTrack": {
+                    "type": "string",
+                    "enum": [
+                      "inbound",
+                      "outbound",
+                      "both"
+                    ],
+                    "description": "`inbound` records only the audio the call receives, `outbound` only the audio it sends — always one channel; `both` (default) records both."
                   },
                   "PlayBeep": {
                     "type": "boolean",
@@ -12561,7 +13837,7 @@
                   },
                   "RecordingStatusCallbackEvent": {
                     "type": "string",
-                    "description": "Comma-separated: in-progress,completed,absent"
+                    "description": "`in-progress`, `completed`, `absent`: space-separated in one value, or one value per repeated key. Default `completed`."
                   }
                 }
               }
@@ -12570,7 +13846,7 @@
         },
         "responses": {
           "200": {
-            "description": "Recording started.",
+            "description": "The call already runs a recording started this way: the\nrunning recording is returned (as on Twilio).\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -12580,7 +13856,7 @@
             }
           },
           "201": {
-            "description": "Recording started (Twilio-historical 201 Created). VoiceML\nreturns 200 OK exclusively; this code is declared so the\nspec matches twilio-oai's documented response set verbatim\nand SDK codegen produces the same response-handling\nswitch. Aligned with the Twilio OpenAPI reference response set.\n",
+            "description": "Recording started.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12627,79 +13903,6 @@
           "$ref": "#/components/parameters/CallSid"
         }
       ],
-      "get": {
-        "operationId": "streams.list",
-        "tags": [
-          "Calls / Streams"
-        ],
-        "summary": "List active media streams for the call",
-        "description": "Returns 0 or 1 entries — the runtime supports a single\nactive media fork per call, matching the slot model on the\nVoiceML tracker. Pagination envelope is the Twilio-compatible\nshape so SDK auto-paginators round-trip cleanly.\n",
-        "responses": {
-          "200": {
-            "description": "Page of streams (0 or 1 entry).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "streams",
-                    "page",
-                    "page_size",
-                    "total"
-                  ],
-                  "properties": {
-                    "streams": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Stream"
-                      }
-                    },
-                    "page": {
-                      "type": "integer"
-                    },
-                    "page_size": {
-                      "type": "integer"
-                    },
-                    "num_pages": {
-                      "type": "integer"
-                    },
-                    "total": {
-                      "type": "integer"
-                    },
-                    "first_page_uri": {
-                      "type": "string"
-                    },
-                    "next_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "previous_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "uri": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "streams.create",
         "tags": [
@@ -12728,7 +13931,7 @@
                       "outbound_track",
                       "both_tracks"
                     ],
-                    "description": "Accepted for SDK parity; not validated and (for Streams) not applied."
+                    "description": "Accepted for SDK compatibility; not validated and (for Streams) not applied."
                   },
                   "Name": {
                     "type": "string"
@@ -12783,34 +13986,6 @@
           "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
-      "get": {
-        "operationId": "streams.fetch",
-        "tags": [
-          "Calls / Streams"
-        ],
-        "summary": "Fetch a single stream by sid",
-        "responses": {
-          "200": {
-            "description": "Stream resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Stream"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "streams.update",
         "tags": [
@@ -12873,79 +14048,6 @@
           "$ref": "#/components/parameters/CallSid"
         }
       ],
-      "get": {
-        "operationId": "siprec.list",
-        "tags": [
-          "Calls / Siprec"
-        ],
-        "summary": "List active SIPREC sessions for the call",
-        "description": "Returns 0 or 1 entries — only one SIPREC mirror per call leg\nis supported. Pagination envelope is the Twilio-compatible\nshape.\n",
-        "responses": {
-          "200": {
-            "description": "Page of SIPREC sessions (0 or 1 entry).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "siprec",
-                    "page",
-                    "page_size",
-                    "total"
-                  ],
-                  "properties": {
-                    "siprec": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/SiprecSession"
-                      }
-                    },
-                    "page": {
-                      "type": "integer"
-                    },
-                    "page_size": {
-                      "type": "integer"
-                    },
-                    "num_pages": {
-                      "type": "integer"
-                    },
-                    "total": {
-                      "type": "integer"
-                    },
-                    "first_page_uri": {
-                      "type": "string"
-                    },
-                    "next_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "previous_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "uri": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "siprec.create",
         "tags": [
@@ -12974,7 +14076,7 @@
                       "outbound_track",
                       "both_tracks"
                     ],
-                    "description": "Accepted for SDK parity; not validated and (for Streams) not applied."
+                    "description": "Accepted for SDK compatibility; not validated and (for Streams) not applied."
                   },
                   "StatusCallback": {
                     "type": "string"
@@ -13026,34 +14128,6 @@
           "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
-      "get": {
-        "operationId": "siprec.fetch",
-        "tags": [
-          "Calls / Siprec"
-        ],
-        "summary": "Fetch a single SIPREC session by sid",
-        "responses": {
-          "200": {
-            "description": "SIPREC resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SiprecSession"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "siprec.update",
         "tags": [
@@ -13117,79 +14191,6 @@
           "$ref": "#/components/parameters/CallSid"
         }
       ],
-      "get": {
-        "operationId": "transcriptions.list",
-        "tags": [
-          "Calls / Transcriptions"
-        ],
-        "summary": "List active transcriptions for the call",
-        "description": "Returns 0 or 1 entries. Pagination envelope is the Twilio-compatible\nshape.\n",
-        "responses": {
-          "200": {
-            "description": "Page of transcriptions (0 or 1 entry).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "transcriptions",
-                    "page",
-                    "page_size",
-                    "total"
-                  ],
-                  "properties": {
-                    "transcriptions": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/CallTranscription"
-                      }
-                    },
-                    "page": {
-                      "type": "integer"
-                    },
-                    "page_size": {
-                      "type": "integer"
-                    },
-                    "num_pages": {
-                      "type": "integer"
-                    },
-                    "total": {
-                      "type": "integer"
-                    },
-                    "first_page_uri": {
-                      "type": "string"
-                    },
-                    "next_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "previous_page_uri": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "uri": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "transcriptions.create",
         "tags": [
@@ -13213,7 +14214,7 @@
                       "outbound_track",
                       "both_tracks"
                     ],
-                    "description": "Accepted for SDK parity; not validated and (for Streams) not applied."
+                    "description": "Accepted for SDK compatibility; not validated and (for Streams) not applied."
                   },
                   "LanguageCode": {
                     "type": "string",
@@ -13292,34 +14293,6 @@
           "$ref": "#/components/parameters/SubresourceSid"
         }
       ],
-      "get": {
-        "operationId": "transcriptions.fetch",
-        "tags": [
-          "Calls / Transcriptions"
-        ],
-        "summary": "Fetch a single transcription by sid",
-        "responses": {
-          "200": {
-            "description": "Transcription resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CallTranscription"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "post": {
         "operationId": "transcriptions.update",
         "tags": [
@@ -13433,8 +14406,7 @@
                   "required": [
                     "transcriptions",
                     "page",
-                    "page_size",
-                    "total"
+                    "page_size"
                   ],
                   "properties": {
                     "transcriptions": {
@@ -13449,10 +14421,10 @@
                     "page_size": {
                       "type": "integer"
                     },
-                    "num_pages": {
+                    "start": {
                       "type": "integer"
                     },
-                    "total": {
+                    "end": {
                       "type": "integer"
                     },
                     "first_page_uri": {
@@ -13619,8 +14591,7 @@
                   "required": [
                     "transcriptions",
                     "page",
-                    "page_size",
-                    "total"
+                    "page_size"
                   ],
                   "properties": {
                     "transcriptions": {
@@ -13635,10 +14606,10 @@
                     "page_size": {
                       "type": "integer"
                     },
-                    "num_pages": {
+                    "start": {
                       "type": "integer"
                     },
-                    "total": {
+                    "end": {
                       "type": "integer"
                     },
                     "first_page_uri": {
@@ -13807,7 +14778,7 @@
                   },
                   "Parameter": {
                     "type": "string",
-                    "description": "Single-level JSON object passed to the payment connector. Accepted for parity but not yet wired — currently a no-op."
+                    "description": "Single-level JSON object passed to the payment connector. Accepted for compatibility but not yet wired — currently a no-op."
                   },
                   "PaymentConnector": {
                     "type": "string",
@@ -13847,11 +14818,11 @@
                   },
                   "RequireMatchingInputs": {
                     "type": "string",
-                    "description": "Comma-separated fields requiring matcher inputs. Accepted for parity but not yet wired — currently a no-op."
+                    "description": "Comma-separated fields requiring matcher inputs. Accepted for compatibility but not yet wired — currently a no-op."
                   },
                   "Confirmation": {
                     "type": "boolean",
-                    "description": "Accepted for parity but not yet wired — currently a no-op."
+                    "description": "Accepted for compatibility but not yet wired — currently a no-op."
                   }
                 }
               }
@@ -14029,8 +15000,8 @@
         "tags": [
           "Calls / Notifications"
         ],
-        "summary": "List per-call notifications (compat stub)",
-        "description": "Twilio's per-call alert log. VoiceML doesn't track\nnotifications as a separate stream — relevant operator-side\nevents flow through metrics + structured logs. This\nendpoint is mounted as a stub so SDK helpers don't 404;\nthe response is always an empty list. Page/PageSize and Log\nare accepted for SDK ergonomics but have no effect on an\nempty list.\n",
+        "summary": "List per-call notifications",
+        "description": "Twilio's per-call alert log. Populated from the call event log:\nrows are emitted whenever the voice markup document fetch or parse\nfails, using Twilio's own\nerror-dictionary codes (11200 HTTP retrieval failure, 12100\ndocument parse failure).\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/Page"
@@ -14052,7 +15023,7 @@
                 1
               ]
             },
-            "description": "Twilio-compatible parameter — 0 = error-level only, 1 =\nwarning-level + above. Accepted for SDK migration\ncompatibility; has no effect since VoiceML's per-call\nnotification stream is unimplemented (this endpoint is a\nstub returning an empty list).\n"
+            "description": "0 = error-level only, 1 = warning-level + above."
           },
           {
             "name": "MessageDate",
@@ -14062,7 +15033,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged on this UTC date."
           },
           {
             "name": "MessageDate<",
@@ -14072,7 +15043,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged strictly before this UTC date."
           },
           {
             "name": "MessageDate>",
@@ -14082,12 +15053,12 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged strictly after this UTC date."
           }
         ],
         "responses": {
           "200": {
-            "description": "Empty list (always — stub).",
+            "description": "Page of notifications for this call.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14096,27 +15067,40 @@
                     "notifications",
                     "page",
                     "page_size",
-                    "total",
                     "uri"
                   ],
                   "properties": {
                     "notifications": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      }
                     },
                     "page": {
-                      "type": "integer",
-                      "enum": [
-                        0
-                      ]
+                      "type": "integer"
                     },
                     "page_size": {
                       "type": "integer"
                     },
-                    "total": {
-                      "type": "integer",
-                      "enum": [
-                        0
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
                       ]
                     },
                     "uri": {
@@ -14126,6 +15110,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -14156,15 +15143,14 @@
         "tags": [
           "Calls / Notifications"
         ],
-        "summary": "Fetch a per-call notification (compat stub)",
-        "description": "Per-call notification fetch. VoiceML does not persist a\nnotification stream — the list endpoint is always empty and\nindividual fetches return 404.\n",
+        "summary": "Fetch a per-call notification",
         "responses": {
           "200": {
-            "description": "Notification resource (unused — stub always 404s today).",
+            "description": "Notification resource.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Notification"
                 }
               }
             }
@@ -14192,8 +15178,8 @@
         "tags": [
           "Notifications"
         ],
-        "summary": "List account notifications (compat stub)",
-        "description": "Account-wide notification log. VoiceML delivers events via\nStatusCallback — this endpoint returns an empty list so SDK\nhelpers do not 404.\n",
+        "summary": "List account notifications",
+        "description": "Account-wide notification log. Populated from the call event log; this is the account-scoped view\nacross all calls.\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/Page"
@@ -14212,7 +15198,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged on this UTC date."
           },
           {
             "name": "MessageDate<",
@@ -14222,7 +15208,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged strictly before this UTC date."
           },
           {
             "name": "MessageDate>",
@@ -14232,7 +15218,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Twilio-compatible date filter — accept-but-no-op on empty notification stub."
+            "description": "Filter to notifications logged strictly after this UTC date."
           },
           {
             "name": "Log",
@@ -14245,12 +15231,12 @@
                 1
               ]
             },
-            "description": "Twilio-compatible parameter — accept-but-no-op on empty notification stub."
+            "description": "0 = error-level only, 1 = warning-level + above."
           }
         ],
         "responses": {
           "200": {
-            "description": "Empty list (always — stub).",
+            "description": "Page of notifications for this account.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14259,27 +15245,40 @@
                     "notifications",
                     "page",
                     "page_size",
-                    "total",
                     "uri"
                   ],
                   "properties": {
                     "notifications": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      }
                     },
                     "page": {
-                      "type": "integer",
-                      "enum": [
-                        0
-                      ]
+                      "type": "integer"
                     },
                     "page_size": {
                       "type": "integer"
                     },
-                    "total": {
-                      "type": "integer",
-                      "enum": [
-                        0
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
                       ]
                     },
                     "uri": {
@@ -14290,8 +15289,14 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -14310,15 +15315,14 @@
         "tags": [
           "Notifications"
         ],
-        "summary": "Fetch an account notification (compat stub)",
-        "description": "Always 404 — VoiceML does not persist notifications.",
+        "summary": "Fetch an account notification",
         "responses": {
           "200": {
-            "description": "Notification resource (unused — stub always 404s today).",
+            "description": "Notification resource.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Notification"
                 }
               }
             }
@@ -14328,6 +15332,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -14346,8 +15353,8 @@
         "tags": [
           "Calls / Events"
         ],
-        "summary": "List per-call lifecycle events (compat stub)",
-        "description": "Twilio's fine-grained per-call event stream. VoiceML\ndelivers equivalent data via `StatusCallback` (initiated /\nringing / answered / completed); this endpoint is mounted\nas a stub returning an empty list so SDK helpers iterate\ncleanly. The canonical event source is the customer's\n`StatusCallback` URL. Page/PageSize are accepted for SDK\nergonomics but have no effect on an empty list.\n",
+        "summary": "List per-call lifecycle events",
+        "description": "Twilio's fine-grained per-call event stream. Populated from the call event log: one row per REST request/response\nagainst this call (create + each update).\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/Page"
@@ -14361,7 +15368,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Empty list (always — stub).",
+            "description": "Page of lifecycle events for this call.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14370,27 +15377,40 @@
                     "events",
                     "page",
                     "page_size",
-                    "total",
                     "uri"
                   ],
                   "properties": {
                     "events": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "$ref": "#/components/schemas/CallEvent"
+                      }
                     },
                     "page": {
-                      "type": "integer",
-                      "enum": [
-                        0
-                      ]
+                      "type": "integer"
                     },
                     "page_size": {
                       "type": "integer"
                     },
-                    "total": {
-                      "type": "integer",
-                      "enum": [
-                        0
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    },
+                    "first_page_uri": {
+                      "type": "string"
+                    },
+                    "next_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "previous_page_uri": {
+                      "type": [
+                        "string",
+                        "null"
                       ]
                     },
                     "uri": {
@@ -14400,6 +15420,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -14568,7 +15591,7 @@
                   },
                   "RecordingStatusCallbackEvent": {
                     "type": "string",
-                    "description": "Comma-separated: in-progress,completed,absent"
+                    "description": "`in-progress`, `completed`, `absent`: space-separated in one value, or one value per repeated key. Default `completed`."
                   }
                 }
               }
@@ -14791,7 +15814,7 @@
           "Calls / Recordings"
         ],
         "summary": "Update a mid-call recording's status",
-        "description": "Applies stop / pause / resume on the live recording.\nAll three transitions return 200 + the post-mutation\nRecording resource. Tenant-scoped: a RecordingSid that\nbelongs to a different account returns 404 without leaking\nexistence.\n",
+        "description": "Applies stop / pause / resume on the live recording.\nAll three transitions return 200 + the Recording resource\nreporting the status moved to (`stopped`, `paused`,\n`in-progress`); `duration` is null except on a stop, which\nreports the recorded length. A recording no longer running is\nrefused with 400 / 21220. `Twilio.CURRENT` in place of the sid\nnames the call's one active recording (400 / 21220 when none,\n400 / 16108 when more than one). Tenant-scoped: a RecordingSid\nthat belongs to a different account returns 404 without leaking\nexistence.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -14809,6 +15832,10 @@
                       "paused",
                       "in-progress"
                     ]
+                  },
+                  "PauseBehavior": {
+                    "type": "string",
+                    "description": "With `Status=paused`: `skip` leaves the paused span out of the recording; `silence` (the default, also used for any other value) keeps it as silence."
                   }
                 }
               }
@@ -15164,10 +16191,9 @@
             "name": "PhoneNumber",
             "in": "query",
             "required": false,
-            "description": "Exact-match filter on the E.164 phone number. Twilio's\ncanonical lookup pattern is\n`GET /IncomingPhoneNumbers?PhoneNumber=+1...` followed by\n`GET /IncomingPhoneNumbers/{sid}` using the `sid` from the\nlist result. Twilio-compatible SDK clients issue this\npattern; the filter is supported so the same call pattern\nworks against VoiceML. Returns a 0-or-1-row envelope.\n",
+            "description": "A partial number, where `*` stands for any one digit, matched\nanywhere in the number's digits — the E.164 form, the form\nwithout `+`, the national ten digits, the last four or the\narea code all match, as on Twilio.\n",
             "schema": {
-              "type": "string",
-              "pattern": "^\\+[1-9]\\d{1,14}$"
+              "type": "string"
             }
           },
           {
@@ -15177,7 +16203,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Twilio-compatible parameter. VoiceML doesn't model per-DID\nFriendlyName on phone_numbers (the field is empty in every\nview), so this parameter is accepted but does not narrow\nor widen the result set. Declared for SDK migration\ncompatibility.\n"
+            "description": "The whole friendly name (the formatted number), matched\ncase-insensitively; a prefix or suffix does not match.\n"
           },
           {
             "name": "Beta",
@@ -15186,7 +16212,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Twilio-compatible parameter. VoiceML does not model the\ncarrier-supplied \"beta\" flag (no upstream beta-status\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK migration\ncompatibility.\n"
+            "description": "Excludes nothing: no number is a beta number.\n"
           },
           {
             "name": "Origin",
@@ -15199,7 +16225,7 @@
                 "hosted"
               ]
             },
-            "description": "Twilio-compatible parameter. VoiceML treats every assigned DID\nas locally provisioned (no twilio/hosted origin\ndistinction), so this parameter is accepted but does not\nnarrow or widen the result set. Declared for SDK migration\ncompatibility.\n"
+            "description": "`twilio` passes every number (each shows origin `twilio`);\n`hosted` passes none.\n"
           }
         ],
         "responses": {
@@ -15254,7 +16280,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15265,7 +16292,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -15274,9 +16302,29 @@
                       "POST"
                     ]
                   },
-                  "SmsApplicationSid": {
+                  "SmsUrl": {
                     "type": "string",
-                    "description": "Bind to an Application (AP+32hex) for default outbound-SMS DLR (#450)."
+                    "format": "uri",
+                    "description": "Inbound-SMS webhook URL for this number."
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Called when requesting/executing the voice markup at SmsUrl fails."
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -15293,7 +16341,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15304,7 +16353,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -15313,8 +16363,27 @@
                       "POST"
                     ]
                   },
-                  "SmsApplicationSid": {
-                    "type": "string"
+                  "SmsUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -15486,7 +16555,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15665,7 +16735,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15844,7 +16915,8 @@
                   },
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15978,7 +17050,8 @@
                 "properties": {
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -15989,7 +17062,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -15998,9 +17072,29 @@
                       "POST"
                     ]
                   },
-                  "SmsApplicationSid": {
+                  "SmsUrl": {
                     "type": "string",
-                    "description": "Bind to an Application (AP+32hex) for default outbound-SMS DLR (#450)."
+                    "format": "uri",
+                    "description": "Inbound-SMS webhook URL for this number."
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Called when requesting/executing the voice markup at SmsUrl fails."
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -16011,7 +17105,8 @@
                 "properties": {
                   "VoiceUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -16022,7 +17117,8 @@
                   },
                   "VoiceFallbackUrl": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -16031,8 +17127,27 @@
                       "POST"
                     ]
                   },
-                  "SmsApplicationSid": {
-                    "type": "string"
+                  "SmsUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -16106,6 +17221,852 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.list",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records (all-time window by default)",
+        "description": "One UsageRecord per usage category over the requested window.\n`StartDate`/`EndDate` are inclusive YYYY-MM-DD dates in GMT, or\noffsets such as `-30days` (resolved against the end bound) /\n`+30days` (resolved against the start bound). The window clamps\nto the account's creation day; an empty window is a 404. This is\nthe same resource as `/Usage/Records/AllTime.json`.\n",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/AllTime.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listAllTime",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records, one per category, all-time",
+        "description": "Same as the root /Usage/Records list: one record per category over the [account-creation, today] window, clamped by StartDate/EndDate.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/Daily.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listDaily",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records per day",
+        "description": "One record per category per UTC day in the window, newest day first.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/LastMonth.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listLastMonth",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records for last month",
+        "description": "One record per category over the full previous UTC calendar month.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/Monthly.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listMonthly",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records per month",
+        "description": "One record per category per UTC calendar month in the window, newest month first; partial months clamp to the window.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/ThisMonth.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listThisMonth",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records for this month",
+        "description": "One record per category over [this month start, today], UTC.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/Today.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listToday",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records for today",
+        "description": "One record per category for the current UTC day.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/Yearly.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listYearly",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records per year",
+        "description": "One record per category per year in the window, newest year first; partial years clamp to the window.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Usage/Records/Yesterday.json": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountSid"
+        }
+      ],
+      "get": {
+        "operationId": "usageRecords.listYesterday",
+        "tags": [
+          "Account / Usage Records"
+        ],
+        "summary": "List Usage Records for yesterday",
+        "description": "One record per category for the previous UTC day.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this category's records are returned. An unknown category is a 400 (error 20001)."
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window start (inclusive)."
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Window end (inclusive)."
+          },
+          {
+            "name": "IncludeSubaccounts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of Usage Records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageRecordList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "description": "Usage subsystem not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -19573,7 +21534,8 @@
         "tags": [
           "Conversations / Services"
         ],
-        "summary": "Create a Conversation Service",
+        "summary": "Create a Conversation Service or a Messaging Service",
+        "description": "Shared path (see ServicesSharedResponse) — dispatches by Host\nheader to either Conversation Service (conversations.twilio.com)\nor Messaging Service (messaging.twilio.com, #16).\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -19586,6 +21548,79 @@
                 "properties": {
                   "FriendlyName": {
                     "type": "string"
+                  },
+                  "InboundRequestUrl": {
+                    "type": "string",
+                    "description": "Messaging Service only."
+                  },
+                  "InboundMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ],
+                    "description": "Messaging Service only."
+                  },
+                  "FallbackUrl": {
+                    "type": "string",
+                    "description": "Messaging Service only."
+                  },
+                  "FallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ],
+                    "description": "Messaging Service only."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "description": "Messaging Service only."
+                  },
+                  "StickySender": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "MmsConverter": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "SmartEncoding": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "ScanMessageContent": {
+                    "type": "string",
+                    "enum": [
+                      "inherit",
+                      "enable",
+                      "disable"
+                    ],
+                    "description": "Messaging Service only."
+                  },
+                  "FallbackToLongCode": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "AreaCodeGeomatch": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "SynchronousValidation": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
+                  },
+                  "ValidityPeriod": {
+                    "type": "integer",
+                    "description": "Messaging Service only."
+                  },
+                  "Usecase": {
+                    "type": "string",
+                    "description": "Messaging Service only."
+                  },
+                  "UseInboundWebhookOnNumber": {
+                    "type": "boolean",
+                    "description": "Messaging Service only."
                   }
                 }
               }
@@ -19594,11 +21629,11 @@
         },
         "responses": {
           "201": {
-            "description": "The created Service.",
+            "description": "The created Service (Conversation or Messaging).",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationsV1Service"
+                  "$ref": "#/components/schemas/ServicesSharedResponse"
                 }
               }
             }
@@ -19610,7 +21645,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "503": {
-            "description": "Conversations v1 store not configured.",
+            "description": "Store not configured.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19629,7 +21664,8 @@
         "tags": [
           "Conversations / Services"
         ],
-        "summary": "List Conversation Services",
+        "summary": "List Conversation Services or Messaging Services",
+        "description": "Shared path (see ServicesSharedListResponse) — dispatches by\nHost header, same as create.\n",
         "parameters": [
           {
             "name": "PageSize",
@@ -19646,7 +21682,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationsV1ServiceList"
+                  "$ref": "#/components/schemas/ServicesSharedListResponse"
                 }
               }
             }
@@ -19655,7 +21691,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "503": {
-            "description": "Conversations v1 store not configured.",
+            "description": "Store not configured.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19678,8 +21714,9 @@
           "required": true,
           "schema": {
             "type": "string",
-            "pattern": "^IS[0-9a-fA-F]{32}$"
-          }
+            "pattern": "^(IS|MG)[0-9a-fA-F]{32}$"
+          },
+          "description": "IS = Conversation Service, MG = Messaging Service."
         }
       ],
       "get": {
@@ -19687,14 +21724,14 @@
         "tags": [
           "Conversations / Services"
         ],
-        "summary": "Fetch a Conversation Service",
+        "summary": "Fetch a Conversation Service or a Messaging Service",
         "responses": {
           "200": {
-            "description": "The requested Service.",
+            "description": "The requested Service (Conversation or Messaging).",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationsV1Service"
+                  "$ref": "#/components/schemas/ServicesSharedResponse"
                 }
               }
             }
@@ -19706,7 +21743,122 @@
             "$ref": "#/components/responses/NotFound"
           },
           "503": {
-            "description": "Conversations v1 store not configured.",
+            "description": "Store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "operationId": "messaging.v1.services.update",
+        "tags": [
+          "Messaging Services"
+        ],
+        "summary": "Update a Messaging Service",
+        "description": "Unique to Messaging Service — Conversation Service has no update\nverb, so this method has no path collision.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FriendlyName": {
+                    "type": "string"
+                  },
+                  "InboundRequestUrl": {
+                    "type": "string"
+                  },
+                  "InboundMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "FallbackUrl": {
+                    "type": "string"
+                  },
+                  "FallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "StatusCallback": {
+                    "type": "string"
+                  },
+                  "StickySender": {
+                    "type": "boolean"
+                  },
+                  "MmsConverter": {
+                    "type": "boolean"
+                  },
+                  "SmartEncoding": {
+                    "type": "boolean"
+                  },
+                  "ScanMessageContent": {
+                    "type": "string",
+                    "enum": [
+                      "inherit",
+                      "enable",
+                      "disable"
+                    ]
+                  },
+                  "FallbackToLongCode": {
+                    "type": "boolean"
+                  },
+                  "AreaCodeGeomatch": {
+                    "type": "boolean"
+                  },
+                  "SynchronousValidation": {
+                    "type": "boolean"
+                  },
+                  "ValidityPeriod": {
+                    "type": "integer"
+                  },
+                  "Usecase": {
+                    "type": "string"
+                  },
+                  "UseInboundWebhookOnNumber": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated Messaging Service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingService"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Store not configured.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19725,7 +21877,7 @@
         "tags": [
           "Conversations / Services"
         ],
-        "summary": "Delete a Conversation Service",
+        "summary": "Delete a Conversation Service or a Messaging Service",
         "responses": {
           "204": {
             "description": "The Service was deleted."
@@ -19737,7 +21889,7 @@
             "$ref": "#/components/responses/NotFound"
           },
           "503": {
-            "description": "Conversations v1 store not configured.",
+            "description": "Store not configured.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19745,6 +21897,187 @@
                 }
               }
             }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Services/{ChatServiceSid}/PhoneNumbers": {
+      "parameters": [
+        {
+          "name": "ChatServiceSid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^MG[0-9a-fA-F]{32}$"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "messaging.v1.services.phoneNumbers.create",
+        "tags": [
+          "Messaging Services"
+        ],
+        "summary": "Add a phone number to a Messaging Service's sender pool",
+        "description": "Adds an account-owned IncomingPhoneNumber (by PN sid) to the\nservice's pool. A number belongs to at most one service:\nre-adding it to the same service is 409/21710, adding it under\nanother service is 409/21712. Twilio answers 200 on the add.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "PhoneNumberSid"
+                ],
+                "properties": {
+                  "PhoneNumberSid": {
+                    "type": "string",
+                    "description": "The IncomingPhoneNumber's PN sid."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The number now in the pool.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingServicePhoneNumber"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "The number is already pooled (21710 same service / 21712 another service).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "operationId": "messaging.v1.services.phoneNumbers.list",
+        "tags": [
+          "Messaging Services"
+        ],
+        "summary": "List the numbers in a Messaging Service's sender pool",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page of pool entries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingServicePhoneNumberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Services/{ChatServiceSid}/PhoneNumbers/{Sid}": {
+      "parameters": [
+        {
+          "name": "ChatServiceSid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^MG[0-9a-fA-F]{32}$"
+          }
+        },
+        {
+          "name": "Sid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "The pool entry's PN sid."
+        }
+      ],
+      "get": {
+        "operationId": "messaging.v1.services.phoneNumbers.fetch",
+        "tags": [
+          "Messaging Services"
+        ],
+        "summary": "Fetch one pool entry",
+        "responses": {
+          "200": {
+            "description": "The pool entry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingServicePhoneNumber"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "messaging.v1.services.phoneNumbers.delete",
+        "tags": [
+          "Messaging Services"
+        ],
+        "summary": "Remove a number from the pool (the number itself stays on the account)",
+        "responses": {
+          "204": {
+            "description": "The number was removed from the pool."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           },
           "500": {
             "$ref": "#/components/responses/InternalServerError"
@@ -23829,7 +26162,8 @@
                     "type": "string"
                   },
                   "VoiceUrl": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -23839,7 +26173,8 @@
                     ]
                   },
                   "VoiceFallbackUrl": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -24019,7 +26354,8 @@
                     "type": "string"
                   },
                   "VoiceUrl": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://voiceml.org/your-app/voice.xml"
                   },
                   "VoiceMethod": {
                     "type": "string",
@@ -24029,7 +26365,8 @@
                     ]
                   },
                   "VoiceFallbackUrl": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://voiceml.org/your-app/voice-fallback.xml"
                   },
                   "VoiceFallbackMethod": {
                     "type": "string",
@@ -24742,6 +27079,609 @@
           },
           "503": {
             "description": "Voice v1 store not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Voice/Countries": {
+      "get": {
+        "operationId": "pricing.v1.voice.countries.list",
+        "tags": [
+          "Pricing / Voice v1"
+        ],
+        "summary": "List Voice pricing countries",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tenant's own country (VoiceML is NANP-only).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingCountriesList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Voice/Countries/{IsoCountry}": {
+      "parameters": [
+        {
+          "name": "IsoCountry",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v1.voice.countries.fetch",
+        "tags": [
+          "Pricing / Voice v1"
+        ],
+        "summary": "Fetch Voice pricing for one country",
+        "responses": {
+          "200": {
+            "description": "Voice pricing for the tenant's own country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingVoiceCountry"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Voice/Numbers/{Number}": {
+      "parameters": [
+        {
+          "name": "Number",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v1.voice.numbers.fetch",
+        "tags": [
+          "Pricing / Voice v1"
+        ],
+        "summary": "Fetch Voice pricing for one destination number",
+        "responses": {
+          "200": {
+            "description": "Voice pricing for the destination number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingVoiceNumber"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Messaging/Countries": {
+      "get": {
+        "operationId": "pricing.v1.messaging.countries.list",
+        "tags": [
+          "Pricing / Messaging v1"
+        ],
+        "summary": "List Messaging pricing countries",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tenant's own country (VoiceML is NANP-only).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingCountriesList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/Messaging/Countries/{IsoCountry}": {
+      "parameters": [
+        {
+          "name": "IsoCountry",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v1.messaging.countries.fetch",
+        "tags": [
+          "Pricing / Messaging v1"
+        ],
+        "summary": "Fetch Messaging pricing for one country",
+        "description": "SMS pricing only — Twilio's real Messaging Pricing schema has no\ndistinct MMS field; MMS pricing is not exposed via this endpoint,\nsame scope as Twilio's own API.\n",
+        "responses": {
+          "200": {
+            "description": "Messaging (SMS) pricing for the tenant's own country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingMessagingCountry"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/PhoneNumbers/Countries": {
+      "get": {
+        "operationId": "pricing.v1.phoneNumbers.countries.list",
+        "tags": [
+          "Pricing / PhoneNumbers v1"
+        ],
+        "summary": "List PhoneNumbers pricing countries",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tenant's own country (VoiceML is NANP-only).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingCountriesList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/PhoneNumbers/Countries/{IsoCountry}": {
+      "parameters": [
+        {
+          "name": "IsoCountry",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v1.phoneNumbers.countries.fetch",
+        "tags": [
+          "Pricing / PhoneNumbers v1"
+        ],
+        "summary": "Fetch PhoneNumbers (DID rental) pricing for one country",
+        "responses": {
+          "200": {
+            "description": "DID rental pricing for the tenant's own country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingPhoneNumberCountry"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Voice/Countries": {
+      "get": {
+        "operationId": "pricing.v2.voice.countries.list",
+        "tags": [
+          "Pricing / Voice v2"
+        ],
+        "summary": "List Voice pricing countries (v2)",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tenant's own country (VoiceML is NANP-only).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingCountriesList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Voice/Countries/{IsoCountry}": {
+      "parameters": [
+        {
+          "name": "IsoCountry",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v2.voice.countries.fetch",
+        "tags": [
+          "Pricing / Voice v2"
+        ],
+        "summary": "Fetch Voice pricing for one country (v2)",
+        "responses": {
+          "200": {
+            "description": "Voice pricing for the tenant's own country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingVoiceCountryV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Voice/Numbers/{DestinationNumber}": {
+      "parameters": [
+        {
+          "name": "DestinationNumber",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "OriginationNumber",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v2.voice.numbers.fetch",
+        "tags": [
+          "Pricing / Voice v2"
+        ],
+        "summary": "Fetch Voice pricing for one destination number (v2)",
+        "responses": {
+          "200": {
+            "description": "Voice pricing for the destination number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingVoiceNumberV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Trunking/Countries": {
+      "get": {
+        "operationId": "pricing.v2.trunking.countries.list",
+        "tags": [
+          "Pricing / Trunking v2"
+        ],
+        "summary": "List Trunking pricing countries",
+        "parameters": [
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tenant's own country (VoiceML is NANP-only).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingCountriesList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Trunking/Countries/{IsoCountry}": {
+      "parameters": [
+        {
+          "name": "IsoCountry",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v2.trunking.countries.fetch",
+        "tags": [
+          "Pricing / Trunking v2"
+        ],
+        "summary": "Fetch Trunking pricing for one country",
+        "description": "VoiceML bills trunking identically to voice (same underlying\nrate); exposed as its own resource for Twilio SDK compatibility.\n",
+        "responses": {
+          "200": {
+            "description": "Trunking pricing for the tenant's own country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingTrunkingCountry"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v2/Trunking/Numbers/{DestinationNumber}": {
+      "parameters": [
+        {
+          "name": "DestinationNumber",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "OriginationNumber",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "pricing.v2.trunking.numbers.fetch",
+        "tags": [
+          "Pricing / Trunking v2"
+        ],
+        "summary": "Fetch Trunking pricing for one destination number",
+        "responses": {
+          "200": {
+            "description": "Trunking pricing for the destination number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingTrunkingNumber"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "description": "Carrier bridge unavailable — no real rate to report.",
             "content": {
               "application/json": {
                 "schema": {

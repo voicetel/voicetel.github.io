@@ -4,6 +4,8 @@ title: "Open Source"
 description: "VoiceTel open-source projects: the voicetel/sdks index of 12 VoiceTel REST API libraries, the voicetel/voiceml-sdks index of 8 VoiceML voice + AMD libraries, VoiceTel Phone cross-platform SIP softphone, memdb in-RAM SQLite with PostgreSQL wire protocol, mod_siprec RFC 7866 recording client for FreeSWITCH, and freeswitch-security event-driven threat detection."
 ---
 {%- from "partials/v2/macros.njk" import arrow %}
+{%- set voicetelTarget = sdks.apiName ~ " " ~ apiSpecs[sdks.spec].version %}
+{%- set voicemlTarget = voicemlSdks.apiName ~ " " ~ apiSpecs[voicemlSdks.spec].version %}
 
 <section class="hero hero--page" aria-labelledby="hero-heading">
 	<div class="hero__bg" aria-hidden="true"></div>
@@ -20,7 +22,7 @@ description: "VoiceTel open-source projects: the voicetel/sdks index of 12 Voice
 		<div class="hero__visual">
 			{%- set kpis = [
 				{ label: "VoiceTel SDKs", value: (sdks.sdks | length), suffix: "languages", sub: "Plus the interactive CLI and Postman + Bruno API collections" },
-				{ label: "VoiceML SDKs", value: (voicemlSdks.sdks | length), suffix: "languages", sub: "Twilio-compatible wire format · MIT-licensed · " ~ voicemlSdks.targetApi },
+				{ label: "VoiceML SDKs", value: (voicemlSdks.sdks | length), suffix: "languages", sub: "Twilio-compatible wire format · MIT-licensed · " ~ voicemlTarget },
 				{ label: "memdb", value: "3×", suffix: "writes", sub: "Roughly 3× faster writes and 2× faster reads than disk-backed SQLite" },
 				{ label: "mod_siprec", value: "RFC 7866", sub: "SIPREC Session Recording Client for FreeSWITCH" }
 			] %}
@@ -38,7 +40,7 @@ description: "VoiceTel open-source projects: the voicetel/sdks index of 12 Voice
 		</div>
 		{%- set features = [
 			{ icon: "github", title: "VoiceTel SDKs", body: "Index of the official VoiceTel client libraries: twelve language SDKs plus the interactive <a href=\"https://github.com/voicetel/cli\">CLI</a> and <a href=\"https://github.com/voicetel/api-collections\">Postman + Bruno API collections</a>. Each entry links to its standalone repo with install instructions and release tags. See also <a href=\"/docs/sdks/\">/docs/sdks/</a>.", href: "https://github.com/voicetel/sdks", cta: "View on GitHub" },
-			{ icon: "github", title: "VoiceML SDKs", body: "Index of the official VoiceML client libraries: eight language SDKs for VoiceTel's outbound voice and answering-machine-detection service. Twilio-compatible wire format, hand-written, MIT-licensed, all targeting VoiceML API v0.9.1. See also <a href=\"/docs/voiceml-sdks/\">/docs/voiceml-sdks/</a>.", href: "https://github.com/voicetel/voiceml-sdks", cta: "View on GitHub" },
+			{ icon: "github", title: "VoiceML SDKs", body: "Index of the official VoiceML client libraries: eight language SDKs for VoiceTel's outbound voice and answering-machine-detection service. Twilio-compatible wire format, hand-written, MIT-licensed, all targeting " ~ voicemlTarget ~ ". See also <a href=\"/docs/voiceml-sdks/\">/docs/voiceml-sdks/</a>.", href: "https://github.com/voicetel/voiceml-sdks", cta: "View on GitHub" },
 			{ icon: "github", title: "VoiceTel Phone", body: "Cross-platform SIP softphone for the browser, Windows, macOS, and Linux desktops, and iOS and Android. Built on SIP.js over WebRTC with SIP over TLS, RFC 2833 DTMF with SIP INFO fallback, call recording with inline playback, call history, contacts integration, NAT-friendly ICE/STUN, and a real-time SIP message log for debugging. The same code that powers <a href=\"https://phone.voicetel.com/\">phone.voicetel.com</a>.", href: "https://github.com/voicetel/phone", cta: "View on GitHub" },
 			{ icon: "github", title: "memdb", body: "Embedded Go SQLite that runs entirely in RAM. Roughly 3× faster on writes and 2× faster on reads than disk-backed SQLite, with snapshot + WAL durability, Raft replication for HA, and a PostgreSQL wire-protocol server bundled into a single library, so existing Postgres clients connect to an in-memory store without code changes.", href: "https://github.com/voicetel/memdb", cta: "View on GitHub" },
 			{ icon: "github", title: "mod_siprec", body: "RFC 7866 SIPREC Session Recording Client implemented as a FreeSWITCH module. Forwards live media and the associated SIPREC metadata XML to a standards-compliant Session Recording Server for compliance recording, supervisor monitoring, or analytics, without vendor-specific RTP forking.", href: "https://github.com/voicetel/mod_siprec", cta: "View on GitHub" },
@@ -54,7 +56,7 @@ description: "VoiceTel open-source projects: the voicetel/sdks index of 12 Voice
 			<div class="row__text">
 				<p class="eyebrow">SDKs</p>
 				<h2 id="sdks-heading">Twelve VoiceTel SDKs and eight VoiceML SDKs, each in its own repository.</h2>
-				<p class="lede">Every language SDK has a standalone repo with install instructions and release tags. The VoiceTel SDKs target the {{ sdks.targetApi }}; the VoiceML SDKs target {{ voicemlSdks.targetApi }} with a Twilio-compatible wire format, hand-written and MIT-licensed.</p>
+				<p class="lede">Every language SDK has a standalone repo with install instructions and release tags. The VoiceTel SDKs target the {{ voicetelTarget }}; the VoiceML SDKs target {{ voicemlTarget }} with a Twilio-compatible wire format, hand-written and MIT-licensed.</p>
 				<p class="row__links">Indexes: <a href="/docs/sdks/">/docs/sdks/</a> &middot; <a href="/docs/voiceml-sdks/">/docs/voiceml-sdks/</a>. Tooling: <a href="https://github.com/voicetel/cli">CLI</a> &middot; <a href="https://github.com/voicetel/api-collections">API collections</a>.</p>
 			</div>
 			<div class="row__visual">

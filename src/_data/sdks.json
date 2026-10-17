@@ -1,8 +1,8 @@
 {
 	"source": "https://github.com/voicetel",
 	"license": "MIT",
-	"targetApi": "VoiceTel REST API v2.2.15",
-	"operationCount": 79,
+	"apiName": "VoiceTel REST API",
+	"spec": "v2.2",
 	"sdks": [
 		{
 			"name": "Python",
@@ -101,7 +101,7 @@
 			"icon": "gear",
 			"repo": "https://github.com/voicetel/cli",
 			"install": "go install github.com/voicetel/cli@latest",
-			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every v2.2.15 operation from the terminal."
+			"description": "Interactive REPL for the VoiceTel API. Command history, tab autocomplete, and one-shot scripted invocations. Drives every {version} operation from the terminal."
 		},
 		{
 			"name": "API Collections",
@@ -109,7 +109,7 @@
 			"icon": "layers",
 			"repo": "https://github.com/voicetel/api-collections",
 			"install": "import into Postman or Bruno",
-			"description": "Pre-built Postman and Bruno collections covering all 79 v2.2.15 operations. Environment templates for API key and base URL included."
+			"description": "Pre-built Postman and Bruno collections covering all {operationCount} {version} operations. Environment templates for API key and base URL included."
 		}
 	]
 }

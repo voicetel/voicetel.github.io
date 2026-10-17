@@ -1,7 +1,8 @@
-// Source of truth for /docs/api/ URLs. Reads vendor/api-specs/*.json at
-// build time and exposes { name, version, majorMinor, urlPath, title } per
-// spec. Both the Redoc build script (tools/build-api-docs.mjs) and the
-// Eleventy templates read the same shape, so URL changes happen here only.
+// Source of truth for /docs/api/ URLs and spec facts quoted in page copy.
+// Reads vendor/api-specs/*.json at build time and exposes { name, version,
+// majorMinor, urlPath, title, operationCount } per spec. Both the Redoc build
+// script (tools/build-api-docs.mjs) and the Eleventy templates read the same
+// shape, so a spec refresh updates every page without copy edits.
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve, dirname, basename } from "node:path";
@@ -14,6 +15,16 @@ function majorMinor(version) {
 		.replace(/^v/i, "")
 		.match(/^(\d+)\.(\d+)/);
 	return m ? `v${m[1]}.${m[2]}` : null;
+}
+
+const HTTP_METHODS = new Set(["get", "put", "post", "delete", "options", "head", "patch", "trace"]);
+
+function countOperations(spec) {
+	let count = 0;
+	for (const item of Object.values(spec.paths || {})) {
+		count += Object.keys(item).filter((key) => HTTP_METHODS.has(key)).length;
+	}
+	return count;
 }
 
 const files = readdirSync(SPECS_DIR)
@@ -48,6 +59,7 @@ for (const file of files) {
 		title: spec.info?.title || name,
 		description,
 		consolidated: isConsolidated,
+		operationCount: countOperations(spec),
 		lastmod,
 	};
 }

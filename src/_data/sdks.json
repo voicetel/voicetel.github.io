@@ -30,7 +30,7 @@
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/java-sdk",
-			"install": "com.voicetel:voicetel-sdk:2.2.15",
+			"install": "com.voicetel:voicetel-sdk:2.2.17",
 			"installLabel": "Maven",
 			"description": "Java 11+ client with builder-style request construction. Pluggable HTTP transport; OkHttp by default."
 		},
@@ -38,7 +38,7 @@
 			"name": "Kotlin",
 			"slug": "kotlin",
 			"repo": "https://github.com/voicetel/kotlin-sdk",
-			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.15",
+			"install": "com.voicetel:voicetel-sdk-kotlin:2.2.17",
 			"installLabel": "Gradle",
 			"description": "Coroutine-first Kotlin client. Suspending functions, sealed result types, idiomatic null handling."
 		},
@@ -46,7 +46,7 @@
 			"name": "Scala",
 			"slug": "scala",
 			"repo": "https://github.com/voicetel/scala-sdk",
-			"install": "com.voicetel:voicetel-sdk_3:2.2.15",
+			"install": "com.voicetel:voicetel-sdk_3:2.2.17",
 			"installLabel": "sbt",
 			"description": "Scala 3 client. Effect-system-agnostic core with thin Future and cats-effect bindings."
 		},

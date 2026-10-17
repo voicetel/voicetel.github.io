@@ -30,7 +30,7 @@
 			"name": "TypeScript / Node",
 			"slug": "typescript",
 			"repo": "https://github.com/voicetel/voiceml-node-sdk",
-			"install": "npm install voiceml",
+			"install": "npm install @voicetel.com/voiceml",
 			"description": "ESM and CJS entry points. Async-only API, fetch-based transport, zero runtime dependencies."
 		},
 		{
@@ -44,7 +44,7 @@
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/voiceml-java-sdk",
-			"install": "com.voicetel:voiceml:0.9.1",
+			"install": "com.voicetel:voiceml:0.9.2",
 			"installLabel": "Maven",
 			"description": "Java 11+ client over java.net.http. Builder-style request construction, Jackson serialization."
 		},

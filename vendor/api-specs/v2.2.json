@@ -13,7 +13,7 @@
       "description": "Manage the account SIP authentication type (Digest, IP Auth, or both) and password."
     },
     {
-      "name": "e911",
+      "name": "E911",
       "description": "Provision and manage e911 emergency service records for telephone numbers on the account."
     },
     {
@@ -97,10 +97,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numbersListData",
-            "description": "Payload of the numbers list response operation."
+            "description": "Payload of the numbers list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the numbers list response operation.",
+            "description": "Operation outcome: \"success\" when the numbers list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -113,7 +114,7 @@
           "data": {
             "numbers": [
               {
-                "route": 1000,
+                "route": 4,
                 "carrier": 0,
                 "faxEnabled": true,
                 "gateway": "203.0.113.10:5060",
@@ -263,13 +264,13 @@
       "cnamData": {
         "properties": {
           "number": {
-            "description": "Telephone number (ten digits) (in cnamData).",
+            "description": "Telephone number (ten digits) (cnam data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "cnam": {
-            "description": "Whether inbound CNAM lookup is enabled for the number (in cnamData).",
+            "description": "Whether inbound CNAM lookup is enabled for the number (cnam data cnam).",
             "example": "VOICETEL",
             "type": "string"
           }
@@ -285,12 +286,22 @@
       "numberAddRequest": {
         "properties": {
           "route": {
-            "description": "Gateway route ID. Defaults to 4 (DID).",
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Used when adding a number.",
             "example": 4,
-            "type": "integer"
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberAddRequest).",
+            "description": "Telephone number (ten digits) (number add request number).",
             "type": "string",
             "example": "2015550123",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -310,10 +321,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/gatewayEntry",
-            "description": "Payload of the gateway response operation."
+            "description": "Payload of the gateway response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the gateway response operation.",
+            "description": "Operation outcome: \"success\" when the gateway call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -342,10 +354,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/cnamData",
-            "description": "Payload of the cnam response operation."
+            "description": "Payload of the cnam response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the cnam response operation.",
+            "description": "Operation outcome: \"success\" when the cnam call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -601,7 +614,7 @@
             "items": {
               "properties": {
                 "id": {
-                  "description": "Id (in messagingCampaignStatusData).",
+                  "description": "Id (campaigns id).",
                   "example": "ABC123",
                   "type": "string"
                 },
@@ -611,7 +624,7 @@
                   "type": "string"
                 },
                 "numbers": {
-                  "description": "Numbers (in messagingCampaignStatusData).",
+                  "description": "Numbers (campaigns numbers).",
                   "items": {
                     "type": "string"
                   },
@@ -621,8 +634,10 @@
                   "type": "array"
                 },
                 "dca": {
-                  "type": "object",
-                  "nullable": true,
+                  "type": [
+                    "object",
+                    "null"
+                  ],
                   "description": "Carrier (DCA) review progress. null for CAMPAIGN_INVALID_ID.",
                   "properties": {
                     "electionComplete": {
@@ -631,8 +646,10 @@
                       "example": true
                     },
                     "electedCarriers": {
-                      "type": "array",
-                      "nullable": true,
+                      "type": [
+                        "array",
+                        "null"
+                      ],
                       "items": {
                         "type": "string"
                       },
@@ -754,10 +771,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountRegistrationData",
-            "description": "Payload of the account registration response operation."
+            "description": "Payload of the account registration response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account registration response operation.",
+            "description": "Operation outcome: \"success\" when the account registration call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -794,7 +812,7 @@
           },
           "campaignDescription": {
             "description": "Campaign description.",
-            "example": "example",
+            "example": "Holiday promo 2026",
             "type": "string"
           },
           "campaignClassName": {
@@ -827,10 +845,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountMrcData",
-            "description": "Payload of the account mrc response operation."
+            "description": "Payload of the account mrc response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account mrc response operation.",
+            "description": "Operation outcome: \"success\" when the account mrc call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -844,7 +863,7 @@
             "charges": [
               {
                 "amount": 0.5,
-                "description": "example"
+                "description": "example (charges 0)."
               }
             ],
             "total": 0.5
@@ -861,10 +880,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/e911ValidateData",
-            "description": "Payload of the e911 validate response operation."
+            "description": "Payload of the e911 validate response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the e911 validate response operation.",
+            "description": "Operation outcome: \"success\" when the e911 validate call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -895,12 +915,22 @@
       "numberAddData": {
         "properties": {
           "route": {
-            "description": "Gateway id the number is currently routed to (in numberAddData).",
-            "example": 0,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Returned after adding a number.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberAddData).",
+            "description": "Telephone number (ten digits) (number add data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -908,7 +938,7 @@
         },
         "description": "Data payload for the number add operation.",
         "example": {
-          "route": 0,
+          "route": 4,
           "number": "2015550100"
         },
         "required": [],
@@ -917,7 +947,7 @@
       "accountPutData": {
         "properties": {
           "updated": {
-            "description": "Updated (in accountPutData).",
+            "description": "Updated (account put data updated).",
             "items": {
               "type": "string"
             },
@@ -940,10 +970,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountData",
-            "description": "Payload of the account get response operation."
+            "description": "Payload of the account get response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account get response operation.",
+            "description": "Operation outcome: \"success\" when the account get call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -998,7 +1029,7 @@
       "aclListData": {
         "properties": {
           "acl": {
-            "description": "List of CIDR ranges authorized for IP-based authentication on this account (in aclListData).",
+            "description": "List of CIDR ranges authorized for IP-based authentication on this account (acl list data acl).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -1024,18 +1055,18 @@
       "accountSignupRequest": {
         "properties": {
           "name": {
-            "description": "Human-readable name (in accountSignupRequest).",
+            "description": "Human-readable name (account signup request name).",
             "example": "Acme Inc",
             "type": "string"
           },
           "email": {
-            "description": "Email address (in accountSignupRequest).",
+            "description": "Email address (account signup request email).",
             "example": "user@example.com",
             "type": "string"
           },
           "promo": {
             "description": "Optional promotional code.",
-            "example": "example",
+            "example": "WELCOME10",
             "type": "string"
           }
         },
@@ -1072,10 +1103,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/authGetData",
-            "description": "Payload of the auth get response operation."
+            "description": "Payload of the auth get response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the auth get response operation.",
+            "description": "Operation outcome: \"success\" when the auth get call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -1126,7 +1158,7 @@
                 "type": "string"
               }
             },
-            "description": "Sms (in portFeature).",
+            "description": "Sms (port feature sms).",
             "example": {
               "campaignId": "C123456"
             },
@@ -1174,10 +1206,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ticketThreadsData",
-            "description": "Payload of the ticket threads response operation."
+            "description": "Payload of the ticket threads response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the ticket threads response operation.",
+            "description": "Operation outcome: \"success\" when the ticket threads call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -1304,10 +1337,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/messagingBrandCreateData",
-            "description": "Payload of the messaging brand create response operation."
+            "description": "Payload of the messaging brand create response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the messaging brand create response operation.",
+            "description": "Operation outcome: \"success\" when the messaging brand create call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -1403,10 +1437,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountCreditsData",
-            "description": "Payload of the account credits response operation."
+            "description": "Payload of the account credits response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account credits response operation.",
+            "description": "Operation outcome: \"success\" when the account credits call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -1436,9 +1471,19 @@
       "numberMoveData": {
         "properties": {
           "route": {
-            "description": "gateway_id on the destination account that the number was pointed at.",
-            "example": 0,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Route on the destination account after the move.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "accountId": {
             "description": "Destination account (username) the number was moved to.",
@@ -1446,7 +1491,7 @@
             "type": "integer"
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberMoveData).",
+            "description": "Telephone number (ten digits) (number move data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -1454,7 +1499,7 @@
         },
         "description": "Data payload for the number move operation.",
         "example": {
-          "route": 0,
+          "route": 4,
           "accountId": 1,
           "number": "2015550100"
         },
@@ -1560,7 +1605,7 @@
       "aclModifyRequest": {
         "properties": {
           "acl": {
-            "description": "List of CIDR ranges authorized for IP-based authentication on this account (in aclModifyRequest).",
+            "description": "List of CIDR ranges authorized for IP-based authentication on this account (acl modify request acl).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -1588,15 +1633,15 @@
       "numberForwardData": {
         "properties": {
           "forwardTo": {
-            "description": "Forwarding destination — ten-digit telephone number — or null when forwarding is disabled (in numberForwardData).",
-            "example": "example",
+            "description": "Forwarding destination — ten-digit telephone number — or null when forwarding is disabled (number forward data forward to).",
+            "example": "2015550123",
             "type": [
               "string",
               "null"
             ]
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberForwardData).",
+            "description": "Telephone number (ten digits) (number forward data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -1836,10 +1881,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountPaymentsData",
-            "description": "Payload of the account payments response operation."
+            "description": "Payload of the account payments response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account payments response operation.",
+            "description": "Operation outcome: \"success\" when the account payments call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -1893,7 +1939,7 @@
           },
           "address2": {
             "description": "Street address line 2 (apartment, suite, floor).",
-            "example": "example",
+            "example": "Suite 200",
             "type": "string"
           },
           "callername": {
@@ -1969,10 +2015,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberMessagingCampaignAssignData",
-            "description": "Payload of the number messaging campaign assign response operation."
+            "description": "Payload of the number messaging campaign assign response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number messaging campaign assign response operation.",
+            "description": "Operation outcome: \"success\" when the number messaging campaign assign call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -2014,7 +2061,7 @@
       "accountRecoverBadRequest": {
         "properties": {
           "status": {
-            "description": "Outcome of the account recover bad request operation.",
+            "description": "Operation outcome: \"success\" when the account recover bad request call succeeded.",
             "example": "error",
             "enum": [
               "error"
@@ -2032,12 +2079,12 @@
                 "type": "string"
               },
               "code": {
-                "description": "Code (in accountRecoverBadRequest).",
+                "description": "Code (error code).",
                 "example": 400,
                 "type": "integer"
               },
               "message": {
-                "description": "Free-form message text (in accountRecoverBadRequest).",
+                "description": "Free-form message text (error message).",
                 "example": "Invalid email address",
                 "enum": [
                   "Invalid email address"
@@ -2097,10 +2144,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/messageSendData",
-            "description": "Payload of the message send response operation."
+            "description": "Payload of the message send response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the message send response operation.",
+            "description": "Operation outcome: \"success\" when the message send call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -2133,10 +2181,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/inventoryCoverageData",
-            "description": "Payload of the inventory coverage response operation."
+            "description": "Payload of the inventory coverage response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the inventory coverage response operation.",
+            "description": "Operation outcome: \"success\" when the inventory coverage call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -2171,13 +2220,13 @@
       "gatewayUpdateRequest": {
         "properties": {
           "gateway": {
-            "description": "Gateway address (IP[:port]) or system route name (in gatewayUpdateRequest).",
+            "description": "Gateway address (IP[:port]) or system route name (gateway update request gateway).",
             "example": "203.0.113.20:5060",
             "type": "string"
           },
           "prefix": {
             "description": "Prefix.",
-            "example": "example",
+            "example": "201",
             "type": "string"
           },
           "limit": {
@@ -2201,7 +2250,7 @@
         "properties": {
           "block": {
             "description": "Thousands-block (countBy=block).",
-            "example": "example",
+            "example": "0001",
             "type": "string"
           },
           "nxx": {
@@ -2211,12 +2260,12 @@
           },
           "rcAbbre": {
             "description": "Rate-center abbreviation (countBy=rateCenter).",
-            "example": "example",
+            "example": "NWRK",
             "type": "string"
           },
           "city": {
             "description": "City name (countBy=city).",
-            "example": "example",
+            "example": "Newark",
             "type": "string"
           },
           "npa": {
@@ -2306,7 +2355,7 @@
                     },
                     "value": {
                       "description": "Value (in socialProfiles[]).",
-                      "example": "example",
+                      "example": "https://twitter.com/voicetel",
                       "type": "string"
                     },
                     "id": {
@@ -2337,7 +2386,7 @@
                     },
                     "value": {
                       "description": "Value (in phones[]).",
-                      "example": "example",
+                      "example": "2015550123",
                       "type": "string"
                     },
                     "id": {
@@ -2368,7 +2417,7 @@
                     },
                     "value": {
                       "description": "Value (in emails[]).",
-                      "example": "example",
+                      "example": "jane@example.com",
                       "type": "string"
                     },
                     "id": {
@@ -2394,7 +2443,7 @@
                   "properties": {
                     "value": {
                       "description": "Value (in websites[]).",
-                      "example": "example",
+                      "example": "https://example.com",
                       "type": "string"
                     },
                     "id": {
@@ -2417,27 +2466,27 @@
                 "properties": {
                   "country": {
                     "description": "Two-letter ISO 3166-1 alpha-2 country code.",
-                    "example": "example",
+                    "example": "US",
                     "type": "string"
                   },
                   "street": {
                     "description": "Street address line.",
-                    "example": "example",
+                    "example": "123 Main St",
                     "type": "string"
                   },
                   "city": {
-                    "description": "City name (in supportCustomer).",
-                    "example": "example",
+                    "description": "City name (address city).",
+                    "example": "Newark",
                     "type": "string"
                   },
                   "zip": {
-                    "description": "Postal code (in supportCustomer).",
-                    "example": "example",
+                    "description": "Postal code (address zip).",
+                    "example": "07102",
                     "type": "string"
                   },
                   "state": {
-                    "description": "Two-letter US state code (in supportCustomer).",
-                    "example": "example",
+                    "description": "Two-letter US state code (address state).",
+                    "example": "NJ",
                     "type": "string"
                   }
                 },
@@ -2601,7 +2650,7 @@
             "type": "string"
           },
           "message": {
-            "description": "Free-form message text (in portSubmitData).",
+            "description": "Free-form message text (port submit data message).",
             "example": "Port request a3a2a submitted. Please complete the LOA to proceed.",
             "type": "string"
           },
@@ -2626,10 +2675,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/messagingCampaignStatusData",
-            "description": "Payload of the messaging campaign status response operation."
+            "description": "Payload of the messaging campaign status response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the messaging campaign status response operation.",
+            "description": "Operation outcome: \"success\" when the messaging campaign status call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -2695,7 +2745,7 @@
             "type": "string"
           },
           "status": {
-            "description": "Outcome of the payment entry operation.",
+            "description": "Operation outcome: \"success\" when the payment entry call succeeded.",
             "example": "Completed",
             "enum": [
               "Completed",
@@ -2728,10 +2778,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/portSubmitData",
-            "description": "Payload of the port submit response operation."
+            "description": "Payload of the port submit response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the port submit response operation.",
+            "description": "Operation outcome: \"success\" when the port submit call succeeded.",
             "example": "success",
             "type": "string"
           }
@@ -2756,7 +2807,7 @@
       "authPutData": {
         "properties": {
           "updated": {
-            "description": "Updated (in authPutData).",
+            "description": "Updated (auth put data updated).",
             "items": {
               "properties": {
                 "value": {
@@ -2868,7 +2919,7 @@
             "type": "integer"
           },
           "type": {
-            "description": "Type (in messageSendData).",
+            "description": "Type (message send data type).",
             "example": "sms",
             "enum": [
               "sms",
@@ -2878,7 +2929,7 @@
           },
           "subject": {
             "description": "Echo of submitted subject (MMS only).",
-            "example": "example",
+            "example": "Dinner at 7?",
             "type": "string"
           }
         },
@@ -2900,13 +2951,13 @@
       "numbersListData": {
         "properties": {
           "numbers": {
-            "description": "Numbers (in numbersListData).",
+            "description": "Numbers (numbers list data numbers).",
             "items": {
               "$ref": "#/components/schemas/numberDetail"
             },
             "example": [
               {
-                "route": 1000,
+                "route": 4,
                 "carrier": 0,
                 "faxEnabled": true,
                 "gateway": "203.0.113.10:5060",
@@ -2925,7 +2976,7 @@
         "example": {
           "numbers": [
             {
-              "route": 1000,
+              "route": 4,
               "carrier": 0,
               "faxEnabled": true,
               "gateway": "203.0.113.10:5060",
@@ -2979,13 +3030,16 @@
         "properties": {
           "apikey": {
             "description": "Bearer token for API authentication.",
-            "example": "0123456789abcdef0123456789abcdef",
-            "type": "string"
+            "example": "dec759ed81963fd9a4b8a9c8f3e22b1a",
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 32,
+            "pattern": "^[0-9a-f]{32}$"
           }
         },
         "description": "Data payload for the account api key operation.",
         "example": {
-          "apikey": "0123456789abcdef0123456789abcdef"
+          "apikey": "dec759ed81963fd9a4b8a9c8f3e22b1a"
         },
         "required": [],
         "type": "object"
@@ -2993,7 +3047,7 @@
       "numbersMessagingListData": {
         "properties": {
           "numbers": {
-            "description": "Numbers (in numbersMessagingListData).",
+            "description": "Numbers (numbers messaging list data numbers).",
             "items": {
               "$ref": "#/components/schemas/numberMessagingState"
             },
@@ -3069,10 +3123,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/messageHistoryData",
-            "description": "Payload of the message history response operation."
+            "description": "Payload of the message history response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the message history response operation.",
+            "description": "Operation outcome: \"success\" when the message history call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3092,11 +3147,11 @@
                 "key": [],
                 "value": {
                   "direction": "in",
-                  "rate": "example",
-                  "message": "example",
+                  "rate": "0.0150",
+                  "message": "Your verification code is 483921",
                   "destinationNumber": "2015550123",
                   "sourceNumber": "2015550123",
-                  "number": 0
+                  "number": "2015550123"
                 },
                 "id": "41946b6929e7b873fcafd5a3b475cc4ebfefd2a2"
               }
@@ -3113,22 +3168,22 @@
       "accountSignupData": {
         "properties": {
           "username": {
-            "description": "Account identifier (in accountSignupData).",
+            "description": "Account identifier (account signup data username).",
             "example": "1000000001",
             "type": "string"
           },
           "password": {
-            "description": "Password (in accountSignupData).",
-            "example": "example",
+            "description": "Password (account signup data password).",
+            "example": "hunter2",
             "type": "string"
           },
           "name": {
-            "description": "Human-readable name (in accountSignupData).",
+            "description": "Human-readable name (account signup data name).",
             "example": "Acme Inc",
             "type": "string"
           },
           "email": {
-            "description": "Email address (in accountSignupData).",
+            "description": "Email address (account signup data email).",
             "example": "user@example.com",
             "type": "string"
           }
@@ -3195,10 +3250,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/e911RecordData",
-            "description": "Payload of the e911 record response operation."
+            "description": "Payload of the e911 record response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the e911 record response operation.",
+            "description": "Operation outcome: \"success\" when the e911 record call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3259,10 +3315,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountAddData",
-            "description": "Payload of the account add response operation."
+            "description": "Payload of the account add response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account add response operation.",
+            "description": "Operation outcome: \"success\" when the account add call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3291,10 +3348,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/portDetailData",
-            "description": "Payload of the port detail response operation."
+            "description": "Payload of the port detail response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the port detail response operation.",
+            "description": "Operation outcome: \"success\" when the port detail call succeeded (port detail response status).",
             "example": "success",
             "enum": [
               "success"
@@ -3331,10 +3389,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numbersMessagingCampaignUnassignData",
-            "description": "Payload of the numbers messaging campaign unassign response operation."
+            "description": "Payload of the numbers messaging campaign unassign response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the numbers messaging campaign unassign response operation.",
+            "description": "Operation outcome: \"success\" when the numbers messaging campaign unassign call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3496,12 +3555,12 @@
             "type": "string"
           },
           "zip": {
-            "description": "Postal code (in portSubmitRequest).",
+            "description": "Postal code (port submit request zip).",
             "example": "60601",
             "type": "string"
           },
           "city": {
-            "description": "City name (in portSubmitRequest).",
+            "description": "City name (port submit request city).",
             "example": "Chicago",
             "type": "string"
           },
@@ -3629,7 +3688,7 @@
             "type": "boolean"
           },
           "id": {
-            "description": "Id (in gatewayEntry).",
+            "description": "Id (gateway entry id).",
             "example": 1000,
             "type": "integer"
           },
@@ -3676,7 +3735,7 @@
                 },
                 "description": {
                   "description": "Description.",
-                  "example": "example",
+                  "example": "DID number 2015550123",
                   "type": "string"
                 }
               },
@@ -3685,7 +3744,7 @@
             "example": [
               {
                 "amount": 0.5,
-                "description": "example"
+                "description": "example (example 0)."
               }
             ],
             "type": "array"
@@ -3701,7 +3760,7 @@
           "charges": [
             {
               "amount": 0.5,
-              "description": "example"
+              "description": "example (example charges 0)."
             }
           ],
           "total": 0.5
@@ -3713,10 +3772,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/aclAddData",
-            "description": "Payload of the acl add response operation."
+            "description": "Payload of the acl add response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the acl add response operation.",
+            "description": "Operation outcome: \"success\" when the acl add call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3745,10 +3805,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/aclRemoveData",
-            "description": "Payload of the acl remove response operation."
+            "description": "Payload of the acl remove response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the acl remove response operation.",
+            "description": "Operation outcome: \"success\" when the acl remove call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3777,10 +3838,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountApiKeyData",
-            "description": "Payload of the account api key response operation."
+            "description": "Payload of the account api key response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account api key response operation.",
+            "description": "Operation outcome: \"success\" when the account api key call succeeded.",
             "example": "success",
             "type": "string"
           }
@@ -3788,7 +3850,7 @@
         "description": "Response wrapper for the account api key operation.",
         "example": {
           "data": {
-            "apikey": "0123456789abcdef0123456789abcdef"
+            "apikey": "dec759ed81963fd9a4b8a9c8f3e22b1a"
           },
           "status": "success"
         },
@@ -3802,10 +3864,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberRouteData",
-            "description": "Payload of the number route response operation."
+            "description": "Payload of the number route response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number route response operation.",
+            "description": "Operation outcome: \"success\" when the number route call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3816,7 +3879,7 @@
         "description": "Response wrapper for the number Route operation.",
         "example": {
           "data": {
-            "route": 0,
+            "route": 4,
             "number": "2015550100"
           },
           "status": "success"
@@ -3831,10 +3894,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberMessagingPatchData",
-            "description": "Payload of the number messaging patch response operation."
+            "description": "Payload of the number messaging patch response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number messaging patch response operation.",
+            "description": "Operation outcome: \"success\" when the number messaging patch call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -3871,12 +3935,22 @@
                 {
                   "properties": {
                     "route": {
-                      "description": "Optional gateway_id on this account; defaults to 4.",
-                      "example": 0,
-                      "type": "integer"
+                      "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Route for numbers in this order.",
+                      "example": 4,
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        8,
+                        9
+                      ]
                     },
                     "number": {
-                      "description": "Telephone number (ten digits) (in orderCreateRequest).",
+                      "description": "Telephone number (ten digits) (1 number).",
                       "type": "string",
                       "example": "2015550100",
                       "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -3902,7 +3976,7 @@
       "supportConversation": {
         "properties": {
           "bcc": {
-            "description": "Bcc (in supportConversation).",
+            "description": "Bcc (support conversation bcc).",
             "items": {
               "type": "string"
             },
@@ -3929,7 +4003,7 @@
               },
               "friendly": {
                 "description": "Human-readable interval, e.g. `2 hours`.",
-                "example": "example",
+                "example": "2 hours",
                 "type": "string"
               },
               "time": {
@@ -3955,18 +4029,18 @@
             "items": {
               "properties": {
                 "name": {
-                  "description": "Human-readable name (in supportConversation).",
-                  "example": "example",
+                  "description": "Human-readable name (custom fields name).",
+                  "example": "account_tier",
                   "type": "string"
                 },
                 "value": {
-                  "description": "Value (in supportConversation).",
-                  "example": "example",
+                  "description": "Value.",
+                  "example": "gold",
                   "type": "string"
                 },
                 "text": {
                   "description": "Text (in customFields[]).",
-                  "example": "example",
+                  "example": "Escalated to provisioning.",
                   "type": "string"
                 },
                 "id": {
@@ -3990,13 +4064,13 @@
           "source": {
             "properties": {
               "type": {
-                "description": "Type (in source).",
-                "example": "example",
+                "description": "Type (source type).",
+                "example": "email",
                 "type": "string"
               },
               "via": {
                 "description": "Via.",
-                "example": "example",
+                "example": "jane@example.com",
                 "type": "string"
               }
             },
@@ -4263,28 +4337,28 @@
           "closedByUser": {
             "properties": {
               "id": {
-                "description": "Id (in closedByUser).",
+                "description": "Id (closed by user id).",
                 "example": 0,
                 "type": "integer"
               },
               "lastName": {
-                "description": "Last name (in closedByUser).",
-                "example": "example",
+                "description": "Last name (closed by user last name).",
+                "example": "Doe",
                 "type": "string"
               },
               "email": {
-                "description": "Email address (in closedByUser).",
-                "example": "example",
+                "description": "Email address (closed by user email).",
+                "example": "jane@example.com",
                 "type": "string"
               },
               "firstName": {
-                "description": "First name (in closedByUser).",
-                "example": "example",
+                "description": "First name (closed by user first name).",
+                "example": "Jane",
                 "type": "string"
               },
               "type": {
                 "type": "string",
-                "description": "Type (in closedByUser).",
+                "description": "Type (closed by user type).",
                 "enum": [
                   "user"
                 ]
@@ -4354,35 +4428,35 @@
           "assignee": {
             "properties": {
               "lastName": {
-                "description": "Last name (in assignee).",
-                "example": "example",
+                "description": "Last name (assignee last name).",
+                "example": "Doe",
                 "type": "string"
               },
               "id": {
-                "description": "Id (in assignee).",
+                "description": "Id (assignee id).",
                 "example": 0,
                 "type": "integer"
               },
               "type": {
                 "type": "string",
-                "description": "Type (in assignee).",
+                "description": "Type (assignee type).",
                 "enum": [
                   "user"
                 ]
               },
               "photoUrl": {
                 "description": "Photo url.",
-                "example": "example",
+                "example": "https://example.com/photo.jpg",
                 "type": "string"
               },
               "email": {
-                "description": "Email address (in assignee).",
-                "example": "example",
+                "description": "Email address (assignee email).",
+                "example": "jane@example.com",
                 "type": "string"
               },
               "firstName": {
-                "description": "First name (in assignee).",
-                "example": "example",
+                "description": "First name (assignee first name).",
+                "example": "Jane",
                 "type": "string"
               }
             },
@@ -4403,7 +4477,7 @@
             "type": "integer"
           },
           "status": {
-            "description": "Outcome of the support conversation operation.",
+            "description": "Operation outcome: \"success\" when the support conversation call succeeded.",
             "example": "active",
             "enum": [
               "active",
@@ -4422,7 +4496,7 @@
               },
               "email": {
                 "description": "Email address (supportConversation.email).",
-                "example": "example",
+                "example": "jane@example.com",
                 "type": "string"
               },
               "type": {
@@ -4707,7 +4781,7 @@
       "supportThread": {
         "properties": {
           "bcc": {
-            "description": "Bcc (in supportThread).",
+            "description": "Bcc (support thread bcc).",
             "items": {
               "type": "string"
             },
@@ -4720,12 +4794,12 @@
             "properties": {
               "type": {
                 "description": "Origin type — typically `email`, `web`, or `api`.",
-                "example": "example",
+                "example": "email",
                 "type": "string"
               },
               "via": {
                 "description": "Identifier of the author or sender.",
-                "example": "example",
+                "example": "jane@example.com",
                 "type": "string"
               }
             },
@@ -4753,7 +4827,7 @@
           },
           "ratingComment": {
             "description": "Free-form comment that accompanies the rating.",
-            "example": "example",
+            "example": "Fast resolution, thanks!",
             "type": "string"
           },
           "embedded": {
@@ -4797,28 +4871,28 @@
           "assignedTo": {
             "properties": {
               "id": {
-                "description": "Id (in assignedTo).",
+                "description": "Id (assigned to id).",
                 "example": 0,
                 "type": "integer"
               },
               "lastName": {
-                "description": "Last name (in assignedTo).",
-                "example": "example",
+                "description": "Last name (assigned to last name).",
+                "example": "Doe",
                 "type": "string"
               },
               "email": {
-                "description": "Email address (in assignedTo).",
-                "example": "example",
+                "description": "Email address (assigned to email).",
+                "example": "jane@example.com",
                 "type": "string"
               },
               "firstName": {
-                "description": "First name (in assignedTo).",
-                "example": "example",
+                "description": "First name (assigned to first name).",
+                "example": "Jane",
                 "type": "string"
               },
               "type": {
                 "type": "string",
-                "description": "Type (in assignedTo).",
+                "description": "Type (assigned to type).",
                 "enum": [
                   "user"
                 ]
@@ -4837,13 +4911,13 @@
           "action": {
             "properties": {
               "type": {
-                "description": "Type (in action).",
-                "example": "example",
+                "description": "Type (action type).",
+                "example": "email",
                 "type": "string"
               },
               "text": {
-                "description": "Text (in action).",
-                "example": "example",
+                "description": "Text.",
+                "example": "Escalated to provisioning.",
                 "type": "string"
               }
             },
@@ -4879,7 +4953,7 @@
             "type": "integer"
           },
           "status": {
-            "description": "Outcome of the support thread operation.",
+            "description": "Operation outcome: \"success\" when the support thread call succeeded.",
             "example": "active",
             "type": "string"
           },
@@ -4898,7 +4972,7 @@
               },
               "email": {
                 "description": "Email address (supportThread.email).",
-                "example": "example",
+                "example": "jane@example.com",
                 "type": "string"
               },
               "type": {
@@ -5049,10 +5123,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberLidbData",
-            "description": "Payload of the number lidb response operation."
+            "description": "Payload of the number lidb response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number lidb response operation.",
+            "description": "Operation outcome: \"success\" when the number lidb call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5080,10 +5155,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberFaxData",
-            "description": "Payload of the number fax response operation."
+            "description": "Payload of the number fax response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number fax response operation.",
+            "description": "Operation outcome: \"success\" when the number fax call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5109,10 +5185,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ticketUpdateData",
-            "description": "Payload of the ticket update response operation."
+            "description": "Payload of the ticket update response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the ticket update response operation.",
+            "description": "Operation outcome: \"success\" when the ticket update call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5157,16 +5234,16 @@
             "type": "string"
           },
           "failed": {
-            "description": "Failed (in orderCreateData).",
+            "description": "Failed (order create data failed).",
             "items": {
               "properties": {
                 "reason": {
                   "description": "Reason (orderCreateData.reason).",
-                  "example": "example",
+                  "example": "Number unavailable in this rate center.",
                   "type": "string"
                 },
                 "number": {
-                  "description": "Telephone number (ten digits) (in orderCreateData).",
+                  "description": "Telephone number (ten digits) (failed number).",
                   "type": "string",
                   "example": "2015550100",
                   "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -5247,13 +5324,13 @@
       "numberFaxData": {
         "properties": {
           "number": {
-            "description": "Telephone number (ten digits) (in numberFaxData).",
+            "description": "Telephone number (ten digits) (number fax data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "email": {
-            "description": "Email address (in numberFaxData).",
+            "description": "Email address (number fax data email).",
             "example": "user@example.com",
             "type": "string"
           }
@@ -5275,7 +5352,7 @@
           },
           "subject": {
             "description": "MMS subject line (optional, MMS only).",
-            "example": "example",
+            "example": "Dinner at 7?",
             "type": "string"
           },
           "toNumber": {
@@ -5322,10 +5399,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/messagingCampaignCreateData",
-            "description": "Payload of the messaging campaign create response operation."
+            "description": "Payload of the messaging campaign create response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the messaging campaign create response operation.",
+            "description": "Operation outcome: \"success\" when the messaging campaign create call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5510,10 +5588,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberMessagingState",
-            "description": "Payload of the number messaging response operation."
+            "description": "Payload of the number messaging response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number messaging response operation.",
+            "description": "Operation outcome: \"success\" when the number messaging call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5549,9 +5628,19 @@
       "numberDetail": {
         "properties": {
           "route": {
-            "description": "Gateway id the number is currently routed to (in numberDetail).",
-            "example": 1000,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Per-number route in the list.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "carrier": {
             "description": "Outbound messaging carrier identifier.",
@@ -5564,7 +5653,7 @@
             "type": "boolean"
           },
           "gateway": {
-            "description": "Gateway address (IP[:port]) or system route name (in numberDetail).",
+            "description": "Gateway address (IP[:port]) or system route name (number detail gateway).",
             "example": "203.0.113.10:5060",
             "type": [
               "string",
@@ -5583,15 +5672,15 @@
             "type": "boolean"
           },
           "forwardTo": {
-            "description": "Forwarding destination — ten-digit telephone number — or null when forwarding is disabled (in numberDetail).",
-            "example": "example",
+            "description": "Forwarding destination — ten-digit telephone number — or null when forwarding is disabled (number detail forward to).",
+            "example": "2015550123",
             "type": [
               "string",
               "null"
             ]
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberDetail).",
+            "description": "Telephone number (ten digits) (number detail number).",
             "type": "string",
             "example": "2015550123",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -5609,7 +5698,7 @@
         },
         "description": "number Detail shape.",
         "example": {
-          "route": 1000,
+          "route": 4,
           "carrier": 0,
           "faxEnabled": true,
           "gateway": "203.0.113.10:5060",
@@ -5631,18 +5720,18 @@
             "type": "string"
           },
           "status": {
-            "description": "Outcome of the port detail operation.",
+            "description": "Operation outcome: \"success\" when the port detail call succeeded (port detail status).",
             "example": "Complete",
             "type": "string"
           },
           "createdAt": {
-            "description": "Unix timestamp the port was submitted (schema portDetail).",
+            "description": "Date and time the port was submitted.",
             "type": "string",
             "example": "2026-05-18T12:00:00Z",
             "format": "date-time"
           },
           "pid": {
-            "description": "Short human-readable port reference.",
+            "description": "Short human-readable port reference shown to support. This is the value to pass as {id} to GET /v2.2/ports/{id}.",
             "example": "y0d36",
             "type": "string"
           },
@@ -5657,8 +5746,8 @@
             "type": "string"
           },
           "foc": {
-            "description": "Firm Order Commitment date (YYYYMMDD) (schema portDetail).",
-            "example": "example",
+            "description": "Firm Order Commitment date (YYYYMMDD) (port detail foc).",
+            "example": "19750715",
             "type": "string"
           },
           "numbers": {
@@ -5672,7 +5761,7 @@
             "type": "array"
           },
           "message": {
-            "description": "Free-form message from the port team (schema portDetail).",
+            "description": "Free-form message from the port team (port detail message).",
             "example": "Operation completed.",
             "type": "string"
           }
@@ -5721,10 +5810,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/portListData",
-            "description": "Payload of the port list response operation."
+            "description": "Payload of the port list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the port list response operation.",
+            "description": "Operation outcome: \"success\" when the port list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5757,12 +5847,22 @@
       "numberRouteData": {
         "properties": {
           "route": {
-            "description": "Gateway id the number is currently routed to (in numberRouteData).",
-            "example": 0,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Echo of the applied route.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberRouteData).",
+            "description": "Telephone number (ten digits) (number route data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -5770,7 +5870,7 @@
         },
         "description": "Data payload for the number route operation.",
         "example": {
-          "route": 0,
+          "route": 4,
           "number": "2015550100"
         },
         "required": [],
@@ -5780,10 +5880,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/gatewayNumbersData",
-            "description": "Payload of the gateway numbers response operation."
+            "description": "Payload of the gateway numbers response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the gateway numbers response operation.",
+            "description": "Operation outcome: \"success\" when the gateway numbers call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5819,10 +5920,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numbersMessagingListData",
-            "description": "Payload of the numbers messaging list response operation."
+            "description": "Payload of the numbers messaging list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the numbers messaging list response operation.",
+            "description": "Operation outcome: \"success\" when the numbers messaging list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -5868,7 +5970,7 @@
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberTranslationData).",
+            "description": "Telephone number (ten digits) (number translation data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -5891,12 +5993,12 @@
             "pattern": "^[0-9]+$"
           },
           "name": {
-            "description": "Human-readable name (in accountAddRequest).",
+            "description": "Human-readable name (account add request name).",
             "example": "Acme Inc",
             "type": "string"
           },
           "email": {
-            "description": "Email address (in accountAddRequest).",
+            "description": "Email address (account add request email).",
             "example": "user@example.com",
             "type": "string"
           },
@@ -5923,7 +6025,7 @@
       "ticketsListData": {
         "properties": {
           "totalCount": {
-            "description": "Total tickets matching the filter (may be larger than tickets.length when the listing paginates).",
+            "description": "Total tickets matching the filter.",
             "example": 1,
             "type": "integer"
           },
@@ -6379,7 +6481,7 @@
       "accountRecoverData": {
         "properties": {
           "message": {
-            "description": "Free-form message text (in accountRecoverData).",
+            "description": "Free-form message text (account recover data message).",
             "example": "Operation completed.",
             "type": "string"
           }
@@ -6394,7 +6496,7 @@
       "errorResponse": {
         "properties": {
           "status": {
-            "description": "Outcome of the error response operation.",
+            "description": "Operation outcome: \"success\" when the error call succeeded.",
             "example": "error",
             "enum": [
               "error"
@@ -6404,12 +6506,12 @@
           "error": {
             "properties": {
               "code": {
-                "description": "Code (in errorResponse).",
+                "description": "Code (error response error code).",
                 "example": 400,
                 "type": "integer"
               },
               "message": {
-                "description": "Free-form message text (in errorResponse).",
+                "description": "Free-form message text (error response error message).",
                 "example": "Field Required: number",
                 "type": "string"
               }
@@ -6448,7 +6550,7 @@
             "type": "string"
           },
           "acl": {
-            "description": "List of CIDR ranges authorized for IP-based authentication on this account (in authGetData).",
+            "description": "List of CIDR ranges authorized for IP-based authentication on this account (auth get data acl).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -6527,17 +6629,18 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/aclConflictData",
-            "description": "Payload of the acl conflict response operation."
+            "description": "Payload of the acl conflict response operation.",
+            "type": "object"
           },
           "error": {
             "properties": {
               "code": {
-                "description": "Code (in aclConflictResponse).",
+                "description": "Code (acl conflict response error code).",
                 "example": 409,
                 "type": "integer"
               },
               "message": {
-                "description": "Free-form message text (in aclConflictResponse).",
+                "description": "Free-form message text (acl conflict response error message).",
                 "example": "CIDR overlaps with existing entry",
                 "type": "string"
               }
@@ -6554,7 +6657,7 @@
             "type": "object"
           },
           "status": {
-            "description": "Outcome of the acl conflict response operation.",
+            "description": "Operation outcome: \"success\" when the acl conflict call succeeded.",
             "example": "error",
             "enum": [
               "error"
@@ -6616,7 +6719,7 @@
       "aclAddData": {
         "properties": {
           "added": {
-            "description": "Added (in aclAddData).",
+            "description": "Added (acl add data added).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -6642,12 +6745,12 @@
       "ticketUpdateData": {
         "properties": {
           "id": {
-            "description": "Id (in ticketUpdateData).",
+            "description": "Id (ticket update data id).",
             "example": 1001,
             "type": "integer"
           },
           "status": {
-            "description": "Outcome of the ticket update data operation.",
+            "description": "Operation outcome: \"success\" when the ticket update data call succeeded.",
             "example": "success",
             "type": "string"
           }
@@ -6666,10 +6769,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberMessagingCampaignUnassignData",
-            "description": "Payload of the number messaging campaign unassign response operation."
+            "description": "Payload of the number messaging campaign unassign response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number messaging campaign unassign response operation.",
+            "description": "Operation outcome: \"success\" when the number messaging campaign unassign call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -6698,7 +6802,7 @@
         "properties": {
           "customerOrderReference": {
             "description": "Optional order reference. Auto-generated if omitted.",
-            "example": "example",
+            "example": "ORD-2026-0042",
             "type": "string"
           },
           "cnam": {
@@ -6720,7 +6824,7 @@
       "numbersMessagingCampaignUnassignData": {
         "properties": {
           "campaignId": {
-            "description": "Campaign id (in numbersMessagingCampaignUnassignData).",
+            "description": "Campaign id (numbers messaging campaign unassign data campaign id).",
             "example": "CAMP002",
             "type": "string"
           },
@@ -6733,16 +6837,16 @@
             ]
           },
           "failed": {
-            "description": "Failed (in numbersMessagingCampaignUnassignData).",
+            "description": "Failed (numbers messaging campaign unassign data failed).",
             "items": {
               "properties": {
                 "reason": {
                   "description": "Reason (numbersMessagingCampaignUnassignData.reason).",
-                  "example": "example",
+                  "example": "Number unavailable in this rate center.",
                   "type": "string"
                 },
                 "number": {
-                  "description": "Telephone number (ten digits) (in numbersMessagingCampaignUnassignData).",
+                  "description": "Telephone number (ten digits) (numbers messaging campaign unassign data failed number).",
                   "type": "string",
                   "example": "2015550123",
                   "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -6773,7 +6877,7 @@
               "string",
               "null"
             ],
-            "description": "Network (in numbersMessagingCampaignUnassignData).",
+            "description": "Network (numbers messaging campaign unassign data network).",
             "enum": [
               "A",
               "B",
@@ -6803,10 +6907,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/e911AllData",
-            "description": "Payload of the e911 all response operation."
+            "description": "Payload of the e911 all response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the e911 all response operation.",
+            "description": "Operation outcome: \"success\" when the e911 all call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -6945,7 +7050,7 @@
                 "type": "string"
               },
               "id": {
-                "description": "Id (in numberMessagingState).",
+                "description": "Id (campaign id).",
                 "example": "CAMP002",
                 "type": "string"
               },
@@ -6956,7 +7061,7 @@
               },
               "network": {
                 "type": "string",
-                "description": "Network (in campaign).",
+                "description": "Network (campaign network).",
                 "enum": [
                   "A",
                   "B"
@@ -6991,7 +7096,7 @@
             "type": "integer"
           },
           "number": {
-            "description": "Ten-digit telephone number (schema numberMessagingState).",
+            "description": "Ten-digit telephone number (number messaging state number).",
             "type": "string",
             "example": "9175550108",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -7037,10 +7142,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ticketsListData",
-            "description": "Payload of the tickets list response operation."
+            "description": "Payload of the tickets list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the tickets list response operation.",
+            "description": "Operation outcome: \"success\" when the tickets list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7282,10 +7388,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberTranslationData",
-            "description": "Payload of the number translation response operation."
+            "description": "Payload of the number translation response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number translation response operation.",
+            "description": "Operation outcome: \"success\" when the number translation call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7311,10 +7418,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberDetail",
-            "description": "Payload of the number detail response operation."
+            "description": "Payload of the number detail response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number detail response operation.",
+            "description": "Operation outcome: \"success\" when the number detail call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7325,7 +7433,7 @@
         "description": "Response wrapper for the number Detail operation.",
         "example": {
           "data": {
-            "route": 1000,
+            "route": 4,
             "carrier": 0,
             "faxEnabled": true,
             "gateway": "203.0.113.10:5060",
@@ -7348,10 +7456,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberAddData",
-            "description": "Payload of the number add response operation."
+            "description": "Payload of the number add response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number add response operation.",
+            "description": "Operation outcome: \"success\" when the number add call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7362,7 +7471,7 @@
         "description": "Response wrapper for the number Add operation.",
         "example": {
           "data": {
-            "route": 0,
+            "route": 4,
             "number": "2015550100"
           },
           "status": "success"
@@ -7377,10 +7486,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountCdrData",
-            "description": "Payload of the account cdr response operation."
+            "description": "Payload of the account cdr response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account cdr response operation.",
+            "description": "Operation outcome: \"success\" when the account cdr call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7428,13 +7538,13 @@
             "type": "boolean"
           },
           "callerId": {
-            "description": "Default outbound caller ID — ten-digit telephone number (in accountPutRequest).",
+            "description": "Default outbound caller ID — ten-digit telephone number (account put request caller id).",
             "type": "string",
             "example": "2015550123",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "notify": {
-            "description": "Whether the account receives low-balance notifications (in accountPutRequest).",
+            "description": "Whether the account receives low-balance notifications (account put request notify).",
             "example": true,
             "type": "boolean"
           },
@@ -7449,7 +7559,7 @@
             "type": "boolean"
           },
           "notifyThreshold": {
-            "description": "Balance threshold (in dollars) below which notifications fire (in accountPutRequest).",
+            "description": "Balance threshold (in dollars) below which notifications fire (account put request notify threshold).",
             "example": 0,
             "type": "integer"
           },
@@ -7459,7 +7569,7 @@
             "type": "boolean"
           },
           "timezone": {
-            "description": "IANA timezone identifier (in accountPutRequest).",
+            "description": "IANA timezone identifier (account put request timezone).",
             "example": "America/Chicago",
             "type": "string"
           },
@@ -7487,7 +7597,7 @@
       "numberCampaignAssignRequest": {
         "properties": {
           "campaignId": {
-            "description": "Campaign id (in numberCampaignAssignRequest).",
+            "description": "Campaign id (number campaign assign request campaign id).",
             "type": "string",
             "example": "ABC123",
             "pattern": "^[A-Z0-9]+$"
@@ -7505,7 +7615,7 @@
       "ticketReplyData": {
         "properties": {
           "message": {
-            "description": "Free-form message text (in ticketReplyData).",
+            "description": "Free-form message text (ticket reply data message).",
             "example": "Reply added",
             "enum": [
               "Reply added"
@@ -7588,7 +7698,7 @@
             "type": "array"
           },
           "status": {
-            "description": "Outcome of the auth put conflict response operation.",
+            "description": "Operation outcome: \"success\" when the auth put conflict call succeeded.",
             "example": "error",
             "enum": [
               "error"
@@ -7598,12 +7708,12 @@
           "error": {
             "properties": {
               "code": {
-                "description": "Code (in authPutConflictResponse).",
+                "description": "Code (auth put conflict response error code).",
                 "example": 409,
                 "type": "integer"
               },
               "message": {
-                "description": "Free-form message text (in error).",
+                "description": "Free-form message text (auth put conflict response error message).",
                 "example": "One or more updates failed",
                 "type": "string"
               }
@@ -7650,10 +7760,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberMoveData",
-            "description": "Payload of the number move response operation."
+            "description": "Payload of the number move response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number move response operation.",
+            "description": "Operation outcome: \"success\" when the number move call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7664,7 +7775,7 @@
         "description": "Response wrapper for the number Move operation.",
         "example": {
           "data": {
-            "route": 0,
+            "route": 4,
             "accountId": 1,
             "number": "2015550100"
           },
@@ -7679,7 +7790,7 @@
       "aclConflictData": {
         "properties": {
           "added": {
-            "description": "Added (in aclConflictData).",
+            "description": "Added (acl conflict data added).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -7691,7 +7802,7 @@
             "type": "array"
           },
           "removed": {
-            "description": "Removed (in aclConflictData).",
+            "description": "Removed (acl conflict data removed).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -7703,7 +7814,7 @@
             "type": "array"
           },
           "failed": {
-            "description": "Failed (in aclConflictData).",
+            "description": "Failed (acl conflict data failed).",
             "items": {
               "properties": {
                 "reason": {
@@ -7760,10 +7871,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/orderCreateData",
-            "description": "Payload of the order create response operation."
+            "description": "Payload of the order create response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the order create response operation.",
+            "description": "Operation outcome: \"success\" when the order create call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7798,10 +7910,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberCnamData",
-            "description": "Payload of the number cnam response operation."
+            "description": "Payload of the number cnam response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number cnam response operation.",
+            "description": "Operation outcome: \"success\" when the number cnam call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7826,7 +7939,7 @@
       "ticketUpdateRequest": {
         "properties": {
           "status": {
-            "description": "Outcome of the ticket update request operation.",
+            "description": "Operation outcome: \"success\" when the ticket update request call succeeded.",
             "example": "active",
             "enum": [
               "active",
@@ -7849,33 +7962,33 @@
       "portSummary": {
         "properties": {
           "id": {
-            "description": "Stable port record identifier used to fetch full detail.",
+            "description": "Stable port record identifier. Not used in request paths — use the pid field with GET /v2.2/ports/{id}.",
             "example": "8654d228e5f6f004e10edaed574424531da3517e",
             "type": "string"
           },
           "status": {
-            "description": "Outcome of the port summary operation.",
+            "description": "Operation outcome: \"success\" when the port summary call succeeded.",
             "example": "Complete",
             "type": "string"
           },
           "createdAt": {
-            "description": "Unix timestamp the port was submitted (schema portSummary).",
+            "description": "Date and time the port order was submitted (summary row).",
             "type": "string",
             "example": "2026-05-18T12:00:00Z",
             "format": "date-time"
           },
           "pid": {
-            "description": "Short human-readable port reference shown to support.",
+            "description": "Short port reference shown to support; this is the value to pass as {id} to GET /v2.2/ports/{id}.",
             "example": "y0d36",
             "type": "string"
           },
           "foc": {
-            "description": "Firm Order Commitment date (YYYYMMDD) (schema portSummary).",
+            "description": "Firm Order Commitment date (YYYYMMDD) (port summary foc).",
             "example": "19750715",
             "type": "string"
           },
           "message": {
-            "description": "Free-form message from the port team (schema portSummary).",
+            "description": "Free-form message from the port team (port summary message).",
             "example": "Your numbers will be porting on May/04/2026 at 10:00 AM Central.",
             "type": "string"
           }
@@ -7929,10 +8042,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/inventorySearchData",
-            "description": "Payload of the inventory search response operation."
+            "description": "Payload of the inventory search response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the inventory search response operation.",
+            "description": "Operation outcome: \"success\" when the inventory search call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7965,10 +8079,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/authPutData",
-            "description": "Payload of the auth put response operation."
+            "description": "Payload of the auth put response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the auth put response operation.",
+            "description": "Operation outcome: \"success\" when the auth put call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -7997,22 +8112,22 @@
       "accountAddData": {
         "properties": {
           "username": {
-            "description": "Account identifier (in accountAddData).",
+            "description": "Account identifier (account add data username).",
             "example": "1000000001",
             "type": "string"
           },
           "password": {
-            "description": "Password (in accountAddData).",
-            "example": "example",
+            "description": "Password (account add data password).",
+            "example": "hunter2",
             "type": "string"
           },
           "name": {
-            "description": "Human-readable name (in accountAddData).",
+            "description": "Human-readable name (account add data name).",
             "example": "Acme Inc",
             "type": "string"
           },
           "email": {
-            "description": "Email address (in accountAddData).",
+            "description": "Email address (account add data email).",
             "example": "user@example.com",
             "type": "string"
           },
@@ -8088,7 +8203,7 @@
       "aclRemoveData": {
         "properties": {
           "removed": {
-            "description": "Removed (in aclRemoveData).",
+            "description": "Removed (acl remove data removed).",
             "items": {
               "$ref": "#/components/schemas/cidrEntry"
             },
@@ -8114,7 +8229,7 @@
       "ticketReplyRequest": {
         "properties": {
           "message": {
-            "description": "Free-form message text (in ticketReplyRequest).",
+            "description": "Free-form message text (ticket reply request message).",
             "example": "Thank you for your reply.",
             "type": "string"
           }
@@ -8132,7 +8247,7 @@
         "properties": {
           "customerOrderReference": {
             "description": "Order reference used when posting to the network. Echoed from the request if supplied; auto-generated as '<username>-<unix-timestamp>' otherwise.",
-            "example": "example",
+            "example": "ORD-2026-0042",
             "type": "string"
           },
           "number": {
@@ -8143,7 +8258,7 @@
           },
           "cnam": {
             "description": "The sanitised caller name written to local cache and the routing network (max 15 alphanumeric).",
-            "example": "example",
+            "example": "ACME CORP",
             "type": "string"
           },
           "carrierStatus": {
@@ -8175,7 +8290,7 @@
             "type": "string"
           },
           "message": {
-            "description": "Free-form message text (in ticketCreateRequest).",
+            "description": "Free-form message text (ticket create request message).",
             "example": "Please help me...",
             "type": "string"
           }
@@ -8225,10 +8340,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountPutData",
-            "description": "Payload of the account put response operation."
+            "description": "Payload of the account put response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account put response operation.",
+            "description": "Operation outcome: \"success\" when the account put call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8255,10 +8371,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/gatewaysListData",
-            "description": "Payload of the gateways list response operation."
+            "description": "Payload of the gateways list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the gateways list response operation.",
+            "description": "Operation outcome: \"success\" when the gateways list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8311,10 +8428,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/aclListData",
-            "description": "Payload of the acl list response operation."
+            "description": "Payload of the acl list response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the acl list response operation.",
+            "description": "Operation outcome: \"success\" when the acl list call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8404,13 +8522,13 @@
       "numberCnamData": {
         "properties": {
           "number": {
-            "description": "Telephone number (ten digits) (in numberCnamData).",
+            "description": "Telephone number (ten digits) (number cnam data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "cnam": {
-            "description": "Whether inbound CNAM lookup is enabled for the number (in numberCnamData).",
+            "description": "Whether inbound CNAM lookup is enabled for the number (number cnam data cnam).",
             "example": true,
             "type": "boolean"
           }
@@ -8426,14 +8544,24 @@
       "numberRouteRequest": {
         "properties": {
           "route": {
-            "description": "Gateway id the number is currently routed to (in numberRouteRequest).",
-            "example": 1000,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Set with PUT /v2.2/numbers/{number}/route.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           }
         },
         "description": "Request body for the number Route operation.",
         "example": {
-          "route": 1000
+          "route": 4
         },
         "required": [
           "route"
@@ -8444,10 +8572,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ticketReplyData",
-            "description": "Payload of the ticket reply response operation."
+            "description": "Payload of the ticket reply response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the ticket reply response operation.",
+            "description": "Operation outcome: \"success\" when the ticket reply call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8472,10 +8601,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/lrnData2",
-            "description": "Payload of the lrn response operation."
+            "description": "Payload of the lrn response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the lrn response operation.",
+            "description": "Operation outcome: \"success\" when the lrn call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8513,10 +8643,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/portAvailabilityData",
-            "description": "Payload of the port availability response operation."
+            "description": "Payload of the port availability response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the port availability response operation.",
+            "description": "Operation outcome: \"success\" when the port availability call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8544,10 +8675,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/portOutPinUpdateData",
-            "description": "Payload of the port out pin update response operation."
+            "description": "Payload of the port out pin update response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the port out pin update response operation.",
+            "description": "Operation outcome: \"success\" when the port out pin update call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -8625,12 +8757,12 @@
                     },
                     "rate": {
                       "description": "Billed rate per message (sms and mms only).",
-                      "example": "example",
+                      "example": "0.0150",
                       "type": "string"
                     },
                     "message": {
                       "description": "Message body (sms and mms only).",
-                      "example": "example",
+                      "example": "Your verification code is 483921",
                       "type": "string"
                     },
                     "destinationNumber": {
@@ -8647,18 +8779,19 @@
                     },
                     "number": {
                       "description": "Far-end number (sms and mms only).",
-                      "example": 0,
-                      "type": "integer"
+                      "example": "2015550123",
+                      "type": "string",
+                      "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
                     }
                   },
                   "description": "Per-record fields. Shape depends on the requested type.",
                   "example": {
                     "direction": "in",
-                    "rate": "example",
-                    "message": "example",
+                    "rate": "0.0150",
+                    "message": "Your verification code is 483921",
                     "destinationNumber": "2015550123",
                     "sourceNumber": "2015550123",
-                    "number": 0
+                    "number": "2015550123"
                   },
                   "type": "object"
                 },
@@ -8680,11 +8813,11 @@
                 "key": [],
                 "value": {
                   "direction": "in",
-                  "rate": "example",
-                  "message": "example",
+                  "rate": "0.0150",
+                  "message": "Your verification code is 483921",
                   "destinationNumber": "2015550123",
                   "sourceNumber": "2015550123",
-                  "number": 0
+                  "number": "2015550123"
                 },
                 "id": "41946b6929e7b873fcafd5a3b475cc4ebfefd2a2"
               }
@@ -8703,11 +8836,11 @@
               "key": [],
               "value": {
                 "direction": "in",
-                "rate": "example",
-                "message": "example",
+                "rate": "0.0150",
+                "message": "Your verification code is 483921",
                 "destinationNumber": "2015550123",
                 "sourceNumber": "2015550123",
-                "number": 0
+                "number": "2015550123"
               },
               "id": "41946b6929e7b873fcafd5a3b475cc4ebfefd2a2"
             }
@@ -8721,12 +8854,12 @@
           "services": {
             "properties": {
               "sms": {
-                "description": "Sms (in services).",
+                "description": "Sms (services sms).",
                 "example": true,
                 "type": "boolean"
               },
               "mms": {
-                "description": "Mms (in services).",
+                "description": "Mms (services mms).",
                 "example": true,
                 "type": "boolean"
               },
@@ -8746,7 +8879,7 @@
                 "type": "boolean"
               },
               "cnam": {
-                "description": "Whether inbound CNAM lookup is enabled for the number (in services).",
+                "description": "Whether inbound CNAM lookup is enabled for the number (services cnam).",
                 "example": true,
                 "type": "boolean"
               },
@@ -8769,7 +8902,7 @@
             "type": "object"
           },
           "callerId": {
-            "description": "Default outbound caller ID — ten-digit telephone number (in accountData).",
+            "description": "Default outbound caller ID — ten-digit telephone number (account data caller id).",
             "type": "string",
             "example": "2015550123",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
@@ -8782,12 +8915,12 @@
                 "type": "number"
               },
               "sms": {
-                "description": "Sms (in rates).",
+                "description": "Sms (rates sms).",
                 "example": 0.5,
                 "type": "number"
               },
               "mms": {
-                "description": "Mms (in rates).",
+                "description": "Mms (rates mms).",
                 "example": 0.5,
                 "type": "number"
               },
@@ -8797,7 +8930,7 @@
                 "type": "number"
               },
               "lrn": {
-                "description": "Lrn (in rates).",
+                "description": "Lrn (rates lrn).",
                 "example": 0.5,
                 "type": "number"
               },
@@ -8812,7 +8945,7 @@
                 "type": "number"
               },
               "cnam": {
-                "description": "Whether inbound CNAM lookup is enabled for the number (in rates).",
+                "description": "Whether inbound CNAM lookup is enabled for the number (rates cnam).",
                 "example": 0.5,
                 "type": "number"
               },
@@ -8837,7 +8970,7 @@
             "type": "object"
           },
           "notify": {
-            "description": "Whether the account receives low-balance notifications (in accountData).",
+            "description": "Whether the account receives low-balance notifications (account data notify).",
             "example": true,
             "type": "boolean"
           },
@@ -8847,17 +8980,17 @@
             "type": "integer"
           },
           "username": {
-            "description": "Account identifier (in accountData).",
+            "description": "Account identifier (account data username).",
             "example": "Acme Inc",
             "type": "string"
           },
           "notifyThreshold": {
-            "description": "Balance threshold (in dollars) below which notifications fire (in accountData).",
+            "description": "Balance threshold (in dollars) below which notifications fire (account data notify threshold).",
             "example": 0,
             "type": "integer"
           },
           "name": {
-            "description": "Human-readable name (in accountData).",
+            "description": "Human-readable name (account data name).",
             "example": "Acme Inc",
             "type": "string"
           },
@@ -8868,7 +9001,7 @@
             "format": "date-time"
           },
           "timezone": {
-            "description": "IANA timezone identifier (in accountData).",
+            "description": "IANA timezone identifier (account data timezone).",
             "example": "America/Chicago",
             "type": "string"
           },
@@ -8883,12 +9016,12 @@
             "type": "number"
           },
           "authType": {
-            "description": "Authentication mode for the account (in accountData).",
+            "description": "Authentication mode for the account.",
             "example": 0,
             "type": "integer"
           },
           "email": {
-            "description": "Email address (in accountData).",
+            "description": "Email address (account data email).",
             "example": "user@example.com",
             "type": "string"
           }
@@ -8973,10 +9106,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountSignupData",
-            "description": "Payload of the account signup response operation."
+            "description": "Payload of the account signup response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account signup response operation.",
+            "description": "Operation outcome: \"success\" when the account signup call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -9004,10 +9138,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberSmsData",
-            "description": "Payload of the number sms response operation."
+            "description": "Payload of the number sms response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number sms response operation.",
+            "description": "Operation outcome: \"success\" when the number sms call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -9070,21 +9205,21 @@
           },
           "lecType": {
             "description": "Lec type.",
-            "example": "example",
+            "example": "CLEC",
             "type": "string"
           },
           "city": {
-            "description": "City name (in lrnData).",
+            "description": "City name (lrn data city).",
             "example": "NEW YORK",
             "type": "string"
           },
           "rc": {
             "description": "Rc.",
-            "example": "example",
+            "example": "NWRKNJ",
             "type": "string"
           },
           "lrn": {
-            "description": "Lrn (in lrnData).",
+            "description": "Lrn (lrn data lrn).",
             "example": "12125550000",
             "type": "string"
           },
@@ -9105,11 +9240,11 @@
           },
           "lec": {
             "description": "Lec.",
-            "example": "example",
+            "example": "Level 3",
             "type": "string"
           },
           "state": {
-            "description": "Two-letter US state code (in lrnData).",
+            "description": "Two-letter US state code (lrn data state).",
             "example": "NY",
             "type": "string"
           }
@@ -9150,7 +9285,7 @@
       "numberFaxRequest": {
         "properties": {
           "email": {
-            "description": "Email address (in numberFaxRequest).",
+            "description": "Email address (number fax request email).",
             "example": "fax@example.com",
             "type": "string"
           }
@@ -9167,7 +9302,7 @@
       "accountRecoverRequest": {
         "properties": {
           "email": {
-            "description": "Email address (in accountRecoverRequest).",
+            "description": "Email address (account recover request email).",
             "example": "user@example.com",
             "type": "string"
           }
@@ -9185,10 +9320,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/accountRecoverData",
-            "description": "Payload of the account recover response operation."
+            "description": "Payload of the account recover response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the account recover response operation.",
+            "description": "Operation outcome: \"success\" when the account recover call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -9212,7 +9348,7 @@
       "gatewayNumbersData": {
         "properties": {
           "numbers": {
-            "description": "Numbers (in gatewayNumbersData).",
+            "description": "Numbers (gateway numbers data numbers).",
             "items": {
               "properties": {
                 "carrier": {
@@ -9342,10 +9478,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/numberForwardData",
-            "description": "Payload of the number forward response operation."
+            "description": "Payload of the number forward response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the number forward response operation.",
+            "description": "Operation outcome: \"success\" when the number forward call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -9404,9 +9541,19 @@
       "numberMoveRequest": {
         "properties": {
           "route": {
-            "description": "Gateway id the number is currently routed to (in numberMoveRequest).",
-            "example": 1000,
-            "type": "integer"
+            "description": "Global route type: 1 USER, 2 T30, 3 VOICE_BRIDGE, 4 DID (default), 5 T38, 6 VOICEML, 8 SDN, 9 MOBILE. Target route after the move.",
+            "example": 4,
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9
+            ]
           },
           "accountId": {
             "description": "Destination account id (numeric username).",
@@ -9416,7 +9563,7 @@
         },
         "description": "Request body for the number Move operation.",
         "example": {
-          "route": 1000,
+          "route": 4,
           "accountId": 1002
         },
         "required": [
@@ -9428,7 +9575,7 @@
       "numberSmsData": {
         "properties": {
           "type": {
-            "description": "Type (in numberSmsData).",
+            "description": "Type (number sms data type).",
             "example": "email",
             "enum": [
               "email",
@@ -9439,14 +9586,14 @@
             "type": "string"
           },
           "number": {
-            "description": "Telephone number (ten digits) (in numberSmsData).",
+            "description": "Telephone number (ten digits) (number sms data number).",
             "type": "string",
             "example": "2015550100",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "resource": {
             "description": "Resource.",
-            "example": "example",
+            "example": "sms",
             "type": "string"
           }
         },
@@ -9463,10 +9610,11 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/ticketData",
-            "description": "Payload of the ticket response operation."
+            "description": "Payload of the ticket response operation.",
+            "type": "object"
           },
           "status": {
-            "description": "Outcome of the ticket response operation.",
+            "description": "Operation outcome: \"success\" when the ticket call succeeded.",
             "example": "success",
             "enum": [
               "success"
@@ -9714,13 +9862,13 @@
             "type": "string"
           },
           "number": {
-            "description": "Ten-digit telephone number (schema inventoryItem).",
+            "description": "Ten-digit telephone number (inventory item number).",
             "type": "string",
             "example": "2015550103",
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "city": {
-            "description": "City name (schema inventoryItem).",
+            "description": "City name (inventory item city).",
             "example": "Closter",
             "type": "string"
           },
@@ -9789,13 +9937,13 @@
   ],
   "info": {
     "license": {
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
       "name": "Apache 2.0"
     },
     "termsOfService": "https://www.voicetel.com/tos",
-    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key — this is the only endpoint that does not require an Authorization header. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Re-fetch the API key after any password change. Rate-limited endpoints: account, account/recurring-charges, account/cdr, account/api-key — 6 requests per hour per IP.",
+    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Only three endpoints do not require an Authorization header: POST /v2.2/account/api-key, POST /v2.2/account/recovery, and POST /v2.2/accounts. Re-fetch the API key after any password change. Rate-limited endpoints: GET /v2.2/account, GET /v2.2/account/cdr, GET /v2.2/account/recurring-charges, and POST /v2.2/account/api-key — 6 requests per hour per IP; POST /v2.2/messaging/health/check — 30 checks per hour per account.",
     "title": "VoiceTel API",
-    "version": "2.2.15",
+    "version": "2.2.17",
     "contact": {
       "email": "support@voicetel.com"
     }
@@ -10491,7 +10639,7 @@
       "post": {
         "description": "Validates a street address for e911 provisioning. Returns the validated address including an addressid for use with PUT /e911/{dn}.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -10667,7 +10815,7 @@
                 },
                 "example": {
                   "data": {
-                    "route": 0,
+                    "route": 4,
                     "number": "2015550100"
                   },
                   "status": "success"
@@ -10735,7 +10883,7 @@
                   "data": {
                     "numbers": [
                       {
-                        "route": 1000,
+                        "route": 4,
                         "carrier": 0,
                         "faxEnabled": true,
                         "gateway": "203.0.113.10:5060",
@@ -10771,7 +10919,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers fax delete.",
@@ -10834,7 +10984,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers fax set.",
@@ -10942,7 +11094,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers fax get.",
@@ -11219,7 +11373,9 @@
           },
           {
             "schema": {
-              "type": "integer"
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "example": "224"
             },
             "name": "lata",
             "description": "Filter: LATA code.",
@@ -11420,7 +11576,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers cnam.",
@@ -11633,7 +11791,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers translation.",
@@ -11760,7 +11920,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers sms delete.",
@@ -11823,7 +11985,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers sms set.",
@@ -11933,7 +12097,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers sms get.",
@@ -12397,7 +12563,7 @@
       "delete": {
         "description": "E 911 remove record on /v2.2/e911/{dn}.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -12460,7 +12626,7 @@
       "put": {
         "description": "Provisions an e911 address using a pre-validated addressId from POST /e911/validate.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -12559,7 +12725,7 @@
       "get": {
         "description": "Returns the e911 record for a specific telephone number on the account.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -13050,7 +13216,10 @@
           {
             "schema": {
               "type": "integer",
-              "example": 10
+              "example": 10,
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 10
             },
             "name": "quantity",
             "description": "Maximum results, 1–1000. Defaults to 10.",
@@ -13078,7 +13247,9 @@
           },
           {
             "schema": {
-              "type": "integer"
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "example": "224"
             },
             "name": "lata",
             "description": "LATA code (query filter).",
@@ -13437,7 +13608,7 @@
                     "charges": [
                       {
                         "amount": 0.5,
-                        "description": "example"
+                        "description": "example (data charges 0)."
                       }
                     ],
                     "total": 0.5
@@ -13585,7 +13756,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "2015550123"
+              "example": "2015550123",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
             },
             "name": "number",
             "description": "10-digit telephone number in NPANXXXXXX format.",
@@ -13834,7 +14006,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers route.",
@@ -13849,7 +14023,7 @@
                 "$ref": "#/components/schemas/numberRouteRequest"
               },
               "example": {
-                "route": 1000
+                "route": 4
               }
             }
           },
@@ -13884,7 +14058,7 @@
                 },
                 "example": {
                   "data": {
-                    "route": 0,
+                    "route": 4,
                     "number": "2015550100"
                   },
                   "status": "success"
@@ -13927,7 +14101,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers forward remove.",
@@ -14007,7 +14183,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers forward set.",
@@ -14377,11 +14555,11 @@
                         "key": [],
                         "value": {
                           "direction": "in",
-                          "rate": "example",
-                          "message": "example",
+                          "rate": "0.0150",
+                          "message": "Your verification code is 483921",
                           "destinationNumber": "2015550123",
                           "sourceNumber": "2015550123",
-                          "number": 0
+                          "number": "2015550123"
                         },
                         "id": "41946b6929e7b873fcafd5a3b475cc4ebfefd2a2"
                       }
@@ -14563,7 +14741,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "2125550123"
+              "example": "2125550123",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
             },
             "name": "number",
             "description": "Destination number in NPANXXXXXX format.",
@@ -14573,7 +14752,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "2015550123"
+              "example": "2015550123",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
             },
             "name": "ani",
             "description": "Calling party (ANI) in NPANXXXXXX format.",
@@ -14866,7 +15046,7 @@
                 "$ref": "#/components/schemas/numberMoveRequest"
               },
               "example": {
-                "route": 1000,
+                "route": 4,
                 "accountId": 1002
               }
             }
@@ -14936,7 +15116,7 @@
                 },
                 "example": {
                   "data": {
-                    "route": 0,
+                    "route": 4,
                     "accountId": 1,
                     "number": "2015550100"
                   },
@@ -14978,7 +15158,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers delete.",
@@ -15059,7 +15241,8 @@
           {
             "schema": {
               "type": "string",
-              "example": "2015550123"
+              "example": "2015550123",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
             },
             "name": "number",
             "description": "10-digit telephone number — used by numbers get.",
@@ -15112,7 +15295,7 @@
                 },
                 "example": {
                   "data": {
-                    "route": 1000,
+                    "route": 4,
                     "carrier": 0,
                     "faxEnabled": true,
                     "gateway": "203.0.113.10:5060",
@@ -15225,7 +15408,7 @@
       "post": {
         "description": "Validates the address and provisions an e911 record for the given dn. dn must be a 10-digit telephone number owned by the authenticated account.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -15352,7 +15535,7 @@
       "get": {
         "description": "Returns all e911 records provisioned for telephone numbers on the account.",
         "tags": [
-          "e911"
+          "E911"
         ],
         "security": [
           {
@@ -15439,7 +15622,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by numbers lidb.",
@@ -15646,7 +15831,7 @@
                 },
                 "example": {
                   "data": {
-                    "apikey": "0123456789abcdef0123456789abcdef"
+                    "apikey": "dec759ed81963fd9a4b8a9c8f3e22b1a"
                   },
                   "status": "success"
                 }
@@ -15929,7 +16114,9 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$",
+              "example": "2015550123"
             },
             "name": "number",
             "description": "Ten-digit telephone number — used by number release.",
@@ -17267,7 +17454,7 @@
     },
     "/v2.2/accounts": {
       "post": {
-        "description": "Creates a new account. No authentication required. Returns account credentials and API key. A verification email is sent.",
+        "description": "Creates a new account. No authentication required. Returns the new account's credentials. A verification email is sent.",
         "tags": [
           "Account"
         ],
@@ -17950,14 +18137,27 @@
         ],
         "summary": "Messaging health",
         "description": "Your account's messaging health, the same view as the portal Messaging tab: summary (numbers, messaging on, healthy, needing attention, in progress), campaigns with carrier-review progress, numbers needing attention (each with a plain-language title, detail and the actions that fix it: assign, disable, samples), 14 days of delivery counts (delivered, failed, blocked as spam, refused because the number is not enabled), and the alert-email setting. Updated hourly. Fix a number with PUT or DELETE /v2.2/numbers/{number}/messaging-campaign.",
+        "operationId": "messagingHealth",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Messaging health summary (messaging health)."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized (messaging health).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v2.2/messaging/health/check": {
@@ -17980,27 +18180,41 @@
                   "number": {
                     "type": "string",
                     "example": "2125550123",
-                    "description": "10-digit number on your account"
+                    "description": "10-digit number on your account (post number)."
                   }
                 }
               }
             }
-          }
+          },
+          "description": "Number to check."
         },
+        "operationId": "messagingHealthCheck",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Live check result (messaging health check)."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized (messaging health check).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Number not on this account"
+            "description": "Number not on this account (messaging health check)."
           },
           "429": {
-            "description": "Too many checks this hour"
+            "description": "Too Many Requests (messaging health check)."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v2.2/messaging/health/samples": {
@@ -18018,20 +18232,33 @@
             "schema": {
               "type": "string"
             },
-            "description": "10-digit number on your account"
+            "description": "10-digit number on your account (get 0)."
           }
         ],
+        "operationId": "messagingHealthSamples",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Blocked-message samples (messaging health samples)."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized (messaging health samples).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Number not on this account"
+            "description": "Number not on this account (messaging health samples)."
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v2.2/messaging/health/alerts": {
@@ -18041,14 +18268,27 @@
         ],
         "summary": "Alert email setting",
         "description": "Whether new messaging problems are emailed to the account.",
+        "operationId": "messagingHealthAlertsGet",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Current alert email setting (messaging health alerts)."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized (messaging health alerts).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -18067,21 +18307,40 @@
                 ],
                 "properties": {
                   "enabled": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "true to email the account when new messaging problems are found.",
+                    "example": true
                   }
+                }
+              },
+              "example": {
+                "enabled": true
+              }
+            }
+          },
+          "description": "New alert email setting."
+        },
+        "operationId": "messagingHealthAlertsPut",
+        "responses": {
+          "200": {
+            "description": "Updated alert email setting (messaging health alerts update)."
+          },
+          "401": {
+            "description": "Unauthorized (messaging health alerts update).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
                 }
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
+        ]
       }
     }
   },

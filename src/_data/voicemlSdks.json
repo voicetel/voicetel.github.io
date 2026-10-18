@@ -19,7 +19,7 @@
 		"SIP trunking",
 		"Voice trunking"
 	],
-	"notYetCovered": ["Usage Records", "SIP Registrations", "Messaging Service sender pools"],
+	"notYetCovered": [],
 	"sdks": [
 		{
 			"name": "Python",
@@ -55,21 +55,21 @@
 			"slug": "csharp",
 			"repo": "https://github.com/voicetel/voiceml-csharp-sdk",
 			"install": "dotnet add package VoiceML",
-			"description": "Net 8 async/await client. System.Text.Json serialization; zero NuGet dependencies."
+			"description": ".NET 8 and .NET 10 async/await client. System.Text.Json serialization; zero NuGet dependencies."
 		},
 		{
 			"name": "PHP",
 			"slug": "php",
 			"repo": "https://github.com/voicetel/voiceml-php-sdk",
 			"install": "composer require voicetel/voiceml",
-			"description": "PHP 8.1+ client on Guzzle 7. Typed enums, PSR-4 autoloading, predictable exception types."
+			"description": "PHP 8.1+ client on Guzzle 7 or 8. Typed enums, PSR-4 autoloading, predictable exception types."
 		},
 		{
 			"name": "Ruby",
 			"slug": "ruby",
 			"repo": "https://github.com/voicetel/voiceml-ruby-sdk",
 			"install": "gem install voiceml",
-			"description": "Ruby 3 client over the standard-library Net::HTTP. Keyword-argument methods, zero gem dependencies."
+			"description": "Ruby 3.1+ client over the standard-library Net::HTTP. Keyword-argument methods, zero gem dependencies."
 		},
 		{
 			"name": "Swift",
@@ -77,7 +77,7 @@
 			"repo": "https://github.com/voicetel/voiceml-swift",
 			"install": "https://github.com/voicetel/voiceml-swift",
 			"installLabel": "Swift Package Manager",
-			"description": "Swift 5.9 client with async throws methods over URLSession. iOS, macOS, tvOS, watchOS, and Linux targets."
+			"description": "Swift 6 client with async throws methods over URLSession. iOS, macOS, tvOS, watchOS, and Linux targets."
 		}
 	]
 }

@@ -56,7 +56,7 @@ eleventyComputed:
 		<li class="feature">
 			<span class="feature-icon" aria-hidden="true">{% icon "list-check" %}</span>
 			<h3>Retries and pagination built in</h3>
-			<p>Auto-retry on 429 / 5xx with <code>Retry-After</code> honored and exponential backoff capped at 8s. Cursor pagination via <code>next_page_uri</code>; Python and TypeScript ship an <code>iterate()</code> helper for the <code>/Calls</code> list.</p>
+			<p>Reads retry on 429 and 5xx. A <code>POST</code> retries only on 429 or a connection that never opened, so a retry never places a call or sends a message twice. <code>Retry-After</code> is honored; otherwise backoff is exponential with full jitter, capped at 8s. List iterators follow the server's next-page link (<code>next_page_uri</code>) instead of counting pages.</p>
 		</li>
 	</ul>
 </section>

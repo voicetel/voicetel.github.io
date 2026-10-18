@@ -1,6 +1,6 @@
 {
-	"updated": "2026-06-28",
-	"specVersion": "VoiceML API v0.9.1",
+	"updated": "2026-10-17",
+	"specVersion": "VoiceML API v0.9.2",
 	"platforms": [
 		{
 			"id": "twilio",
@@ -86,7 +86,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": "VoiceTel: self-account fetch/update; <code>FriendlyName</code> / <code>Status</code> mutable on the authenticated account."
+							"notes": "VoiceTel: self-account fetch/update. <code>FriendlyName</code> and VoiceTel account settings (default <code>VoiceUrl</code>, BYO STT/TTS, S3 recording storage, <code>AllowCidr</code>) are mutable; <code>Status</code> isn't. A concurrent update returns 409 20409."
 						}
 					]
 				},
@@ -96,9 +96,9 @@
 						{
 							"endpoints": "GET /Balance",
 							"twilio": "supported",
-							"voicetel": "supported",
+							"voicetel": "partial",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel: account balance + currency. Polling-friendly endpoint mirrors Twilio's shape."
+							"notes": "VoiceTel: Twilio-compatible Balance response with a static <code>0</code> balance in the account's currency — VoiceTel accounts are operator-billed, with no per-account runtime ledger."
 						}
 					]
 				},
@@ -107,10 +107,10 @@
 					"rows": [
 						{
 							"endpoints": "GET /Exports, GET /Exports/{Date}",
-							"twilio": "supported",
+							"twilio": "unsupported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel: daily CDR/messaging export catalog and per-date fetch."
+							"notes": "VoiceTel extension (not a Twilio resource): nightly archives of calls, messages, recording metadata, and payments, kept for one year; <code>GET /Exports/{Date}</code> redirects to a presigned download. Twilio's comparable feature is its separate BulkExport API."
 						}
 					]
 				},
@@ -120,16 +120,16 @@
 						{
 							"endpoints": "GET /Notifications",
 							"twilio": "supported",
-							"voicetel": "partial",
-							"restcomm": "unsupported",
-							"notes": "VoiceTel stub: 200 + empty list. Account-wide events go to <code>StatusCallback</code>."
+							"voicetel": "supported",
+							"restcomm": "partial",
+							"notes": "VoiceTel: account-wide notification log — voice markup fetch (11200) and parse (12100) failures, with <code>Log</code> and <code>MessageDate</code> filters. RestComm documents Notifications under <code>2012-04-24</code>."
 						},
 						{
 							"endpoints": "GET /Notifications/{Sid}",
 							"twilio": "supported",
-							"voicetel": "partial",
-							"restcomm": "unsupported",
-							"notes": "VoiceTel single-resource fetch on stub — always 404."
+							"voicetel": "supported",
+							"restcomm": "partial",
+							"notes": "VoiceTel: NO-prefixed SID."
 						}
 					]
 				},
@@ -146,6 +146,18 @@
 					]
 				},
 				{
+					"name": "Account / Usage Records",
+					"rows": [
+						{
+							"endpoints": "GET /Usage/Records, GET /Usage/Records/{AllTime|Daily|Monthly|Yearly|Today|Yesterday|ThisMonth|LastMonth}",
+							"twilio": "supported",
+							"voicetel": "partial",
+							"restcomm": "partial",
+							"notes": "VoiceTel: 12 categories — <code>calls</code>, <code>sms</code>, <code>mms</code>, their inbound, outbound, and long-code splits, and <code>totalprice</code> — each listed in every window, zero-filled; any other <code>Category</code> is 400 20001. <code>StartDate</code>/<code>EndDate</code> take dates or ±N<code>days</code> offsets. RestComm documents Usage Records under <code>2012-04-24</code>."
+						}
+					]
+				},
+				{
 					"name": "Applications",
 					"rows": [
 						{
@@ -153,7 +165,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": "VoiceTel: voice-only fields (no SMS). RestComm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> — not a drop-in field swap."
+							"notes": "VoiceTel: voice fields plus <code>MessageStatusCallback</code> / <code>SmsStatusCallback</code> for outbound SMS delivery receipts; no <code>SmsUrl</code> fields — set inbound SMS on the number. RestComm uses <code>RcmlUrl</code> instead of <code>VoiceUrl</code> — not a drop-in field swap."
 						}
 					]
 				},
@@ -165,7 +177,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": "VoiceTel normalises To/From against per-tenant phone regions; <code>MachineDetection</code> truly optional; <code>Twiml</code>/<code>ApplicationSid</code> accepted; per-call SIP/auth params wired through to the originate. RestComm uses RCML URL fields and the <code>2012-04-24</code> path prefix."
+							"notes": "VoiceTel normalises To/From against per-tenant phone regions; <code>MachineDetection</code> truly optional; <code>Twiml</code>/<code>ApplicationSid</code> accepted; per-call SIP/auth params wired through to the originate; <code>CallerId</code>, <code>Byoc</code>, and <code>CallToken</code> are accepted and ignored. RestComm uses RCML URL fields and the <code>2012-04-24</code> path prefix."
 						},
 						{
 							"endpoints": "GET /Calls/{Sid}",
@@ -218,15 +230,15 @@
 							"endpoints": "POST /Calls/{Sid}/Recordings (start mid-call)",
 							"twilio": "supported",
 							"voicetel": "supported",
-							"restcomm": "partial",
-							"notes": "VoiceTel honours <code>RecordingMaxDuration</code> / <code>PlayBeep</code> / <code>RecordingStatusCallback*</code>."
+							"restcomm": "unsupported",
+							"notes": "VoiceTel honours <code>RecordingChannels</code> (mono/dual), <code>RecordingTrack</code>, <code>RecordingMaxDuration</code>, and <code>RecordingStatusCallback*</code>; <code>PlayBeep</code> is accepted but not applied. Starting again while one runs returns the running recording."
 						},
 						{
 							"endpoints": "POST /Calls/{Sid}/Recordings/{Sid} (Status=stopped/paused/in-progress)",
 							"twilio": "supported",
 							"voicetel": "supported",
-							"restcomm": "partial",
-							"notes": "VoiceTel: stop, pause, resume; idempotent against already-completed."
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: stop, pause (<code>PauseBehavior</code> skip or silence), resume; <code>Twilio.CURRENT</code> names the call's active recording. Updating a recording that's no longer running is 400 21220."
 						},
 						{
 							"endpoints": "DELETE /Calls/{Sid}/Recordings/{Sid}",
@@ -241,18 +253,11 @@
 					"name": "Calls / Streams",
 					"rows": [
 						{
-							"endpoints": "GET /Calls/{Sid}/Streams[/{Sid}]",
-							"twilio": "supported",
-							"voicetel": "supported",
-							"restcomm": "unsupported",
-							"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code>. RestComm has no equivalent live media fork REST surface."
-						},
-						{
 							"endpoints": "POST /Calls/{Sid}/Streams (start)",
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel returns MZ-prefixed SID."
+							"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code> and returns an MZ-prefixed SID; <code>Track</code> is accepted but not applied. RestComm has no equivalent live media fork REST surface."
 						},
 						{
 							"endpoints": "POST /Calls/{Sid}/Streams/{Sid} (Status=stopped)",
@@ -267,18 +272,11 @@
 					"name": "Calls / Siprec",
 					"rows": [
 						{
-							"endpoints": "GET /Calls/{Sid}/Siprec[/{Sid}]",
-							"twilio": "supported",
-							"voicetel": "supported",
-							"restcomm": "unsupported",
-							"notes": "SIPREC session recording fork. VoiceTel mirrors <code>&lt;Start&gt;&lt;Siprec&gt;</code>; returns SR-prefixed SID."
-						},
-						{
 							"endpoints": "POST /Calls/{Sid}/Siprec (start)",
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": ""
+							"notes": "SIPREC session recording fork. VoiceTel mirrors <code>&lt;Start&gt;&lt;Siprec&gt;</code> and returns an SR-prefixed SID; <code>ConnectorName</code> must name an enabled connector on the account."
 						},
 						{
 							"endpoints": "POST /Calls/{Sid}/Siprec/{Sid} (Status=stopped)",
@@ -293,24 +291,17 @@
 					"name": "Calls / Transcriptions",
 					"rows": [
 						{
-							"endpoints": "GET /Calls/{Sid}/Transcriptions[/{Sid}]",
-							"twilio": "supported",
-							"voicetel": "supported",
-							"restcomm": "partial",
-							"notes": "VoiceTel mirrors <code>&lt;Start&gt;&lt;Transcription&gt;</code>; returns RT-prefixed SID. RestComm transcription depends on deployment plugins."
-						},
-						{
 							"endpoints": "POST /Calls/{Sid}/Transcriptions (start)",
 							"twilio": "supported",
 							"voicetel": "supported",
-							"restcomm": "partial",
-							"notes": ""
+							"restcomm": "unsupported",
+							"notes": "VoiceTel mirrors <code>&lt;Start&gt;&lt;Transcription&gt;</code> and returns a GT-prefixed SID. RestComm's Transcriptions resource covers recordings only."
 						},
 						{
 							"endpoints": "POST /Calls/{Sid}/Transcriptions/{Sid} (Status=stopped)",
 							"twilio": "supported",
 							"voicetel": "supported",
-							"restcomm": "partial",
+							"restcomm": "unsupported",
 							"notes": ""
 						}
 					]
@@ -333,9 +324,9 @@
 						{
 							"endpoints": "GET /Calls/{Sid}/Events",
 							"twilio": "supported",
-							"voicetel": "partial",
+							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel compatibility stub: 200 + empty list. Per-call events are delivered to your <code>StatusCallback</code> URL."
+							"notes": "VoiceTel: one event per REST request and response against the call (create and each update)."
 						}
 					]
 				},
@@ -345,16 +336,16 @@
 						{
 							"endpoints": "GET /Calls/{Sid}/Notifications",
 							"twilio": "supported",
-							"voicetel": "partial",
-							"restcomm": "unsupported",
-							"notes": "VoiceTel stub: 200 + empty list."
+							"voicetel": "supported",
+							"restcomm": "partial",
+							"notes": "VoiceTel: the call's voice markup fetch (11200) and parse (12100) failures."
 						},
 						{
 							"endpoints": "GET /Calls/{Sid}/Notifications/{Sid}",
 							"twilio": "supported",
-							"voicetel": "partial",
-							"restcomm": "unsupported",
-							"notes": "VoiceTel single-resource fetch on the same stub — always 404."
+							"voicetel": "supported",
+							"restcomm": "partial",
+							"notes": ""
 						}
 					]
 				},
@@ -440,6 +431,13 @@
 							"notes": "VoiceTel: metadata persisted at conference start."
 						},
 						{
+							"endpoints": "POST /Conferences/{Sid}/Recordings (start)",
+							"twilio": "unsupported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel extension: records the conference mix in mono; <code>source</code> is <code>StartConferenceRecordingAPI</code>. On Twilio, conference recording starts from the <code>record</code> attribute on <code>&lt;Conference&gt;</code>."
+						},
+						{
 							"endpoints": "GET /Conferences/{Sid}/Recordings/{Sid}",
 							"twilio": "supported",
 							"voicetel": "supported",
@@ -517,8 +515,8 @@
 							"endpoints": "GET /Queues/{Sid}/Members[/{Sid}|Front], POST /Queues/{Sid}/Members/{Sid|Front}",
 							"twilio": "supported",
 							"voicetel": "supported",
-							"restcomm": "partial",
-							"notes": "VoiceTel extension — REST dequeue alongside <code>&lt;Dial&gt;&lt;Queue&gt;</code> markup."
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: REST dequeue to a voice markup URL alongside <code>&lt;Dial&gt;&lt;Queue&gt;</code>; <code>Front</code> addresses the longest-waiting caller."
 						}
 					]
 				},
@@ -691,14 +689,26 @@
 							"notes": "VoiceTel: individual IP entries with optional CIDR mask."
 						}
 					]
+				},
+				{
+					"name": "SIP / Registrations",
+					"rows": [
+						{
+							"endpoints": "GET /SIP/Registrations",
+							"twilio": "unsupported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel extension (not a Twilio resource): every AOR registered under the account's SIP Domains, with its contacts and, when the endpoint is on a call, the active call."
+						}
+					]
 				}
 			],
-			"groupCount": 36,
+			"groupCount": 38,
 			"rowCount": 62
 		},
 		{
 			"name": "Programmable Messaging",
-			"summary": "SMS and MMS send/fetch with per-message media. VoiceTel routes messages through the per-tenant SMS provider configured for your account.",
+			"summary": "SMS and MMS send/fetch with per-message media, plus Messaging Services and their sender pools. VoiceTel routes messages through the per-tenant SMS provider configured for your account.",
 			"twilioDocsUrl": "https://www.twilio.com/docs/messaging/api",
 			"groups": [
 				{
@@ -709,7 +719,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": "VoiceTel sends via per-tenant SMS provider; see <a href=\"/messaging/\">VoiceTel Messaging</a>."
+							"notes": "VoiceTel sends via per-tenant SMS provider; see <a href=\"/messaging/\">VoiceTel Messaging</a>. <code>MediaUrl</code> sends an MMS and <code>ValidityPeriod</code> is honoured; <code>MessagingServiceSid</code> is accepted but doesn't pick a sender."
 						},
 						{
 							"endpoints": "GET /Messages[/{Sid}]",
@@ -722,8 +732,8 @@
 							"endpoints": "POST /Messages/{Sid}",
 							"twilio": "supported",
 							"voicetel": "partial",
-							"restcomm": "partial",
-							"notes": "VoiceTel: <code>Body</code> redaction supported; <code>Status=canceled</code> rejected with 409."
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: <code>Body</code> redaction supported; <code>Status=canceled</code> on a queued or sent message returns 409 21610."
 						},
 						{
 							"endpoints": "DELETE /Messages/{Sid}",
@@ -752,15 +762,34 @@
 						{
 							"endpoints": "POST /Messages + MediaUrl",
 							"twilio": "supported",
-							"voicetel": "na",
-							"restcomm": "partial",
-							"notes": "VoiceTel MMS via native <a href=\"/messaging/\">VoiceTel Messaging</a>, not the VoiceML compatibility REST surface."
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: one or more <code>MediaUrl</code> values make the message an MMS through the account's MMS provider; <code>Body</code> becomes optional. Media is listed under <code>/Messages/{Sid}/Media</code>."
+						}
+					]
+				},
+				{
+					"name": "Messaging Services",
+					"rows": [
+						{
+							"endpoints": "POST /v1/Services, GET /v1/Services[/{Sid}], POST /v1/Services/{Sid}, DELETE /v1/Services/{Sid}",
+							"twilio": "supported",
+							"voicetel": "partial",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: MG-prefixed service. Shares <code>/v1/Services</code> with Conversation Services and is routed by host: a <code>messaging.</code> hostname reaches Messaging Services, any other host reaches Conversation Services. <code>StickySender</code>, <code>MmsConverter</code>, <code>SmartEncoding</code>, and the other feature toggles are stored and echoed only."
+						},
+						{
+							"endpoints": "POST /v1/Services/{Sid}/PhoneNumbers, GET /v1/Services/{Sid}/PhoneNumbers[/{Sid}], DELETE /v1/Services/{Sid}/PhoneNumbers/{Sid}",
+							"twilio": "supported",
+							"voicetel": "partial",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: sender-pool membership for numbers on the account — one service per number (409 21710 / 21712). Sends don't draw a sender from the pool yet; pass <code>From</code>."
 						}
 					]
 				}
 			],
-			"groupCount": 3,
-			"rowCount": 6
+			"groupCount": 4,
+			"rowCount": 8
 		},
 		{
 			"name": "Phone Numbers",
@@ -785,11 +814,11 @@
 							"notes": "VoiceTel: self-serve DID assignment by E.164; inventory provisioned via <a href=\"/numbers/\">VoiceTel Numbers</a>."
 						},
 						{
-							"endpoints": "GET /IncomingPhoneNumbers/Local, GET /IncomingPhoneNumbers/Mobile, GET /IncomingPhoneNumbers/TollFree",
+							"endpoints": "GET, POST /IncomingPhoneNumbers/Local, /Mobile, /TollFree",
 							"twilio": "supported",
 							"voicetel": "partial",
 							"restcomm": "partial",
-							"notes": "VoiceTel type-specific list aliases; <code>Mobile</code> returns empty (no carrier-mobile classification on BYO DIDs)."
+							"notes": "VoiceTel type-specific aliases; <code>Mobile</code> lists nothing (no carrier-mobile classification on BYO DIDs). The POST aliases assign a DID like <code>POST /IncomingPhoneNumbers</code>, with voice fields only."
 						},
 						{
 							"endpoints": "GET /IncomingPhoneNumbers/{Sid}",
@@ -803,7 +832,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": "VoiceTel: only-set-fields-touched update semantics for voice routing."
+							"notes": "VoiceTel: only-set-fields-touched updates for voice and inbound-SMS routing (<code>SmsUrl</code>, <code>SmsMethod</code>, <code>SmsFallbackUrl</code>, <code>SmsFallbackMethod</code>)."
 						},
 						{
 							"endpoints": "DELETE /IncomingPhoneNumbers/{Sid}",
@@ -857,7 +886,7 @@
 		{
 			"name": "BYOC Voice Trunking",
 			"summary": "Bring-Your-Own-Carrier voice trunking — connection policies, IP records, source-IP mappings, and account-wide dialing permissions. Used to attach a customer SBC or upstream carrier to outbound voice.",
-			"twilioDocsUrl": "https://www.twilio.com/docs/voice/api/byoc-trunk-resource",
+			"twilioDocsUrl": "https://www.twilio.com/docs/voice/bring-your-own-carrier-byoc/api",
 			"groups": [
 				{
 					"name": "Voice trunking / ByocTrunks",
@@ -867,7 +896,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "Twilio Bring-Your-Own-Carrier voice trunk surface. VoiceTel: TR-prefixed trunk attaching a customer SBC to inbound voice routing."
+							"notes": "Twilio Bring-Your-Own-Carrier voice trunk surface. VoiceTel: BY-prefixed trunk resource; <code>Byoc</code> on <code>POST /Calls</code> is accepted but ignored — outbound calls use VoiceTel's configured gateways."
 						}
 					]
 				},
@@ -1234,6 +1263,70 @@
 			"rowCount": 10
 		},
 		{
+			"name": "Pricing",
+			"summary": "Account-specific rates over the Pricing API — Voice and Messaging v1, PhoneNumbers v1, and Voice and Trunking v2. VoiceTel returns your account's own rates for the US (NANP) only: one flat rate per product rather than a per-destination ratedeck. Another country or a non-NANP number is 404; 503 means the rate couldn't be read. Public rates are on the <a href=\"/pricing/\">pricing page</a>.",
+			"twilioDocsUrl": "https://www.twilio.com/docs/voice/pricing",
+			"groups": [
+				{
+					"name": "Pricing / Voice",
+					"rows": [
+						{
+							"endpoints": "GET /v1/Voice/Countries[/{IsoCountry}], GET /v1/Voice/Numbers/{Number}",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: outbound and inbound (local, toll-free) per-minute rates for the account."
+						},
+						{
+							"endpoints": "GET /v2/Voice/Countries[/{IsoCountry}], GET /v2/Voice/Numbers/{DestinationNumber}",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "Same rates as v1 in the v2 response, with origination prefixes."
+						}
+					]
+				},
+				{
+					"name": "Pricing / Messaging",
+					"rows": [
+						{
+							"endpoints": "GET /v1/Messaging/Countries[/{IsoCountry}]",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: SMS rates only — the Messaging Pricing response has no MMS field."
+						}
+					]
+				},
+				{
+					"name": "Pricing / PhoneNumbers",
+					"rows": [
+						{
+							"endpoints": "GET /v1/PhoneNumbers/Countries[/{IsoCountry}]",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: monthly DID rental for <code>local</code> and <code>toll free</code> numbers."
+						}
+					]
+				},
+				{
+					"name": "Pricing / Trunking",
+					"rows": [
+						{
+							"endpoints": "GET /v2/Trunking/Countries[/{IsoCountry}], GET /v2/Trunking/Numbers/{DestinationNumber}",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel bills trunking at the voice rate; exposed as its own resource for compatibility with Twilio SDKs."
+						}
+					]
+				}
+			],
+			"groupCount": 4,
+			"rowCount": 5
+		},
+		{
 			"name": "Out of scope",
 			"summary": "Distinct Twilio products that fall outside the VoiceML compatibility surface. Use the linked VoiceTel equivalent where one exists.",
 			"groups": [
@@ -1250,18 +1343,6 @@
 					]
 				},
 				{
-					"name": "Pricing API",
-					"rows": [
-						{
-							"endpoints": "full",
-							"twilio": "supported",
-							"voicetel": "na",
-							"restcomm": "unsupported",
-							"notes": "VoiceTel publishes <a href=\"/pricing/\">rates directly</a>; no Twilio-shaped pricing API."
-						}
-					]
-				},
-				{
 					"name": "Verify<br>Lookup<br>Studio<br>TaskRouter<br>Video<br>Proxy<br>Functions/Assets<br>Wireless<br>Trunking<br>Authy",
 					"rows": [
 						{
@@ -1274,8 +1355,8 @@
 					]
 				}
 			],
-			"groupCount": 3,
-			"rowCount": 3
+			"groupCount": 2,
+			"rowCount": 2
 		}
 	]
 }

@@ -3,21 +3,48 @@
 branding, single voiceml.voicetel.com server, and tag groups so the Redoc
 render gets a sensible sidebar instead of a flat path list.
 
-Default source is the sibling callBroadcast checkout
-(`../callBroadcast/internal/httpapi/openapi/callbroadcast.yml`); pass an
-alternate path as the first arg to override.
+Source (first arg, optional):
+- a callBroadcast checkout directory (default: the sibling `../callBroadcast`):
+  the spec is read from its committed HEAD, so unreleased working-copy edits
+  never reach the public reference;
+- a YAML file, e.g. a download of https://voiceml.voicetel.com/openapi.yml. A
+  file tracked by git is refused while it has uncommitted changes.
 """
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SOURCE = ROOT.parent / "callBroadcast" / "internal" / "httpapi" / "openapi" / "callbroadcast.yml"
-SOURCE = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_SOURCE
+DEFAULT_CHECKOUT = ROOT.parent / "callBroadcast"
+SPEC_IN_CHECKOUT = "internal/httpapi/openapi/callbroadcast.yml"
 OUT = ROOT / "vendor" / "api-specs" / "voiceml.json"
+
+
+def git(cwd, *args):
+	return subprocess.run(["git", "-C", str(cwd), *args], capture_output=True, text=True)
+
+
+def read_source(arg):
+	"""Return (yaml_text, description) for the requested source."""
+	path = Path(arg) if arg else DEFAULT_CHECKOUT
+	if not path.exists():
+		sys.exit(f"{path} not found; pass a callBroadcast checkout or a spec file")
+	if path.is_dir():
+		shown = git(path, "show", f"HEAD:{SPEC_IN_CHECKOUT}")
+		if shown.returncode != 0:
+			sys.exit(f"cannot read HEAD:{SPEC_IN_CHECKOUT} in {path}: {shown.stderr.strip()}")
+		return shown.stdout, f"{path} @ HEAD"
+	tracked = git(path.parent, "ls-files", "--error-unmatch", path.name).returncode == 0
+	if tracked and git(path.parent, "diff", "--quiet", "HEAD", "--", path.name).returncode != 0:
+		sys.exit(
+			f"{path} has uncommitted changes. Pass the checkout directory to build "
+			"from its committed HEAD, or a downloaded copy of the published spec."
+		)
+	return path.read_text(), str(path)
 
 
 SID_LITERAL = re.compile(r"\b(AC|CA|CF|SK|SR|MZ|RT|RE|MM|SM|IM|MG|HX|PN|TR|US|RM|TJ|HR)[0-9a-f]{32}\b")
@@ -331,8 +358,9 @@ def tag_for_operation(path, op):
 
 
 def main():
-	with open(SOURCE) as f:
-		spec = yaml.safe_load(f)
+	text, source = read_source(sys.argv[1] if len(sys.argv) > 1 else None)
+	print(f"Source: {source}")
+	spec = yaml.safe_load(text)
 
 	# Brand sweep
 	spec = rewrite_branding(spec)

@@ -3961,7 +3961,7 @@
           "request",
           "response"
         ],
-        "description": "Twilio-compatible per-call lifecycle event. One row per\nREST request/response against a call (create + each update),\nrecorded by recordCallEvent. List-only — Twilio's Events\nresource has no fetch-by-id operation.\n",
+        "description": "Twilio-compatible per-call lifecycle event. One row per\nREST request/response against a call (create + each update). List-only — Twilio's Events\nresource has no fetch-by-id operation.\n",
         "properties": {
           "request": {
             "type": "object",
@@ -6462,7 +6462,7 @@
         ]
       },
       "MessagingServicePhoneNumber": {
-        "description": "One phone number in a Messaging Service's sender pool (Twilio's\n/v1/Services/{ServiceSid}/PhoneNumbers subresource, #266).\n",
+        "description": "One phone number in a Messaging Service's sender pool (Twilio's\n/v1/Services/{ServiceSid}/PhoneNumbers subresource).\n",
         "type": "object",
         "required": [
           "sid",
@@ -21535,7 +21535,7 @@
           "Conversations / Services"
         ],
         "summary": "Create a Conversation Service or a Messaging Service",
-        "description": "Shared path (see ServicesSharedResponse) — dispatches by Host\nheader to either Conversation Service (conversations.twilio.com)\nor Messaging Service (messaging.twilio.com, #16).\n",
+        "description": "Shared path (see ServicesSharedResponse) — dispatches by Host\nheader to either Conversation Service (conversations.twilio.com)\nor Messaging Service (messaging.twilio.com).\n",
         "requestBody": {
           "required": true,
           "content": {

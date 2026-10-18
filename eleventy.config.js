@@ -198,6 +198,8 @@ export default function (eleventyConfig) {
 	const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 	eleventyConfig.addFilter("usd", (value) => usd.format(value));
 	eleventyConfig.addFilter("thousands", (value) => new Intl.NumberFormat("en-US").format(value));
+	const andList = new Intl.ListFormat("en-US", { style: "long", type: "conjunction" });
+	eleventyConfig.addFilter("andList", (items) => andList.format(items));
 
 	eleventyConfig.addShortcode("year", () => String(new Date().getFullYear()));
 

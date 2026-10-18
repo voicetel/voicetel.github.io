@@ -13,11 +13,13 @@
 		"Diagnostics",
 		"Messaging",
 		"Numbers",
+		"Pricing",
 		"Queues",
 		"Recordings",
 		"SIP trunking",
 		"Voice trunking"
 	],
+	"notYetCovered": ["Usage Records", "SIP Registrations", "Messaging Service sender pools"],
 	"sdks": [
 		{
 			"name": "Python",

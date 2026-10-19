@@ -527,6 +527,47 @@
 					}
 				]
 			}
+		},
+		{
+			"key": "voiceml-studio-flow",
+			"illustration": {
+				"type": "flow",
+				"title": "How a VoiceML Studio call flow reaches your phone number",
+				"nodes": [
+					{
+						"icon": "bezier2",
+						"label": "Studio",
+						"meta": "template · canvas",
+						"accent": true
+					},
+					{
+						"icon": "code-slash",
+						"label": "Export",
+						"meta": ".xml · .zip"
+					},
+					{
+						"icon": "layers",
+						"label": "voiceml.org",
+						"meta": "validate · publish"
+					},
+					{
+						"icon": "telephone",
+						"label": "Your number",
+						"meta": "voice URL"
+					}
+				],
+				"links": [
+					{
+						"label": "download"
+					},
+					{
+						"label": "paste"
+					},
+					{
+						"label": "URL"
+					}
+				]
+			}
 		}
 	]
 }

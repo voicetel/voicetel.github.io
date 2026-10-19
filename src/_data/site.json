@@ -13,6 +13,7 @@
 	"voicemlDashboardUrl": "https://dash.voiceml.com",
 	"voicemlReferenceUrl": "https://voiceml.com",
 	"voicemlPublisherUrl": "https://voiceml.org",
+	"voicemlStudioUrl": "https://studio.voiceml.com",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",
@@ -91,6 +92,12 @@
 					"description": "Voicemail, recordings, and a live operator panel."
 				},
 				{
+					"label": "VoiceML Studio",
+					"icon": "bezier2",
+					"href": "/voiceml/studio/",
+					"description": "Build call flows on a canvas, in your browser."
+				},
+				{
 					"label": "Conversations",
 					"icon": "chat-square-text",
 					"href": "/conversations/",
@@ -157,6 +164,12 @@
 					"icon": "layers",
 					"href": "https://voiceml.org",
 					"description": "Publish markup to a permanent webhook URL, free."
+				},
+				{
+					"label": "VoiceML Studio",
+					"icon": "bezier2",
+					"href": "https://studio.voiceml.com",
+					"description": "Visual call-flow editor that exports VoiceML."
 				},
 				{
 					"label": "FAQ",
@@ -263,6 +276,7 @@
 				{ "label": "SIP Trunking", "href": "/sip-trunking/" },
 				{ "label": "VoiceML", "href": "/voiceml/" },
 				{ "label": "VoiceML Dashboard", "href": "/voiceml/dashboard/" },
+				{ "label": "VoiceML Studio", "href": "/voiceml/studio/" },
 				{ "label": "Conversations", "href": "/conversations/" },
 				{ "label": "AI Agents", "href": "/ai-agents/" },
 				{ "label": "Hosted PBX", "href": "/pbx/" },
@@ -289,6 +303,7 @@
 				{ "label": "Documentation", "href": "/docs/" },
 				{ "label": "VoiceML reference", "href": "https://voiceml.com" },
 				{ "label": "VoiceML publisher", "href": "https://voiceml.org" },
+				{ "label": "VoiceML Studio", "href": "https://studio.voiceml.com" },
 				{ "label": "FAQ", "href": "/faq/" },
 				{ "label": "Support", "href": "/support/" },
 				{ "label": "Infrastructure & uptime", "href": "/infrastructure/" },

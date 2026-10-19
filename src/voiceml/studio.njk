@@ -1,0 +1,121 @@
+---
+layout: layouts/product.njk
+permalink: /voiceml/studio/
+title: "VoiceML Studio"
+description: "VoiceML Studio is a visual editor for VoiceML call flows: start from a template, arrange steps on a canvas, and export VoiceML documents to publish on voiceml.org. It runs in your browser and needs no account."
+---
+{%- from "partials/v2/macros.njk" import arrow %}
+
+<section class="hero hero--page" aria-labelledby="hero-heading">
+	<div class="hero__bg" aria-hidden="true"></div>
+	<div class="container hero__inner">
+		<div class="hero__copy">
+			<p class="eyebrow">VoiceML · Studio</p>
+			<h1 id="hero-heading">Build VoiceML call flows on a canvas.</h1>
+			<p class="lede">VoiceML Studio is a visual editor for VoiceML call flows. Start from a template, add steps from the palette, and Studio writes the VoiceML, checks it as you build, and exports documents ready to publish on voiceml.org. It runs in your browser and needs no account.</p>
+			<div class="cta-row">
+				<a class="btn btn--primary btn--lg" href="{{ site.voicemlStudioUrl }}">Open VoiceML Studio {{ arrow(14) }}</a>
+				<a class="btn btn--ghost btn--lg" href="/voiceml/">Explore VoiceML</a>
+			</div>
+		</div>
+		<div class="hero__visual">
+			<figure class="photo-card">
+				<img src="/assets/img/voiceml-studio.webp" alt="VoiceML Studio with a key-press menu open. The step palette is on the left. On the canvas, the menu branches to two Dial steps, a no-input message, and an invalid-option message, each ending in Hang up. The inspector on the right shows the menu's Gather settings, and the generated VoiceML is listed below the canvas." width="1280" height="800" decoding="async">
+				<figcaption>The key-press menu template, with the menu's settings in the inspector and its VoiceML below.</figcaption>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<section class="section section--tint" id="how-it-works" aria-labelledby="how-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">How it works</p>
+				<h2 id="how-heading">Template, canvas, export, publish.</h2>
+				<p class="lede">Choose one of 16 templates, or start an empty project. Drag steps from the palette onto the canvas, select each one to fill in its settings, and watch the Problems panel for anything that would fail. Export downloads each document as a VoiceML file, or all of them as a .zip with a project file you can import later.</p>
+				<p class="row__links">To go live, publish the documents on <a href="{{ site.voicemlPublisherUrl }}">voiceml.org</a> in the order Studio lists, paste each URL voiceml.org returns back into Studio so documents that link to it point at the published copy, and set the first document's URL as your phone number's voice URL.</p>
+			</div>
+		</div>
+		{%- set drawing = "voiceml-studio-flow" %}
+		{% include "partials/section-illustration.njk" %}
+	</div>
+</section>
+
+<section class="section section--white" id="features" aria-labelledby="features-heading">
+	<div class="container">
+		<div class="section__head">
+			<p class="eyebrow">What you get</p>
+			<h2 id="features-heading">The call flow on screen, and the VoiceML written for you.</h2>
+		</div>
+		{%- set features = [
+			{ icon: "list-check", title: "Templates for common call flows", body: "Greetings and call forwarding to a number or SIP address, voicemail, call recording with a live transcript, a text during the call, key-press and speech menus, business hours, holiday closures, queues, conferences, and an AI voice agent." },
+			{ icon: "code-slash", title: "Steps for VoiceML verbs", body: "<code>&lt;Say&gt;</code>, <code>&lt;Play&gt;</code>, <code>&lt;Gather&gt;</code>, <code>&lt;Dial&gt;</code>, <code>&lt;Enqueue&gt;</code>, <code>&lt;Record&gt;</code>, <code>&lt;Message&gt;</code>, <code>&lt;Pay&gt;</code>, and more, each with its attributes in the inspector. Background sessions start and stop audio streams, live transcription, and SIPREC recording, and a Raw VoiceML step covers anything else." },
+			{ icon: "diagram-3", title: "Menus and routing without code", body: "Key-press and speech menus, and branches on the caller's number, area code, the time of day, the date, or a SIP header. On export they become VoiceML: one Liquid template document by default, or separate linked documents." },
+			{ icon: "shield-check", title: "Checked as you build", body: "The Problems panel lists what would break a call or a publish, such as a path that never ends the call, an element voiceml.org won't publish, documents that link in a loop, or a credential that a published URL would expose." },
+			{ icon: "layers", title: "Labels what it needs to run", body: "A project is marked <em>VoiceML.org only</em> when it runs entirely from published documents, <em>Needs a server</em> when part of it posts to a small web application of yours, or <em>Advanced integration</em> when it needs an AI agent relay, a media stream, a SIPREC recorder, or a payment connector." },
+			{ icon: "envelope", title: "Works with the VoiceML Dashboard", body: "The voicemail and record-and-transcribe templates deliver messages and transcripts to the <a href=\"/voiceml/dashboard/\">VoiceML Dashboard</a>. Choose <em>Send to the VoiceML dashboard</em> on a callback, enter the recipient's email address, and Studio writes the URL." }
+		] %}
+		{% include "partials/v2/feature-grid.njk" %}
+	</div>
+</section>
+
+<section class="section section--tint" id="output" aria-labelledby="output-heading">
+	<div class="container">
+		<div class="row">
+			<div class="row__text">
+				<p class="eyebrow">Output</p>
+				<h2 id="output-heading">Plain VoiceML you can read and edit.</h2>
+				<p class="lede">Studio exports ordinary VoiceML documents. The key-press menu above is one document: on the first request it asks the question, and when <code>&lt;Gather&gt;</code> sends the digit back to the same URL, Liquid picks the branch.</p>
+				<p class="row__links">Already have VoiceML? <em>Import…</em> takes VoiceML documents (several at once), a saved project, or an exported .zip, or you can paste the markup.</p>
+			</div>
+			<div class="row__visual">
+				{%- set code %}{% highlight "xml" %}{{ voicemlSamples["studio-phone-menu"].main | safe }}{% endhighlight %}{% endset %}
+				{%- set terminal = { label: "main.xml", pill: "exported", code: code } %}
+				{% include "partials/v2/terminal.njk" %}
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section section--white" id="get-started" aria-labelledby="start-heading">
+	<div class="container">
+		<div class="row row--reverse">
+			<div class="row__text">
+				<p class="eyebrow">Get started</p>
+				<h2 id="start-heading">Pick a template, fill in the steps, publish.</h2>
+				<p class="lede">Studio needs no install and no account. To answer calls with what you build, you need a VoiceML account and a phone number.</p>
+				<div class="cta-row">
+					<a class="btn btn--ghost" href="{{ site.voicemlStudioUrl }}">Open VoiceML Studio</a>
+				</div>
+			</div>
+			<div class="row__visual">
+				{%- set steps = [
+					{ title: "Pick a template", body: "Open <a href=\"" ~ site.voicemlStudioUrl ~ "\">VoiceML Studio</a> and choose a template from the toolbar, or select New to start an empty project." },
+					{ title: "Fill in the steps", body: "Select each step to set its numbers, prompts, and options, and clear anything listed under Problems. Tick <em>Save in this browser</em> to keep the project between visits." },
+					{ title: "Publish and point your number", body: "Choose <em>Export…</em>, publish each document on <a href=\"" ~ site.voicemlPublisherUrl ~ "\">voiceml.org</a> in the order listed, paste each URL back, and set the first document's URL as your phone number's voice URL." }
+				] %}
+				{% include "partials/v2/step-list.njk" %}
+			</div>
+		</div>
+
+		<h3 class="subsection-heading">VoiceML Studio FAQ</h3>
+		{%- set faqs = [
+			{ q: "Do I need an account?", a: "Not to build or publish. Studio runs in your browser without signing in, and voiceml.org publishes documents free, without an account. A phone number that runs the flow needs a VoiceML account." },
+			{ q: "Where is my project saved?", a: "In the open browser tab. Tick <em>Save in this browser</em> to keep it on that device between visits, or use <em>Save project file (.json)</em> under Export to keep a copy you can import later." },
+			{ q: "Can I open call flows I wrote by hand?", a: "Yes. <em>Import…</em> takes VoiceML documents (several at once), a saved project (.json), or an exported .zip, and you can paste VoiceML instead. An import can be undone." }
+		] %}
+		{% include "partials/v2/faq.njk" %}
+
+		<div class="cta-band">
+			<div class="cta-band__text">
+				<h3 class="cta-band__title">Open VoiceML Studio.</h3>
+				<p class="cta-band__body">Start from a template, export the VoiceML, and publish it on voiceml.org.</p>
+			</div>
+			<div class="cta-band__actions cta-row">
+				<a class="btn btn--primary" href="{{ site.voicemlStudioUrl }}">Open Studio {{ arrow(14) }}</a>
+				<a class="btn btn--ghost" href="/support/voiceml/">Complete call flows</a>
+			</div>
+		</div>
+	</div>
+</section>

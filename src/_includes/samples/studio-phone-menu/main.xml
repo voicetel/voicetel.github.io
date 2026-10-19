@@ -1,0 +1,25 @@
+<Response>
+  {% if Digits == blank %}
+    <Gather input="dtmf" numDigits="1" timeout="5">
+      <Say>For sales, press 1. For support, press 2.</Say>
+    </Gather>
+    <Say>We did not receive a selection. Goodbye.</Say>
+    <Hangup/>
+  {% else %}
+    {% case Digits %}
+    {% when "1" %}
+      <Dial>
+        <Number>+15551230001</Number>
+      </Dial>
+      <Hangup/>
+    {% when "2" %}
+      <Dial>
+        <Number>+15551230002</Number>
+      </Dial>
+      <Hangup/>
+    {% else %}
+      <Say>That is not a valid option. Goodbye.</Say>
+      <Hangup/>
+    {% endcase %}
+  {% endif %}
+</Response>

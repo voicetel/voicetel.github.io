@@ -115,11 +115,12 @@ description: "VoiceML is VoiceTel's XML-based Programmable Voice runtime for com
 		<div class="row row--reverse">
 			<div class="row__text">
 				<p class="eyebrow">Tools</p>
-				<h2 id="tools-heading">Reference, publisher, calculator, validator, and a softphone.</h2>
-				<p class="lede">voiceml.com documents every verb, noun, and attribute, with machine-readable copies for AI agents and tooling. voiceml.org checks your markup against the schema and publishes it to a permanent webhook URL, free, with no account required.</p>
+				<h2 id="tools-heading">Studio, reference, publisher, calculator, validator, and a softphone.</h2>
+				<p class="lede">VoiceML Studio builds call flows on a canvas and exports the VoiceML. voiceml.com documents every verb, noun, and attribute, with machine-readable copies for AI agents and tooling. voiceml.org checks your markup against the schema and publishes it to a permanent webhook URL, free, with no account required.</p>
 			</div>
 			<div class="row__visual">
 				{%- set docs = [
+					{ icon: "bezier2", title: "VoiceML Studio", meta: "visual editor · no account", href: "/voiceml/studio/" },
 					{ icon: "book", title: "VoiceML reference", meta: "voiceml.com", href: site.voicemlReferenceUrl },
 					{ icon: "layers", title: "VoiceML publisher", meta: "free · no account", href: site.voicemlPublisherUrl },
 					{ icon: "calculator", title: "VoiceML calculator", meta: "model a call flow", href: "/voiceml/calculator/" },

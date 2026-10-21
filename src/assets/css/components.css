@@ -1176,7 +1176,7 @@ textarea {
 	.section-block {
 		margin: 0 0 var(--space-3);
 		padding: 0;
-		page-break-inside: avoid;
+		break-inside: avoid;
 	}
 
 	.pricing-calc-meta {
@@ -1186,7 +1186,7 @@ textarea {
 	.pricing-calc-wrapper {
 		margin: 0;
 		overflow: visible;
-		page-break-inside: avoid;
+		break-inside: avoid;
 	}
 
 	.pricing-calc {
@@ -1203,7 +1203,7 @@ textarea {
 	}
 
 	.pricing-calc tfoot tr {
-		page-break-inside: avoid;
+		break-inside: avoid;
 	}
 
 	.pricing-calc thead th {
@@ -1365,7 +1365,7 @@ textarea {
 		font-size: 8.5pt;
 		line-height: 1.5;
 		color: #333;
-		page-break-inside: avoid;
+		break-inside: avoid;
 	}
 
 	.quote-doc--footer p {

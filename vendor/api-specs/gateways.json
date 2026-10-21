@@ -69,7 +69,7 @@
             "type": "string"
           },
           "route": {
-            "description": "Route ID. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+            "description": "Route ID. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=VOICEML, 8=SDN, 9=MOBILE.",
             "example": "1000",
             "type": "string"
           }
@@ -600,7 +600,7 @@
           }
         },
         "summary": "List Gateways",
-        "description": "Returns all system route types and user-defined SIP gateways for the account. System routes (IDs 1-8) are always included: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=RTC_BRIDGE, 8=SDN.",
+        "description": "Returns all system route types and user-defined SIP gateways for the account. System routes (IDs 1-9, no 7) are always included: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=VOICEML, 8=SDN, 9=MOBILE.",
         "security": [
           {
             "apikey": []

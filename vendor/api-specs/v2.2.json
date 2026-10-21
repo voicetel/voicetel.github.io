@@ -18,7 +18,7 @@
     },
     {
       "name": "Gateways",
-      "description": "Manage SIP gateways (outbound trunks). System route types (USER, T30, VOICE_BRIDGE, DID, T38, VOICEML, SDN) are always present and read-only."
+      "description": "Manage SIP gateways (outbound trunks). System route types (USER, T30, VOICE_BRIDGE, DID, T38, VOICEML, SDN, MOBILE) are always present and read-only."
     },
     {
       "name": "iNumbering",
@@ -13510,7 +13510,7 @@
         }
       },
       "get": {
-        "description": "Returns all system route types and user-defined SIP gateways. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=VOICEML, 8=SDN.",
+        "description": "Returns all system route types and user-defined SIP gateways. System routes: 1=USER, 2=T30, 3=VOICE_BRIDGE, 4=DID, 5=T38, 6=VOICEML, 8=SDN, 9=MOBILE.",
         "tags": [
           "Gateways"
         ],

@@ -46,7 +46,7 @@
 			"name": "Java",
 			"slug": "java",
 			"repo": "https://github.com/voicetel/voiceml-java-sdk",
-			"install": "com.voicetel:voiceml:0.9.2",
+			"install": "com.voicetel:voiceml:0.9.5",
 			"installLabel": "Maven",
 			"description": "Java 11+ client over java.net.http. Builder-style request construction, Jackson serialization."
 		},

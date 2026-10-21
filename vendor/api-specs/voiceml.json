@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VoiceML — Twilio-compatible REST API",
-    "version": "0.9.2",
+    "version": "0.9.5",
     "summary": "Twilio-compatible voice (inbound + outbound), SMS, conferencing, recording, transcription, and payment platform",
     "description": "VoiceML exposes a Twilio-compatible REST + voice markup surface covering\nvoice (inbound + outbound calls, conferences, queues), SMS via the\nMessages resource, mid-call recording / SIPREC / real-time\ntranscription / `<Pay>` subresources, and the `IncomingPhoneNumbers`\n+ `Applications` configuration surfaces. Existing Twilio SDKs\n(`twilio-node`, `twilio-python`, `twilio-go`, ...) integrate with\nminimal migration effort. Authentication, error codes, and\npagination follow Twilio's documented conventions where supported.\n\nURL format: Twilio's canonical URL form ends with `.json` (e.g.\n`/Calls/{Sid}.json`). VoiceML accepts BOTH the `.json`-suffixed and\nthe unsuffixed form — the server strips a trailing `.json`/`.xml`/`.wav`\nsuffix before routing (see `WrapWithFormatSuffix`). The spec documents the\n`.json` form so SDKs generated against this spec produce\nTwilio-compatible URLs out of the box; existing clients that omit `.json`\ncontinue to work unchanged.\n\nAuthentication is per-tenant HTTP Basic:\n * Username = `:AccountSid` (the URL path parameter, Twilio-format\n AC + 32 hex chars). Same value the Twilio SDK validates in its\n constructor — migration-compatible.\n * Password = the per-account API key.\nThe same key is used to compute `X-Twilio-Signature` on outbound webhooks.\n\nAccount management (create / rotate / disable / delete) is NOT exposed on\nthis public listener — it lives on a private observability listener\ndocumented separately.\n",
     "contact": {
@@ -473,7 +473,7 @@
         "name": "PhoneNumberSid",
         "in": "path",
         "required": true,
-        "description": "Twilio-compatible IncomingPhoneNumber identifier — literal `PN` +\n32 lowercase hex characters (34 total). Server-generated when\nthe DID is first claimed by an account; stable for the row's\nlifetime on this account. The legacy E.164 path shape\n(`/IncomingPhoneNumbers/+18005551234`) is still accepted on\ninput during the v0.5.x soft-transition window — same\nprecedent as `ConferenceSid` which accepts both canonical and\nlegacy forms. Responses always emit the `PN…` form on the\n`sid` field regardless of which key resolved the request.\n",
+        "description": "Twilio-compatible IncomingPhoneNumber identifier — literal `PN` +\n32 lowercase hex characters (34 total). Server-generated when\nthe DID is first claimed by an account; stable for the row's\nlifetime on this account. The legacy E.164 path shape\n(`/IncomingPhoneNumbers/+14155550100`) is still accepted on\ninput during the v0.5.x soft-transition window — same\nprecedent as `ConferenceSid` which accepts both canonical and\nlegacy forms. Responses always emit the `PN…` form on the\n`sid` field regardless of which key resolved the request.\n",
         "schema": {
           "type": "string",
           "pattern": "^PN[a-f0-9]{32}$|^\\+[1-9]\\d{1,14}$"
@@ -634,7 +634,7 @@
           "to": {
             "nullable": true,
             "type": "string",
-            "example": "+18005551234"
+            "example": "+14155550100"
           },
           "to_formatted": {
             "nullable": true,
@@ -644,7 +644,7 @@
           "from": {
             "nullable": true,
             "type": "string",
-            "example": "+18005550000"
+            "example": "+14155550101"
           },
           "from_formatted": {
             "nullable": true,
@@ -1667,7 +1667,7 @@
             "nullable": true,
             "type": "string",
             "format": "phone-number",
-            "example": "+14155551234"
+            "example": "+14155550102"
           },
           "date_created": {
             "nullable": true,
@@ -1750,7 +1750,7 @@
             "nullable": true,
             "type": "string",
             "format": "phone-number",
-            "example": "+14155551234"
+            "example": "+14155550102"
           },
           "friendly_name": {
             "nullable": true,
@@ -1963,7 +1963,7 @@
           "phone_number": {
             "nullable": true,
             "type": "string",
-            "example": "+18005551234"
+            "example": "+14155550100"
           },
           "url": {
             "nullable": true,
@@ -2760,7 +2760,7 @@
           },
           "to": {
             "type": "string",
-            "description": "Destination phone number in E.164 form."
+            "description": "Destination phone number in E.164 form. On an `outbound-reply` row created by a messaging-voice markup `<Redirect>` to a SIP endpoint, this is the target `sip:`/`sips:` URI instead."
           },
           "from": {
             "type": "string",
@@ -2786,7 +2786,7 @@
               "read",
               "canceled"
             ],
-            "description": "Production currently emits only `queued`, `sent`, and `failed`; the rest are declared for SDK enum compatibility."
+            "description": "Production emits `queued`, `sent`, `failed`, `canceled`, `scheduled`, `receiving`, `received`, `delivered`, and `undelivered`; `sending`, `accepted`, and `read` are declared for SDK enum compatibility."
           },
           "num_segments": {
             "type": "string",
@@ -2804,7 +2804,7 @@
               "outbound-reply",
               "inbound"
             ],
-            "description": "Production emits only `outbound-api`; other values are reserved for inbound/reply ingestion not yet implemented."
+            "description": "All four values are live: `outbound-api` (REST send), `outbound-call` (message sent during a call), `outbound-reply` (reply to an inbound message — including the SIP MESSAGE hand-off of a messaging-voice markup `<Redirect>` to a `sip:`/`sips:` URI), `inbound` (received message)."
           },
           "price": {
             "type": [
@@ -2823,7 +2823,7 @@
               "integer",
               "null"
             ],
-            "description": "Twilio-shape error taxonomy. 21609 = gateway not configured; 30001 = upstream gateway failure."
+            "description": "Twilio-compatible error taxonomy. 21609 = gateway not configured; 30001 = upstream gateway failure, queue-overflow expiry, or a failed SIP MESSAGE hand-off."
           },
           "error_message": {
             "type": [
@@ -3418,7 +3418,7 @@
             "nullable": true,
             "type": "string",
             "description": "E.164 — leading `+`, 7-15 digits.",
-            "example": "+18005551234"
+            "example": "+14155550100"
           },
           "friendly_name": {
             "nullable": true,
@@ -4263,6 +4263,10 @@
             "minimum": 1,
             "default": 60,
             "description": "Originate timeout (seconds)."
+          },
+          "TimeLimit": {
+            "type": "integer",
+            "description": "Max call duration in seconds. An explicit `0` or a value above `14400` is rejected (error 13216); a negative value disables the limit. Omitted, the 4-hour default cap applies."
           },
           "SendDigits": {
             "type": "string",
@@ -5148,7 +5152,7 @@
           "author": {
             "nullable": true,
             "type": "string",
-            "example": "+15551234567"
+            "example": "+14155550103"
           },
           "body": {
             "nullable": true,
@@ -9609,6 +9613,24 @@
                   },
                   "StatusCallbackEvent": {
                     "type": "string"
+                  },
+                  "ConferenceStatusCallback": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Participant's conference lifecycle webhook."
+                  },
+                  "ConferenceStatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ],
+                    "default": "POST"
+                  },
+                  "ConferenceStatusCallbackEvent": {
+                    "type": "string",
+                    "default": "start end",
+                    "description": "Space- or comma-separated conference event filter."
                   }
                 }
               }
@@ -10328,6 +10350,33 @@
                     "type": "string",
                     "format": "uri",
                     "description": "Legacy alias of MessageStatusCallback."
+                  },
+                  "SmsUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Inbound-SMS webhook URL for this Application."
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Called when requesting/executing the voice markup at SmsUrl fails."
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "PublicApplicationConnectEnabled": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -10514,6 +10563,33 @@
                     "type": "string",
                     "format": "uri",
                     "description": "Legacy alias of MessageStatusCallback."
+                  },
+                  "SmsUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Inbound-SMS webhook URL for this Application."
+                  },
+                  "SmsMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsFallbackUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Called when requesting/executing the voice markup at SmsUrl fails."
+                  },
+                  "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "PublicApplicationConnectEnabled": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -10596,6 +10672,28 @@
                   },
                   "FriendlyName": {
                     "type": "string"
+                  },
+                  "CallDelay": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 60,
+                    "description": "Seconds to wait before placing the verification call; out-of-range values are a 400 (error 21454)."
+                  },
+                  "Extension": {
+                    "type": "string",
+                    "description": "DTMF extension dialed after the verification call connects."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Fires at the end of the verification call with VerificationStatus (success|failed) and OutgoingCallerIdSid on success."
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -12937,7 +13035,7 @@
                   },
                   "MessagingServiceSid": {
                     "type": "string",
-                    "description": "Accepted for compatibility; not yet routed against."
+                    "description": "Accepted for Twilio compatibility; not yet routed against."
                   },
                   "ValidityPeriod": {
                     "type": "integer",
@@ -12957,6 +13055,18 @@
                       "POST"
                     ],
                     "description": "HTTP method for the StatusCallback."
+                  },
+                  "SendAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Schedule the message for a future UTC time. Requires ScheduleType and MessagingServiceSid."
+                  },
+                  "ScheduleType": {
+                    "type": "string",
+                    "enum": [
+                      "fixed"
+                    ],
+                    "description": "`fixed` is the only supported value; anything else is a 400 (error 35126). Requires SendAt and MessagingServiceSid."
                   }
                 }
               }
@@ -13396,7 +13506,7 @@
           "Account"
         ],
         "summary": "Update the authenticated account",
-        "description": "Updates the authenticated account. Accepts form-encoded or JSON\nbodies; only the fields present in the request are changed\n(only-set-fields-touched). `FriendlyName` maps to the Twilio\n`friendly_name`; the remaining fields configure VoiceML voice\nrouting, BYO STT/TTS, AWS recording storage, and the IP allow-list.\nReturns the post-update Account resource in the same Twilio shape as\nthe fetch. Self-serve — an account may only update its own record.\n",
+        "description": "Updates the authenticated account. Accepts form-encoded or JSON\nbodies; only the fields present in the request are changed\n(only-set-fields-touched). `FriendlyName` maps to the Twilio\n`friendly_name`; the remaining fields configure VoiceML voice\nrouting, BYO STT/TTS, AWS recording storage, and the IP allow-list.\nReturns the post-update Account resource in the same shape as\nthe fetch. Self-serve — an account may only update its own record.\n",
         "requestBody": {
           "required": false,
           "content": {
@@ -14239,8 +14349,21 @@
                   "Hints": {
                     "type": "string"
                   },
-                  "StatusCallback": {
-                    "type": "string"
+                  "SpeechModel": {
+                    "type": "string",
+                    "description": "Engine-specific model hint (e.g. Deepgram's `nova-3`)."
+                  },
+                  "EnableAutomaticPunctuation": {
+                    "type": "boolean"
+                  },
+                  "IntelligenceService": {
+                    "type": "string",
+                    "description": "Accepted for Twilio compatibility; VoiceML has no Conversation Intelligence, so a set value logs a 32655 Notification and transcription proceeds."
+                  },
+                  "StatusCallbackUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Transcription lifecycle webhook (Twilio's REST name; no StatusCallback alias)."
                   },
                   "StatusCallbackMethod": {
                     "type": "string",
@@ -14778,7 +14901,7 @@
                   },
                   "Parameter": {
                     "type": "string",
-                    "description": "Single-level JSON object passed to the payment connector. Accepted for compatibility but not yet wired — currently a no-op."
+                    "description": "Single-level JSON object passed to the payment connector. Accepted for Twilio compatibility but not yet wired — currently a no-op."
                   },
                   "PaymentConnector": {
                     "type": "string",
@@ -14818,11 +14941,11 @@
                   },
                   "RequireMatchingInputs": {
                     "type": "string",
-                    "description": "Comma-separated fields requiring matcher inputs. Accepted for compatibility but not yet wired — currently a no-op."
+                    "description": "Comma-separated fields requiring matcher inputs. Accepted for Twilio compatibility but not yet wired — currently a no-op."
                   },
                   "Confirmation": {
                     "type": "boolean",
-                    "description": "Accepted for compatibility but not yet wired — currently a no-op."
+                    "description": "Accepted for Twilio compatibility but not yet wired — currently a no-op."
                   }
                 }
               }
@@ -15713,6 +15836,10 @@
                       "paused",
                       "in-progress"
                     ]
+                  },
+                  "PauseBehavior": {
+                    "type": "string",
+                    "description": "With `Status=paused`: `skip` leaves the paused span out of the recording; `silence` (the default, also used for any other value) keeps it as silence."
                   }
                 }
               }
@@ -16325,6 +16452,28 @@
                       "GET",
                       "POST"
                     ]
+                  },
+                  "SmsApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$",
+                    "description": "Binds the number to an Application whose `sms_*` fields supply the inbound-SMS webhook config; when set, they win over the number's own Sms fields."
+                  },
+                  "VoiceApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$",
+                    "description": "Binds the number to an Application whose voice config wins outright over the number's own Voice* fields."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Number-level lifecycle webhook for INBOUND calls to this DID; the session default fires the completed event — no event selector exists."
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -16379,6 +16528,25 @@
                     "format": "uri"
                   },
                   "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$"
+                  },
+                  "VoiceApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$"
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "StatusCallbackMethod": {
                     "type": "string",
                     "enum": [
                       "GET",
@@ -17095,6 +17263,28 @@
                       "GET",
                       "POST"
                     ]
+                  },
+                  "SmsApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$",
+                    "description": "Binds the number to an Application whose `sms_*` fields supply the inbound-SMS webhook config; when set, they win over the number's own Sms fields."
+                  },
+                  "VoiceApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$",
+                    "description": "Binds the number to an Application whose voice config wins outright over the number's own Voice* fields."
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Number-level lifecycle webhook for INBOUND calls to this DID; the session default fires the completed event — no event selector exists."
+                  },
+                  "StatusCallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
                   }
                 }
               }
@@ -17143,6 +17333,25 @@
                     "format": "uri"
                   },
                   "SmsFallbackMethod": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST"
+                    ]
+                  },
+                  "SmsApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$"
+                  },
+                  "VoiceApplicationSid": {
+                    "type": "string",
+                    "pattern": "^AP[0-9a-fA-F]{32}$"
+                  },
+                  "StatusCallback": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "StatusCallbackMethod": {
                     "type": "string",
                     "enum": [
                       "GET",
@@ -17271,7 +17480,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17365,7 +17574,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17459,7 +17668,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17553,7 +17762,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17647,7 +17856,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17741,7 +17950,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17835,7 +18044,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -17929,7 +18138,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -18023,7 +18232,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "Accepted for compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
+            "description": "Accepted for Twilio compatibility; VoiceML accounts have no subaccounts, so the flag does not change the result."
           },
           {
             "$ref": "#/components/parameters/Page"
@@ -18192,7 +18401,7 @@
           "schema": {
             "type": "string"
           },
-          "description": "The phone number in E.164 format (e.g. +18005551234) or its PN sid."
+          "description": "The phone number in E.164 format (e.g. +14155550100) or its PN sid."
         }
       ],
       "get": {

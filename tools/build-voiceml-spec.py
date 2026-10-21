@@ -84,7 +84,7 @@ def rewrite_branding(value):
 		value = re.sub(r"\s*\(`record[A-Za-z]+`\)", "", value)
 		value = re.sub(r",\s*recorded by\s*(`[A-Za-z.]+`|[a-z][a-z0-9]*[A-Z][A-Za-z0-9]*)", "", value)
 		value = re.sub(r"\s*\(\s*see\s+[a-z][A-Za-z0-9]*\.[a-zA-Z0-9]+\s*\)", "", value)
-		value = re.sub(r"\s*\(#[0-9]+\)", "", value)
+		value = re.sub(r"\s*\(#[0-9]+(?:[,/]\s*#[0-9]+)*\)", "", value)
 		value = re.sub(r",\s*#[0-9]+(?=\))", "", value)
 		# Trademark: TwiML must not ship on the public site (CLAUDE.md §3). Wire field
 		# names such as Twiml are dict keys and are not walked as values here, so
@@ -369,6 +369,8 @@ def main():
 	# Title + product name
 	spec["info"]["title"] = "VoiceML — Twilio-compatible REST API"
 	spec["info"]["contact"]["name"] = "VoiceTel"
+	if spec["info"].get("version") == "0.9.4":
+		spec["info"]["version"] = "0.9.5"
 
 	# Single canonical server
 	spec["servers"] = [{

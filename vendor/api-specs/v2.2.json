@@ -389,9 +389,6 @@
         "description": "Data payload for the ticket operation.",
         "example": {
           "ticket": {
-            "bcc": [
-              "example"
-            ],
             "updatedAt": "2026-05-18T11:23:00Z",
             "customerWaitingSince": {
               "latestReplyFrom": "customer",
@@ -470,9 +467,6 @@
             "embedded": {
               "threads": [
                 {
-                  "bcc": [
-                    "example"
-                  ],
                   "source": {
                     "type": "example",
                     "via": "example"
@@ -581,9 +575,7 @@
             },
             "type": "email",
             "number": 1015,
-            "threadsCount": 3,
             "mailboxId": 2,
-            "preview": "Hello, I cannot send SMS from my account…",
             "subject": "Cannot send SMS",
             "closedAt": "2026-05-18T12:00:00Z",
             "state": "published",
@@ -595,7 +587,6 @@
               "email": "example",
               "firstName": "example"
             },
-            "closedBy": 0,
             "status": "active",
             "createdBy": {
               "id": 0,
@@ -1223,9 +1214,6 @@
           "data": {
             "messages": [
               {
-                "bcc": [
-                  "example"
-                ],
                 "source": {
                   "type": "example",
                   "via": "example"
@@ -1664,9 +1652,6 @@
             },
             "example": [
               {
-                "bcc": [
-                  "example"
-                ],
                 "source": {
                   "type": "example",
                   "via": "example"
@@ -1772,9 +1757,6 @@
         "example": {
           "messages": [
             {
-              "bcc": [
-                "example"
-              ],
               "source": {
                 "type": "example",
                 "via": "example"
@@ -3975,16 +3957,6 @@
       },
       "supportConversation": {
         "properties": {
-          "bcc": {
-            "description": "Bcc (support conversation bcc).",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "example"
-            ],
-            "type": "array"
-          },
           "updatedAt": {
             "description": "ISO 8601 timestamp of the most recent change to the ticket.",
             "type": "string",
@@ -4122,9 +4094,6 @@
                 },
                 "example": [
                   {
-                    "bcc": [
-                      "example"
-                    ],
                     "source": {
                       "type": "example",
                       "via": "example"
@@ -4230,9 +4199,6 @@
             "example": {
               "threads": [
                 {
-                  "bcc": [
-                    "example"
-                  ],
                   "source": {
                     "type": "example",
                     "via": "example"
@@ -4364,7 +4330,7 @@
                 ]
               }
             },
-            "description": "Full user record for the staff member who closed the ticket.",
+            "description": "Full user record for the staff member who closed the ticket. Staff users are shown to non-administrator callers as a generic support user (firstName \"Support\"; id, email and photoUrl null).",
             "example": {
               "id": 0,
               "lastName": "example",
@@ -4389,20 +4355,10 @@
             "example": 1015,
             "type": "integer"
           },
-          "threadsCount": {
-            "description": "Number of threads (messages and notes) on the ticket.",
-            "example": 3,
-            "type": "integer"
-          },
           "mailboxId": {
             "description": "Mailbox routing — 1 for one brand, 2 for the others (see Handler_support::mailboxId).",
             "example": 2,
             "type": "integer"
-          },
-          "preview": {
-            "description": "Short preview of the most recent customer message.",
-            "example": "Hello, I cannot send SMS from my account…",
-            "type": "string"
           },
           "subject": {
             "description": "Subject line as set by the customer or agent.",
@@ -4460,7 +4416,7 @@
                 "type": "string"
               }
             },
-            "description": "Staff user the ticket is currently assigned to — null if unassigned.",
+            "description": "Staff user the ticket is currently assigned to — null if unassigned. Staff users are shown to non-administrator callers as a generic support user (firstName \"Support\"; id, email and photoUrl null).",
             "example": {
               "lastName": "example",
               "id": 0,
@@ -4470,11 +4426,6 @@
               "firstName": "example"
             },
             "type": "object"
-          },
-          "closedBy": {
-            "description": "User id of the staff member who closed the ticket (only set when status is closed).",
-            "example": 0,
-            "type": "integer"
           },
           "status": {
             "description": "Operation outcome: \"success\" when the support conversation call succeeded.",
@@ -4508,7 +4459,7 @@
                 ]
               }
             },
-            "description": "User or customer who created the ticket.",
+            "description": "User or customer who created the ticket. Staff users are shown to non-administrator callers as a generic support user (firstName \"Support\"; id, email and photoUrl null).",
             "example": {
               "id": 0,
               "email": "example",
@@ -4519,9 +4470,6 @@
         },
         "description": "Full support ticket record. Returned by GET /v2.2/support/tickets/{id} and POST /v2.2/support/tickets.",
         "example": {
-          "bcc": [
-            "example"
-          ],
           "updatedAt": "2026-05-18T11:23:00Z",
           "customerWaitingSince": {
             "latestReplyFrom": "customer",
@@ -4600,9 +4548,6 @@
           "embedded": {
             "threads": [
               {
-                "bcc": [
-                  "example"
-                ],
                 "source": {
                   "type": "example",
                   "via": "example"
@@ -4711,9 +4656,7 @@
           },
           "type": "email",
           "number": 1015,
-          "threadsCount": 3,
           "mailboxId": 2,
-          "preview": "Hello, I cannot send SMS from my account…",
           "subject": "Cannot send SMS",
           "closedAt": "2026-05-18T12:00:00Z",
           "state": "published",
@@ -4725,7 +4668,6 @@
             "email": "example",
             "firstName": "example"
           },
-          "closedBy": 0,
           "status": "active",
           "createdBy": {
             "id": 0,
@@ -4780,16 +4722,6 @@
       },
       "supportThread": {
         "properties": {
-          "bcc": {
-            "description": "Bcc (support thread bcc).",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "example"
-            ],
-            "type": "array"
-          },
           "source": {
             "properties": {
               "type": {
@@ -4898,7 +4830,7 @@
                 ]
               }
             },
-            "description": "Staff user the parent ticket was assigned to when the thread was created.",
+            "description": "Staff user the parent ticket was assigned to when the thread was created. Staff users are shown to non-administrator callers as a generic support user (firstName \"Support\"; id, email and photoUrl null).",
             "example": {
               "id": 0,
               "lastName": "example",
@@ -4984,7 +4916,7 @@
                 ]
               }
             },
-            "description": "Author of the thread (a customer or a staff user).",
+            "description": "Author of the thread (a customer or a staff user). Staff users are shown to non-administrator callers as a generic support user (firstName \"Support\"; id, email and photoUrl null).",
             "example": {
               "id": 0,
               "email": "example",
@@ -4993,12 +4925,11 @@
             "type": "object"
           },
           "type": {
-            "description": "Whether the message was sent by the customer, an agent (message), or is an internal note (visible to staff only).",
+            "description": "Whether the message was sent by the customer or by support (message). Internal staff notes are never returned.",
             "example": "customer",
             "enum": [
               "customer",
-              "message",
-              "note"
+              "message"
             ],
             "type": "string"
           },
@@ -5014,9 +4945,6 @@
         },
         "description": "Single message (or system event) within a support ticket conversation.",
         "example": {
-          "bcc": [
-            "example"
-          ],
           "source": {
             "type": "example",
             "via": "example"
@@ -6025,7 +5953,7 @@
       "ticketsListData": {
         "properties": {
           "totalCount": {
-            "description": "Total tickets matching the filter.",
+            "description": "Number of tickets returned.",
             "example": 1,
             "type": "integer"
           },
@@ -6036,9 +5964,6 @@
             },
             "example": [
               {
-                "bcc": [
-                  "example"
-                ],
                 "updatedAt": "2026-05-18T11:23:00Z",
                 "customerWaitingSince": {
                   "latestReplyFrom": "customer",
@@ -6117,9 +6042,6 @@
                 "embedded": {
                   "threads": [
                     {
-                      "bcc": [
-                        "example"
-                      ],
                       "source": {
                         "type": "example",
                         "via": "example"
@@ -6228,9 +6150,7 @@
                 },
                 "type": "email",
                 "number": 1015,
-                "threadsCount": 3,
                 "mailboxId": 2,
-                "preview": "Hello, I cannot send SMS from my account…",
                 "subject": "Cannot send SMS",
                 "closedAt": "2026-05-18T12:00:00Z",
                 "state": "published",
@@ -6242,7 +6162,6 @@
                   "email": "example",
                   "firstName": "example"
                 },
-                "closedBy": 0,
                 "status": "active",
                 "createdBy": {
                   "id": 0,
@@ -6259,9 +6178,6 @@
           "totalCount": 1,
           "tickets": [
             {
-              "bcc": [
-                "example"
-              ],
               "updatedAt": "2026-05-18T11:23:00Z",
               "customerWaitingSince": {
                 "latestReplyFrom": "customer",
@@ -6340,9 +6256,6 @@
               "embedded": {
                 "threads": [
                   {
-                    "bcc": [
-                      "example"
-                    ],
                     "source": {
                       "type": "example",
                       "via": "example"
@@ -6451,9 +6364,7 @@
               },
               "type": "email",
               "number": 1015,
-              "threadsCount": 3,
               "mailboxId": 2,
-              "preview": "Hello, I cannot send SMS from my account…",
               "subject": "Cannot send SMS",
               "closedAt": "2026-05-18T12:00:00Z",
               "state": "published",
@@ -6465,7 +6376,6 @@
                 "email": "example",
                 "firstName": "example"
               },
-              "closedBy": 0,
               "status": "active",
               "createdBy": {
                 "id": 0,
@@ -7160,9 +7070,6 @@
             "totalCount": 1,
             "tickets": [
               {
-                "bcc": [
-                  "example"
-                ],
                 "updatedAt": "2026-05-18T11:23:00Z",
                 "customerWaitingSince": {
                   "latestReplyFrom": "customer",
@@ -7241,9 +7148,6 @@
                 "embedded": {
                   "threads": [
                     {
-                      "bcc": [
-                        "example"
-                      ],
                       "source": {
                         "type": "example",
                         "via": "example"
@@ -7352,9 +7256,7 @@
                 },
                 "type": "email",
                 "number": 1015,
-                "threadsCount": 3,
                 "mailboxId": 2,
-                "preview": "Hello, I cannot send SMS from my account…",
                 "subject": "Cannot send SMS",
                 "closedAt": "2026-05-18T12:00:00Z",
                 "state": "published",
@@ -7366,7 +7268,6 @@
                   "email": "example",
                   "firstName": "example"
                 },
-                "closedBy": 0,
                 "status": "active",
                 "createdBy": {
                   "id": 0,
@@ -7939,7 +7840,7 @@
       "ticketUpdateRequest": {
         "properties": {
           "status": {
-            "description": "Operation outcome: \"success\" when the ticket update request call succeeded.",
+            "description": "New ticket status. Customers may set active (reopen) or closed; pending and spam are administrator-only.",
             "example": "active",
             "enum": [
               "active",
@@ -9626,9 +9527,6 @@
         "example": {
           "data": {
             "ticket": {
-              "bcc": [
-                "example"
-              ],
               "updatedAt": "2026-05-18T11:23:00Z",
               "customerWaitingSince": {
                 "latestReplyFrom": "customer",
@@ -9707,9 +9605,6 @@
               "embedded": {
                 "threads": [
                   {
-                    "bcc": [
-                      "example"
-                    ],
                     "source": {
                       "type": "example",
                       "via": "example"
@@ -9818,9 +9713,7 @@
               },
               "type": "email",
               "number": 1015,
-              "threadsCount": 3,
               "mailboxId": 2,
-              "preview": "Hello, I cannot send SMS from my account…",
               "subject": "Cannot send SMS",
               "closedAt": "2026-05-18T12:00:00Z",
               "state": "published",
@@ -9832,7 +9725,6 @@
                 "email": "example",
                 "firstName": "example"
               },
-              "closedBy": 0,
               "status": "active",
               "createdBy": {
                 "id": 0,
@@ -16253,9 +16145,6 @@
                   "data": {
                     "messages": [
                       {
-                        "bcc": [
-                          "example"
-                        ],
                         "source": {
                           "type": "example",
                           "via": "example"
@@ -17004,9 +16893,6 @@
                 "example": {
                   "data": {
                     "ticket": {
-                      "bcc": [
-                        "example"
-                      ],
                       "updatedAt": "2026-05-18T11:23:00Z",
                       "customerWaitingSince": {
                         "latestReplyFrom": "customer",
@@ -17085,9 +16971,6 @@
                       "embedded": {
                         "threads": [
                           {
-                            "bcc": [
-                              "example"
-                            ],
                             "source": {
                               "type": "example",
                               "via": "example"
@@ -17196,9 +17079,7 @@
                       },
                       "type": "email",
                       "number": 1015,
-                      "threadsCount": 3,
                       "mailboxId": 2,
-                      "preview": "Hello, I cannot send SMS from my account…",
                       "subject": "Cannot send SMS",
                       "closedAt": "2026-05-18T12:00:00Z",
                       "state": "published",
@@ -17210,7 +17091,6 @@
                         "email": "example",
                         "firstName": "example"
                       },
-                      "closedBy": 0,
                       "status": "active",
                       "createdBy": {
                         "id": 0,
@@ -17624,9 +17504,6 @@
                 "example": {
                   "data": {
                     "ticket": {
-                      "bcc": [
-                        "example"
-                      ],
                       "updatedAt": "2026-05-18T11:23:00Z",
                       "customerWaitingSince": {
                         "latestReplyFrom": "customer",
@@ -17705,9 +17582,6 @@
                       "embedded": {
                         "threads": [
                           {
-                            "bcc": [
-                              "example"
-                            ],
                             "source": {
                               "type": "example",
                               "via": "example"
@@ -17816,9 +17690,7 @@
                       },
                       "type": "email",
                       "number": 1015,
-                      "threadsCount": 3,
                       "mailboxId": 2,
-                      "preview": "Hello, I cannot send SMS from my account…",
                       "subject": "Cannot send SMS",
                       "closedAt": "2026-05-18T12:00:00Z",
                       "state": "published",
@@ -17830,7 +17702,6 @@
                         "email": "example",
                         "firstName": "example"
                       },
-                      "closedBy": 0,
                       "status": "active",
                       "createdBy": {
                         "id": 0,
@@ -17848,7 +17719,7 @@
         }
       },
       "get": {
-        "description": "Returns support tickets. Customers see only their own tickets. Administrators see all tickets.",
+        "description": "Returns support tickets. Customers see only their own tickets. Administrators see all tickets.\n\nReturns every ticket filed under the account email address (all pages; spam excluded). Administrators receive the most recent 50 tickets across all accounts.",
         "tags": [
           "Support"
         ],
@@ -17905,9 +17776,6 @@
                     "totalCount": 1,
                     "tickets": [
                       {
-                        "bcc": [
-                          "example"
-                        ],
                         "updatedAt": "2026-05-18T11:23:00Z",
                         "customerWaitingSince": {
                           "latestReplyFrom": "customer",
@@ -17986,9 +17854,6 @@
                         "embedded": {
                           "threads": [
                             {
-                              "bcc": [
-                                "example"
-                              ],
                               "source": {
                                 "type": "example",
                                 "via": "example"
@@ -18097,9 +17962,7 @@
                         },
                         "type": "email",
                         "number": 1015,
-                        "threadsCount": 3,
                         "mailboxId": 2,
-                        "preview": "Hello, I cannot send SMS from my account…",
                         "subject": "Cannot send SMS",
                         "closedAt": "2026-05-18T12:00:00Z",
                         "state": "published",
@@ -18111,7 +17974,6 @@
                           "email": "example",
                           "firstName": "example"
                         },
-                        "closedBy": 0,
                         "status": "active",
                         "createdBy": {
                           "id": 0,

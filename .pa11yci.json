@@ -101,6 +101,9 @@
 		"http://localhost:8000/docs/api/v2.1/credentials/",
 		"http://localhost:8000/docs/api/v2.2/credentials/",
 		"http://localhost:8000/docs/e911/provision/",
-		"http://localhost:8000/404.html"
+		"http://localhost:8000/404.html",
+		"http://localhost:8000/docs/voiceml/verstat/",
+		"http://localhost:8000/support/voice/android-permissions/",
+		"http://localhost:8000/support/voice/ios-permissions/"
 	]
 }

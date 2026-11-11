@@ -1,0 +1,130 @@
+---
+layout: layouts/article.njk
+title: "Trusted calling with SHAKEN/STIR (VerStat)"
+description: "SHAKEN/STIR verification on inbound voice calls: the StirVerstat webhook parameter, the X-Twilio-VerStat SIP header, the stir_verstat REST field, and the VerStat value vocabulary — identical to Twilio's."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / <a href="/docs/voiceml/">VoiceML</a> / Trusted calling</p>
+<h1>Trusted calling with SHAKEN/STIR.</h1>
+<p class="lede">SHAKEN/STIR is the carrier-framework answer to caller ID spoofing: originating providers cryptographically sign calls, terminating providers verify the signature, and the verdict travels with the call. VoiceTel verifies inbound calls at the network edge and delivers the result to your application under the same names Twilio uses — the <code>StirVerstat</code> webhook parameter, the <code>X-Twilio-VerStat</code> SIP header, and the <code>stir_verstat</code> REST field — so a Twilio application needs no changes to read it.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/voiceml/migrate/">Migrate from Twilio</a>
+	<a class="btn btn-secondary" href="/voiceml/">VoiceML overview</a>
+</p>
+
+<section class="section-block">
+	<h2>What SHAKEN/STIR verifies</h2>
+	<p>Robocall fraud usually pairs an auto-dialer with a spoofed caller ID. The SHAKEN/STIR framework — <strong>SHAKEN</strong> is the ATIS implementation profile, <strong>STIR</strong> the IETF protocol suite — fights that by having the originating provider attach a signed PASSporT token to the call. The token asserts who the caller is and whether they are entitled to the phone number presented as caller ID. Each provider along the call's path can check the signature against the originating provider's published certificate, so a spoofed identity fails verification instead of passing silently.</p>
+	<p>On an inbound call, a verified token with the highest attestation means two things at once: the provider that originated the call knows the caller's identity, and that caller has the right to use the number shown as caller ID. Applications use that verdict to display a trust indicator, skip a voice CAPTCHA, or route verified callers past screening menus.</p>
+</section>
+
+<section class="section-block">
+	<h2>Attestation levels</h2>
+	<p>The letter attached to every VerStat value is the attestation level the originating provider granted:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>SHAKEN/STIR attestation levels</caption>
+			<thead>
+				<tr>
+					<th scope="col">Level</th>
+					<th scope="col">Meaning</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>A</code></td><td>The originating provider knows the caller and has verified their right to use the phone number as caller ID.</td></tr>
+				<tr><td><code>B</code></td><td>The originating provider knows the customer, but could not verify their right to the caller ID in use.</td></tr>
+				<tr><td><code>C</code></td><td>Neither requirement could be met — the lowest level, typical for calls entering the framework without a verifiable subscriber relationship.</td></tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Where the result appears</h2>
+	<ul>
+		<li><strong>Voice webhooks</strong> — the <code>StirVerstat</code> parameter in the form-encoded request body to your voice URL.</li>
+		<li><strong>SIP calls to your equipment</strong> — the <code>X-Twilio-VerStat</code> header on INVITEs sent to the SIP endpoints you control.</li>
+		<li><strong>REST API</strong> — the <code>stir_verstat</code> field on Call resources.</li>
+		<li><strong>Phone apps</strong> — <a href="/phone/applications/">VoiceTel Phone and VoiceML Phone</a> show the caller's VerStat result on incoming calls, no integration required.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>StirVerstat in voice webhooks</h2>
+	<p>When a call arrives at one of your numbers, VoiceTel requests your voice URL. The request body carries the verification result alongside the usual call parameters:</p>
+	<pre class="code-block" data-lang="http"><code>From=+12125550123
+To=+15550101234
+CallStatus=ringing
+CallSid=CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+StirVerstat=TN-Validation-Passed-A</code></pre>
+	<p>Presence follows one rule: the parameter reflects what the call carried. On the initial voice URL request and its fallback, <code>StirVerstat</code> is always present — an empty value means the call arrived with no SHAKEN identity headers. On later action and callback requests it is present only when the call carried one. Requests where either party is a SIP address never include the STIR parameters.</p>
+</section>
+
+<section class="section-block">
+	<h2>X-Twilio-VerStat on SIP calls to your equipment</h2>
+	<p>When VoiceML bridges an inbound call to a SIP endpoint — a <code>&lt;Dial&gt;&lt;Sip&gt;</code> target such as your PBX or SBC — the INVITE carries the verification result in the <code>X-Twilio-VerStat</code> header:</p>
+	<pre class="code-block" data-lang="sip"><code>INVITE sip:100@pbx.example.com SIP/2.0
+X-Twilio-VerStat: TN-Validation-Passed-A</code></pre>
+	<p>Your equipment can read the header to make the same trust decisions your webhooks can. The header is written after any custom headers your document sets with <code>&lt;Header&gt;</code>, so it always reports the verified result rather than a value of your own choosing.</p>
+</section>
+
+<section class="section-block">
+	<h2>stir_verstat in the REST API</h2>
+	<p>Call resources expose the verification result as <code>stir_verstat</code>:</p>
+	<pre class="code-block" data-lang="bash"><code>curl -u "$SID:$KEY" \
+	"https://voiceml.voicetel.com/2010-04-01/Accounts/$SID/Calls/$CALL_SID.json"
+
+{
+	"sid": "CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+	"direction": "inbound",
+	"status": "completed",
+	"stir_verstat": "TN-Validation-Passed-A",
+	...
+}</code></pre>
+	<p>The field is populated when you fetch or list calls — empty for calls that carried no SHAKEN identity. Create and update responses return <code>null</code> for the field.</p>
+</section>
+
+<section class="section-block">
+	<h2>VerStat values</h2>
+	<p>Values use the same vocabulary as Twilio's trusted-calling implementation:</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>StirVerstat parameter and X-Twilio-VerStat header values</caption>
+			<thead>
+				<tr>
+					<th scope="col">Value</th>
+					<th scope="col">Meaning</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td><code>TN-Validation-Passed-A</code></td><td>PASSporT present and verified — signature valid against the originating provider's certificate. Attestation A.</td></tr>
+				<tr><td><code>TN-Validation-Passed-B</code></td><td>PASSporT verified. Attestation B — the caller is known, the caller ID entitlement is not.</td></tr>
+				<tr><td><code>TN-Validation-Passed-C</code></td><td>PASSporT verified. Attestation C.</td></tr>
+				<tr><td><code>TN-Validation-Failed-A</code></td><td>PASSporT present but failed verification — possible tampering in transit, or the signing certificate could not be retrieved. Attestation A.</td></tr>
+				<tr><td><code>TN-Validation-Failed-B</code></td><td>Verification failed as above. Attestation B.</td></tr>
+				<tr><td><code>TN-Validation-Failed-C</code></td><td>Verification failed as above. Attestation C.</td></tr>
+				<tr><td><code>No-TN-Validation</code></td><td>No verifiable PASSporT: malformed phone number, invalid token structure, missing required fields, origin or destination mismatch, or a timestamp too old to honor.</td></tr>
+				<tr><td><code>TN-Validation-Failed</code></td><td>Verification could not be completed and no attestation level was determined.</td></tr>
+				<tr><td><em>(empty)</em></td><td>The call carried no SHAKEN identity information.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p>Two suffixes extend the base values on forwarded calls. <code>-Diverted</code> marks the verdict for the PASSporT of the provider that diverted the call (for example <code>TN-Validation-Passed-B-Diverted</code>), and <code>-Passthrough</code> marks a call whose original PASSporT was forwarded unchanged (for example <code>TN-Validation-Failed-C-Passthrough</code>). Suffixed forms otherwise follow the same passed/failed pattern as the table above.</p>
+</section>
+
+<section class="section-block">
+	<h2>Putting the verdict to work</h2>
+	<ul>
+		<li><strong>Display a trust indicator.</strong> <code>TN-Validation-Passed-A</code> and <code>-B</code> mean the caller's provider vouches for the identity; surface that in your call UI or CRM screen-pop.</li>
+		<li><strong>Skip friction for verified callers.</strong> Route <code>Passed-A</code>/<code>Passed-B</code> callers past voice CAPTCHAs, replay prompts, or screening menus, and keep them for everyone else.</li>
+		<li><strong>Treat failed and missing verification as a signal, not a verdict.</strong> <code>Failed-*</code> values warrant scrutiny; <code>No-TN-Validation</code> and empty results are common for legitimate calls that originated outside the framework.</li>
+	</ul>
+</section>
+
+<aside class="cta-block" aria-labelledby="verstat-cta-heading">
+	<h2 id="verstat-cta-heading">Related reading</h2>
+	<p>Outbound calls labeled as spam are a different problem — see <a href="/support/voice/addressing-spam-labeled-calls/">Calls labeled as potential spam</a> for free registry remedies, and <a href="/support/voice/compliance/">Compliance and abuse prevention</a> for the outbound STIR/SHAKEN obligations behind trusted calling.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/signup/">Free trial</a>
+	</p>
+</aside>

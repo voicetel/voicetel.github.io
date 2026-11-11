@@ -33,6 +33,40 @@
 	// A persisted Contact user-part is a 6-32 char lowercase-alphanumeric token.
 	const CONTACT_USER_PATTERN = /^[a-z0-9]{6,32}$/;
 
+	function applyAudioCodecPolicy(description) {
+		const excluded = /^(?:red|g722)$/i;
+		description.sdp = description.sdp
+			.split(/\r\n(?=m=)/)
+			.map((section) => {
+				if (!section.startsWith("m=audio")) return section;
+				const lines = section.split("\r\n");
+				const removed = new Set();
+				const opus = new Set();
+				for (const line of lines) {
+					const rtpmap = /^a=rtpmap:(\d+) ([^/\s]+)/.exec(line);
+					if (rtpmap && excluded.test(rtpmap[2])) removed.add(rtpmap[1]);
+					if (rtpmap && /^opus$/i.test(rtpmap[2])) opus.add(rtpmap[1]);
+				}
+				const [media, port, proto, ...payloads] = lines[0].split(" ");
+				const kept = payloads.filter((payload) => !removed.has(payload));
+				lines[0] = [
+					media,
+					port,
+					proto,
+					...kept.filter((payload) => opus.has(payload)),
+					...kept.filter((payload) => !opus.has(payload)),
+				].join(" ");
+				return lines
+					.filter((line) => {
+						const attribute = /^a=(?:rtpmap|fmtp|rtcp-fb):(\d+)/.exec(line);
+						return !attribute || !removed.has(attribute[1]);
+					})
+					.join("\r\n");
+			})
+			.join("\r\n");
+		return Promise.resolve(description);
+	}
+
 	// SIP.js 0.15 recognizes maxReconnectionAttempts / reconnectionTimeout /
 	// keepAliveInterval. The pre-fix wsServer* names were silently ignored, so
 	// the socket never auto-reconnected (defaults: 3 attempts, keepalive off);
@@ -47,19 +81,35 @@
 		};
 	}
 
+	function sipResponseParts(response) {
+		const source = response || {};
+		return {
+			statusCode: source.statusCode ?? source.status_code,
+			reasonPhrase: source.reasonPhrase ?? source.reason_phrase,
+		};
+	}
+
+	function formatCallDuration(startTime, nowMs) {
+		if (!Number.isFinite(startTime) || !Number.isFinite(nowMs)) return "00:00";
+		const elapsed = Math.max(0, Math.floor((nowMs - startTime) / 1000));
+		const minutes = Math.floor(elapsed / 60);
+		const seconds = elapsed % 60;
+		return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+	}
+
 	// Compute + apply a mute toggle against an RTCPeerConnection. Flips the mute
-	// state first, then sets each audio sender's track.enabled to its opposite
-	// (enabled when NOT muted). Guards a missing peer connection so the mute
+	// state first, then applies mute and hold together (held audio stays disabled
+	// even when unmuted). Guards a missing peer connection so the mute
 	// button can never throw. Returns { changed, muted }: changed=false means
 	// there was no peer connection and the caller should leave its state alone.
-	function applyMuteToggle(pc, wasMuted) {
+	function applyMuteToggle(pc, wasMuted, onHold) {
 		if (!pc || typeof pc.getSenders !== "function") {
 			return { changed: false, muted: wasMuted };
 		}
 		const nowMuted = !wasMuted;
 		pc.getSenders().forEach((sender) => {
 			if (sender.track && sender.track.kind === "audio") {
-				sender.track.enabled = !nowMuted;
+				sender.track.enabled = onHold ? false : !nowMuted;
 			}
 		});
 		return { changed: true, muted: nowMuted };
@@ -96,12 +146,12 @@
 		}
 	}
 
-	// A 12-char lowercase-alphanumeric token for the Contact user-part. Prefers
-	// the Web Crypto RNG; falls back to Math.random (this is an identifier, not a
-	// secret). Ported from the device-verified mobile twin (generateContactToken).
-	function generateContactToken() {
+	// A lowercase-alphanumeric token: 12 chars for the Contact user-part, 22 for
+	// the REGISTER Call-ID. Prefers the Web Crypto RNG; falls back to Math.random
+	// (this is an identifier, not a secret). Ported from the device-verified
+	// mobile twin (generateContactToken).
+	function generateContactToken(len = 12) {
 		const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-		const len = 12;
 		const rng =
 			globalThis.crypto &&
 			typeof globalThis.crypto.getRandomValues === "function"
@@ -120,6 +170,32 @@
 			}
 		}
 		return out;
+	}
+
+	// REGISTER Call-ID / CSeq across UA rebuilds (mobile registerCallParams).
+	// RFC 3261 §10.2.4: a UA SHOULD use the same Call-ID for every REGISTER in a
+	// boot cycle, with a CSeq that keeps increasing. sip.js 0.15 keeps a Call-ID
+	// only for the life of one UA, and the renderer rebuilds the UA on every
+	// resume / network restore / health check, so each rebuild used to register
+	// under a fresh random Call-ID. index.html keeps one Call-ID per run and asks
+	// these for the CSeq the next UA must start from.
+	//
+	// The CSeq the next UA starts from: above the last one sent, and never below
+	// the clock floor (whole seconds since 2026-01-01 UTC). REGISTERs are far
+	// rarer than one a second, so the floor alone keeps the CSeq rising even if a
+	// teardown's last CSeq were ever missed; a CSeq that went backwards on the
+	// same Call-ID would make the registrar refuse every REGISTER.
+	function nextRegisterCseq(lastCseq, nowMs) {
+		const floor = Math.floor((nowMs - Date.UTC(2026, 0, 1)) / 1000);
+		return Math.max(lastCseq || 0, floor, 1);
+	}
+
+	// The highest REGISTER CSeq seen so far, given a UA being torn down. sip.js
+	// increments registerContext.request.cseq before every REGISTER it sends (auth
+	// retries and the expires=0 that stop() sends included).
+	function noteRegisterCseq(lastCseq, ua) {
+		const cseq = ua?.registerContext?.request?.cseq;
+		return Number.isInteger(cseq) && cseq > (lastCseq || 0) ? cseq : lastCseq;
 	}
 
 	function isValidContactUser(user) {
@@ -213,10 +289,14 @@
 		return `sip:${number}@${domain}`;
 	}
 
-	// Only a call we ANSWERED (incoming) may be blind-transferred; a call we
-	// originated is not a supported REFER source. Mirrors the mobile guard.
-	function canTransfer(hasCall, callDirection) {
-		return !!hasCall && callDirection === "incoming";
+	function canHold(session) {
+		return !!session && session.status === 12;
+	}
+
+	// Only a connected call we ANSWERED (incoming) may be blind-transferred; a
+	// call we originated is not a supported REFER source. Mirrors the mobile guard.
+	function canTransfer(session, callDirection) {
+		return canHold(session) && callDirection === "incoming";
 	}
 
 	// --- Dial-as-you-type formatting (D-3 / mobile helpers.js) --------------
@@ -246,9 +326,11 @@
 		if (hasPlus && !cc) return "+" + d;
 		// More than 10 subscriber digits (and not 1+10 NANP): leave the digits.
 		if (d.length > 10) return d;
+		// Don't reformat until there are at least 7 digits — grouping short
+		// strings (e.g. "(123)" at 3 digits) is noisy while dialing
+		// extensions/short codes (mobile parity).
 		let grouped;
-		if (d.length <= 3) grouped = d;
-		else if (d.length <= 6) grouped = `(${d.slice(0, 3)}) ${d.slice(3)}`;
+		if (d.length < 7) grouped = d;
 		else grouped = `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
 		const prefix = cc ? (hasPlus ? "+1 " : "1 ") : "";
 		return prefix + grouped;
@@ -290,6 +372,17 @@
 	// follows the OS; "light"/"dark" set data-theme on <html> to override it.
 	function normalizeThemePref(pref) {
 		return pref === "light" || pref === "dark" ? pref : "system";
+	}
+
+	// Next audio-output device id when cycling outputs (the desktop analog
+	// of the mobile Speaker toggle: earpiece/speaker are just two outputs).
+	// Wraps around; an unknown/empty current id selects the first device.
+	function nextAudioOutputId(deviceIds, currentId) {
+		if (!Array.isArray(deviceIds) || deviceIds.length === 0) {
+			return currentId || "";
+		}
+		const idx = deviceIds.indexOf(currentId);
+		return deviceIds[(idx + 1) % deviceIds.length];
 	}
 
 	// --- Security / validation helpers (D-7 / mobile) -----------------------
@@ -344,13 +437,148 @@
 		};
 	}
 
+	function twilioVerStat(session) {
+		let raw;
+		try {
+			raw = session?.request?.getHeader?.("X-Twilio-VerStat");
+		} catch {
+			raw = "";
+		}
+		if (typeof raw !== "string") raw = "";
+		// eslint-disable-next-line no-control-regex
+		const cleaned = raw.replace(/[\u0000-\u001f\u007f]/g, "");
+		const value = cleaned.trim().slice(0, 96);
+		if (!value) return { value: "No header", kind: "unknown" };
+		const normalized = value.toLowerCase();
+		// An A/B attestation anywhere, as its own token, is green (VoiceML
+		// rule, ported from mobile parseVerStat); C anywhere, or any "failed"
+		// content, is red; anything else is yellow.
+		const hasAttestationC = /\bpassed\s*(?:\/|-|\s)\s*c(?=$|[\s/-])/i.test(
+			value,
+		);
+		const hasAttestationA = /\bpassed\s*(?:\/|-|\s)\s*a(?=$|[\s/-])/i.test(
+			value,
+		);
+		const hasAttestationB = /\bpassed\s*(?:\/|-|\s)\s*b(?=$|[\s/-])/i.test(
+			value,
+		);
+		let kind = "unknown";
+		if (normalized.includes("failed") || hasAttestationC) {
+			kind = "failed";
+		} else if (
+			hasAttestationA ||
+			hasAttestationB ||
+			normalized === "tn-validation-passed"
+		) {
+			kind = "passed";
+		}
+		return { value, kind };
+	}
+
+	function resolveIncomingCaller(session, contactName) {
+		const isUsable = (value) =>
+			typeof value === "string" &&
+			value.trim() !== "" &&
+			value.trim().toLowerCase() !== "unknown";
+		const parseHeaderIdentity = (raw) => {
+			if (!isUsable(raw)) return { displayName: "", user: "" };
+			const lt = raw.indexOf("<");
+			let displayName = "";
+			if (lt > 0) {
+				displayName = raw.slice(0, lt).trim();
+				if (
+					displayName.length >= 2 &&
+					displayName.startsWith('"') &&
+					displayName.endsWith('"')
+				) {
+					displayName = displayName
+						.slice(1, -1)
+						.replace(/\\"/g, '"')
+						.replace(/\\\\/g, "\\")
+						.trim();
+				}
+			}
+			const uriMatch = raw.match(/sips?:([^@;>\s]+)@/i);
+			return {
+				displayName: isUsable(displayName) ? displayName : "",
+				user: uriMatch && isUsable(uriMatch[1]) ? uriMatch[1].trim() : "",
+			};
+		};
+		const getHeader = (name) => {
+			try {
+				return (
+					(session &&
+						session.request &&
+						typeof session.request.getHeader === "function" &&
+						session.request.getHeader(name)) ||
+					""
+				);
+			} catch {
+				return "";
+			}
+		};
+		const remote = (session && session.remoteIdentity) || {};
+		const asserted = (session && session.assertedIdentity) || {};
+		const pai = parseHeaderIdentity(getHeader("P-Asserted-Identity"));
+		const rpid = parseHeaderIdentity(getHeader("Remote-Party-ID"));
+		const ppi = parseHeaderIdentity(getHeader("P-Preferred-Identity"));
+		const from = parseHeaderIdentity(getHeader("From"));
+		const uriCandidates = [
+			remote.uri && remote.uri.user,
+			asserted.uri && asserted.uri.user,
+			pai.user,
+			rpid.user,
+			ppi.user,
+			from.user,
+		];
+		let callerUri = "Unknown";
+		for (const user of uriCandidates) {
+			if (isUsable(user)) {
+				callerUri = user.trim();
+				break;
+			}
+		}
+		let contact = "";
+		if (isUsable(callerUri) && typeof contactName === "function") {
+			try {
+				contact = contactName(callerUri) || "";
+			} catch {
+				contact = "";
+			}
+		}
+		const nameCandidates = [
+			remote.displayName,
+			from.displayName,
+			asserted.displayName,
+			pai.displayName,
+			rpid.displayName,
+			ppi.displayName,
+			contact,
+		];
+		let fallbackSameAsNumber = "";
+		for (const candidate of nameCandidates) {
+			if (!isUsable(candidate)) continue;
+			const trimmed = candidate.trim();
+			if (trimmed !== callerUri) {
+				return { callerName: trimmed, callerUri };
+			}
+			if (!fallbackSameAsNumber) fallbackSameAsNumber = trimmed;
+		}
+		return { callerName: fallbackSameAsNumber || "Unknown", callerUri };
+	}
+
 	return {
 		inCallDialpadButtonState,
 		STABLE_CONTACT_HOST,
+		applyAudioCodecPolicy,
 		buildTransportOptions,
+		sipResponseParts,
+		formatCallDuration,
 		applyMuteToggle,
 		runHangup,
 		generateContactToken,
+		nextRegisterCseq,
+		noteRegisterCseq,
 		isValidContactUser,
 		chooseContactUser,
 		resolveContactUser,
@@ -359,13 +587,17 @@
 		applyHoldToSenders,
 		normalizeTransferTarget,
 		buildTransferUri,
+		canHold,
 		canTransfer,
 		formatDialAsYouType,
 		selectAudioSender,
 		micCaptureConstraints,
 		normalizeThemePref,
+		nextAudioOutputId,
 		escapeHtml,
 		sanitizeCallingName,
+		twilioVerStat,
+		resolveIncomingCaller,
 		isValidPassword,
 		redactToken,
 	};

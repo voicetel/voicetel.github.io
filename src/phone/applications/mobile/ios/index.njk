@@ -82,7 +82,8 @@ description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Sto
 		{%- set faqs = [
 			{ q: "Which app do I need?", a: "VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on the App Store." },
 			{ q: "Incoming calls don’t ring when the app is closed", a: "Open <em>Settings &rarr; Notifications</em>, select the app, and turn on <em>Allow Notifications</em>. Incoming calls arrive as push notifications and ring on the CallKit call screen." },
-			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app." }
+			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app." },
+		{ q: "What permissions does the app need?", a: "Microphone and notifications, contacts only if you want address-book dialing, and (VoiceML Phone) camera for video calls. See <a href=\"/support/voice/ios-permissions/\">iPhone app permissions</a> for the full list and how to turn one back on." }
 		] %}
 		{% include "partials/v2/faq.njk" %}
 

@@ -1,0 +1,76 @@
+---
+layout: layouts/article.njk
+title: "iPhone app permissions"
+description: "What VoiceTel Phone and VoiceML Phone ask for on iPhone — microphone, notifications, contacts, camera, and Bluetooth — why each is needed, and how to turn a denied permission back on."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / iPhone app permissions</p>
+<h1>iPhone app permissions.</h1>
+<p class="lede">On iOS the apps ask for four permissions — microphone, notifications, contacts, and (VoiceML Phone only) camera — plus Bluetooth audio, which the system handles. iOS asks for each permission exactly once; after a denial, the only way back is the Settings app. This page lists what is requested, when, and how to repair each one.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/phone/applications/mobile/ios/">iPhone install guide</a>
+	<a class="btn btn-secondary" href="/phone/applications/mobile/android/">Android permissions</a>
+</p>
+
+<section class="section-block">
+	<h2>What the apps ask for</h2>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Permissions and what they enable</caption>
+			<thead>
+				<tr>
+					<th scope="col">Permission</th>
+					<th scope="col">When it is requested</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Microphone</td><td>On your first call</td><td>Call audio. The prompt appears when a call first opens the microphone, not at launch.</td></tr>
+				<tr><td>Notifications</td><td>At first launch</td><td>Missed-call notices and lock-screen call information; for VoiceML Phone, also message notifications.</td></tr>
+				<tr><td>Contacts</td><td>Only when you tap <em>Load Contacts</em> in the app</td><td>Browsing and dialing from your address book. Optional — the keypad works without it, and the app says so in place of the contact list.</td></tr>
+				<tr><td>Camera<br>(VoiceML Phone only)</td><td>When you start or join a video call</td><td>Video calls. VoiceTel Phone is audio-only and never requests camera access.</td></tr>
+				<tr><td>Bluetooth</td><td>Never prompted by the app</td><td>Headset and in-car audio. iOS manages this with the system Bluetooth toggle.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="alert alert-info" role="note">
+		<p><strong>Incoming calls keep ringing with notifications off.</strong> Calls arrive over Apple's VoIP push path and present through the system call screen, which does not depend on notification permission. What you lose without notifications is missed-call notices and lock-screen information — not the calls themselves.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>What never needs your attention</h2>
+	<ul>
+		<li><strong>Calling in the background</strong> — the apps declare audio and VoIP background modes, granted automatically with the app; there is nothing to enable.</li>
+		<li><strong>The system call screen</strong> — incoming calls use CallKit, so they look and behave like native cellular calls: full-screen ring, Answer and Decline buttons, lock-screen presentation.</li>
+		<li><strong>Contacts stay on the device</strong> — the contact list is read locally and never uploaded.</li>
+	</ul>
+</section>
+
+<section class="section-block">
+	<h2>Fixing a denied permission</h2>
+	<p>iOS shows each permission prompt once. After that — whether granted or denied — the setting lives in the Settings app, and the app cannot bring the prompt back.</p>
+
+	<h3>Calls fail, or the other party cannot hear you</h3>
+	<p>Microphone was denied. Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and turn on <em>VoiceTel Phone</em> (or <em>VoiceML Phone</em>). The next call will send your voice.</p>
+
+	<h3>No missed-call notices or lock-screen information</h3>
+	<p>Notifications were denied. Open <em>Settings &rarr; Notifications &rarr;</em> the app and turn <em>Allow Notifications</em> on. Incoming calls ring either way — see the note above.</p>
+
+	<h3>The contacts list is empty with a notice</h3>
+	<p>Contacts was declined. That is a supported state — dial any number from the keypad. To browse contacts in the app, open <em>Settings &rarr; Privacy &amp; Security &rarr; Contacts</em>, turn on the app, then reopen the Contacts tab and tap <em>Try Again</em>. If iOS offers a choice between <em>Limited</em> and <em>Full Access</em>, choose <em>Full Access</em> to browse the whole address book in the app.</p>
+
+	<h3>A Bluetooth headset has no audio</h3>
+	<p>Make sure the headset is paired in <em>Settings &rarr; Bluetooth</em> and selected as the audio route during the call. If it still has no audio, check <em>Settings &rarr;</em> the app &rarr; <em>Bluetooth</em> is on.</p>
+
+	<h3>Video calls show a camera error (VoiceML Phone)</h3>
+	<p>Camera was denied for a video call. Open <em>Settings &rarr; Privacy &amp; Security &rarr; Camera</em> and turn on <em>VoiceML Phone</em>. The error shown on the call screen names the cause — permission denied, no camera found, or camera in use by another app.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="ios-perms-cta-heading">
+	<h2 id="ios-perms-cta-heading">Still stuck?</h2>
+	<p>If a permission is on and the symptom persists, <a href="/support/opening-a-ticket/">open a ticket</a> with the app's Event Log entry for the failing call — or see the <a href="/support/voice/android-permissions/">Android permissions</a> page for the same apps on Android.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/support/opening-a-ticket/">Open a ticket</a>
+	</p>
+</aside>

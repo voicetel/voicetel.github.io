@@ -1,0 +1,80 @@
+---
+layout: layouts/article.njk
+title: "Android app permissions"
+description: "Every permission VoiceTel Phone and VoiceML Phone request on Android, what each one is for, and how to re-grant a denied permission so calling, incoming-call ringing, and contacts work again."
+---
+
+<p class="eyebrow"><a href="/support/">Support</a> / <a href="/support/voice/">Voice</a> / Android app permissions</p>
+<h1>Android app permissions.</h1>
+<p class="lede">VoiceTel Phone and VoiceML Phone keep the permission list as short as an audio-first softphone allows. Most permissions are granted automatically at install. Four involve a choice — microphone, notifications, contacts, and (VoiceML Phone only) camera — and each denial has a specific, fixable symptom. This page lists what is requested, why, and how to repair each one.</p>
+<p class="hero-actions">
+	<a class="btn btn-primary" href="/phone/applications/mobile/android/">Android install guide</a>
+	<a class="btn btn-secondary" href="/phone/applications/mobile/ios/">iPhone permissions</a>
+</p>
+
+<section class="section-block">
+	<h2>Permissions Android asks you about</h2>
+	<p>These are the runtime permissions, the ones that surface a system dialog. Everything else the apps need is install-time and listed in the next section.</p>
+	<div class="table-container">
+		<table class="data-table">
+			<caption>Runtime permissions and what breaks without them</caption>
+			<thead>
+				<tr>
+					<th scope="col">Permission</th>
+					<th scope="col">When it is requested</th>
+					<th scope="col">What it does</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>Microphone</td><td>Every app launch, until granted</td><td>Call audio. Without it, calls cannot send your voice and typically fail to connect.</td></tr>
+				<tr><td>Notifications<br>(Android 13+ only)</td><td>Every app launch, until granted</td><td>Incoming-call ringing and missed-call notices while the app is in the background or closed. On Android 12 and earlier, notifications are on by default.</td></tr>
+				<tr><td>Contacts</td><td>Only when you tap <em>Load Contacts</em> in the app</td><td>Browsing and dialing from your address book. Optional — the keypad works without it, and the app says so in place of the contact list.</td></tr>
+				<tr><td>Camera<br>(VoiceML Phone only)</td><td>When you start or join a video call</td><td>Video calls. VoiceTel Phone is audio-only and never requests camera access.</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="alert alert-info" role="note">
+		<p><strong>After you deny a permission twice, Android stops asking.</strong> The app still re-requests microphone and notifications at every launch, but the system silences the prompt — from then on the only path is the app's Permissions screen in Settings, described per symptom below.</p>
+	</div>
+</section>
+
+<section class="section-block">
+	<h2>Permissions granted at install</h2>
+	<p>These never produce a dialog. They are part of the app package and Android grants them on install:</p>
+	<ul>
+		<li><strong>Network access</strong> (<code>INTERNET</code>, <code>ACCESS_NETWORK_STATE</code>, <code>ACCESS_WIFI_STATE</code>) — SIP signaling over TLS and connectivity detection.</li>
+		<li><strong>Call foreground service</strong> (<code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_PHONE_CALL</code>, <code>FOREGROUND_SERVICE_MICROPHONE</code>, <code>MANAGE_OWN_CALLS</code>) — keeps a call's audio alive for the whole call when you answer from a notification, and keeps incoming calls ringing when the app is backgrounded or was closed.</li>
+		<li><strong>Full-screen incoming call</strong> (<code>USE_FULL_SCREEN_INTENT</code>) — presents the incoming call over the lock screen instead of a small banner.</li>
+		<li><strong>Ringing while locked</strong> (<code>WAKE_LOCK</code>, <code>VIBRATE</code>, <code>DISABLE_KEYGUARD</code>) — wake, vibrate, and show the call screen with the device locked.</li>
+		<li><strong>Audio routing</strong> (<code>MODIFY_AUDIO_SETTINGS</code>) — switching among earpiece, speaker, and Bluetooth.</li>
+		<li><strong>Bluetooth audio</strong> (<code>BLUETOOTH_CONNECT</code> on Android 12+; legacy <code>BLUETOOTH</code>/<code>BLUETOOTH_ADMIN</code> on 11 and below) — headset and in-car audio; the system manages the grant when a device connects.</li>
+	</ul>
+	<p>Google Play's listing may say the apps can <em>modify</em> your contacts. Android groups contact read and write under a single permission, and the contacts library the apps use requires both to be present; VoiceTel Phone never writes contacts, and VoiceML Phone writes one only when you tap <em>Save to contacts</em> on a contact card shared in a message.</p>
+</section>
+
+<section class="section-block">
+	<h2>Fixing a denied permission</h2>
+
+	<h3>Calls fail, or the other party cannot hear you</h3>
+	<p>Microphone was denied. Open <em>Settings &rarr; Apps &rarr; VoiceTel Phone</em> (or <em>VoiceML Phone</em>) &rarr; <em>Permissions &rarr; Microphone</em> and choose <em>Allow</em>. If <em>Allow</em> is already set and audio is still one-way, see the <a href="/phone/applications/mobile/android/">install guide's FAQ</a> for audio-routing causes.</p>
+
+	<h3>Incoming calls do not ring</h3>
+	<p>On Android 13 or newer, notifications were denied — the call still reaches the app, but nothing announces it while the app is in the background or closed. Open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Notifications</em> and turn them on. While you are there, exclude the app from battery optimization (<em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Battery &rarr; Unrestricted</em>) so Android does not stop it in the background.</p>
+
+	<h3>The contacts list is empty with a notice</h3>
+	<p>Contacts was declined. That is a supported state — dial any number from the keypad. To browse contacts in the app, open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions &rarr; Contacts</em>, choose <em>Allow</em>, then reopen the Contacts tab and tap <em>Try Again</em>.</p>
+
+	<h3>A Bluetooth headset does not connect</h3>
+	<p>Pair the headset in the system's Bluetooth settings first. On Android 12 and newer, also check <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions &rarr; Nearby devices</em> is allowed — headset audio routing depends on it.</p>
+
+	<h3>Video calls show a camera error (VoiceML Phone)</h3>
+	<p>Camera was denied for a video call. Open <em>Settings &rarr; Apps &rarr; VoiceML Phone &rarr; Permissions &rarr; Camera</em> and choose <em>Allow</em>. The error shown on the call screen names the cause — permission denied, no camera found, or camera in use by another app.</p>
+</section>
+
+<aside class="cta-block" aria-labelledby="android-perms-cta-heading">
+	<h2 id="android-perms-cta-heading">Still stuck?</h2>
+	<p>If a permission is allowed and the symptom persists, <a href="/support/opening-a-ticket/">open a ticket</a> with the app's Event Log entry for the failing call — or see the <a href="/phone/applications/mobile/ios/">iPhone permissions</a> page for the same apps on iOS.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="/support/opening-a-ticket/">Open a ticket</a>
+	</p>
+</aside>

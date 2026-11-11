@@ -1,4 +1,4 @@
-/* VoiceTel Phone web client — vendored from voicetel-phone-desktop v3.8.4
+/* VoiceTel Phone web client — vendored from voicetel-phone-desktop v3.8.8
    (index.html <style>). Every rule is scoped under .phone-app so the app's
    tokens, theme overrides, and element resets stay inside the widget; the
    overrides at the end fit it into the page (no full-viewport body layout,
@@ -33,6 +33,12 @@
 	--info-bg: #e3f2fd;
 	--info-border: #90caf9;
 	--info-text: #1976d2;
+	--verstat-passed-bg: #e5f6e8;
+	--verstat-passed-text: #146c2e;
+	--verstat-failed-bg: #fde8ea;
+	--verstat-failed-text: #b42332;
+	--verstat-unknown-bg: #fff4d6;
+	--verstat-unknown-text: #8a5a00;
 	--space-1: 4px;
 	--space-2: 8px;
 	--space-3: 12px;
@@ -81,6 +87,12 @@
 		--info-bg: #14263a;
 		--info-border: #2f4b6b;
 		--info-text: #7fb3e8;
+		--verstat-passed-bg: #173522;
+		--verstat-passed-text: #8ee2a2;
+		--verstat-failed-bg: #3b1d24;
+		--verstat-failed-text: #ff9aa8;
+		--verstat-unknown-bg: #3b301a;
+		--verstat-unknown-text: #f2c45c;
 		--shadow: 0 2px 4px rgb(0 0 0 / 40%);
 		--shadow-lg: 0 4px 12px rgb(0 0 0 / 55%);
 	}
@@ -115,6 +127,12 @@ html[data-theme="dark"] .phone-app {
 	--info-bg: #14263a;
 	--info-border: #2f4b6b;
 	--info-text: #7fb3e8;
+	--verstat-passed-bg: #173522;
+	--verstat-passed-text: #8ee2a2;
+	--verstat-failed-bg: #3b1d24;
+	--verstat-failed-text: #ff9aa8;
+	--verstat-unknown-bg: #3b301a;
+	--verstat-unknown-text: #f2c45c;
 	--shadow: 0 2px 4px rgb(0 0 0 / 40%);
 	--shadow-lg: 0 4px 12px rgb(0 0 0 / 55%);
 }
@@ -586,6 +604,37 @@ html[data-theme="dark"] .phone-app {
 	opacity: 0.9;
 }
 
+.phone-app .incoming-verstat {
+	width: fit-content;
+	max-width: 100%;
+	margin: -5px auto 15px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.phone-app .incoming-verstat[hidden] {
+	display: none;
+}
+
+.phone-app .incoming-verstat.verstat-passed {
+	background: var(--verstat-passed-bg);
+	color: var(--verstat-passed-text);
+}
+
+.phone-app .incoming-verstat.verstat-failed {
+	background: var(--verstat-failed-bg);
+	color: var(--verstat-failed-text);
+}
+
+.phone-app .incoming-verstat.verstat-unknown {
+	background: var(--verstat-unknown-bg);
+	color: var(--verstat-unknown-text);
+}
+
 .phone-app .incoming-buttons {
 	display: flex;
 	gap: 10px;
@@ -619,6 +668,36 @@ html[data-theme="dark"] .phone-app {
 	margin-top: 10px;
 	font-size: 12px;
 	color: var(--info-text);
+}
+
+/* Automatic updates (lib/update-banner.js): a bar under the header
+   while an update is ready to install or available to download. */
+.phone-app .update-banner {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	background: var(--info-bg);
+	border-bottom: 1px solid var(--info-border);
+	color: var(--info-text);
+	font-size: 13px;
+}
+.phone-app .update-banner.hidden {
+	display: none;
+}
+.phone-app .update-banner-text {
+	flex: 1;
+}
+.phone-app .update-banner button {
+	flex: none;
+	padding: 6px 12px;
+	font-size: 12px;
+}
+.phone-app .update-status-line {
+	color: var(--text-muted);
+	font-size: 12px;
+	margin-top: 6px;
+	min-height: 1em;
 }
 
 .phone-app .history-call {

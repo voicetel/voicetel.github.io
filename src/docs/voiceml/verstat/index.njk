@@ -86,7 +86,7 @@ X-Twilio-VerStat: TN-Validation-Passed-A</code></pre>
 
 <section class="section-block">
 	<h2>VerStat values</h2>
-	<p>Values use the same vocabulary as Twilio's trusted-calling implementation:</p>
+	<p>Values come in two families. The unsuffixed base results — <code>Passed</code>, <code>Failed</code>, <code>No-TN-Validation</code> — report the outcome of the RFC 8224 signature verification itself, and are the most common values in practice: any call whose PASSporT verifies under the base STIR framework produces them. The letter-suffixed forms add the SHAKEN attestation level when the PASSporT carries one. The vocabulary matches Twilio's trusted-calling implementation:</p>
 	<div class="table-container">
 		<table class="data-table">
 			<caption>StirVerstat parameter and X-Twilio-VerStat header values</caption>
@@ -97,14 +97,15 @@ X-Twilio-VerStat: TN-Validation-Passed-A</code></pre>
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td><code>TN-Validation-Passed-A</code></td><td>PASSporT present and verified — signature valid against the originating provider's certificate. Attestation A.</td></tr>
+				<tr><td><code>TN-Validation-Passed</code></td><td>PASSporT present and verified — signature valid against the signing provider's certificate. No attestation level supplied; the base RFC 8224 result and the most common value in practice.</td></tr>
+				<tr><td><code>TN-Validation-Passed-A</code></td><td>PASSporT verified. Attestation A — the caller is known and entitled to the caller ID.</td></tr>
 				<tr><td><code>TN-Validation-Passed-B</code></td><td>PASSporT verified. Attestation B — the caller is known, the caller ID entitlement is not.</td></tr>
 				<tr><td><code>TN-Validation-Passed-C</code></td><td>PASSporT verified. Attestation C.</td></tr>
+				<tr><td><code>TN-Validation-Failed</code></td><td>Verification could not be completed and no attestation level was determined.</td></tr>
 				<tr><td><code>TN-Validation-Failed-A</code></td><td>PASSporT present but failed verification — possible tampering in transit, or the signing certificate could not be retrieved. Attestation A.</td></tr>
 				<tr><td><code>TN-Validation-Failed-B</code></td><td>Verification failed as above. Attestation B.</td></tr>
 				<tr><td><code>TN-Validation-Failed-C</code></td><td>Verification failed as above. Attestation C.</td></tr>
 				<tr><td><code>No-TN-Validation</code></td><td>No verifiable PASSporT: malformed phone number, invalid token structure, missing required fields, origin or destination mismatch, or a timestamp too old to honor.</td></tr>
-				<tr><td><code>TN-Validation-Failed</code></td><td>Verification could not be completed and no attestation level was determined.</td></tr>
 				<tr><td><em>(empty)</em></td><td>The call carried no SHAKEN identity information.</td></tr>
 			</tbody>
 		</table>
@@ -115,8 +116,8 @@ X-Twilio-VerStat: TN-Validation-Passed-A</code></pre>
 <section class="section-block">
 	<h2>Putting the verdict to work</h2>
 	<ul>
-		<li><strong>Display a trust indicator.</strong> <code>TN-Validation-Passed-A</code> and <code>-B</code> mean the caller's provider vouches for the identity; surface that in your call UI or CRM screen-pop.</li>
-		<li><strong>Skip friction for verified callers.</strong> Route <code>Passed-A</code>/<code>Passed-B</code> callers past voice CAPTCHAs, replay prompts, or screening menus, and keep them for everyone else.</li>
+		<li><strong>Display a trust indicator.</strong> Any <code>TN-Validation-Passed</code> value — unsuffixed, or with attestation A or B — means the signature verified and the caller's provider vouches for the identity; surface that in your call UI or CRM screen-pop.</li>
+		<li><strong>Skip friction for verified callers.</strong> Route <code>Passed</code> callers past voice CAPTCHAs, replay prompts, or screening menus, and keep them for everyone else.</li>
 		<li><strong>Treat failed and missing verification as a signal, not a verdict.</strong> <code>Failed-*</code> values warrant scrutiny; <code>No-TN-Validation</code> and empty results are common for legitimate calls that originated outside the framework.</li>
 	</ul>
 </section>

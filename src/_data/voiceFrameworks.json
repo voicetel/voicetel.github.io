@@ -7,7 +7,7 @@
 			"repo": "pipecat-ai/pipecat",
 			"license": "BSD-2-Clause",
 			"connects": "VoiceML <code>&lt;Connect&gt;&lt;Stream&gt;</code> (Twilio Media Streams protocol)",
-			"configure": "Use Pipecat's Twilio serializer and set its <code>base_url</code> to <code>https://voiceml.voicetel.com</code> so automatic hang-up goes to VoiceML.",
+			"configure": "Use Pipecat's Twilio serializer and set its <code>base_url</code> to <code>https://voiceml.voicetel.com</code> so automatic hang-up goes to VoiceML. <a href=\"/docs/voiceml/pipecat/\">Run the Pipecat demo on a VoiceTel number</a>.",
 			"reviewedCommit": "c027943"
 		},
 		{

@@ -1,6 +1,13 @@
 {
 	"_note": "Desktop builds, sizes, and SHA-256 values copied from each app's release page (baseUrl + releasePage): VoiceTel Phone 3.9.2 and VoiceML Phone 3.9.2, built 2026-11-15, verified 2026-11-16. App Store and Google Play listings for both apps verified at 3.9.2 on 2026-11-16. Update version, files, and hashes together on each release.",
 	"baseUrl": "https://voicetel-phone.s3.us-east-1.amazonaws.com/",
+	"messages": {
+		"name": "VoiceTel Messages",
+		"stores": {
+			"ios": "https://apps.apple.com/us/app/voicetel-messages/id6835113924",
+			"android": "https://play.google.com/store/apps/details?id=com.voicetel.messages"
+		}
+	},
 	"apps": [
 		{
 			"key": "voicetel",

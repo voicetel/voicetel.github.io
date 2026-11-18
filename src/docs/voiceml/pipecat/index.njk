@@ -1,0 +1,45 @@
+---
+layout: layouts/article.njk
+title: "Run a Pipecat voice agent on a VoiceTel number"
+description: "Test a Pipecat agent locally, then route an inbound VoiceTel call to it with a VoiceML webhook and a bidirectional audio stream."
+---
+
+<p class="eyebrow"><a href="/docs/">Documentation</a> / <a href="/docs/voiceml/">VoiceML</a> / Pipecat</p>
+<h1>Run a Pipecat voice agent on a VoiceTel number.</h1>
+<p class="lede">When someone calls your number, VoiceML requests instructions from the demo server. The server returns <code>&lt;Connect&gt;&lt;Stream&gt;</code> to open a two-way audio connection: Deepgram transcribes the caller, Gemini writes a reply, and Cartesia speaks it back.</p>
+<p class="hero-actions"><a class="btn btn-primary" href="{{ site.pipecatDemoUrl }}">View the Pipecat demo on GitHub</a></p>
+
+<section class="section-block">
+	<h2>1. Configure the demo</h2>
+	<p>You’ll need Python 3.11 or later, <code>uv</code>, API keys for Deepgram, Google AI Studio, and Cartesia, and a voice-capable VoiceTel test number. From your terminal, run:</p>
+	<pre class="code-block" data-lang="bash" tabindex="0"><code>git clone {{ site.pipecatDemoUrl }}
+cd pipecat-voicetel-demo
+uv sync
+cp .env.example .env</code></pre>
+	<p>In <code>.env</code>, put your VoiceTel Account SID in <code>TWILIO_ACCOUNT_SID</code> and your VoiceML Auth Token in <code>TWILIO_AUTH_TOKEN</code>. Pipecat expects those variable names. Leave <code>TWILIO_BASE_URL</code> set to <code>{{ site.voicemlPortalUrl }}</code> so call control goes to VoiceTel. You don’t need a Twilio account.</p>
+	<p>Fill in <code>DEEPGRAM_API_KEY</code>, <code>GOOGLE_API_KEY</code>, and <code>CARTESIA_API_KEY</code>. Run <code>uv run scripts/check_voicetel.py</code> to check the VoiceTel credentials before starting the agent.</p>
+</section>
+
+<section class="section-block">
+	<h2>2. Listen to a reply locally</h2>
+	<p>Start the server with <code>uv run server.py</code>. In a second terminal in the same directory, run <code>uv run scripts/fake_caller.py</code>. The script connects to the local WebSocket and saves the agent’s audio to <code>recordings/caller_reply.wav</code>. Play the file to check the reply before routing a phone call.</p>
+</section>
+
+<section class="section-block">
+	<h2>3. Route an inbound test call</h2>
+	<ol>
+		<li>Give the server a public HTTPS address that supports WebSockets. For a temporary test tunnel, install <code>cloudflared</code> and run <code>cloudflared tunnel --url http://localhost:7860</code>. The demo also serves an outbound calling route, <code>/dialout</code>; block public access to that route for an inbound-only test.</li>
+		<li>Set <code>PUBLIC_URL</code> in <code>.env</code> to the tunnel’s HTTPS origin. Leave <code>STREAM_URL</code> unset to use the local agent. Set <code>VERIFY_WEBHOOKS=1</code> to verify incoming voice webhook signatures, then restart <code>server.py</code>.</li>
+		<li>In the <a href="{{ site.portalUrl }}">VoiceTel portal</a>, set the test number’s inbound voice webhook to the public origin plus the <strong>webhook path</strong> shown in <a href="{{ site.pipecatDemoUrl }}#step-4--point-your-voicetel-number-at-it">the demo’s number configuration example</a>. Select <strong>POST</strong>. The <code>/ws</code> path is for audio; the server supplies it in its webhook response.</li>
+		<li>Dial the number. Listen for the greeting, ask a question, then interrupt the reply. The server log should show the incoming webhook followed by <code>Stream started</code>.</li>
+	</ol>
+	<p>If the webhook returns 403, check that <code>PUBLIC_URL</code> matches the public origin configured on the number and restart the server. If the stream starts but you hear silence, check the server log for provider key errors and repeat the local audio test.</p>
+</section>
+
+<aside class="cta-block">
+	<h2>Deploy the agent</h2>
+	<p>Once you’ve tested a call, see the demo’s deployment notes for using a stable HTTPS address or running the agent on Pipecat Cloud.</p>
+	<p class="hero-actions">
+		<a class="btn btn-primary" href="{{ site.pipecatDemoUrl }}#going-to-production">Read the deployment notes</a>
+	</p>
+</aside>

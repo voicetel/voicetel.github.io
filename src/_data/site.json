@@ -14,6 +14,7 @@
 	"voicemlReferenceUrl": "https://voiceml.com",
 	"voicemlPublisherUrl": "https://voiceml.org",
 	"voicemlStudioUrl": "https://studio.voiceml.com",
+	"pipecatDemoUrl": "https://github.com/voicetel/pipecat-voicetel-demo",
 	"apiBaseUrl": "https://api.voicetel.com",
 	"sdnUrl": "http://sdn.voicetel.com",
 	"phoneUrl": "/phone/applications/",

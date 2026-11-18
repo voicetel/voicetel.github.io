@@ -37,14 +37,15 @@ description: "Install VoiceTel Phone or VoiceML Phone on Android from Google Pla
 		<div class="row">
 			<div class="row__text">
 				<p class="eyebrow">1 &middot; Install from Google Play</p>
-				<h2 id="install-heading">Two apps on Google Play; pick the one for your account.</h2>
-				<p class="lede">VoiceTel Phone for VoiceTel accounts, VoiceML Phone for VoiceML accounts. Both are free on Google Play.</p>
+				<h2 id="install-heading">Choose an Android app for calling or texting.</h2>
+				<p class="lede">For personal SMS and MMS, install {{ phoneApps.messages.name }} and <a href="/messaging/#voicetel-messages">connect your VoiceTel number</a>. For calls, choose the phone app for your account.</p>
 				<p class="row__links">VoiceTel Phone signs in with the SIP credentials provisioned in the VoiceTel customer portal. VoiceML Phone takes a VoiceML activation code under Settings &rarr; Auto Provision, or SIP credentials entered manually.</p>
 			</div>
 			<div class="row__visual">
 				{%- set docs = [
 					{ icon: "phone-vibrate", title: voicetel.name ~ " on Google Play", meta: "VoiceTel accounts", href: voicetel.stores.android },
-					{ icon: "phone-vibrate", title: voiceml.name ~ " on Google Play", meta: "VoiceML accounts", href: voiceml.stores.android }
+					{ icon: "phone-vibrate", title: voiceml.name ~ " on Google Play", meta: "VoiceML accounts", href: voiceml.stores.android },
+					{ icon: "chat-text", title: phoneApps.messages.name ~ " on Google Play", meta: "Personal SMS and MMS", href: phoneApps.messages.stores.android }
 				] %}
 				{% include "partials/v2/docs-list.njk" %}
 			</div>
@@ -56,7 +57,7 @@ description: "Install VoiceTel Phone or VoiceML Phone on Android from Google Pla
 	<div class="container">
 		<div class="row row--reverse">
 			<div class="row__text">
-				<p class="eyebrow">2 &middot; First launch</p>
+				<p class="eyebrow">2 &middot; First launch for calling apps</p>
 				<h2 id="firstlaunch-heading">Allow the microphone and notifications, then sign in.</h2>
 				<p class="lede">Calls need the microphone; notifications carry incoming calls while the app is in the background or closed. Contacts access is optional.</p>
 			</div>
@@ -80,7 +81,7 @@ description: "Install VoiceTel Phone or VoiceML Phone on Android from Google Pla
 			<h2 id="faq-heading">Questions about VoiceTel Phone on Android.</h2>
 		</div>
 		{%- set faqs = [
-			{ q: "Which app do I need?", a: "VoiceTel Phone for VoiceTel accounts; VoiceML Phone for VoiceML accounts. Both are free on Google Play." },
+			{ q: "Which app do I need?", a: "Use VoiceTel Messages for personal texting. For calls, use VoiceTel Phone with a VoiceTel account or VoiceML Phone with a VoiceML account." },
 			{ q: "Incoming calls don’t ring when the app is in the background", a: "Make sure notifications are allowed for the app, and exclude it from battery optimization (<em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Battery</em> &rarr; <em>Unrestricted</em>) so Android doesn’t stop it in the background." },
 			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Apps &rarr;</em> the app &rarr; <em>Permissions</em> and allow <em>Microphone</em>." },
 			{ q: "What permissions does the app need?", a: "Microphone and notifications for calling, contacts only if you want address-book dialing, and (VoiceML Phone) camera for video calls. See <a href=\"/support/voice/android-permissions/\">Android app permissions</a> for the full list and how to re-grant a denied one." }

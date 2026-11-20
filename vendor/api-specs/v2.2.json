@@ -8668,10 +8668,6 @@
                       "example": "12015550100",
                       "type": "string"
                     },
-                    "transactionGUID": {
-                      "description": "Id of the message this receipt is for (dlr).",
-                      "type": "string"
-                    },
                     "messageText": {
                       "description": "The delivery receipt as received, including stat: (for example DELIVRD, UNDELIV, EXPIRED) and err: (dlr).",
                       "example": "id:1793144711856jfw sub:001 dlvrd:001 submit date:2610271645 done date:2610280137 stat:DELIVRD err:000 text:delivered",
@@ -8682,7 +8678,7 @@
                       "type": "string"
                     }
                   },
-                  "description": "Per-record fields; which ones are present depends on type (see each field).",
+                  "description": "Per-record fields; which ones are present depends on type (see each field). Delivery-receipt (dlr) records additionally carry transactionGUID — string, the id of the message the receipt is for.",
                   "example": {
                     "number": "12015550123",
                     "message": "Your verification code is 483921",
@@ -10194,48 +10190,15 @@
             "example": "2015550123"
           },
           "carrier": {
-            "description": "Carrier and line-type details, with the field names used by the underlying carrier lookup. mobile_country_code and mobile_network_code are present on mobile numbers; error_code when the details could not be determined.",
             "type": "object",
-            "properties": {
-              "name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Carrier or network name.",
-                "example": "EXAMPLE CARRIER"
-              },
-              "type": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Line type, such as voip, landline or mobile.",
-                "example": "voip"
-              },
-              "mobile_country_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Mobile country code, on mobile numbers.",
-                "example": "310"
-              },
-              "mobile_network_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Mobile network code, on mobile numbers.",
-                "example": "456"
-              },
-              "error_code": {
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "description": "Error code when carrier details could not be determined."
-              }
+            "additionalProperties": true,
+            "description": "Carrier and line-type details, with the field names used by the underlying carrier lookup (kept verbatim on the wire, hence snake_case): name (string or null) — carrier or network name; type (string or null) — line type such as voip, landline or mobile; mobile_country_code (string or null) and mobile_network_code (string or null) — present on mobile numbers; error_code (integer or null) — when the details could not be determined.",
+            "example": {
+              "name": "EXAMPLE CARRIER",
+              "type": "voip",
+              "mobile_country_code": null,
+              "mobile_network_code": null,
+              "error_code": null
             }
           }
         }
@@ -14049,7 +14012,7 @@
         }
       },
       "delete": {
-        "description": "Removes ACL entries. Accepts the same {acl: [{cidr}]} body as POST /v2.2/acl. Entries that do not exist fail individually.",
+        "description": "Removes ACL entries. The live handler reads the same JSON body as POST /v2.2/acl — sent as a request body with DELETE (the v2.2.0 rewrite): {\"acl\": [{\"cidr\": \"203.0.113.0/24\"}, ...]} . An address without a mask is /32; entries are matched exactly, and entries that do not exist fail individually. (The body is described here rather than as a requestBody node: DELETE-with-body is discouraged style, but it is the wire truth.)",
         "tags": [
           "ACL"
         ],
@@ -14145,24 +14108,6 @@
               }
             },
             "description": "One or more entries could not be removed; data carries the removed and failed entries (acl delete)."
-          }
-        },
-        "requestBody": {
-          "description": "The ACL entries to remove, in the same shape as POST /v2.2/acl. An address without a mask is /32; entries are matched exactly.",
-          "required": true,
-          "content": {
-            "application/json": {
-              "example": {
-                "acl": [
-                  {
-                    "cidr": "203.0.113.0/24"
-                  }
-                ]
-              },
-              "schema": {
-                "$ref": "#/components/schemas/aclModifyRequest"
-              }
-            }
           }
         }
       },

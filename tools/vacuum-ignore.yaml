@@ -13,3 +13,7 @@ camel-case-properties:
     - $.components.schemas['carrierData'].properties['carrier'].properties['mobile_country_code']
     - $.components.schemas['carrierData'].properties['carrier'].properties['mobile_network_code']
     - $.components.schemas['carrierData'].properties['carrier'].properties['error_code']
+# DELETE /v2.2/acl takes a JSON body on the wire (the v2.2.0 handler rewrite);
+# documented truthfully even though DELETE-with-body is discouraged style.
+no-request-body:
+    - $.paths['/v2.2/acl'].delete

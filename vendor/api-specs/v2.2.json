@@ -39,6 +39,10 @@
     {
       "name": "Support",
       "description": "Support ticket management. Customers see only their own tickets. Administrators see all tickets."
+    },
+    {
+      "name": "Fax",
+      "description": "Send faxes from your fax-capable numbers and read their history and documents. Sending takes one to ten PDF/DOC/DOCX documents (8 MiB total) and is idempotent per Idempotency-Key."
     }
   ],
   "components": {
@@ -10235,6 +10239,636 @@
             }
           }
         }
+      },
+      "faxErrorResponse": {
+        "type": "object",
+        "description": "Error envelope for the fax endpoints; carries the server time of the refusal.",
+        "required": [
+          "status",
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "description": "Always error.",
+            "type": "string",
+            "example": "error",
+            "enum": [
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "description": "Error code and message.",
+            "properties": {
+              "code": {
+                "description": "HTTP status code.",
+                "type": "integer",
+                "example": 401
+              },
+              "message": {
+                "description": "What went wrong.",
+                "type": "string",
+                "example": "Missing or invalid bearer token"
+              }
+            }
+          },
+          "serverTime": {
+            "description": "Server unix time of the response.",
+            "type": "integer",
+            "example": 1795100000
+          }
+        },
+        "example": {
+          "status": "error",
+          "error": {
+            "code": 401,
+            "message": "Missing or invalid bearer token"
+          },
+          "serverTime": 1795100000
+        }
+      },
+      "faxNumberEntry": {
+        "type": "object",
+        "description": "One fax-capable number on the account.",
+        "properties": {
+          "number": {
+            "description": "The fax number, ten digits.",
+            "type": "string",
+            "example": "2015550123",
+            "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
+          },
+          "destinationId": {
+            "description": "Per-number fax destination row id, or 0 when it delivers to the account email.",
+            "type": "integer",
+            "example": 7
+          },
+          "email": {
+            "description": "Email address faxes to this number deliver to.",
+            "type": "string",
+            "example": "fax@example.com"
+          }
+        },
+        "example": {
+          "number": "2015550123",
+          "destinationId": 7,
+          "email": "fax@example.com"
+        }
+      },
+      "faxNumbersData": {
+        "type": "object",
+        "description": "Payload of the fax numbers listing.",
+        "properties": {
+          "numbers": {
+            "type": "array",
+            "description": "Fax-capable numbers on the account, ascending.",
+            "items": {
+              "$ref": "#/components/schemas/faxNumberEntry"
+            },
+            "example": [
+              {
+                "number": "2015550123",
+                "destinationId": 7,
+                "email": "fax@example.com"
+              }
+            ]
+          }
+        },
+        "example": {
+          "numbers": [
+            {
+              "number": "2015550123",
+              "destinationId": 7,
+              "email": "fax@example.com"
+            }
+          ]
+        }
+      },
+      "faxNumbersResponse": {
+        "type": "object",
+        "description": "Response wrapper for the fax numbers listing.",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "description": "Operation outcome: \"success\" when the fax numbers listing succeeded.",
+            "type": "string",
+            "example": "success",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/faxNumbersData",
+            "type": "object",
+            "description": "Payload of the fax numbers response."
+          }
+        },
+        "example": {
+          "status": "success",
+          "data": {
+            "numbers": [
+              {
+                "number": "2015550123",
+                "destinationId": 7,
+                "email": "fax@example.com"
+              }
+            ]
+          }
+        }
+      },
+      "faxSendRequest": {
+        "type": "object",
+        "description": "Multipart form for sending a fax: the two numbers as form fields and the documents as file parts.",
+        "required": [
+          "fromNumber",
+          "toNumber",
+          "documents"
+        ],
+        "properties": {
+          "fromNumber": {
+            "description": "Fax number on the account to send from, ten digits.",
+            "type": "string",
+            "example": "2015550123",
+            "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
+          },
+          "toNumber": {
+            "description": "Destination US or Canadian fax number, ten digits.",
+            "type": "string",
+            "example": "2125550123",
+            "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
+          },
+          "documents": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "One to ten documents; PDF, DOC or DOCX (checked by content, not extension); 8 MiB each and in total.",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "example": [
+              "contract.pdf"
+            ]
+          }
+        }
+      },
+      "faxDocumentMeta": {
+        "type": "object",
+        "description": "Metadata of one document attached to a fax.",
+        "properties": {
+          "name": {
+            "description": "File name.",
+            "type": "string",
+            "example": "contract.pdf"
+          },
+          "size": {
+            "description": "Document size in bytes.",
+            "type": "integer",
+            "example": 123456
+          },
+          "contentType": {
+            "description": "Media type.",
+            "type": "string",
+            "example": "application/pdf"
+          }
+        },
+        "example": {
+          "name": "contract.pdf",
+          "size": 123456,
+          "contentType": "application/pdf"
+        }
+      },
+      "faxSendData": {
+        "type": "object",
+        "description": "Payload confirming an accepted fax.",
+        "properties": {
+          "id": {
+            "description": "Identifier of the accepted fax job.",
+            "type": "string",
+            "example": "9f8c2b41a",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "fromNumber": {
+            "description": "The number the fax is sent from, ten digits.",
+            "type": "string",
+            "example": "2015550123"
+          },
+          "toNumber": {
+            "description": "Destination the fax was accepted for, ten digits.",
+            "type": "string",
+            "example": "2125550123"
+          },
+          "status": {
+            "description": "Job state at acceptance: queued.",
+            "type": "string",
+            "example": "queued",
+            "enum": [
+              "queued"
+            ]
+          },
+          "documents": {
+            "type": "array",
+            "description": "The accepted documents.",
+            "items": {
+              "$ref": "#/components/schemas/faxDocumentMeta"
+            },
+            "example": [
+              {
+                "name": "contract.pdf",
+                "size": 123456,
+                "contentType": "application/pdf"
+              }
+            ]
+          }
+        },
+        "example": {
+          "id": "9f8c2b41a",
+          "fromNumber": "2015550123",
+          "toNumber": "2125550123",
+          "status": "queued",
+          "documents": [
+            {
+              "name": "contract.pdf",
+              "size": 123456,
+              "contentType": "application/pdf"
+            }
+          ]
+        }
+      },
+      "faxSendResponse": {
+        "type": "object",
+        "description": "Response wrapper for sending a fax.",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "description": "Operation outcome: \"success\" when the fax was accepted.",
+            "type": "string",
+            "example": "success",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/faxSendData",
+            "type": "object",
+            "description": "Payload of the fax send response."
+          }
+        },
+        "example": {
+          "status": "success",
+          "data": {
+            "id": "9f8c2b41a",
+            "fromNumber": "2015550123",
+            "toNumber": "2125550123",
+            "status": "queued",
+            "documents": [
+              {
+                "name": "contract.pdf",
+                "size": 123456,
+                "contentType": "application/pdf"
+              }
+            ]
+          }
+        }
+      },
+      "faxJob": {
+        "type": "object",
+        "description": "One fax job: its routing, lifecycle timestamps and documents.",
+        "properties": {
+          "id": {
+            "description": "Fax job identifier.",
+            "type": "string",
+            "example": "9f8c2b41a",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "fromNumber": {
+            "description": "The number the fax was sent from, ten digits.",
+            "type": "string",
+            "example": "2015550123"
+          },
+          "toNumber": {
+            "description": "The destination, ten digits.",
+            "type": "string",
+            "example": "2125550123"
+          },
+          "clientToken": {
+            "description": "The Idempotency-Key the fax was submitted with, or null.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "description": "queued, sending, retry_pending, sent or failed.",
+            "type": "string",
+            "example": "sent",
+            "enum": [
+              "queued",
+              "sending",
+              "retry_pending",
+              "sent",
+              "failed"
+            ]
+          },
+          "submittedAt": {
+            "description": "Acceptance time, ISO-8601 UTC.",
+            "type": "string",
+            "example": "2026-11-20T15:04:05Z",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "description": "When delivery was first attempted, ISO-8601 UTC, or null.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2026-11-20T15:04:41Z",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "description": "When the job reached sent or failed, ISO-8601 UTC, or null while active.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2026-11-20T15:05:19Z",
+            "format": "date-time"
+          },
+          "attempts": {
+            "description": "Delivery attempts so far, or null while queued.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": 1
+          },
+          "failureReason": {
+            "description": "Why the fax failed, on failed jobs; null otherwise.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": null
+          },
+          "documents": {
+            "type": "array",
+            "description": "The submitted documents.",
+            "items": {
+              "$ref": "#/components/schemas/faxDocumentMeta"
+            },
+            "example": [
+              {
+                "name": "contract.pdf",
+                "size": 123456,
+                "contentType": "application/pdf"
+              }
+            ]
+          },
+          "documentAvailable": {
+            "description": "Whether GET /v2.2/faxes/{id}/document can serve the PDF.",
+            "type": "boolean",
+            "example": true
+          },
+          "documentName": {
+            "description": "File name the document downloads as.",
+            "type": "string",
+            "example": "contract.pdf"
+          },
+          "documentSize": {
+            "description": "Total document size in bytes, or null when there are no documents.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "example": 123456
+          }
+        },
+        "example": {
+          "id": "9f8c2b41a",
+          "fromNumber": "2015550123",
+          "toNumber": "2125550123",
+          "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+          "status": "sent",
+          "submittedAt": "2026-11-20T15:04:05Z",
+          "startedAt": "2026-11-20T15:04:41Z",
+          "completedAt": "2026-11-20T15:05:19Z",
+          "attempts": 1,
+          "failureReason": null,
+          "documents": [
+            {
+              "name": "contract.pdf",
+              "size": 123456,
+              "contentType": "application/pdf"
+            }
+          ],
+          "documentAvailable": true,
+          "documentName": "contract.pdf",
+          "documentSize": 123456
+        }
+      },
+      "faxJobResponse": {
+        "type": "object",
+        "description": "Response wrapper for one fax job.",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "description": "Operation outcome: \"success\" when the fax job was read.",
+            "type": "string",
+            "example": "success",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/faxJob",
+            "type": "object",
+            "description": "Payload of the fax job response."
+          }
+        },
+        "example": {
+          "status": "success",
+          "data": {
+            "id": "9f8c2b41a",
+            "fromNumber": "2015550123",
+            "toNumber": "2125550123",
+            "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+            "status": "sent",
+            "submittedAt": "2026-11-20T15:04:05Z",
+            "startedAt": "2026-11-20T15:04:41Z",
+            "completedAt": "2026-11-20T15:05:19Z",
+            "attempts": 1,
+            "failureReason": null,
+            "documents": [
+              {
+                "name": "contract.pdf",
+                "size": 123456,
+                "contentType": "application/pdf"
+              }
+            ],
+            "documentAvailable": true,
+            "documentName": "contract.pdf",
+            "documentSize": 123456
+          }
+        }
+      },
+      "faxHistoryData": {
+        "type": "object",
+        "description": "One page of fax history for a number.",
+        "properties": {
+          "number": {
+            "description": "The number the history belongs to, ten digits.",
+            "type": "string",
+            "example": "2015550123"
+          },
+          "fromTs": {
+            "description": "Newer edge of the returned range, unix seconds.",
+            "type": "integer",
+            "example": 1795100000
+          },
+          "toTs": {
+            "description": "Older edge of the returned range, unix seconds.",
+            "type": "integer",
+            "example": 1795013600
+          },
+          "faxes": {
+            "type": "array",
+            "description": "Fax jobs, newest first.",
+            "items": {
+              "$ref": "#/components/schemas/faxJob"
+            },
+            "example": [
+              {
+                "id": "9f8c2b41a",
+                "fromNumber": "2015550123",
+                "toNumber": "2125550123",
+                "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+                "status": "sent",
+                "submittedAt": "2026-11-20T15:04:05Z",
+                "startedAt": "2026-11-20T15:04:41Z",
+                "completedAt": "2026-11-20T15:05:19Z",
+                "attempts": 1,
+                "failureReason": null,
+                "documents": [
+                  {
+                    "name": "contract.pdf",
+                    "size": 123456,
+                    "contentType": "application/pdf"
+                  }
+                ],
+                "documentAvailable": true,
+                "documentName": "contract.pdf",
+                "documentSize": 123456
+              }
+            ]
+          },
+          "nextCursor": {
+            "description": "Cursor for the next page, or null when the page is the last.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": null
+          }
+        },
+        "example": {
+          "number": "2015550123",
+          "fromTs": 1795100000,
+          "toTs": 1795013600,
+          "faxes": [
+            {
+              "id": "9f8c2b41a",
+              "fromNumber": "2015550123",
+              "toNumber": "2125550123",
+              "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+              "status": "sent",
+              "submittedAt": "2026-11-20T15:04:05Z",
+              "startedAt": "2026-11-20T15:04:41Z",
+              "completedAt": "2026-11-20T15:05:19Z",
+              "attempts": 1,
+              "failureReason": null,
+              "documents": [
+                {
+                  "name": "contract.pdf",
+                  "size": 123456,
+                  "contentType": "application/pdf"
+                }
+              ],
+              "documentAvailable": true,
+              "documentName": "contract.pdf",
+              "documentSize": 123456
+            }
+          ],
+          "nextCursor": null
+        }
+      },
+      "faxHistoryResponse": {
+        "type": "object",
+        "description": "Response wrapper for the fax history listing.",
+        "required": [
+          "status",
+          "data"
+        ],
+        "properties": {
+          "status": {
+            "description": "Operation outcome: \"success\" when the fax history was read.",
+            "type": "string",
+            "example": "success",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/faxHistoryData",
+            "type": "object",
+            "description": "Payload of the fax history response."
+          }
+        },
+        "example": {
+          "status": "success",
+          "data": {
+            "number": "2015550123",
+            "fromTs": 1795100000,
+            "toTs": 1795013600,
+            "faxes": [
+              {
+                "id": "9f8c2b41a",
+                "fromNumber": "2015550123",
+                "toNumber": "2125550123",
+                "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+                "status": "sent",
+                "submittedAt": "2026-11-20T15:04:05Z",
+                "startedAt": "2026-11-20T15:04:41Z",
+                "completedAt": "2026-11-20T15:05:19Z",
+                "attempts": 1,
+                "failureReason": null,
+                "documents": [
+                  {
+                    "name": "contract.pdf",
+                    "size": 123456,
+                    "contentType": "application/pdf"
+                  }
+                ],
+                "documentAvailable": true,
+                "documentName": "contract.pdf",
+                "documentSize": 123456
+              }
+            ],
+            "nextCursor": null
+          }
+        }
       }
     }
   },
@@ -10249,9 +10883,9 @@
       "name": "Apache 2.0"
     },
     "termsOfService": "https://www.voicetel.com/tos",
-    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Only three endpoints do not require an Authorization header: POST /v2.2/account/api-key, POST /v2.2/account/recovery, and POST /v2.2/accounts. Re-fetch the API key after any password change. Rate-limited endpoints: GET /v2.2/account, GET /v2.2/account/cdr, GET /v2.2/account/recurring-charges, and POST /v2.2/account/api-key — 6 requests per hour per IP; POST /v2.2/messaging/health/check — 30 checks per hour per account.",
+    "description": "VoiceTel REST API. All resource identifiers are in the URL path. Authenticate every request with `Authorization: Bearer <apikey>`. To obtain your API key, POST `{\"username\": <id>, \"password\": \"<password>\"}` to /v2.2/account/api-key. The response is `{\"status\":\"success\",\"data\":{\"apikey\":\"<32-hex-string>\"}}`. Only three endpoints do not require an Authorization header: POST /v2.2/account/api-key, POST /v2.2/account/recovery, and POST /v2.2/accounts. Re-fetch the API key after any password change. Rate-limited endpoints: GET /v2.2/account, GET /v2.2/account/cdr, GET /v2.2/account/recurring-charges, and POST /v2.2/account/api-key — 6 requests per hour per IP; POST /v2.2/messaging/health/check — 30 checks per hour per account; POST /v2.2/faxes — 10 sends per minute per account.",
     "title": "VoiceTel API",
-    "version": "2.2.20",
+    "version": "2.2.21",
     "contact": {
       "email": "support@voicetel.com"
     }
@@ -10298,74 +10932,6 @@
         "summary": "Order new telephone numbers",
         "operationId": "orderCreate",
         "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (orderCreate)."
-          },
-          "502": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "the network rejected the order; no DB writes performed"
-          },
-          "402": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Insufficient balance for the order total"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Validation failed before any carrier or DB write, including a route that is not a gateway on this account (e.g. Invalid route 1234 for 2015550100: use a gateway id from GET /v2.2/gateways). Nothing is ordered or charged."
-          },
           "201": {
             "content": {
               "application/json": {
@@ -10391,6 +10957,91 @@
               }
             },
             "description": "Order placed and account balance debited"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Validation failed before any carrier or DB write, including a route that is not a gateway on this account (e.g. Invalid route 1234 for 2015550100: use a gateway id from GET /v2.2/gateways). Nothing is ordered or charged."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (orderCreate)."
+          },
+          "402": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Insufficient balance for the order total"
+          },
+          "403": {
+            "description": "The authenticated account no longer exists (orders create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 403,
+                    "message": "Account not found"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "the network rejected the order; no DB writes performed"
           }
         }
       }
@@ -10534,23 +11185,6 @@
         "summary": "Update account settings",
         "operationId": "accountPut",
         "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (accountPut)."
-          },
           "200": {
             "content": {
               "application/json": {
@@ -10585,6 +11219,40 @@
               }
             },
             "description": "Bad request response from account put."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (accountPut)."
+          },
+          "409": {
+            "description": "The update could not be written (account update).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Update failed"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -10601,23 +11269,6 @@
         "summary": "Get account info",
         "operationId": "accountGet",
         "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (accountGet)."
-          },
           "200": {
             "content": {
               "application/json": {
@@ -10664,6 +11315,40 @@
               }
             },
             "description": "OK response from account get."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (accountGet)."
+          },
+          "404": {
+            "description": "The authenticated account no longer exists (account get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 404,
+                    "message": "Account not found"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           },
           "429": {
             "content": {
@@ -10806,40 +11491,6 @@
         "summary": "Update a gateway",
         "operationId": "gatewaysPut",
         "responses": {
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Not Found response from gateways put."
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (gatewaysPut)."
-          },
           "200": {
             "content": {
               "application/json": {
@@ -10859,6 +11510,74 @@
               }
             },
             "description": "OK response from gateways put."
+          },
+          "400": {
+            "description": "No updatable fields provided (gateway, prefix, limit), or an invalid gateway address (gateways update).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "No updatable fields provided (gateway, prefix, limit)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (gatewaysPut)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Not Found response from gateways put."
+          },
+          "409": {
+            "description": "The update could not be written (gateways update).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Update failed"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -13330,7 +14049,7 @@
         }
       },
       "delete": {
-        "description": "Removes one or more IPv4 CIDR blocks from the IP-ACL. CIDRs are passed as a comma-separated `cidrs` query string parameter.",
+        "description": "Removes ACL entries. Accepts the same {acl: [{cidr}]} body as POST /v2.2/acl. Entries that do not exist fail individually.",
         "tags": [
           "ACL"
         ],
@@ -13339,21 +14058,47 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "example": "203.0.113.0/24"
-            },
-            "name": "cidrs",
-            "description": "Comma-separated list of CIDR blocks to remove from the ACL (e.g. 203.0.113.0/24,203.0.113.1/32).",
-            "required": true,
-            "in": "query"
-          }
-        ],
+        "parameters": [],
         "summary": "Remove IP ACL entries",
         "operationId": "aclDelete",
         "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aclRemoveResponse"
+                },
+                "example": {
+                  "data": {
+                    "removed": [
+                      {
+                        "cidr": "203.0.113.0/24"
+                      }
+                    ]
+                  },
+                  "status": "success"
+                }
+              }
+            },
+            "description": "All entries removed"
+          },
+          "400": {
+            "description": "Field Required: acl (array of {cidr} objects) (acl delete).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: acl (array of {cidr} objects)"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
           "401": {
             "content": {
               "application/json": {
@@ -13378,12 +14123,12 @@
                   "$ref": "#/components/schemas/aclConflictResponse"
                 },
                 "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "One or more ACL entries could not be removed"
+                  },
                   "data": {
-                    "added": [
-                      {
-                        "cidr": "203.0.113.0/24"
-                      }
-                    ],
                     "removed": [
                       {
                         "cidr": "203.0.113.0/24"
@@ -13391,40 +14136,33 @@
                     ],
                     "failed": [
                       {
-                        "reason": "DB Insert failed",
-                        "cidr": "abc123"
+                        "cidr": "203.0.113.9/32",
+                        "reason": "DB delete failed"
                       }
                     ]
-                  },
-                  "error": {
-                    "code": 409,
-                    "message": "CIDR overlaps with existing entry"
-                  },
-                  "status": "error"
+                  }
                 }
               }
             },
-            "description": "One or more entries could not be removed"
-          },
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/aclRemoveResponse"
-                },
-                "example": {
-                  "data": {
-                    "removed": [
-                      {
-                        "cidr": "203.0.113.0/24"
-                      }
-                    ]
-                  },
-                  "status": "success"
-                }
+            "description": "One or more entries could not be removed; data carries the removed and failed entries (acl delete)."
+          }
+        },
+        "requestBody": {
+          "description": "The ACL entries to remove, in the same shape as POST /v2.2/acl. An address without a mask is /32; entries are matched exactly.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "acl": [
+                  {
+                    "cidr": "203.0.113.0/24"
+                  }
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/aclModifyRequest"
               }
-            },
-            "description": "All entries removed"
+            }
           }
         }
       },
@@ -13534,23 +14272,6 @@
         "summary": "Call detail records",
         "operationId": "accountCdr",
         "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (accountCdr)."
-          },
           "200": {
             "content": {
               "application/json": {
@@ -13586,6 +14307,23 @@
             },
             "description": "OK response from account cdr."
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (accountCdr)."
+          },
           "429": {
             "content": {
               "application/json": {
@@ -13602,6 +14340,23 @@
               }
             },
             "description": "Too Many Requests (account cdr)."
+          },
+          "502": {
+            "description": "The call-detail store could not be read; retry or request a shorter range (account cdr).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "Call records could not be read; retry, or request a shorter range"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -13851,6 +14606,43 @@
         "summary": "Add a gateway",
         "operationId": "gatewaysCreate",
         "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gatewayResponse"
+                },
+                "example": {
+                  "data": {
+                    "system": true,
+                    "id": 1000,
+                    "gateway": "203.0.113.10:5060",
+                    "prefix": "9",
+                    "limit": 23
+                  },
+                  "status": "success"
+                }
+              }
+            },
+            "description": "Gateway created"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Bad request response from gateways add."
+          },
           "401": {
             "content": {
               "application/json": {
@@ -13885,42 +14677,22 @@
             },
             "description": "Failed to add (POST /v2.2/gateways)."
           },
-          "400": {
+          "500": {
+            "description": "The gateway was added but it could not be read back (gateways add).",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
                 "example": {
                   "status": "error",
                   "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
+                    "code": 500,
+                    "message": "Gateway added but failed to retrieve record"
                   }
-                }
-              }
-            },
-            "description": "Bad request response from gateways add."
-          },
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/gatewayResponse"
                 },
-                "example": {
-                  "data": {
-                    "system": true,
-                    "id": 1000,
-                    "gateway": "203.0.113.10:5060",
-                    "prefix": "9",
-                    "limit": 23
-                  },
-                  "status": "success"
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
                 }
               }
-            },
-            "description": "Gateway created"
+            }
           }
         }
       },
@@ -15311,40 +16083,6 @@
         "summary": "Register a 10DLC campaign at the network",
         "operationId": "messagingCampaignCreate",
         "responses": {
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Missing or invalid bearer token (messagingCampaignCreate)."
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorResponse"
-                },
-                "example": {
-                  "status": "error",
-                  "error": {
-                    "code": 400,
-                    "message": "Field Required: number"
-                  }
-                }
-              }
-            },
-            "description": "Required field missing or network rejected the body"
-          },
           "201": {
             "content": {
               "application/json": {
@@ -15363,6 +16101,91 @@
               }
             },
             "description": "Campaign created at carrier"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Required field missing or network rejected the body"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                },
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Field Required: number"
+                  }
+                }
+              }
+            },
+            "description": "Missing or invalid bearer token (messagingCampaignCreate)."
+          },
+          "403": {
+            "description": "The campaign is not available to this account (messaging campaigns create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 403,
+                    "message": "Campaign C0MPDKW is not available to this account"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The message class could not be read from the campaign registry; pass campaignClassName (messaging campaigns create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Could not read the message class for campaign C0MPDKW from the campaign registry; retry, or pass campaignClassName"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The campaign registration backend did not respond (messaging campaigns create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "Campaign registration backend did not respond"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -19338,6 +20161,730 @@
               }
             },
             "description": "Carrier information is not available; try again. Not billed."
+          }
+        }
+      }
+    },
+    "/v2.2/numbers/fax": {
+      "get": {
+        "summary": "List fax-capable numbers",
+        "operationId": "numbersFaxList",
+        "description": "Every number on the account that can send and receive faxes, with the email address each delivers to (the per-number fax destination, or the account email).",
+        "tags": [
+          "Fax"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fax-capable numbers on the account (fax numbers list).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "numbers": [
+                      {
+                        "number": "2015550123",
+                        "destinationId": 7,
+                        "email": "fax@example.com"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxNumbersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token (fax numbers list).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 401,
+                    "message": "Missing or invalid bearer token"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/faxes": {
+      "post": {
+        "summary": "Send a fax",
+        "operationId": "faxesSend",
+        "description": "Submits a fax for delivery. The multipart form carries fromNumber, toNumber and one to ten documents (PDF, DOC or DOCX, checked by content; 8 MiB each and in total). Idempotency-Key is a client-generated UUID: resubmitting the same documents with the same key returns the original job instead of sending again. Requires an enabled account with a positive balance; rate-limited to 10 sends per minute per account.",
+        "tags": [
+          "Fax"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
+            "required": true,
+            "description": "Client-generated UUID identifying this submission; the same documents with the same key do not send twice."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Multipart form: fromNumber and toNumber fields plus the document files.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/faxSendRequest"
+              },
+              "encoding": {
+                "documents": {
+                  "contentType": "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Accepted for delivery; status is queued (fax send).",
+            "headers": {
+              "Idempotency-Key": {
+                "description": "Echoed submission identifier.",
+                "schema": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "9f8c2b41a",
+                    "fromNumber": "2015550123",
+                    "toNumber": "2125550123",
+                    "status": "queued",
+                    "documents": [
+                      {
+                        "name": "contract.pdf",
+                        "size": 123456,
+                        "contentType": "application/pdf"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxSendResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not a multipart form, a field is missing or invalid, or a document is not an accepted type (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "A multipart form is required"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 401,
+                    "message": "Missing or invalid bearer token"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "The account balance must be positive to send (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 402,
+                    "message": "Your account needs a positive balance to send faxes."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The account is disabled, or the from number cannot send faxes (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 403,
+                    "message": "This number is not one of your fax numbers."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The sending number has no usable linked fax email (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "This number's linked fax email can't be used to send. Update it in the portal."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "A document or the total upload is over 8 MiB (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 413,
+                    "message": "The documents must total 8 MiB or smaller"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 10 sends this minute; honor Retry-After (fax send).",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before the next send.",
+                "schema": {
+                  "type": "integer",
+                  "example": 60
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 429,
+                    "message": "Too many faxes. Please wait a minute and try again."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The fax processor misbehaved; the fax was not sent (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "The fax processor returned an invalid response."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Faxing is temporarily unavailable (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 503,
+                    "message": "Faxing is not available right now. Please try again."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List fax history",
+        "operationId": "faxesHistory",
+        "description": "The faxes sent from one of your fax numbers, newest first, with cursor paging. from and to are unix seconds (from is the newer edge); the default range is the last 24 hours. status filters by job state; active means not yet finished.",
+        "tags": [
+          "Fax"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "number",
+            "schema": {
+              "type": "string",
+              "example": "2015550123",
+              "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
+            },
+            "required": true,
+            "description": "A fax number on the account whose history to read."
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1795100000
+            },
+            "description": "Newer edge of the range, unix seconds. Defaults to now."
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1795013600
+            },
+            "description": "Older edge of the range, unix seconds. Defaults to 24 hours ago."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "example": 50
+            },
+            "description": "Page size, 1 to 100."
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string",
+              "maxLength": 2048,
+              "example": "cGl0LnN0b3Jl.8b1c0f2a5d4e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e"
+            },
+            "description": "Paging cursor from a previous response nextCursor."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "active",
+                "queued",
+                "sending",
+                "retry_pending",
+                "sent",
+                "failed"
+              ],
+              "example": "all"
+            },
+            "description": "Filter by job state; active means not yet finished."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of fax history (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "number": "2015550123",
+                    "fromTs": 1795100000,
+                    "toTs": 1795013600,
+                    "faxes": [
+                      {
+                        "id": "9f8c2b41a",
+                        "fromNumber": "2015550123",
+                        "toNumber": "2125550123",
+                        "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+                        "status": "sent",
+                        "submittedAt": "2026-11-20T15:04:05Z",
+                        "startedAt": "2026-11-20T15:04:41Z",
+                        "completedAt": "2026-11-20T15:05:19Z",
+                        "attempts": 1,
+                        "failureReason": null,
+                        "documents": [
+                          {
+                            "name": "contract.pdf",
+                            "size": 123456,
+                            "contentType": "application/pdf"
+                          }
+                        ],
+                        "documentAvailable": true,
+                        "documentName": "contract.pdf",
+                        "documentSize": 123456
+                      }
+                    ],
+                    "nextCursor": null
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A query parameter is missing or invalid (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "A valid ten-digit fax number is required"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 401,
+                    "message": "Missing or invalid bearer token"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The number is not a fax number on this account (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 403,
+                    "message": "This number is not one of your fax numbers."
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/faxes/{id}": {
+      "get": {
+        "summary": "Get one fax",
+        "operationId": "faxesGet",
+        "description": "One fax job with its status, timestamps, attempts and documents. Poll until status is sent or failed.",
+        "tags": [
+          "Fax"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "example": "9f8c2b41a"
+            },
+            "required": true,
+            "description": "Identifier of the fax job to read."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The fax job (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "9f8c2b41a",
+                    "fromNumber": "2015550123",
+                    "toNumber": "2125550123",
+                    "clientToken": "123e4567-e89b-12d3-a456-426614174000",
+                    "status": "sent",
+                    "submittedAt": "2026-11-20T15:04:05Z",
+                    "startedAt": "2026-11-20T15:04:41Z",
+                    "completedAt": "2026-11-20T15:05:19Z",
+                    "attempts": 1,
+                    "failureReason": null,
+                    "documents": [
+                      {
+                        "name": "contract.pdf",
+                        "size": 123456,
+                        "contentType": "application/pdf"
+                      }
+                    ],
+                    "documentAvailable": true,
+                    "documentName": "contract.pdf",
+                    "documentSize": 123456
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxJobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The identifier is malformed (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Invalid fax identifier"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 401,
+                    "message": "Missing or invalid bearer token"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such fax on this account (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 404,
+                    "message": "Not found"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2.2/faxes/{id}/document": {
+      "get": {
+        "summary": "Download the fax document",
+        "operationId": "faxesDocument",
+        "description": "The PDF rendering of the fax as an attachment. Available when the job reports documentAvailable true.",
+        "tags": [
+          "Fax"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "example": "9f8c2b41a"
+            },
+            "required": true,
+            "description": "Identifier of the fax job whose document to download."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The fax document as a PDF attachment (fax document).",
+            "headers": {
+              "Content-Disposition": {
+                "description": "Attachment with the document file name.",
+                "schema": {
+                  "type": "string",
+                  "example": "attachment; filename=\"contract.pdf\""
+                }
+              },
+              "Content-Length": {
+                "description": "Byte length of the served PDF.",
+                "schema": {
+                  "type": "integer",
+                  "example": 123456
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The identifier is malformed (fax document).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 400,
+                    "message": "Invalid fax identifier"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token (fax document).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 401,
+                    "message": "Missing or invalid bearer token"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such fax on this account, or no document was kept (fax document).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 404,
+                    "message": "Not found"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
           }
         }
       }

@@ -1944,7 +1944,15 @@
             "pattern": "^[2-9][0-9]{2}[2-9][0-9]{2}[0-9]{4}$"
           },
           "lrn": {
-            "$ref": "#/components/schemas/lrnData"
+            "description": "LRN dip result, or null when the dip returned no record.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/lrnData"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "description": "Data payload for the lrn lookup operation.",
@@ -13701,6 +13709,23 @@
             },
             "description": "Insufficient balance for the port-in fee"
           },
+          "404": {
+            "description": "The authenticated account no longer exists (ports submit).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 404,
+                    "message": "Account not found"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
           "405": {
             "description": "Method not allowed on this endpoint (portSubmit).",
             "content": {
@@ -13710,6 +13735,23 @@
                   "error": {
                     "code": 405,
                     "message": "Method Not Allowed"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The account is missing tenant configuration; contact support (ports submit).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 500,
+                    "message": "Account configuration error"
                   }
                 },
                 "schema": {
@@ -19338,6 +19380,40 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "The campaign is not on a supported messaging path, or the number cannot be changed right now (numbers messaging campaign unassign).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 409,
+                    "message": "Campaign C0MPDKW is not on a supported messaging path"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The messaging provider did not confirm the removal; retry shortly (numbers messaging campaign unassign).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "The messaging provider did not confirm the removal; retry shortly"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -19543,6 +19619,40 @@
               }
             },
             "description": "Campaign not ACTIVE, not elected to a messaging path, still on path A (being migrated), the number is porting, enabled on another path that must be disabled first, or another enablement for it is in progress."
+          },
+          "502": {
+            "description": "The messaging provider rejected or did not confirm the enablement; nothing is half-applied (numbers messaging campaign assign).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "Enablement failed; retry shortly"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The campaign registry or the number's messaging state could not be read; retry shortly (numbers messaging campaign assign).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 503,
+                    "message": "The campaign registry could not be reached; retry shortly"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -21845,6 +21955,24 @@
               }
             }
           },
+          "500": {
+            "description": "Unexpected fax service failure; nothing was sent (fax send).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 500,
+                    "message": "The fax service could not process the request"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
           "502": {
             "description": "The fax processor misbehaved; the fax was not sent (fax send).",
             "content": {
@@ -22092,6 +22220,42 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Unexpected fax service failure (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 500,
+                    "message": "The fax service could not process the request"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The fax processor failed or is unavailable; retry later (fax history).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "The fax processor is unavailable"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -22238,6 +22402,42 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Unexpected fax service failure (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 500,
+                    "message": "The fax service could not process the request"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The fax processor failed or is unavailable; retry later (fax get).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "The fax processor is unavailable"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -22368,6 +22568,42 @@
                   "error": {
                     "code": 405,
                     "message": "Method not allowed"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected fax service failure (fax document).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 500,
+                    "message": "The fax service could not process the request"
+                  },
+                  "serverTime": 1795100000
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/faxErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The fax processor failed or is unavailable; retry later (fax document).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "error",
+                  "error": {
+                    "code": 502,
+                    "message": "The fax processor is unavailable"
                   },
                   "serverTime": 1795100000
                 },

@@ -369,7 +369,7 @@
 							"twilio": "supported",
 							"voicetel": "unsupported",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel returns 501 + Twilio error code 20501. Out of scope on the VoiceML compatibility surface."
+							"notes": "VoiceTel: deliberate compat stub — 501 + Twilio error code 20501 (<em>not implemented</em>); a missing call is the usual 404. Real chat-message delivery on the call leg isn't implemented yet (tracked upstream); <code>UserDefinedMessageSubscriptions</code> appears in <code>subresource_uris</code> but has no mounted route."
 						}
 					]
 				},

@@ -100,6 +100,12 @@ textarea {
 	flex: 1 1 280px;
 }
 
+/* The 280px basis is for wrapping in horizontal action rows; in a column
+   row it would become a 280px-tall block under every field. */
+.form-row > .form-note {
+	flex: none;
+}
+
 .form-error {
 	background: var(--alert-error-bg);
 	color: var(--alert-error-fg);

@@ -1,5 +1,5 @@
 {
-	"updated": "2026-10-21",
+	"updated": "2026-11-22",
 	"specVersion": "VoiceML API v0.9.5",
 	"platforms": [
 		{
@@ -158,6 +158,18 @@
 					]
 				},
 				{
+					"name": "Account / RotateKey",
+					"rows": [
+						{
+							"endpoints": "POST /RotateKey",
+							"twilio": "unsupported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceML extension (not a Twilio resource): generates a new API key for the calling account — the previous key stops working immediately. The new key is returned in the response and no read endpoint exposes it, so store it right away. The request takes no body."
+						}
+					]
+				},
+				{
 					"name": "Applications",
 					"rows": [
 						{
@@ -184,7 +196,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "partial",
-							"notes": ""
+							"notes": "VoiceTel: <code>stir_verstat</code> carries the inbound call's SHAKEN/STIR verification verdict (<a href=\"/docs/voiceml/verstat/\">VerStat docs</a>); it reads <code>\"\"</code> on a fetch and <code>null</code> on create/update, as on Twilio."
 						},
 						{
 							"endpoints": "GET /Calls (filters: To, From, Status, ParentCallSid, StartTime≥/≤, EndTime≥/≤, Page, PageSize≤1000)",
@@ -257,7 +269,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code> and returns an MZ-prefixed SID; <code>Track</code> is accepted but not applied. RestComm has no equivalent live media fork REST surface."
+							"notes": "Twilio Media Streams WebSocket protocol. VoiceTel mirrors <code>&lt;Connect&gt;&lt;Stream&gt;</code> / <code>&lt;Start&gt;&lt;Stream&gt;</code> and returns an MZ-prefixed SID; <code>Track</code> is accepted but not applied. Bidirectional streams announce <code>connected.version</code> 1.0.0 and unidirectional streams 0.2.0, as Twilio does. RestComm has no equivalent live media fork REST surface."
 						},
 						{
 							"endpoints": "POST /Calls/{Sid}/Streams/{Sid} (Status=stopped)",
@@ -314,7 +326,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel: card capture enabled per account — <a href=\"/contact/\">contact support</a> to turn on."
+							"notes": "VoiceTel mirrors Twilio's live payment-resource contract: <code>IdempotencyKey</code> and <code>StatusCallback</code> are required (a missing one is 400 20001, checked before the call lookup), and a repeated create with the same <code>IdempotencyKey</code> replays the original payment resource. Card capture is per-account BYO Stripe — <a href=\"/contact/\">contact support</a> to turn on."
 						}
 					]
 				},
@@ -468,7 +480,7 @@
 							"twilio": "supported",
 							"voicetel": "supported",
 							"restcomm": "unsupported",
-							"notes": "Voice markup verb (no REST mirror). VoiceTel bridges to a customer-hosted WebSocket for LLM-driven voice agents with Twilio-shaped wire messages. RestComm has no ConversationRelay equivalent."
+							"notes": "Voice markup verb (no REST mirror). VoiceTel bridges to a customer-hosted WebSocket for LLM-driven voice agents with Twilio-shaped wire messages, including the <code>Language</code> attribute (BCP-47, default <code>en-US</code>). RestComm has no ConversationRelay equivalent."
 						}
 					]
 				},
@@ -643,6 +655,18 @@
 					]
 				},
 				{
+					"name": "SIP / Domains / Recording",
+					"rows": [
+						{
+							"endpoints": "GET /SIP/Domains/{Sid}/Recording, POST /SIP/Domains/{Sid}/Recording",
+							"twilio": "unsupported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceML extension: whether calls the domain's registered devices place are recorded. Twilio SIP Domains have no recording setting; the body mirrors Twilio Elastic SIP Trunking's <code>/v1/Trunks/{Sid}/Recording</code> and answers exactly. A domain that never set one is <code>do-not-record</code> / <code>do-not-trim</code>."
+						}
+					]
+				},
+				{
 					"name": "SIP / CredentialLists",
 					"rows": [
 						{
@@ -703,8 +727,8 @@
 					]
 				}
 			],
-			"groupCount": 38,
-			"rowCount": 62
+			"groupCount": 40,
+			"rowCount": 64
 		},
 		{
 			"name": "Programmable Messaging",
@@ -741,6 +765,13 @@
 							"voicetel": "supported",
 							"restcomm": "partial",
 							"notes": "VoiceTel: idempotent 204."
+						},
+						{
+							"endpoints": "POST /Messages/{Sid}/Feedback",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: accepts a delivery-quality report for an outbound SMS or MMS and echoes it back as the Feedback resource, so SDK feedback flows complete against the documented <code>subresource_uris</code> link."
 						}
 					]
 				},
@@ -789,7 +820,7 @@
 				}
 			],
 			"groupCount": 4,
-			"rowCount": 8
+			"rowCount": 9
 		},
 		{
 			"name": "Phone Numbers",
@@ -952,12 +983,26 @@
 							"voicetel": "supported",
 							"restcomm": "unsupported",
 							"notes": "Twilio outbound voice dialing-permissions surface. VoiceTel: account-wide outbound voice settings."
+						},
+						{
+							"endpoints": "GET /v1/DialingPermissions/Countries, GET /v1/DialingPermissions/Countries/{IsoCode}, GET /v1/DialingPermissions/Countries/{IsoCode}/HighRiskSpecialPrefixes",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: Twilio's 218 dialing-permission countries in ISO-code order with the authenticated account's permissions. Low-risk is the account's <code>phone_regions</code>; high-risk special and toll fraud are what <code>BulkCountryUpdates</code> last set. Paging, tokens, and errors are Twilio's, including its page-token quirks."
+						},
+						{
+							"endpoints": "POST /v1/DialingPermissions/BulkCountryUpdates",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: applies every entry or none. Turning a country's low-risk numbers on adds its regions to the account's <code>phone_regions</code> (US adds US and CA; GB adds GB, GG, IM, and JE); turning them off removes them. The high-risk flags are stored per country."
 						}
 					]
 				}
 			],
 			"groupCount": 5,
-			"rowCount": 6
+			"rowCount": 8
 		},
 		{
 			"name": "Conversations",
@@ -1325,6 +1370,34 @@
 			],
 			"groupCount": 4,
 			"rowCount": 5
+		},
+		{
+			"name": "Monitor Alerts",
+			"summary": "Twilio Monitor's Alert surface — a read-only view over failure events (call-scoped errors and messaging delivery failures) with optional request/response detail, for account-level alerting integrations.",
+			"twilioDocsUrl": "https://www.twilio.com/docs/usage/monitor-alerts",
+			"groups": [
+				{
+					"name": "Alerts",
+					"rows": [
+						{
+							"endpoints": "GET /v1/Alerts",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: lists failure events in Twilio's Monitor Alert shape with NO-prefixed SIDs. The list omits request/response detail (the fetch includes it when the row carries any). Single page only: <code>meta.next_page_url</code> is always <code>null</code>; <code>PageSize</code> limits the list (default 50, capped at 1000)."
+						},
+						{
+							"endpoints": "GET /v1/Alerts/{Sid}",
+							"twilio": "supported",
+							"voicetel": "supported",
+							"restcomm": "unsupported",
+							"notes": "VoiceTel: fetch one alert; <code>request</code>/<code>response</code> fields are omitted when the underlying event stored no detail."
+						}
+					]
+				}
+			],
+			"groupCount": 1,
+			"rowCount": 2
 		},
 		{
 			"name": "Out of scope",

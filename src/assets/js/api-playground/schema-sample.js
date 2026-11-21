@@ -10,7 +10,7 @@
 
 const MAX_DEPTH = 12;
 
-function resolveRef(spec, ref) {
+export function resolveRef(spec, ref) {
 	if (!ref || !ref.startsWith("#/")) return null;
 	const parts = ref.slice(2).split("/");
 	let node = spec;

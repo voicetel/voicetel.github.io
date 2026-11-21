@@ -106,6 +106,7 @@ function extractOperations(spec) {
 				tags: op.tags || ["Other"],
 				parameters: op.parameters || [],
 				requestBody: op.requestBody || null,
+				responses: op.responses || {},
 			});
 		}
 	}

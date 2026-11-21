@@ -3,6 +3,23 @@
 // is deliberately string-template-based so the response panel matches
 // the visual treatment of the surrounding docs.
 
+let objectUrl = null;
+
+function releaseObjectUrl() {
+	if (objectUrl) URL.revokeObjectURL(objectUrl);
+	objectUrl = null;
+}
+
+function formatBytes(bytes) {
+	if (bytes < 1024) return `${bytes} bytes`;
+	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MiB`;
+}
+
+function escapeAttr(value) {
+	return escapeText(value).replace(/"/g, "&quot;");
+}
+
 function escapeText(value) {
 	return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -31,6 +48,16 @@ function renderHeaders(headers) {
 }
 
 function renderBody(result) {
+	if (result.bodyBlob) {
+		objectUrl = URL.createObjectURL(result.bodyBlob);
+		const type = result.bodyType.split(";")[0].trim() || "application/octet-stream";
+		return `
+			<p class="playground-binary">
+				Binary response: <code>${escapeText(type)}</code>, ${formatBytes(result.bodyBlob.size)}.
+				<a class="btn btn-secondary" href="${objectUrl}" download="${escapeAttr(result.bodyName)}">Download ${escapeText(result.bodyName)}</a>
+			</p>
+		`;
+	}
 	if (result.bodyJson !== undefined && result.bodyJson !== null) {
 		const pretty = JSON.stringify(result.bodyJson, null, 2);
 		return `<pre class="code-block" data-lang="json"><code>${escapeText(pretty)}</code></pre>`;
@@ -42,6 +69,7 @@ function renderBody(result) {
 }
 
 export function renderResponse(target, result) {
+	releaseObjectUrl();
 	if (result.error) {
 		const msg = result.error && result.error.message ? result.error.message : "Network error.";
 		target.innerHTML = `
@@ -65,5 +93,6 @@ export function renderResponse(target, result) {
 }
 
 export function renderEmpty(target, message) {
+	releaseObjectUrl();
 	target.innerHTML = `<p class="playground-empty">${escapeText(message)}</p>`;
 }

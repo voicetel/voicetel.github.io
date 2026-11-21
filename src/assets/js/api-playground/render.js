@@ -4,8 +4,12 @@
 // the spec example when one exists; otherwise it falls back to a
 // schema-walked sample (resolving $refs) so the customer sees a stub
 // matching the shape of the request body, the way Redoc does.
+// multipart/form-data bodies render one field per schema property
+// instead, with file inputs for binary properties.
 
-import { sampleForRequestBody } from "./schema-sample.js";
+import { resolveRef, sampleForRequestBody } from "./schema-sample.js";
+
+export const MULTIPART = "multipart/form-data";
 
 function paramId(op, param) {
 	return `pg-${op.operationId}-${param.in}-${param.name}`;
@@ -70,16 +74,81 @@ function renderField(op, param) {
 	`.trim();
 }
 
-function bodyContentType(requestBody) {
+export function bodyContentType(requestBody) {
 	if (!requestBody || !requestBody.content) return null;
 	const types = Object.keys(requestBody.content);
 	if (types.includes("application/json")) return "application/json";
+	if (types.includes(MULTIPART)) return MULTIPART;
 	return types[0] || null;
+}
+
+function deref(spec, schema) {
+	if (schema && schema.$ref) return resolveRef(spec, schema.$ref) || {};
+	return schema || {};
+}
+
+function isBinary(schema) {
+	return schema.type === "string" && schema.format === "binary";
+}
+
+function fileExample(prop) {
+	const example = Array.isArray(prop.example) ? prop.example[0] : prop.example;
+	return typeof example === "string" && example ? example : "document.pdf";
+}
+
+function multipartFields(op, spec) {
+	const media = op.requestBody.content[MULTIPART];
+	const schema = deref(spec, media.schema);
+	const required = new Set(schema.required || []);
+	const encoding = media.encoding || {};
+	return Object.entries(schema.properties || {}).map(([name, raw]) => {
+		const prop = deref(spec, raw);
+		const isArray = prop.type === "array";
+		const item = isArray ? deref(spec, prop.items) : prop;
+		return {
+			name,
+			in: "form",
+			required: required.has(name),
+			description: prop.description || "",
+			schema: isArray && !isBinary(item) ? item : prop,
+			file: isBinary(item),
+			multiple: isArray,
+			accept: (encoding[name] && encoding[name].contentType) || "",
+			example: fileExample(prop),
+		};
+	});
+}
+
+function renderFileField(op, field) {
+	const id = paramId(op, field);
+	const accept = field.accept ? ` accept="${escapeAttr(field.accept.replace(/\s+/g, ""))}"` : "";
+	return `
+		<div class="form-row playground-field">
+			<label for="${id}">${escapeText(paramLabelText(field))}</label>
+			<input id="${id}" name="${escapeAttr(field.name)}" type="file" data-param-in="form" data-param-name="${escapeAttr(field.name)}" data-file="${escapeAttr(field.example)}"${field.multiple ? " multiple" : ""}${field.required ? " required" : ""}${accept}>
+			${field.description ? `<p class="form-note">${escapeText(field.description)}</p>` : ""}
+		</div>
+	`.trim();
+}
+
+function renderMultipartBody(op, spec) {
+	const required = op.requestBody.required ? " (required)" : "";
+	const fields = multipartFields(op, spec)
+		.map((f) => (f.file ? renderFileField(op, f) : renderField(op, f)))
+		.join("");
+	return `
+		<fieldset class="playground-body playground-body--multipart">
+			<legend>Request body${required}</legend>
+			<p class="form-note">Content-Type: <code>${MULTIPART}</code>. Files are sent from this browser straight to the API.</p>
+			<div class="form-grid playground-form-grid">${fields}</div>
+		</fieldset>
+	`.trim();
 }
 
 function renderBody(op, spec) {
 	if (!op.requestBody) return "";
 	const contentType = bodyContentType(op.requestBody);
+	if (contentType === MULTIPART) return renderMultipartBody(op, spec);
 	const sample = sampleForRequestBody(op.requestBody, spec);
 	const prefill = sample === null ? "" : JSON.stringify(sample, null, 2);
 	const required = op.requestBody.required ? " (required)" : "";
@@ -112,7 +181,15 @@ export function renderOperationForm(op, spec) {
 }
 
 export function readFormValues(formEl) {
-	const values = { path: {}, query: {}, header: {}, body: "" };
+	const values = {
+		path: {},
+		query: {},
+		header: {},
+		body: "",
+		form: {},
+		files: {},
+		fileExamples: {},
+	};
 	const fields = formEl.querySelectorAll("[data-param-name], [data-param-in='body']");
 	fields.forEach((field) => {
 		const where = field.dataset.paramIn;
@@ -122,6 +199,11 @@ export function readFormValues(formEl) {
 			return;
 		}
 		const name = field.dataset.paramName;
+		if (field.hasAttribute("data-file")) {
+			if (field.files && field.files.length) values.files[name] = Array.from(field.files);
+			else values.fileExamples[name] = field.dataset.file;
+			return;
+		}
 		if (value === undefined || value === null || value === "") return;
 		if (!values[where]) values[where] = {};
 		values[where][name] = value;

@@ -98,7 +98,7 @@
 							"twilio": "supported",
 							"voicetel": "partial",
 							"restcomm": "unsupported",
-							"notes": "VoiceTel: Twilio-compatible Balance response with a static <code>0</code> balance in the account's currency — VoiceTel accounts are operator-billed, with no per-account runtime ledger."
+							"notes": "VoiceTel: Twilio-compatible Balance response. With the carrier billing bridge configured, <code>balance</code> and <code>currency</code> are live from carrier billing, keyed by the account's SIP username; when the bridge can't answer — unset, open breaker, RPC failure, or an unspecified carrier value — the response falls back to the stub values <code>0.00</code> / <code>USD</code>."
 						}
 					]
 				},

@@ -383,6 +383,7 @@
 		"releasePage": "voicetel-fax-download.html",
 		"audience": "Send outbound faxes and check delivery status. Enter your VoiceTel number and approve the device to get started.",
 		"stores": {
+			"ios": "https://apps.apple.com/us/app/voicetel-fax/id6837746308",
 			"android": "https://play.google.com/store/apps/details?id=com.voicetel.fax"
 		},
 		"version": "3.9.3",

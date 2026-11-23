@@ -37,7 +37,7 @@ description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Sto
 		<div class="row">
 			<div class="row__text">
 				<p class="eyebrow">1 &middot; Install from the App Store</p>
-				<h2 id="install-heading">Choose an iPhone app for calling or texting.</h2>
+				<h2 id="install-heading">Choose an iPhone app for calling, texting, or faxing.</h2>
 				<p class="lede">For personal SMS and MMS, install {{ phoneApps.messages.name }} and <a href="/messaging/#voicetel-messages">connect your VoiceTel number</a>. For calls, choose the phone app for your account.</p>
 				<p class="row__links">VoiceTel Phone signs in with the SIP credentials provisioned in the VoiceTel customer portal. VoiceML Phone takes a VoiceML activation code under Settings &rarr; Auto Provision, or SIP credentials entered manually.</p>
 			</div>
@@ -45,7 +45,8 @@ description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Sto
 				{%- set docs = [
 					{ icon: "phone-vibrate", title: voicetel.name ~ " on the App Store", meta: "VoiceTel accounts", href: voicetel.stores.ios },
 					{ icon: "phone-vibrate", title: voiceml.name ~ " on the App Store", meta: "VoiceML accounts", href: voiceml.stores.ios },
-					{ icon: "chat-text", title: phoneApps.messages.name ~ " on the App Store", meta: "Personal SMS and MMS", href: phoneApps.messages.stores.ios }
+					{ icon: "chat-text", title: phoneApps.messages.name ~ " on the App Store", meta: "Personal SMS and MMS", href: phoneApps.messages.stores.ios },
+					{ icon: "layers", title: phoneApps.fax.name ~ " on the App Store", meta: "Outbound fax", href: phoneApps.fax.stores.ios }
 				] %}
 				{% include "partials/v2/docs-list.njk" %}
 			</div>
@@ -81,7 +82,7 @@ description: "Install VoiceTel Phone or VoiceML Phone on iPhone from the App Sto
 			<h2 id="faq-heading">Questions about VoiceTel Phone on iPhone.</h2>
 		</div>
 		{%- set faqs = [
-			{ q: "Which app do I need?", a: "Use VoiceTel Messages for personal texting. For calls, use VoiceTel Phone with a VoiceTel account or VoiceML Phone with a VoiceML account." },
+			{ q: "Which app do I need?", a: "Use VoiceTel Messages for personal texting and VoiceTel Fax to send faxes. For calls, use VoiceTel Phone with a VoiceTel account or VoiceML Phone with a VoiceML account." },
 			{ q: "Incoming calls don’t ring when the app is closed", a: "Open <em>Settings &rarr; Notifications</em>, select the app, and turn on <em>Allow Notifications</em>. Incoming calls arrive as push notifications and ring on the CallKit call screen." },
 			{ q: "The other person can’t hear me", a: "Open <em>Settings &rarr; Privacy &amp; Security &rarr; Microphone</em> and enable access for the app." },
 		{ q: "What permissions does the app need?", a: "Microphone and notifications, contacts only if you want address-book dialing, and (VoiceML Phone) camera for video calls. See <a href=\"/support/voice/ios-permissions/\">iPhone app permissions</a> for the full list and how to turn one back on." }

@@ -17,7 +17,7 @@ platform: windows
 		<div class="hero__copy">
 			<p class="eyebrow">Desktop &middot; Windows</p>
 			<h1 id="hero-heading">VoiceTel Phone for Windows.</h1>
-			<p class="lede">Download, install, and troubleshoot the Windows app: installer, portable executable, or .zip archive. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
+			<p class="lede">Download, install, and troubleshoot the Windows app: installer, portable executable, or .zip archive. Downloads for VoiceML Phone, VoiceTel Fax, and VoiceTel Messages are listed below.</p>
 			<div class="cta-row">
 				<a class="btn btn--primary btn--lg" href="#download">Download for Windows {{ arrow(14) }}</a>
 				<a class="btn btn--ghost btn--lg" href="/phone/applications/desktop/">All desktop clients</a>
@@ -42,26 +42,7 @@ platform: windows
 			<h2 id="download-heading">Choose the build that suits your deployment.</h2>
 			<p class="lede">If you're unsure, use the <strong>installer (.exe)</strong>: a standard setup wizard that adds a Start-menu shortcut. The <strong>portable .exe</strong> runs with no install, and the <strong>.zip</strong> extracts with no installer; run <code>VoiceTel.exe</code> inside it.</p>
 		</div>
-		{%- for app in phoneApps.apps %}
-		{%- set files = app.desktop | where("platform", platform) %}
-		<h3 class="subsection-heading" id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
-		<div class="prose"><p>{{ app.audience }}</p></div>
-		<div class="table-container">
-			<table class="data-table">
-				<thead>
-					<tr><th scope="col">Build</th><th scope="col">SHA-256</th></tr>
-				</thead>
-				<tbody>
-					{%- for file in files %}
-					<tr>
-						<td>{{ file.format }} &middot; {{ file.arch }}<br><a href="{{ phoneApps.baseUrl }}{{ file.file }}">{{ file.file }}</a> &middot; {{ file.size }}</td>
-						<td><code class="mono">{{ file.sha256 | replace(r/^(.{32})/, "$1<wbr>") | safe }}</code></td>
-					</tr>
-					{%- endfor %}
-				</tbody>
-			</table>
-		</div>
-		{%- endfor %}
+		{% include "partials/phone-desktop-downloads.njk" %}
 	</div>
 </section>
 

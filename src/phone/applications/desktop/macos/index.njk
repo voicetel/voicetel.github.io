@@ -16,7 +16,7 @@ platform: macos
 		<div class="hero__copy">
 			<p class="eyebrow">Desktop &middot; macOS</p>
 			<h1 id="hero-heading">VoiceTel Phone for macOS.</h1>
-			<p class="lede">Download, install, and troubleshoot the macOS app (.dmg or .zip) on Apple Silicon and Intel Macs. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
+			<p class="lede">Download, install, and troubleshoot the macOS app (.dmg or .zip) on Apple Silicon and Intel Macs. Downloads for VoiceML Phone, VoiceTel Fax, and VoiceTel Messages are listed below.</p>
 			<div class="cta-row">
 				<a class="btn btn--primary btn--lg" href="#download">Download for macOS {{ arrow(14) }}</a>
 				<a class="btn btn--ghost btn--lg" href="/phone/applications/desktop/">All desktop clients</a>
@@ -41,26 +41,7 @@ platform: macos
 			<h2 id="download-heading">Choose the build that matches your Mac.</h2>
 			<p class="lede"><strong>arm64</strong> for Apple Silicon (M1&ndash;M4), <strong>x86-64</strong> for Intel; the Intel build also runs on Apple Silicon via Rosetta 2. If unsure, use the <strong>.dmg</strong>; the .zip is the same app as an archive for scripted installs. All macOS builds are signed and notarized by Apple, so Gatekeeper opens them without warnings.</p>
 		</div>
-		{%- for app in phoneApps.apps %}
-		{%- set files = app.desktop | where("platform", platform) %}
-		<h3 class="subsection-heading" id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
-		<div class="prose"><p>{{ app.audience }}</p></div>
-		<div class="table-container">
-			<table class="data-table">
-				<thead>
-					<tr><th scope="col">Build</th><th scope="col">SHA-256</th></tr>
-				</thead>
-				<tbody>
-					{%- for file in files %}
-					<tr>
-						<td>{{ file.format }} &middot; {{ file.arch }}<br><a href="{{ phoneApps.baseUrl }}{{ file.file }}">{{ file.file }}</a> &middot; {{ file.size }}</td>
-						<td><code class="mono">{{ file.sha256 | replace(r/^(.{32})/, "$1<wbr>") | safe }}</code></td>
-					</tr>
-					{%- endfor %}
-				</tbody>
-			</table>
-		</div>
-		{%- endfor %}
+		{% include "partials/phone-desktop-downloads.njk" %}
 	</div>
 </section>
 

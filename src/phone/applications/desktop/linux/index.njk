@@ -15,7 +15,7 @@ platform: linux
 		<div class="hero__copy">
 			<p class="eyebrow">Desktop &middot; Linux</p>
 			<h1 id="hero-heading">VoiceTel Phone for Linux.</h1>
-			<p class="lede">Download, install, and troubleshoot the Linux app: AppImage, .deb, .rpm, Snap, or Flatpak, on x86-64 and arm64. VoiceML Phone, the same softphone for VoiceML accounts, is listed alongside.</p>
+			<p class="lede">Download, install, and troubleshoot the Linux app: AppImage, .deb, .rpm, Snap, or Flatpak, on x86-64 and arm64. Downloads for VoiceML Phone, VoiceTel Fax, and VoiceTel Messages are listed below.</p>
 			<div class="cta-row">
 				<a class="btn btn--primary btn--lg" href="#download">Download for Linux {{ arrow(14) }}</a>
 				<a class="btn btn--ghost btn--lg" href="/phone/applications/desktop/">All desktop clients</a>
@@ -38,28 +38,9 @@ platform: linux
 		<div class="section__head">
 			<p class="eyebrow">1 &middot; Download</p>
 			<h2 id="download-heading">Pick the package that matches your distro and CPU.</h2>
-			<p class="lede"><strong>x86-64 / amd64</strong> for Intel and AMD, <strong>arm64</strong> for 64-bit ARM such as Raspberry Pi 4/5 and ARM servers. If you're unsure, use the <strong>AppImage</strong>: portable, no install. The .deb is for Debian / Ubuntu, the .rpm for Fedora / RHEL / openSUSE, and Snap and Flatpak (freedesktop 24.08) are universal.</p>
+			<p class="lede"><strong>x86-64 / amd64</strong> for Intel and AMD, <strong>arm64</strong> for 64-bit ARM such as Raspberry Pi 4/5 and ARM servers. If you're unsure, use the <strong>AppImage</strong>: portable, no install. The .deb is for Debian / Ubuntu, the .rpm for Fedora / RHEL / openSUSE, and Snap and Flatpak (freedesktop 26.08) are universal.</p>
 		</div>
-		{%- for app in phoneApps.apps %}
-		{%- set files = app.desktop | where("platform", platform) %}
-		<h3 class="subsection-heading" id="download-{{ app.key }}">{{ app.name }} {{ app.version }}</h3>
-		<div class="prose"><p>{{ app.audience }}</p></div>
-		<div class="table-container">
-			<table class="data-table">
-				<thead>
-					<tr><th scope="col">Build</th><th scope="col">SHA-256</th></tr>
-				</thead>
-				<tbody>
-					{%- for file in files %}
-					<tr>
-						<td>{{ file.format }} &middot; {{ file.arch }}<br><a href="{{ phoneApps.baseUrl }}{{ file.file }}">{{ file.file }}</a> &middot; {{ file.size }}</td>
-						<td><code class="mono">{{ file.sha256 | replace(r/^(.{32})/, "$1<wbr>") | safe }}</code></td>
-					</tr>
-					{%- endfor %}
-				</tbody>
-			</table>
-		</div>
-		{%- endfor %}
+		{% include "partials/phone-desktop-downloads.njk" %}
 	</div>
 </section>
 
@@ -106,7 +87,7 @@ sudo dnf install ./VoiceTel-{{ voicetel.version }}.rpm
 # Snap
 sudo snap install --dangerous ./VoiceTel-{{ voicetel.version }}.snap
 
-# Flatpak (freedesktop 24.08)
+# Flatpak (freedesktop 26.08)
 flatpak install ./VoiceTel-{{ voicetel.version }}.flatpak{% endhighlight %}{% endset %}
 				{%- set terminal = { label: "Terminal", pill: "install", code: code } %}
 				{% include "partials/v2/terminal.njk" %}
